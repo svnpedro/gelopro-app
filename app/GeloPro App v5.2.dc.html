@@ -24,8 +24,6 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @keyframes gpSpin{to{transform:rotate(360deg)}}
 @keyframes gpFlow{to{background-position:48px 0}}
 @keyframes gpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-/* Etapa: com o quadro das opções mais largo que 4:5, as duas cenas ficam lado a lado (o quadrado cresce); mais alto, empilhadas. */
-@container etapa (min-aspect-ratio: 4/5){[data-opcoes]{grid-template-columns:repeat(2,minmax(0,1fr)) !important;grid-template-rows:minmax(0,1fr) !important;grid-auto-rows:auto;}[data-ponto]{display:none;}[data-legenda]{flex-basis:100%;}}
 @keyframes gpPulseResult{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @keyframes gpPulseResult2{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @media (min-width:600px){[data-microfaixa]{padding:12px 28px 0 !important;}}
@@ -122,17 +120,17 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;animation:gpIn 180ms ease-out;">
                   <sc-if value="{{ dicaVis }}" hint-placeholder-val="{{ false }}"><p style="flex:none;margin:0;padding:2px 4px 0;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ dica }}</p></sc-if>
-                  <div style="flex:1;min-height:0;container:etapa / size;">
+                  <div style="flex:1;min-height:0;">
                     <div data-opcoes="" style="height:100%;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:{{ linhas }};gap:6px;">
                       <sc-for list="{{ opcoes }}" as="o" hint-placeholder-count="2">
-                        <button type="button" aria-label="{{ o.aria }}" onClick="{{ o.onClick }}" style="min-width:0;min-height:48px;grid-column:{{ o.gcol }};display:flex;flex-direction:column;box-sizing:border-box;margin:0;padding:0;border-radius:16px;overflow:hidden;border:2px solid var(--gp-sec-edge);background:var(--gp-card-action);color:#ffffff;text-align:center;cursor:pointer;" style-active="filter:brightness(.94);">
-                          <sc-if value="{{ o.temBand }}" hint-placeholder-val="{{ true }}"><span style="position:relative;flex:1;min-height:56px;width:100%;box-sizing:border-box;background:{{ o.band }};display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                            <sc-if value="{{ o.temCena }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat;background-image:{{ o.cenaBg }};display:block;"></span></sc-if>
+                        <button type="button" aria-label="{{ o.aria }}" onClick="{{ o.onClick }}" style="min-width:0;min-height:48px;grid-column:{{ o.gcol }};display:flex;flex-direction:{{ o.cartaoDir }};box-sizing:border-box;margin:0;padding:0;border-radius:16px;overflow:hidden;border:2px solid var(--gp-sec-edge);background:var(--gp-card-action);color:#ffffff;text-align:center;cursor:pointer;" style-active="filter:brightness(.94);">
+                          <sc-if value="{{ o.temBand }}" hint-placeholder-val="{{ true }}"><span data-quadro="" style="position:relative;flex:1 1 auto;min-width:0;min-height:56px;align-self:stretch;box-sizing:border-box;background:{{ o.band }};display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                            <sc-if value="{{ o.temCena }}" hint-placeholder-val="{{ false }}"><span data-cena="" aria-hidden="true" style="position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat;background-image:{{ o.cenaBg }};display:block;"></span></sc-if>
                             <sc-if value="{{ o.semCena }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;max-height:100%;">{{ o.visual }}</span></sc-if>
                           </span></sc-if>
-                          <span style="flex:none;width:100%;min-height:{{ o.barH }};box-sizing:border-box;padding:6px 12px;background-color:{{ o.bgc }};background-image:{{ o.bg }};display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:8px;row-gap:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);">
-                            <span style="display:inline-flex;align-items:center;gap:8px;font:700 20px/24px 'Roboto',sans-serif;color:#ffffff;white-space:nowrap;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;"><path d="{{ o.d }}"></path></svg>{{ o.l }}</span>
-                            <sc-if value="{{ o.temLeg }}" hint-placeholder-val="{{ true }}"><span data-ponto="" aria-hidden="true" style="font:700 16px/20px 'Roboto',sans-serif;color:#ffffff;">·</span><span data-legenda="" style="font:600 16px/20px 'Roboto',sans-serif;color:#ffffff;text-wrap:balance;">{{ o.c }}</span></sc-if>
+                          <span data-barra="" style="flex:{{ o.barFlex }};width:{{ o.barW }};min-height:{{ o.barH }};box-sizing:border-box;padding:{{ o.barPad }};background-color:{{ o.bgc }};background-image:{{ o.bg }};display:flex;flex-direction:{{ o.barDir }};flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:4px 8px;box-shadow:{{ o.barLuz }};">
+                            <span style="max-width:100%;display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px 6px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;"><path d="{{ o.d }}"></path></svg><span style="max-width:100%;font:700 20px/24px 'Roboto',sans-serif;color:#ffffff;text-align:center;overflow-wrap:normal;word-break:normal;hyphens:manual;">{{ o.l }}</span></span>
+                            <sc-if value="{{ o.temLeg }}" hint-placeholder-val="{{ true }}"><span data-legenda="" style="max-width:100%;font:600 16px/20px 'Roboto',sans-serif;color:#ffffff;text-align:center;text-wrap:balance;overflow-wrap:normal;word-break:normal;hyphens:manual;">{{ o.c }}</span></sc-if>
                           </span>
                         </button>
                       </sc-for>
@@ -775,6 +773,9 @@ const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: ''
 // Assinatura como blob: o data URL tem ';' e o estilo do modelo corta o valor ali, então a imagem não chegava ao PDF.
 const blobDe = (d) => { try { const [cab, b64] = d.split(','), bin = atob(b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return URL.createObjectURL(new Blob([u8], { type: (cab.match(/^data:([^;,]+)/) || [])[1] || 'image/png' })); } catch (e) { return null; } };
 const dataBR = (ms) => new Date(ms).toLocaleDateString('pt-BR');
+// Coluna de resposta da Etapa: 120 px úteis + 8 px de respiro de cada lado. A maior palavra da base ("Comportamento", 117 px em
+// Roboto 600 16 px) cabe sem hífen e sem reduzir a fonte. Legenda nova com palavra maior quebra o teste etapa.js.
+const COL_RESPOSTA = 136;
 const MOD = ['vazio', 'codigo', 'ptsh', 'ntc', 'btu', 'inv', 'docs', 'laudo', 'cofre', 'pmoc', 'scripts'];
 const TT = { btu: ['NTC/BTU', 'Carga térmica'], inv: ['Inverter', 'Placa e IPM'], docs: ['Fechamento e documentos', 'Docs'], laudo: ['Bônus de Docs', 'Laudo de inviabilidade'], cofre: ['Cofre', 'Histórico e garantias'], pmoc: ['Adicional de Docs', 'Modelo PMOC'], scripts: ['Adicional de Docs', 'Scripts e recibos'],  codigo: ['O aparelho apresenta', 'Código no display'], ptsh: ['PT/SH', 'Superaquecimento'], ntc: ['NTC/BTU', 'Sensor NTC'] };
 const BASE = '../base-tecnica/';
@@ -1394,7 +1395,7 @@ class Component extends DCLogic {
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
         { un: '°C', v: Tt !== null && !ptTErro ? st.ptT.trim() : '—', o: Tt !== null && !ptTErro ? 'Informada' : st.ptT.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Tubo de sucção', aria: Tt !== null && !ptTErro ? `Temperatura do tubo ${st.ptT.trim()} °C. Toque para abrir o PT/SH` : 'Temperatura: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
       ].map(r => ({ ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio') })),
-      linhas: E.ops.map((o, i, a) => a.length > 2 && i === a.length - 1 ? 'auto' : 'minmax(0,1fr)').join(' '),
+      linhas: E.ops.map((o, i, a) => a.length > 2 && i === a.length - 1 ? 'auto' : 'minmax(min-content,1fr)').join(' '),
       opcoes: E.ops.map((o, i, arr) => {
         const n = arr.length, w = (pw - 8 * (n - 1)) / n;
         // Cena própria da etapa (rápida ou técnica) em imagens/cenas/<etapa>_<sim|nao>.webp; sem ela, a cena compartilhada de CENAS.
@@ -1402,7 +1403,10 @@ class Component extends DCLogic {
         const tom = o.inc || E.tec && !/^(sim|n[ãa]o)/i.test(o.l) ? 'var(--gp-key-navy-grad)' : (o.sim || /^sim/i.test(o.l)) ? 'var(--gp-answer-yes)' : 'var(--gp-answer-no)';
         const bgc = tom === 'var(--gp-answer-yes)' ? 'var(--gp-answer-yes-solid)' : tom === 'var(--gp-answer-no)' ? 'var(--gp-answer-no-solid)' : 'var(--gp-answer-neutral-solid)';
         const sozinho = n > 2 && i === n - 1;
-        return { bgc, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, semCena: !temCena, temLeg: !!(E.tec && !temCena ? '' : o.c), barH: sozinho ? '56px' : '44px', bg: tom, d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
+        return { bgc, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, semCena: !temCena, temLeg: !!(E.tec && !temCena ? '' : o.c), bg: tom,
+          // Com quadro: imagem à esquerda e coluna de resposta à direita, em camadas (ícone e rótulo; legenda). Sem quadro ("Não sei"): barra cheia de 56 px.
+          cartaoDir: sozinho ? 'column' : 'row', barDir: sozinho ? 'row' : 'column', barFlex: sozinho ? 'none' : `0 0 ${COL_RESPOSTA}px`, barW: sozinho ? '100%' : COL_RESPOSTA + 'px',
+          barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
       }),
       resTitulo: r ? r.t : '',
       resNota: PC && r && r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : PC && r ? `Checagem rápida. Referência: ${r.escopo === 'UNIVERSAL' ? 'segurança (NR-10)' : PC.ref} (${fonteTxt(r.fonte)}). Em outro modelo, confirme.` : '',
