@@ -24,6 +24,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @keyframes gpSpin{to{transform:rotate(360deg)}}
 @keyframes gpFlow{to{background-position:48px 0}}
 @keyframes gpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* Etapa: com o quadro das opções mais largo que 4:5, as duas cenas ficam lado a lado (o quadrado cresce); mais alto, empilhadas. */
+@container etapa (min-aspect-ratio: 4/5){[data-opcoes]{grid-template-columns:repeat(2,minmax(0,1fr)) !important;grid-template-rows:minmax(0,1fr) !important;grid-auto-rows:auto;}[data-ponto]{display:none;}[data-legenda]{flex-basis:100%;}}
 @keyframes gpPulseResult{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @keyframes gpPulseResult2{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @media (min-width:600px){[data-microfaixa]{padding:12px 28px 0 !important;}}
@@ -44,7 +46,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
     <div aria-hidden="true" data-decor="" data-microfaixa="" style="position:relative;z-index:31;flex:none;height:22px;padding:env(safe-area-inset-top) 12px 0;pointer-events:none;"></div>
 
     <div inert="{{ inerte }}" aria-hidden="{{ fundoOculto }}" style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;">
-      <div style="flex:1;min-height:0;box-sizing:border-box;padding:0 6px 4px;display:flex;flex-direction:column;gap:8px;">
+      <div style="flex:1;min-height:0;box-sizing:border-box;padding:0 6px 4px;display:flex;flex-direction:column;gap:{{ colGap }};">
 
         <header style="flex:none;display:flex;flex-direction:column;gap:10px;padding:0 6px;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
@@ -82,7 +84,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
         <div data-cabecalho="" style="flex:none;display:flex;align-items:flex-start;gap:8px;padding:0 6px;">
           <button type="button" aria-label="Voltar" onClick="{{ voltar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="voltar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
-          <div style="flex:1;min-width:0;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
+          <div style="flex:1;min-width:0;gap:0;box-sizing:border-box;min-height:48px;padding:3px 12px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
             <span style="display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ titulo }}</span><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ seloTxt }}</span></span>
             <h2 style="margin:0;font:700 18px/22px 'Roboto',sans-serif;color:var(--gp-on-pill);text-wrap:balance;">{{ pergunta }}</h2>
           </div>
@@ -91,7 +93,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </sc-if>
 
         <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:{{ aroR }};background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
-          <div data-vis="" style="position:relative;height:100%;box-sizing:border-box;padding:12px 10px 12px;border-radius:{{ visR }};overflow:hidden;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);display:flex;flex-direction:column;gap:8px;">
+          <div data-vis="" style="position:relative;height:100%;box-sizing:border-box;padding:{{ visPad }};border-radius:{{ visR }};overflow:hidden;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);display:flex;flex-direction:column;gap:8px;">
 
             
 
@@ -118,23 +120,23 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;animation:gpIn 180ms ease-out;">
-                  <div style="flex:none;display:flex;flex-direction:column;gap:8px;">
-                  <sc-if value="{{ dicaVis }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ dica }}</p></sc-if>
-                  </div>
-                  <div style="flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:{{ linhas }};gap:8px;">
-                    <sc-for list="{{ opcoes }}" as="o" hint-placeholder-count="2">
-                      <div style="min-width:0;min-height:0;grid-column:{{ o.gcol }};display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1px solid var(--gp-card-edge);background:var(--gp-card-action);">
-                        <sc-if value="{{ o.temBand }}" hint-placeholder-val="{{ true }}"><div style="position:relative;flex:1;min-height:56px;box-sizing:border-box;background:{{ o.band }};display:flex;align-items:center;justify-content:center;overflow:hidden;">
-                          <sc-if value="{{ o.temCena }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat;background-image:{{ o.cenaBg }};display:block;"></span></sc-if>
-                          <sc-if value="{{ o.semCena }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;max-height:100%;">{{ o.visual }}</span></sc-if>
-                        </div></sc-if>
-                        <sc-if value="{{ o.temLeg }}" hint-placeholder-val="{{ true }}"><span style="flex:none;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:5px 12px;background:var(--gp-card-action);font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);text-align:center;text-wrap:balance;">{{ o.c }}</span></sc-if>
-                        <button type="button" aria-label="{{ o.aria }}" onClick="{{ o.onClick }}" style="flex:none;min-height:56px;box-sizing:border-box;padding:4px 12px;border:0;background-color:{{ o.bgc }};background-image:{{ o.bg }};color:#ffffff;display:flex;align-items:center;justify-content:center;gap:10px;font:700 20px/24px 'Roboto',sans-serif;text-wrap:balance;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);" style-active="filter:brightness(.92);box-shadow:inset 0 3px 6px rgba(0,0,0,.3);">
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;"><path d="{{ o.d }}"></path></svg>{{ o.l }}
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;animation:gpIn 180ms ease-out;">
+                  <sc-if value="{{ dicaVis }}" hint-placeholder-val="{{ false }}"><p style="flex:none;margin:0;padding:2px 4px 0;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ dica }}</p></sc-if>
+                  <div style="flex:1;min-height:0;container:etapa / size;">
+                    <div data-opcoes="" style="height:100%;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:{{ linhas }};gap:6px;">
+                      <sc-for list="{{ opcoes }}" as="o" hint-placeholder-count="2">
+                        <button type="button" aria-label="{{ o.aria }}" onClick="{{ o.onClick }}" style="min-width:0;min-height:48px;grid-column:{{ o.gcol }};display:flex;flex-direction:column;box-sizing:border-box;margin:0;padding:0;border-radius:16px;overflow:hidden;border:2px solid var(--gp-sec-edge);background:var(--gp-card-action);color:#ffffff;text-align:center;cursor:pointer;" style-active="filter:brightness(.94);">
+                          <sc-if value="{{ o.temBand }}" hint-placeholder-val="{{ true }}"><span style="position:relative;flex:1;min-height:56px;width:100%;box-sizing:border-box;background:{{ o.band }};display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                            <sc-if value="{{ o.temCena }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat;background-image:{{ o.cenaBg }};display:block;"></span></sc-if>
+                            <sc-if value="{{ o.semCena }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;max-height:100%;">{{ o.visual }}</span></sc-if>
+                          </span></sc-if>
+                          <span style="flex:none;width:100%;min-height:{{ o.barH }};box-sizing:border-box;padding:6px 12px;background-color:{{ o.bgc }};background-image:{{ o.bg }};display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:8px;row-gap:2px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);">
+                            <span style="display:inline-flex;align-items:center;gap:8px;font:700 20px/24px 'Roboto',sans-serif;color:#ffffff;white-space:nowrap;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;"><path d="{{ o.d }}"></path></svg>{{ o.l }}</span>
+                            <sc-if value="{{ o.temLeg }}" hint-placeholder-val="{{ true }}"><span data-ponto="" aria-hidden="true" style="font:700 16px/20px 'Roboto',sans-serif;color:#ffffff;">·</span><span data-legenda="" style="font:600 16px/20px 'Roboto',sans-serif;color:#ffffff;text-wrap:balance;">{{ o.c }}</span></sc-if>
+                          </span>
                         </button>
-                      </div>
-                    </sc-for>
+                      </sc-for>
+                    </div>
                   </div>
                 </div>
               </sc-if>
@@ -1369,6 +1371,8 @@ class Component extends DCLogic {
       temTopo: st.tela !== 'inicio' && st.tela !== 'etapa',
       // Visor: a tela inicial mantém o aro de 28 px; as secundárias usam aro simétrico de 24 px (visor interno concêntrico, 21 px).
       aroR: st.tela === 'inicio' ? '28px' : '24px', visR: st.tela === 'inicio' ? '25px' : '21px',
+      // Na Etapa o visor e a coluna encolhem o respiro (6 px) para entregar a altura às cenas.
+      visPad: st.tela === 'etapa' ? '6px' : '12px 10px 12px', colGap: st.tela === 'etapa' ? '6px' : '8px',
       kicker: st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? 'Checagem de técnico' : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.incon ? 'Resultado inconclusivo' : 'Hipótese pelas respostas') : m ? m.k : '',
       titulo: st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
       temSelo: st.tela === 'etapa', seloTxt: `Pergunta ${st.hist.length + 1}`,
@@ -1398,7 +1402,7 @@ class Component extends DCLogic {
         const tom = o.inc || E.tec && !/^(sim|n[ãa]o)/i.test(o.l) ? 'var(--gp-key-navy-grad)' : (o.sim || /^sim/i.test(o.l)) ? 'var(--gp-answer-yes)' : 'var(--gp-answer-no)';
         const bgc = tom === 'var(--gp-answer-yes)' ? 'var(--gp-answer-yes-solid)' : tom === 'var(--gp-answer-no)' ? 'var(--gp-answer-no-solid)' : 'var(--gp-answer-neutral-solid)';
         const sozinho = n > 2 && i === n - 1;
-        return { bgc, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, semCena: !temCena, temLeg: !!(E.tec && !temCena ? '' : o.c), bg: tom, d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
+        return { bgc, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, semCena: !temCena, temLeg: !!(E.tec && !temCena ? '' : o.c), barH: sozinho ? '56px' : '44px', bg: tom, d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
       }),
       resTitulo: r ? r.t : '',
       resNota: PC && r && r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : PC && r ? `Checagem rápida. Referência: ${r.escopo === 'UNIVERSAL' ? 'segurança (NR-10)' : PC.ref} (${fonteTxt(r.fonte)}). Em outro modelo, confirme.` : '',
