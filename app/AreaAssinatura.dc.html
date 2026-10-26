@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+    <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;color:{{ corRot }};">{{ rotulo }}</span>
+    <sc-if value="{{ podeLimpar }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ limpar }}" style="height:48px;box-sizing:border-box;padding:0 12px;border-radius:12px;border:1px solid transparent;background:var(--gp-mold-raised);box-shadow:var(--gp-mold-shadow);color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;transition:transform 120ms ease-out;" style-hover="box-shadow:var(--gp-mold-shadow),inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);background:var(--gp-mold-sunken);box-shadow:var(--gp-mold-shadow-pressed);">Limpar</button></sc-if>
+  </div>
+  <div data-foco="{{ foco }}" style="position:relative;height:{{ alt }};box-sizing:border-box;border-radius:14px;border:{{ borda }};background:var(--gp-paper);box-shadow:{{ sombra }};overflow:hidden;">
+    <sc-if value="{{ desenhavel }}" hint-placeholder-val="{{ true }}"><canvas ref="{{ cref }}" role="img" aria-label="{{ ariaC }}" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;"></canvas></sc-if>
+    <sc-if value="{{ temImg }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="{{ ariaC }}" style="position:absolute;inset:0;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:{{ imgBg }};"></span></sc-if>
+    <span aria-hidden="true" style="position:absolute;left:16px;right:16px;bottom:28px;border-bottom:1px solid var(--gp-paper-rule);pointer-events:none;"></span>
+    <sc-if value="{{ vazio }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;left:16px;right:16px;bottom:4px;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);pointer-events:none;">{{ dica }}</span></sc-if>
+  </div>
+  <sc-if value="{{ temAjuda }}" hint-placeholder-val="{{ false }}"><span role="{{ papelAjuda }}" style="font:500 16px/22px 'Roboto',sans-serif;color:{{ corAjuda }};">{{ ajuda }}</span></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:230},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Assinatura do cliente&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;foco&quot;,&quot;erro&quot;,&quot;somente-leitura&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;altura&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:160,&quot;tsType&quot;:&quot;number&quot;},&quot;erroMsg&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;imagem&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;aoMudar&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(dataUrl: string | null) =&gt; void&quot;}}">
+class Component extends DCLogic {
+  state = { traco: false };
+  cref = React.createRef();
+  tracos = [];
+  componentDidMount() { this.ligar(); }
+  componentDidUpdate() { this.ligar(); }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
+  ligar() {
+    const c = this.cref.current;
+    if (!c || c === this._c) return;
+    this._c = c;
+    const ajustar = () => { const r = c.getBoundingClientRect(), k = window.devicePixelRatio || 1; c.width = Math.max(1, r.width * k); c.height = Math.max(1, r.height * k); this.redesenhar(); };
+    if (this.ro) this.ro.disconnect();
+    this.ro = new ResizeObserver(ajustar); this.ro.observe(c);
+    const pt = (ev) => { const r = c.getBoundingClientRect(); return [(ev.clientX - r.left) / r.width, (ev.clientY - r.top) / r.height]; };
+    c.addEventListener('pointerdown', (ev) => { if (this.inativo()) return; try { c.setPointerCapture(ev.pointerId); } catch (e) {} this._down = true; this.tracos.push([pt(ev)]); this.redesenhar(); });
+    c.addEventListener('pointermove', (ev) => { const t = this.tracos[this.tracos.length - 1]; if (!t || !this._down) return; t.push(pt(ev)); this.redesenhar(); });
+    const fim = (ev) => { if (!this._down) return; this._down = false; try { c.releasePointerCapture(ev.pointerId); } catch (e) {} this.emitir(); };
+    c.addEventListener('pointerup', fim); c.addEventListener('pointercancel', fim);
+  }
+  inativo() { const e = this.props.estado; return e === 'desabilitado' || e === 'somente-leitura'; }
+  redesenhar() {
+    const c = this._c; if (!c) return;
+    const g = c.getContext('2d'), w = c.width, h = c.height, k = window.devicePixelRatio || 1;
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = getComputedStyle(c).getPropertyValue('--gp-on-paper').trim() || 'black';
+    g.lineWidth = 2.5 * k; g.lineCap = 'round'; g.lineJoin = 'round';
+    for (const t of this.tracos) { g.beginPath(); t.forEach(([x, y], i) => i ? g.lineTo(x * w, y * h) : g.moveTo(x * w, y * h)); if (t.length === 1) g.lineTo(t[0][0] * w + 0.1, t[0][1] * h); g.stroke(); }
+  }
+  emitir() {
+    const tem = this.tracos.length > 0;
+    if (tem !== this.state.traco) this.setState({ traco: tem });
+    if (this.props.aoMudar) this.props.aoMudar(tem ? this._c.toDataURL('image/png') : null);
+  }
+  renderVals() {
+    const e = this.props.estado || 'normal';
+    const des = e === 'desabilitado', ro = e === 'somente-leitura', erro = e === 'erro';
+    const tem = this.state.traco;
+    const ajuda = erro ? 'Erro: ' + (this.props.erroMsg || 'assinatura obrigatória para emitir o documento') : ro ? 'Somente leitura · assinatura registrada' : des ? 'Disponível depois de preencher o orçamento' : '';
+    return {
+      rotulo: this.props.rotulo ?? 'Assinatura do cliente', cref: this.cref, alt: (this.props.altura || 160) + 'px',
+      desenhavel: !ro, temImg: ro && !!this.props.imagem, imgBg: this.props.imagem ? `url("${this.props.imagem}")` : 'none', vazio: !ro && !tem,
+      dica: des ? 'Assinatura indisponível' : 'Assine com o dedo acima da linha', podeLimpar: !ro && !des && tem,
+      limpar: () => { this.tracos = []; this.redesenhar(); this.emitir(); },
+      foco: e === 'foco' ? '1' : undefined, ariaC: (this.props.rotulo ?? 'Assinatura do cliente') + (tem || this.props.imagem ? ', assinada' : ', em branco'),
+      borda: erro ? '2px solid var(--gp-error)' : des ? '1px dashed var(--gp-outline-variant)' : '1px solid var(--gp-outline)', sombra: des ? 'none' : 'var(--gp-paper-inset)',
+      corRot: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', temAjuda: !!ajuda, ajuda, papelAjuda: erro ? 'alert' : undefined,
+      corAjuda: erro ? 'var(--gp-error)' : 'var(--gp-on-surface-variant)',
+    };
+  }
+}
+</script>
+</body>
+</html>

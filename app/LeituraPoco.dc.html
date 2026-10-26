@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div ref="{{ ref }}" style="min-width:0;display:flex;flex-direction:column;gap:4px;">
+  <div data-chanfro="" style="height:88px;box-sizing:border-box;padding:6px;border-radius:16px;background:var(--gp-chanfro);">
+    <sc-if value="{{ interativo }}" hint-placeholder-val="{{ true }}">
+    <button type="button" aria-label="{{ ariaTxt }}" aria-invalid="{{ inval }}" aria-busy="{{ busy }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="position:relative;width:100%;height:76px;box-sizing:border-box;padding:0 4px;border:0;border-radius:10px;background:var(--gp-display);box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;justify-content:center;gap:4px;cursor:{{ cursor }};pointer-events:{{ pe }};transition:transform 120ms ease-out;" style-hover="box-shadow:var(--gp-display-well),inset 0 0 0 999px var(--gp-key-hover);" style-active="transform:translateY(2px);">
+      <sc-if value="{{ erro }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;top:6px;left:6px;color:var(--gp-on-display-error);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="alerta" tamanho="{{ 16 }}" hint-size="16px,16px"></dc-import></span></sc-if>
+      <span style="font-family:'Roboto',sans-serif;font-weight:500;font-size:{{ fsV }};line-height:28px;color:{{ corV }};font-variant-numeric:tabular-nums;white-space:nowrap;">{{ valorTxt }}</span>
+      <span style="font:500 16px/22px 'Roboto',sans-serif;color:{{ corU }};white-space:nowrap;">{{ unidade }}</span>
+    </button>
+    </sc-if>
+    <sc-if value="{{ ro }}" hint-placeholder-val="{{ false }}">
+    <div role="group" aria-label="{{ ariaRo }}" style="position:relative;width:100%;height:76px;box-sizing:border-box;padding:0 4px;border-radius:10px;background:var(--gp-display);box-shadow:inset 0 0 0 1px var(--gp-on-display-variant);display:flex;align-items:center;justify-content:center;gap:4px;">
+      <span aria-hidden="true" style="position:absolute;top:6px;left:6px;color:var(--gp-on-display-variant);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="cadeado" tamanho="{{ 14 }}" hint-size="14px,14px"></dc-import></span>
+      <span style="font-family:'Roboto',sans-serif;font-weight:500;font-size:{{ fsV }};line-height:28px;color:var(--gp-on-display);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ valorTxt }}</span>
+      <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);white-space:nowrap;">{{ unidade }}</span>
+    </div>
+    </sc-if>
+  </div>
+  <span style="font-family:'Roboto',sans-serif;font-weight:600;font-size:16px;line-height:20px;color:var(--gp-on-chassis-variant);text-align:center;text-wrap:balance;">{{ origemTxt }}</span>
+  <span style="font-family:'Roboto',sans-serif;font-weight:500;font-size:16px;line-height:20px;color:var(--gp-on-chassis-variant);text-align:center;text-wrap:balance;">{{ faixa }}</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:120,&quot;height&quot;:130},&quot;valor&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;—&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;unidade&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;PSI&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;origem&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;SEM MEDIÇÃO&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;faixa&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;R410A · faixa —&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;carregando&quot;,&quot;erro&quot;,&quot;somente-leitura&quot;,&quot;desabilitado&quot;],&quot;tsType&quot;:&quot;string&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+const BASE = 'var(--gp-display-well)';
+class Component extends DCLogic {
+  state = { w: 0 };
+  ref = React.createRef();
+  componentDidMount() {
+    const el = this.ref.current;
+    if (el && window.ResizeObserver) { this.ro = new ResizeObserver(() => { const w = el.offsetWidth; if (w && w !== this.state.w) this.setState({ w }); }); this.ro.observe(el); }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
+  tw(t, f) { if (!this._c) this._c = document.createElement('canvas').getContext('2d'); this._c.font = f; return this._c.measureText(t).width; }
+  fit(t, wt, max, min, avail, ls) {
+    const w = this.tw(t, `${wt} ${max}px Roboto`) + (ls || 0) * max * t.length;
+    return w <= avail ? max : Math.max(min, Math.floor(max * avail / w * 2) / 2);
+  }
+  renderVals() {
+    const e = this.props.estado || (this.props.origem && /fora/i.test(this.props.origem) ? 'erro' : 'normal');
+    const des = e === 'desabilitado', car = e === 'carregando', erro = e === 'erro', ro = e === 'somente-leitura';
+    const valor = this.props.valor ?? '—', unidade = this.props.unidade ?? '', faixa = this.props.faixa ?? 'Faixa —';
+    const origemTxt = car ? 'Lendo…' : ro ? 'Registrada' : (this.props.origem ?? 'Sem medição');
+    const valorTxt = car ? '…' : valor;
+    const w = this.state.w;
+    const uw = w ? this.tw(unidade, '500 14px Roboto') : 0;
+    return {
+      ref: this.ref, valorTxt, unidade, origemTxt, faixa, acao: this.props.acao, interativo: !ro, ro, erro, des,
+      inval: erro ? 'true' : undefined, busy: car ? 'true' : undefined, foco: e === 'foco' ? '1' : undefined,
+      ariaTxt: this.props.aria ?? `${valor} ${unidade}, ${origemTxt}`, ariaRo: `${valor} ${unidade}, leitura registrada, somente leitura`,
+      sombra: e === 'hover' ? BASE + ',inset 0 0 0 999px var(--gp-key-hover)' : erro ? BASE + ',inset 0 0 0 2px var(--gp-on-display-error)' : des ? '0 0 0 1px var(--gp-key-edge)' : BASE,
+      desloc: e === 'pressionado' ? 'translateY(2px)' : 'none', cursor: des ? 'not-allowed' : car ? 'progress' : 'pointer', pe: des || car ? 'none' : 'auto',
+      corV: des ? 'var(--gp-on-key-disabled)' : erro ? 'var(--gp-on-display-error)' : 'var(--gp-on-display)',
+      corU: des ? 'var(--gp-on-key-disabled)' : 'var(--gp-on-display-variant)',
+      fsV: (w ? this.fit(valorTxt, 500, 24, 18, w - 12 - 8 - uw - 4 - (erro || ro ? 16 : 0)) : 24) + 'px',
+      fsO: '14px',
+      fsF: (w ? this.fit(faixa, 400, 12, 11, w) : 12) + 'px',
+    };
+  }
+}
+</script>
+</body>
+</html>

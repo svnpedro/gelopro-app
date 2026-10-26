@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;">
+  <div role="img" aria-label="{{ aria }}" style="width:{{ tam }};max-width:100%;aspect-ratio:1;box-sizing:border-box;padding:12px;border-radius:14px;border:{{ borda }};background:var(--gp-paper);box-shadow:{{ sombra }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+    <sc-if value="{{ pronto }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" viewBox="{{ vb }}" width="100%" height="100%" shape-rendering="crispEdges"><path d="{{ d }}" style="fill:var(--gp-on-paper);"></path></svg></sc-if>
+    <sc-if value="{{ car }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="color:var(--gp-on-paper-variant);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="carregando" tamanho="{{ 32 }}" hint-size="32px,32px"></dc-import></span><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);">Gerando QR…</span></sc-if>
+    <sc-if value="{{ erro }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="color:var(--gp-on-paper-error);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="erro" tamanho="{{ 32 }}" hint-size="32px,32px"></dc-import></span><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-paper);text-align:center;text-wrap:pretty;">{{ erroTxt }}</span></sc-if>
+  </div>
+  <sc-if value="{{ temLegenda }}" hint-placeholder-val="{{ false }}"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">{{ legenda }}</span></sc-if>
+  <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-align:center;">Pix gerado não comprova pagamento.</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:260,&quot;height&quot;:320},&quot;chave&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+5511999999999&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;nome&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Refrigeração Amostra&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;cidade&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;São Paulo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;valor&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:120,&quot;tsType&quot;:&quot;number&quot;},&quot;txid&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;ORC0001&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tamanho&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:220,&quot;tsType&quot;:&quot;number&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;carregando&quot;,&quot;erro&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;erroMsg&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;payload&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;}}">
+const LIBS = [['qrcode', 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js'], ['GeloProPix', './gelopro-pix.js']];
+const ESPERA = (window.__gpQRWait = window.__gpQRWait || []);
+const carregar = (cb) => {
+  const falta = LIBS.filter(([g]) => !window[g]);
+  if (!falta.length) return true;
+  ESPERA.push(cb);
+  falta.forEach(([g, src]) => {
+    if (document.querySelector(`script[data-gp="${g}"]`)) return;
+    const s = document.createElement('script'); s.src = src; s.dataset.gp = g;
+    const fim = () => ESPERA.slice().forEach(f => f());
+    s.onload = fim; s.onerror = () => { window['__gpErro_' + g] = true; fim(); }; document.head.appendChild(s);
+  });
+  return false;
+};
+const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+class Component extends DCLogic {
+  componentDidMount() { this._cb = () => { if (!this._morto) this.forceUpdate(); }; this.ok = carregar(this._cb); }
+  componentWillUnmount() { this._morto = true; const i = ESPERA.indexOf(this._cb); if (i >= 0) ESPERA.splice(i, 1); }
+  renderVals() {
+    const p = this.props, e = p.estado || 'normal';
+    let pronto = false, car = e === 'carregando', erroTxt = '', d = '', vb = '0 0 1 1', payload = p.payload || '';
+    const libs = !!(window.qrcode && window.GeloProPix);
+    if (e === 'erro') erroTxt = p.erroMsg || 'Cadastre a chave Pix do titular';
+    else if (e === 'desabilitado') erroTxt = 'Disponível com o orçamento preenchido';
+    else if (!car) {
+      if (LIBS.some(([g]) => window['__gpErro_' + g])) erroTxt = 'Gerador de QR indisponível sem conexão nesta prévia';
+      else if (!libs) car = true;
+      else {
+        try {
+          if (!payload) payload = window.GeloProPix.payload({ chave: p.chave, nome: p.nome, cidade: p.cidade, valor: p.valor, txid: p.txid });
+          const q = window.qrcode(0, 'M'); q.addData(payload); q.make();
+          const n = q.getModuleCount(); const parts = [];
+          for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) parts.push(`M${c} ${r}h1v1h-1z`);
+          d = parts.join(''); vb = `0 0 ${n} ${n}`; pronto = true;
+        } catch (err) { erroTxt = String(err.message || err); }
+      }
+    }
+    const v = Number(p.valor);
+    const legenda = v > 0 ? BRL.format(v) : '';
+    return {
+      pronto, car, erro: !!erroTxt, erroTxt, d, vb, tam: (p.tamanho || 220) + 'px', legenda, temLegenda: !!legenda && !erroTxt,
+      borda: erroTxt && e === 'erro' ? '2px solid var(--gp-error)' : e === 'desabilitado' ? '1px dashed var(--gp-outline-variant)' : '1px solid var(--gp-outline)', sombra: e === 'desabilitado' ? 'none' : 'var(--gp-mold-shadow)',
+      aria: pronto ? `QR Code Pix${legenda ? ' de ' + legenda : ''} para ${p.nome || 'o titular'}` : erroTxt || 'Gerando QR Code Pix',
+    };
+  }
+}
+</script>
+</body>
+</html>

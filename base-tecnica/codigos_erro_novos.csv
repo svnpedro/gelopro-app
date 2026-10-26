@@ -1,0 +1,128 @@
+marca,linha,codigo,descricao,fonte_id,status
+Gree,Eco Garden Convencional B600005000238 Rev.07,E6,Falha de comunicação entre evaporadora e condensadora; não confirma defeito de placa.,D11,OFICIAL_PARCIAL
+Gree,Eco Garden Convencional B600005000238 Rev.07,C5,Anormalidade do jumper da placa principal.,D11,OFICIAL_PARCIAL
+Gree,Eco Garden Convencional B600005000238 Rev.07,F1,Proteção do circuito do sensor de temperatura interno.,D11,OFICIAL_PARCIAL
+Gree,Eco Garden Convencional B600005000238 Rev.07,F2,Proteção do circuito do sensor de imersão interno.,D11,OFICIAL_PARCIAL
+Gree,Eco Garden Convencional B600005000238 Rev.07,F3,Mau funcionamento do circuito do sensor de temperatura ambiente externo.,D11,OFICIAL_PARCIAL
+Gree,Eco Garden Convencional B600005000238 Rev.07,F4,Mau funcionamento do circuito do sensor de imersão externo.,D11,OFICIAL_PARCIAL
+Gree,Eco Garden Convencional B600005000238 Rev.07,F5,Mau funcionamento do circuito do sensor de temperatura externo conforme descrição do manual.,D11,OFICIAL_PARCIAL
+Gree,Eco Garden Convencional B600005000238 Rev.07,H1,Degelo automático; estado normal de operação e não falha.,D11,OFICIAL_PARCIAL
+Gree,G-Classic Inverter Rev.003,F6,Limitação ou diminuição da frequência devido à sobrecarga.,D12,OFICIAL_PARCIAL
+Gree,SmartWind Rev.000,F0,Proteção por vazamento de refrigerante; exige investigação antes de corrigir carga.,D13,OFICIAL_PARCIAL
+Gree,SmartWind Rev.000,H6,Motor ventilador interno sem funcionamento; investigar circuito sem condenar o motor isoladamente.,D13,OFICIAL_PARCIAL
+Gree,G-Side Auto Inverter Rev.001,C5,Proteção por anormalidade do jumper.,D14,OFICIAL_PARCIAL
+Gree,G-Side Auto Inverter Rev.001,E9,Proteção ou prevenção de ar frio; estado de operação e não código de falha.,D14,OFICIAL_PARCIAL
+Daikin,Exclusive FTHS09/12/18/24T5VL,UA,Combinação incompatível das unidades interna e externa.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,U0,Indicação de escassez de refrigerante; não autoriza recarga sem investigação.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,U2,Queda de tensão ou sobretensão do circuito principal.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,U4,Falha de transmissão entre unidades; não confirma defeito de placa.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,A1,Anormalidade da placa interna; exige procedimento específico de confirmação.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,A5,Controle de alta pressão ou proteção anticongelamento.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,A6,Anormalidade no circuito do ventilador interno.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,C4,Falha no circuito do sensor do trocador interno.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,C9,Falha no circuito do sensor de ar de sucção interno.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,EA,Falha na comutação refrigeração/aquecimento.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,E1,Anormalidade da placa externa; exige procedimento específico de confirmação.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,E5,Atuação OL conforme descrição do manual.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,E6,Falha de partida do compressor; não confirma compressor defeituoso.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,E7,Anormalidade do circuito do ventilador externo CC.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,E8,Sobrecorrente de entrada.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,F3,Controle de alta temperatura no tubo de descarga.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,F6,Controle de alta pressão em refrigeração.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,F8,Parada por temperatura interna anormal do compressor.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,H0,Anormalidade de sensor externo conforme descrição do manual.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,H6,Parada associada à detecção anormal de posição.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,H8,Falha no circuito do sensor de corrente contínua.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,H9,Falha no circuito do sensor de ar de sucção externo.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,J3,Falha no circuito do sensor da descarga.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,J6,Falha no circuito do sensor do trocador externo.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,L3,Anormalidade térmica das partes elétricas.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,L4,Temperatura alta no dissipador do circuito inverter.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,L5,Sobrecorrente de saída.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Daikin,Exclusive FTHS09/12/18/24T5VL,P4,Falha no circuito do sensor do dissipador inverter.,D06,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,E0,Proteção de sobrecorrente da unidade interna.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,E1,Falha do circuito do sensor ambiente interno.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,E2,Falha do circuito do sensor da serpentina externa.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,E3,Falha do circuito do sensor da serpentina interna.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,E4,Falha de acionamento ou retorno do ventilador interno PG/DC em hi wall.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,E5,Falha de comunicação interna/externa; também exibida como 5E.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,5E,Falha de comunicação interna/externa; equivalente E5.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,E8,Falha de comunicação entre display e placa principal.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F0,Falha do circuito do ventilador externo DC com terminal de três vias.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F1,Proteção do módulo; não confirma módulo defeituoso.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F2,Proteção PFC; não confirma placa defeituosa.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F3,Falha de partida do compressor; não confirma compressor defeituoso.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F4,Falha do circuito do sensor de descarga.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F6,Falha do circuito do sensor de temperatura externa.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F7,Proteção contra sobretensão ou subtensão.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F8,Falha de comunicação entre placa externa principal e módulo.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,F9,Falha EE externa conforme descrição do índice.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,P3,Proteção por deficiência de refrigerante; não autoriza recarga sem investigação.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,P4,Proteção de sobrecarga em refrigeração.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,P5,Proteção da descarga.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,P6,Proteção de alta temperatura interna.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,P7,Proteção anticongelamento em refrigeração.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Agratto,ICS Inverter 9/12/18/24/30k; manual 31/10/2022,P8,Proteção de sobrecorrente.,D05,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E0,Falha de comunicação interna/externa; não confirma defeito de placa.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E5,Falha de comunicação interna/externa; não confirma defeito de placa.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,EC,Falha de comunicação entre placas da unidade externa.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E1,Falha no circuito do sensor ambiente interno IRT.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E2,Falha no circuito do sensor do evaporador IPT.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E3,Falha no circuito do sensor do condensador OPT.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E4,Funcionamento anormal do sistema; exige investigação.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E6,Falha no circuito do ventilador interno.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E7,Falha no circuito do sensor de temperatura externa.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E8,Falha no circuito do sensor de descarga do compressor.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,E9,Falha indicada no módulo inteligente de energia; não confirma módulo defeituoso.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,EF,Falha no circuito do ventilador externo DC.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,EA,Falha no circuito de detecção de corrente.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,EE,Falha EEPROM.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,EP,Falha no interruptor térmico superior do compressor; não fazer ponte na proteção.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,EU,Falha no circuito de detecção de tensão.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,EH,Falha no circuito do sensor de entrada de ar externo.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P1,Proteção contra sobretensão ou subtensão.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P2,Proteção de sobrecorrente.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P4,Proteção de superaquecimento da descarga.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P5,Proteção de sub-resfriamento em refrigeração conforme terminologia do boletim.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P6,Proteção de superaquecimento em refrigeração.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P7,Proteção de superaquecimento em aquecimento.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P8,Proteção por temperatura externa baixa ou elevada.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P9,Proteção do módulo de potência por software.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+TCL,TAC-09/12/18/24CSA-INV e TAC-09/12/18/24CHSA-INV,P0,Proteção do módulo de potência por hardware.,D04,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Philco,PRIME AIR 9/12/18/24 FC/QC/QG; 112003752 Rev.1,P1,Temperatura ambiente externa elevada.,D03,OFICIAL_PARCIAL
+Philco,PRIME AIR 9/12/18/24 FC/QC/QG; 112003752 Rev.1,F2,Falha no circuito do sensor ambiente externo.,D03,OFICIAL_PARCIAL
+Philco,PRIME AIR 9/12/18/24 FC/QC/QG; 112003752 Rev.1,F1,Falha no circuito do sensor de temperatura ambiente.,D03,OFICIAL_PARCIAL
+Philco,PRIME AIR 9/12/18/24 FC/QC/QG; 112003752 Rev.1,F3,Falha no circuito do sensor da serpentina interna.,D03,OFICIAL_PARCIAL
+Philco,PRIME AIR 9/12/18/24 FC/QC/QG; 112003752 Rev.1,F4,Falha no circuito do sensor da serpentina externa.,D03,OFICIAL_PARCIAL
+Philco,PRIME AIR 9/12/18/24 FC/QC/QG; 112003752 Rev.1,F0,Falha no circuito do ventilador interno.,D03,OFICIAL_PARCIAL
+Philco,PRIME AIR 9/12/18/24 FC/QC/QG; 112003752 Rev.1,E2,Falha no circuito do ventilador externo.,D03,OFICIAL_PARCIAL
+Philco,PRIME AIR 9/12/18/24 FC/QC/QG; 112003752 Rev.1,F6,Falha de comunicação entre unidades; não confirma defeito de placa.,D03,OFICIAL_PARCIAL
+Electrolux,QI/QE e XI/XE 09/12/18/22 F/R; manual 2019 A05659201,E0,Não identificação da temperatura ambiente; investigar circuito.,D02,OFICIAL
+Electrolux,QI/QE e XI/XE 09/12/18/22 F/R; manual 2019 A05659201,E1,Não identificação da temperatura do sensor interno; investigar circuito.,D02,OFICIAL
+Electrolux,QI/QE e XI/XE 09/12/18/22 F/R; manual 2019 A05659201,E2,Mau funcionamento do motoventilador interno; não confirma motor defeituoso.,D02,OFICIAL
+Electrolux,QI/QE e XI/XE 09/12/18/22 F/R; manual 2019 A05659201,E3,Falha de comunicação do display.,D02,OFICIAL
+Electrolux,QI/QE e XI/XE 09/12/18/22 F/R; manual 2019 A05659201,E4,Falha de tensão.,D02,OFICIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,E4,Problema no circuito do motor interno; confirmar aplicabilidade antes do uso.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,EA,Falha de comunicação entre interface e placa interna.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,ER,Falha de comunicação entre interface e placa interna.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,00,Falha de comunicação entre placas ou alimentação.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,1,Falha no circuito do sensor da serpentina externa; conector preto.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,5,Proteção do módulo IPM; não confirma módulo defeituoso.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,6,Proteção contra variação de tensão de alimentação.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,7,Falha de comunicação interna/externa.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,8,Proteção contra surto de corrente.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,10,Falha de comunicação entre controles da placa externa.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,11,Problema de memória na placa externa.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,12,Proteção contra baixa temperatura externa.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,13,Proteção por temperatura elevada do compressor.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,14,Falha no circuito do sensor ambiente externo; conector amarelo.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,15,Indicação de sensor do compressor ou falta de refrigerante; conector vermelho.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,16,Proteção anticongelamento ou superaquecimento interno.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,17,Proteção de correção do fator de potência.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,18,Problema de partida do compressor ou drive.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,19,Problema de partida do compressor ou drive.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,33,Falha no circuito do sensor ambiente interno.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,34,Falha no circuito do sensor do evaporador.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,36,Falha de comunicação interna/externa; exibição após 48 minutos de tentativas descritas no manual.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,38,Falha de memória da placa interna.,D08,OFICIAL_PARCIAL
+Consul,Split Hi Wall Inverter; extrato pp.46–56; modelos não identificados,39,Falha no circuito do ventilador interno.,D08,OFICIAL_PARCIAL

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<button type="button" ref="{{ ref }}" disabled="{{ des }}" aria-disabled="{{ ariaDes }}" aria-busy="{{ busy }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;height:100%;min-width:0;min-height:0;box-sizing:border-box;padding:{{ pad }};border-radius:{{ rad }};border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:{{ vao }};cursor:{{ cursor }};pointer-events:{{ pe }};transition:transform 120ms ease-out,box-shadow 180ms ease-out;" style-hover="filter:brightness(1.08);" style-active="transform:translateY(3px);box-shadow:var(--gp-tile-relief-pressed);">
+  <sc-if value="{{ comIcone }}" hint-placeholder-val="{{ true }}"><span style="flex:none;width:{{ poco }}px;height:{{ poco }}px;box-sizing:border-box;border-radius:16px;background:{{ pocoFundo }};border:{{ pocoBorda }};box-shadow:{{ pocoSombra }};display:flex;align-items:center;justify-content:center;color:{{ corIcone }};">
+    <sc-if value="{{ car }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="carregando" tamanho="{{ ico }}" hint-size="48px,48px"></dc-import></span></sc-if>
+    <sc-if value="{{ icoNome }}" hint-placeholder-val="{{ false }}"><dc-import name="IconeGP" nome="{{ icoNome }}" tamanho="{{ ico }}" hint-size="48px,48px"></dc-import></sc-if><sc-if value="{{ icoNo }}" hint-placeholder-val="{{ false }}">{{ icoNo }}</sc-if>
+  </span></sc-if>
+  <span style="width:100%;box-sizing:border-box;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ fs }};line-height:18px;color:{{ corTexto }};text-shadow:{{ gravado }};text-align:center;overflow-wrap:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ nome }}</span>
+</button>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:110,&quot;height&quot;:130},&quot;nome&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Código no display&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;canto&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;nenhum&quot;,&quot;esq&quot;,&quot;dir&quot;],&quot;default&quot;:&quot;esq&quot;,&quot;tsType&quot;:&quot;'nenhum' | 'esq' | 'dir'&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;carregando&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;icone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;ReactNode&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+// 26/10 (referência 1. TITÂNIO): as nove placas são quadrados arredondados iguais; "canto" fica só por compatibilidade.
+const PAD = { esq: '8px 4px 10px', dir: '8px 4px 10px', nenhum: '8px 4px 10px' };
+const PADX = { esq: 8, dir: 8, nenhum: 8 };
+const RAD = { esq: '20px', dir: '20px', nenhum: '20px' };
+const RAISE = 'var(--gp-tile-relief)';
+
+class Component extends DCLogic {
+  state = { w: 0, h: 0 };
+  ref = React.createRef();
+  componentDidMount() {
+    const el = this.ref.current;
+    if (el && window.ResizeObserver) {
+      this.ro = new ResizeObserver(() => { const w = el.offsetWidth, h = el.offsetHeight; if ((w && w !== this.state.w) || (h && h !== this.state.h)) this.setState({ w, h }); });
+      this.ro.observe(el);
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
+  renderVals() {
+    const canto = PAD[this.props.canto] ? this.props.canto : 'nenhum';
+    const nome = this.props.nome ?? '';
+    const e = this.props.estado || 'normal';
+    const des = e === 'desabilitado', car = e === 'carregando', h = this.state.h;
+    let fs = 16;
+    if (this.state.w) {
+      if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d');
+      this._ctx.font = '700 16px Roboto';
+      const maior = Math.max(...nome.split(' ').map(p => this._ctx.measureText(p).width));
+      const avail = this.state.w - PADX[canto] - 4;
+      if (maior > avail) fs = Math.max(14, Math.floor(16 * avail / maior * 2) / 2);
+    }
+    return {
+      ref: this.ref, nome, icoNome: !car && typeof this.props.icone === 'string' ? this.props.icone : null, icoNo: !car && this.props.icone && typeof this.props.icone !== 'string' ? this.props.icone : null, acao: this.props.acao, pad: PAD[canto], rad: RAD[canto], fs: fs + 'px',
+      des, ariaDes: des ? 'true' : undefined, busy: car ? 'true' : undefined, car, semCar: !car, foco: e === 'foco' ? '1' : undefined,
+      fundo: des ? 'var(--gp-disabled)' : 'var(--gp-tile)',
+      borda: des ? '1px dashed var(--gp-outline-variant)' : 'var(--gp-tile-border)', gravado: des ? 'none' : 'var(--gp-on-tile-shadow)',
+      sombra: des ? 'none' : e === 'pressionado' ? 'var(--gp-tile-relief-pressed)' : RAISE,
+      desloc: e === 'pressionado' ? 'translateY(3px)' : 'none',
+      cursor: des ? 'not-allowed' : car ? 'progress' : 'pointer', pe: des || car ? 'none' : 'auto',
+      pocoFundo: des ? 'transparent' : 'var(--gp-tile-well)',
+      // Placa baixa (telas de 667 px): o ícone encolhe e, no limite, sai; o nome do sintoma fica sempre visível.
+      comIcone: !h || h >= 76, ico: !h || h >= 100 ? 48 : 32, poco: !h || h >= 100 ? 52 : 36, vao: !h || h >= 100 ? '6px' : '2px', pocoBorda: des ? '1px dashed var(--gp-outline-variant)' : '0',
+      pocoSombra: 'none',
+      corIcone: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-tile-icon)', corTexto: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-tile)',
+    };
+  }
+}
+</script>
+</body>
+</html>

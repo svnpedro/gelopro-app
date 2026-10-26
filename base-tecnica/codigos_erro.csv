@@ -1,0 +1,60 @@
+marca,linha,codigo,descricao,fonte_id,status
+LG,Split Hi Wall Inverter (Libero/Hero/Artcool),CH01,Sensor de temperatura ambiente da evaporadora aberto ou em curto (5K @25C),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH02,Sensor do tubo (entrada) da evaporadora aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH05,Falha de comunicacao entre evaporadora e condensadora,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH06,Sensor do tubo de saida da evaporadora aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH09,Erro de EEPROM da evaporadora (o mesmo manual tambem associa CH09 ao conector CN-OPTION),F03,OFICIAL_COM_CONFLITO
+LG,Split Hi Wall Inverter,CH10,Motor do ventilador da evaporadora travado ou sem funcionar apos 1 min,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH12,Sensor do tubo medio da evaporadora aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH21,"Corrente alta no IPM / pico DC (compressor travado ou em curto, IPM)",F03,OFICIAL
+LG,Split Hi Wall Inverter,CH22,Corrente maxima CT2 (entrada acima de 14 A),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH23,Tensao DC baixa (abaixo de 140 V DC),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH24,Baixa pressao (pressostato de baixa aberto),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH25,Tensao AC de entrada anormal (baixa ou alta),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH26,Erro de posicao/ligacao DC do compressor,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH27,Falha PSC / sobrecorrente no circuito AC-DC,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH28,Tensao alta no link DC,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH29,Erro de fase / corrente elevada do compressor,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH32,Alta temperatura do tubo de descarga (compressor inverter),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH33,Alta temperatura do tubo de descarga (compressor convencional),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH40,Sensor CT aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH41,Sensor do tubo de descarga (D-pipe) aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH44,Sensor de ar externo da condensadora aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH45,Sensor do tubo da condensadora aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH46,Sensor do tubo de succao aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH51,Sobrecapacidade (combinacao de unidades acima do limite),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH53,Falha de comunicacao evaporadora-condensadora (sem dados por 3 min),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH60,Erro de EEPROM da condensadora,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH61,Alta temperatura do tubo da condensadora,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH62,Alta temperatura do dissipador (heat sink),F03,OFICIAL
+LG,Split Hi Wall Inverter,CH65,Sensor do dissipador aberto ou em curto,F03,OFICIAL
+LG,Split Hi Wall Inverter,CH67,Motor do ventilador da condensadora travado,F03,OFICIAL
+Midea/Springer,Hi Wall Inverter AG (IOM 256.08.805),EH00/EH0A,Erro de EEPROM da unidade interna,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EL01,Falha de comunicacao entre unidades interna e externa,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EH02,Erro de sinal de tensao,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EH03,Ventilador da evaporadora com velocidade fora de controle,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EC51,Erro de EEPROM da unidade externa,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EC52,Sensor da serpentina do condensador (T3) aberto ou em curto,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EC53,Sensor de temperatura externa (T4) aberto ou em curto,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EC54,Sensor da descarga do compressor (TP) aberto ou em curto,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EH60,Sensor de temperatura ambiente (T1) aberto ou em curto,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EH61,Sensor da serpentina do evaporador (T2) aberto ou em curto,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EC07,Ventilador do condensador com velocidade fora de controle,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EH0b,Falha de comunicacao do display com a placa da unidade interna,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,EL0c,Deteccao de perda (fuga) de refrigerante,F05,OFICIAL_PARCIAL
+Midea/Springer,Hi Wall Inverter AG,PC04,Erro na placa inverter do compressor,F05,OFICIAL_PARCIAL
+Samsung,Brasil (geral),CF,Lembrete de limpeza do filtro (nao e defeito),F08,OFICIAL
+Samsung,Brasil (geral),dF/dL,Degelo em operacao de aquecimento (nao e defeito),F08,OFICIAL
+Samsung,Brasil (geral),C1,Limpeza automatica em operacao (nao e defeito),F08,OFICIAL
+Samsung,Brasil (geral),C422,EEV com funcionamento anormal no autoteste / refrigeracao insuficiente,F08,OFICIAL
+Samsung,Portugal (linha pode diferir),E1 21,Defeito do sensor de temperatura ambiente,F10,OFICIAL_OUTRO_PAIS
+Samsung,Portugal (linha pode diferir),E1 22,Defeito do sensor de temperatura do trocador de calor,F10,OFICIAL_OUTRO_PAIS
+EOS,Master Inverter,F1/F2/F4,Funcionamento anormal (manual nao detalha cada codigo),F09,OFICIAL_SEM_DETALHE
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E2,Falha no sensor de temperatura ambiente (LED Timer pisca 2x a cada 5 s),F13,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E3,Falha no sensor de degelo (LED Timer pisca 3x a cada 5 s),F13,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E4,Anormalidade na unidade externa,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E5,Sem retorno do motor ventilador,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E6,Zero cruzamento sem sinal,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E7,Falha sem retorno da unidade externa,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E8,Protecao de superaquecimento,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E9,Falha no bombeamento,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO

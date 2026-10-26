@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<sc-if value="{{ interativo }}" hint-placeholder-val="{{ true }}">
+<button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" aria-haspopup="dialog" aria-expanded="{{ aberto }}" aria-invalid="{{ inval }}" aria-busy="{{ busy }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="position:relative;width:100%;min-width:0;height:56px;box-sizing:border-box;padding:0 8px;border-radius:12px;border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:{{ cursor }};pointer-events:{{ pe }};transition:transform 120ms ease-out,box-shadow 180ms ease-out;--peca-hover:{{ hov }};--peca-press-bg:{{ actBg }};--peca-press:{{ act }};" style-hover="box-shadow:var(--peca-hover);" style-active="transform:translateY(1px);background:var(--peca-press-bg);box-shadow:var(--peca-press);">
+  <span style="max-width:100%;display:flex;align-items:center;gap:4px;font:600 14px/16px 'Roboto',sans-serif;color:{{ corRotulo }};white-space:nowrap;">{{ rotulo }}<span aria-hidden="true" style="flex:none;transform:{{ seta }};display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 12 }}" hint-size="12px,12px"></dc-import></span></span>
+  <span style="max-width:100%;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ fs }};line-height:24px;color:{{ corValor }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ valorTxt }}</span>
+  <sc-if value="{{ marca }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;top:4px;right:4px;color:{{ corMarca }};display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="{{ marcaNome }}" tamanho="{{ 14 }}" hint-size="14px,14px"></dc-import></span></sc-if>
+</button>
+</sc-if>
+<sc-if value="{{ ro }}" hint-placeholder-val="{{ false }}">
+<div ref="{{ ref }}" role="group" aria-label="{{ ariaRo }}" style="position:relative;width:100%;min-width:0;height:56px;box-sizing:border-box;padding:0 8px;border-radius:12px;border:1px solid var(--gp-outline-variant);background:var(--gp-readonly);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+  <span style="max-width:100%;display:flex;align-items:center;gap:4px;font:600 14px/16px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);white-space:nowrap;">{{ rotulo }}<span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="cadeado" tamanho="{{ 12 }}" hint-size="12px,12px"></dc-import></span></span>
+  <span style="max-width:100%;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ fs }};line-height:24px;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ valorTxt }}</span>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:110,&quot;height&quot;:64},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;FLUIDO&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;valor&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;R410A&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aviso&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:&quot;false&quot;,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;selecionado&quot;,&quot;carregando&quot;,&quot;erro&quot;,&quot;somente-leitura&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+const RAISE = 'var(--gp-sec-raise)';
+const HOV = RAISE + ',inset 0 0 0 999px var(--gp-key-hover)', HOV_SEL = 'var(--gp-feature-shadow),inset 0 0 0 999px var(--gp-key-hover)';
+const ACT = 'var(--gp-sec-sunk)', ACT_SEL = 'var(--gp-key-sunk),inset 0 0 0 999px var(--gp-key-pressed)';
+class Component extends DCLogic {
+  state = { w: 0 };
+  ref = React.createRef();
+  componentDidMount() {
+    const el = this.ref.current;
+    if (el && window.ResizeObserver) { this.ro = new ResizeObserver(() => { const w = el.offsetWidth; if (w && w !== this.state.w) this.setState({ w }); }); this.ro.observe(el); }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
+  fit(t, wt, max, min, avail) {
+    if (!this._c) this._c = document.createElement('canvas').getContext('2d');
+    this._c.font = `${wt} ${max}px Roboto`;
+    const w = this._c.measureText(t).width;
+    return w <= avail ? max : Math.max(min, Math.floor(max * avail / w * 2) / 2);
+  }
+  renderVals() {
+    const e = this.props.estado || 'normal';
+    const des = e === 'desabilitado', car = e === 'carregando', erro = e === 'erro', sel = e === 'selecionado', ro = e === 'somente-leitura';
+    const valor = this.props.valor ?? '—', rotulo = this.props.rotulo ?? '';
+    const valorTxt = car ? '…' : valor;
+    return {
+      ref: this.ref, rotulo, valorTxt, acao: this.props.acao, interativo: !ro, ro,
+      ariaTxt: (this.props.aria ?? `${rotulo} ${valor}`) + (erro ? ', revisar' : ''), ariaRo: `${rotulo} ${valor}, somente leitura`,
+      aberto: sel ? 'true' : 'false', inval: erro ? 'true' : undefined, busy: car ? 'true' : undefined, des, foco: e === 'foco' ? '1' : undefined,
+      borda: erro ? '2px solid var(--gp-error)' : des ? '1px dashed var(--gp-outline-variant)' : '1px solid var(--gp-sec-edge)',
+      fundo: des ? 'var(--gp-disabled)' : sel ? 'var(--gp-mold-selected)' : 'var(--gp-sec-key)',
+      sombra: des ? 'none' : sel ? 'var(--gp-feature-shadow)' : e === 'pressionado' ? ACT : e === 'hover' ? HOV : RAISE,
+      hov: sel ? HOV_SEL : HOV, actBg: sel ? 'var(--gp-mold-selected)' : 'var(--gp-sec-key)', act: sel ? ACT_SEL : ACT,
+      desloc: e === 'pressionado' ? 'translateY(1px)' : 'none', seta: sel ? 'rotate(180deg)' : 'none',
+      cursor: des ? 'not-allowed' : car ? 'progress' : 'pointer', pe: des || car ? 'none' : 'auto',
+      corRotulo: des ? 'var(--gp-on-disabled)' : sel ? 'var(--gp-on-selected)' : 'var(--gp-on-sec-accent)',
+      corValor: des ? 'var(--gp-on-disabled)' : sel ? 'var(--gp-on-selected)' : 'var(--gp-on-sec)',
+      marca: erro || (!!this.props.aviso && !des), marcaNome: erro ? 'erro' : 'info', corMarca: erro ? 'var(--gp-error)' : 'var(--gp-on-sec-accent)',
+      fs: (this.state.w ? this.fit(valorTxt, 700, 20, 16, this.state.w - 18) : 20) + 'px',
+    };
+  }
+}
+</script>
+</body>
+</html>

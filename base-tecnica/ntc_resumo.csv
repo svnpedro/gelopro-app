@@ -1,0 +1,14 @@
+marca,sensor,r25_kohm,beta_calc_25_50,beta_declarado,arquivo_curva,fonte_id,status,observacao
+Gree,ambiente/tubo 15K,15,3952,,ntc_gree.csv,F01,CURVA_OFICIAL,20C=19.75 kOhm nao decresce vs 19C=19.6 (erro de digitacao provavel na fonte); interpolar 19-22C
+Gree,tubo 20K,20,3953,,ntc_gree.csv,F01,CURVA_OFICIAL,
+Gree,descarga 50K,50,4013,,ntc_gree.csv,F01,CURVA_OFICIAL,
+LG,ambiente/tubo evaporadora/condensadora 5K,5,3980,3977,ntc_lg.csv,F02;F03,CURVA_OFICIAL_REDE_AUTORIZADA,85C=0.63 repete 80C (erro na fonte); usar Beta 3977 entre 80-90C
+LG,ar externo/tubo condensadora 10K,10,3980,3977,ntc_lg.csv,F02;F03,CURVA_OFICIAL_REDE_AUTORIZADA,SVC manual cita 10K para entrada e tubo da condensadora conforme modelo
+LG,descarga compressor 200K,200,3500,3977,ntc_lg_descarga.csv,F02;F03,CURVA_OFICIAL_REDE_AUTORIZADA,"Beta declarado 3977 nao bate com a tabela (calc ~3500): usar a tabela, nunca a formula Beta"
+Midea/Springer/Carrier,"T1 ambiente, T2 evaporador, T3 condensador, T4 externo",10,4100,4100,ntc_midea_pontos.csv,F04;F15;F16;F17;F18,CURVA_FABRICANTE_GLOBAL_CONFERIDA,"32 pontos de -20 a 104C de manuais Midea globais; Beta 4100 confere em todos os pares (4100-4102); nominal 10K confirmado no Brasil (F04). Usar como curva escolhida pelo tecnico (nivel 2) ate confirmar a linha brasileira. Descartados: 12C=19.7177 (F17, maior que 11C) e -19C=109.146 (F17; F15/F16 dizem 108.146)"
+Midea/Springer/Carrier,TP descarga,,,,,F15,PENDENTE,Tabela TP existe no Appendix ii da F15; nao extraida
+Samsung,-,,,,,F08,PENDENTE,Sem tabela oficial localizada
+Daikin,-,,,,,F06,PENDENTE,Manual de servico oficial existe (linha EUA LV); download falhou
+Elgin,-,,,,,F07,PENDENTE_PRIORIDADE,"Boletim 08/24 Rev.09 confirma as linhas cobertas (Eco Star, Eco Inverter II, Eco Dream e outras), mas os valores estao em imagem; nao extraidos"
+EOS,-,,,,,F09;F19,SEM_FONTE_PUBLICA,Manual sem tabela; pagina oficial do sensor de reposicao sem especificacao. Operar nos niveis 2-4
+Agratto;TCL;Philco;Electrolux;Consul,-,,,,,,NAO_COLETADO,

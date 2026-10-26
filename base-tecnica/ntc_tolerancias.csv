@@ -1,0 +1,2 @@
+marca,sensor,r25_tol_pct,beta_nom,beta_tol_pct,escopo,fonte_id,status
+Midea/Springer/Carrier,"T1 ambiente, T2 evaporador, T3 condensador, T4 externo",3,4100,3,"Declarado para os sensores internos (T1 e T2) em manual Midea global; para T3 e T4 confirme no manual da linha",F18,TOLERANCIA_FABRICANTE_GLOBAL

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<sc-if value="{{ gira }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="{{ oculto }}" role="{{ papel }}" aria-label="{{ rotulo }}" width="{{ t }}" height="{{ t }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none;"><path d="M12 3a9 9 0 1 1-9 9"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.9s" repeatCount="indefinite"></animateTransform></path></svg></sc-if>
+<sc-if value="{{ fixo }}" hint-placeholder-val="{{ true }}"><svg aria-hidden="{{ oculto }}" role="{{ papel }}" aria-label="{{ rotulo }}" width="{{ t }}" height="{{ t }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none;"><sc-for list="{{ tracos }}" as="d" hint-placeholder-count="1"><path d="{{ d }}"></path></sc-for></svg></sc-if>
+<sc-if value="{{ catalogo }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:16px;">
+  <sc-for list="{{ grupos }}" as="g" hint-placeholder-count="3">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ g.t }}</span>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;">
+        <sc-for list="{{ g.itens }}" as="i" hint-placeholder-count="8">
+          <div style="min-width:0;box-sizing:border-box;padding:10px 4px 8px;border-radius:12px;border:2px solid var(--gp-outline);background:var(--gp-card-action);display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--gp-on-surface);box-shadow:0 2px 0 var(--gp-shadow-raise),inset 0 1px 0 var(--gp-highlight);">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" style="color:var(--gp-primary);" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><sc-for list="{{ i.d }}" as="d" hint-placeholder-count="1"><path d="{{ d }}"></path></sc-for></svg>
+            <span data-doc="" style="max-width:100%;font:600 14px/18px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-align:center;overflow-wrap:normal;word-break:normal;">{{ i.n }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:64,&quot;height&quot;:64},&quot;nome&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;compressor&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tamanho&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:24,&quot;tsType&quot;:&quot;number&quot;},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;catalogo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+// Fonte única de ícones do GeloPro. Grade 24×24, traço 1,75, pontas e junções arredondadas, cor = currentColor.
+// Gerais e sintomas: desenhos do Lucide (licença ISC, https://lucide.dev/license). Refrigeração: desenhos próprios do GeloPro na mesma grade.
+const C = (x, y, r) => `M${x + r} ${y}a${r} ${r} 0 1 1-${2 * r} 0 ${r} ${r} 0 0 1 ${2 * r} 0z`;
+const R = (x, y, w, h, r) => `M${x + r} ${y}h${w - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}v${h - 2 * r}a${r} ${r} 0 0 1-${r} ${r}h-${w - 2 * r}a${r} ${r} 0 0 1-${r}-${r}v-${h - 2 * r}a${r} ${r} 0 0 1 ${r}-${r}z`;
+const GRUPOS = [
+  ['Gerais', {
+    inicio: ['M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8', 'M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
+    busca: [C(11, 11, 7), 'm20 20-4-4'],
+    documento: ['M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z', 'M14 2v4a2 2 0 0 0 2 2h4', 'M10 9H8', 'M16 13H8', 'M16 17H8'],
+    cadeado: [R(3, 11, 18, 11, 2), 'M7 11V7a5 5 0 0 1 10 0v4'],
+    info: [C(12, 12, 9), 'M12 16v-4', 'M12 8h.01'],
+    alerta: ['m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3', 'M12 9v4', 'M12 17h.01'],
+    erro: [C(12, 12, 9), 'm15 9-6 6', 'm9 9 6 6'],
+    sucesso: [C(12, 12, 9), 'm8.5 12.5 2.5 2.5 5-5.5'],
+    neutro: ['M5 12h14'],
+    voltar: ['m15 18-6-6 6-6'], avancar: ['m9 18 6-6-6-6'], abrir: ['m6 9 6 6 6-6'], fechar: ['M18 6 6 18', 'm6 6 12 12'],
+    mais: ['M5 12h14', 'M12 5v14'],
+    lixeira: ['M3 6h18', 'M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6', 'M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2', 'M10 11v6', 'M14 11v6'],
+    usuario: ['M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2', C(12, 7, 4)],
+    sol: [C(12, 12, 4), 'M12 2v2', 'M12 20v2', 'm4.93 4.93 1.41 1.41', 'm17.66 17.66 1.41 1.41', 'M2 12h2', 'M20 12h2', 'm6.34 17.66-1.41 1.41', 'm19.07 4.93-1.41 1.41'],
+    cofre: [R(3, 3, 18, 18, 2), C(12, 12, 3), 'M7.5 7.5h.01', 'M16.5 7.5h.01', 'M7.5 16.5h.01', 'M16.5 16.5h.01'],
+    garantia: ['M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z', 'm9 12 2 2 4-4'],
+    calendario: ['M8 2v4', 'M16 2v4', R(3, 4, 18, 18, 2), 'M3 10h18'],
+    assinatura: ['m21 17-2.156-1.868A.5.5 0 0 0 18 15.5v.5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1c0-2.545-3.991-3.97-8.5-4a1 1 0 0 0 0 5c4.153 0 4.745-11.295 5.708-13.5a2.5 2.5 0 1 1 3.31 3.284', 'M3 21h18'],
+    qr: ['M3 3h5v5H3z', 'M16 3h5v5h-5z', 'M3 16h5v5H3z', 'M21 16h-3a2 2 0 0 0-2 2v3', 'M21 21v.01', 'M12 7v3a2 2 0 0 1-2 2H7', 'M3 12h.01', 'M12 3h.01', 'M12 16v.01', 'M16 12h1', 'M21 12v.01', 'M12 21v-1'],
+    mensagem: ['M7.9 20A9 9 0 1 0 4 16.1L2 22Z'],
+    enviar: ['M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z', 'm21.854 2.147-10.94 10.939'],
+    imprimir: ['M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2', 'M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6', R(6, 14, 12, 8, 1)],
+    raio: ['M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'],
+    ciclo: ['M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8', 'M21 3v5h-5', 'M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16', 'M8 16H3v5'],
+    copiar: [R(8, 8, 14, 14, 2), 'M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'],
+  }],
+  ['Sintomas', {
+    'nao-gela': ['M2 12h10', 'M9 4v16', 'm3 9 3 3-3 3', 'M12 6 9 9 6 6', 'm6 18 3-3 1.5 1.5', 'M20 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z'],
+    'gela-pouco': ['M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z'],
+    gelo: ['M2 12h20', 'M12 2v20', 'm20 16-4-4 4-4', 'm4 8 4 4-4 4', 'm16 4-4 4-4-4', 'm8 20 4-4 4 4'],
+    pinga: ['M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z', 'M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97'],
+    desliga: ['M12 2v10', 'M18.4 6.6a9 9 0 1 1-12.77.04'],
+    'nao-liga': ['M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z', 'm2 22 3-3', 'M7.5 13.5 10 11', 'M10.5 16.5 13 14', 'm18 3-4 4h6l-4 4'],
+    barulho: ['M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z', 'M16 9a5 5 0 0 1 0 6', 'M19.364 18.364a9 9 0 0 0 0-12.728'],
+    // Display com "E1" em sete segmentos (E: a, g, d, f, e; 1: b, c), como na referência 1. TITÂNIO.
+    codigo: [R(2, 3, 20, 14, 2), 'M8 21h8', 'M12 17v4', 'M8.6 6.4h3', 'M8.6 10h2.4', 'M8.6 13.6h3', 'M7.6 7.4v1.6', 'M7.6 11v1.6', 'M16.4 7.4v1.6', 'M16.4 11v1.6'],
+    // LED piscando: anel com pontos em volta, como na referência.
+    led: [C(12, 12, 5), 'M12.00 3.00h.01', 'M16.50 4.21h.01', 'M19.79 7.50h.01', 'M21.00 12.00h.01', 'M19.79 16.50h.01', 'M16.50 19.79h.01', 'M12.00 21.00h.01', 'M7.50 19.79h.01', 'M4.21 16.50h.01', 'M3.00 12.00h.01', 'M4.21 7.50h.01', 'M7.50 4.21h.01'],
+  }],
+  ['Refrigeração · GeloPro', {
+    evaporadora: [R(2, 6, 20, 8, 1.5), 'M5 11h14', 'M17.5 8.5h1', 'M7 17.5c0 1-1 1.5-1 2.5', 'M12 17.5v3', 'M17 17.5c0 1 1 1.5 1 2.5'],
+    condensadora: [R(3, 4, 18, 14, 1.5), C(9.5, 11, 4), C(9.5, 11, 1), 'M16 8h2.5', 'M16 11h2.5', 'M16 14h2.5', 'M6 18v2.5', 'M18 18v2.5'],
+    ventilador: ['M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z', 'M12 12v.01'],
+    compressor: ['M7 9a5 5 0 0 1 10 0v8a3 3 0 0 1-3 3h-4a3 3 0 0 1-3-3z', 'M7 13.5h10', 'M10 4.4V2', 'M14 4.4V2.5h2.5', 'M5 22h14'],
+    capacitor: [R(7, 7, 10, 15, 2), 'M6 7h12', 'M10 7V3.5', 'M14 7V3.5', 'M10.5 14h3', 'M12 12.5v3'],
+    'sensor-ntc': ['M10 2v8.5', 'M14 2v8.5', C(12, 15, 4.5), 'M10.5 15h3', 'M12 13v4'],
+    'termometro-escala': ['M12 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z', 'M10 14v3', 'M15.5 5h2.5', 'M15.5 8.5h3.5', 'M15.5 12h2.5'],
+    termometro: ['M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z', 'M12 14v3'],
+    manifold: [C(7, 7.5, 4), C(17, 7.5, 4), 'M7 7.5l2-2', 'M17 7.5l-2-2', R(3, 14, 18, 4, 1), 'M7 11.5V14', 'M17 11.5V14', 'M7 18v3', 'M12 18v3', 'M17 18v3'],
+    medidor: ['m12 14 4-4', 'M3.34 19a10 10 0 1 1 17.32 0'],
+    'pt-sh': ['M3.34 19a10 10 0 1 1 17.32 0', 'm12 14 4-4', 'M8 8.5h2.5', 'M9.25 8.5v4'],
+    'valvula-servico': ['M2 15h7', 'M15 15h7', R(9, 11, 6, 8, 1), 'M10.5 11V7h3v4', 'M9.5 7h5', 'M12 4v3'],
+    'cilindro-fluido': ['M6.5 10a5.5 4 0 0 1 11 0v9a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2z', 'M6.5 15h11', 'M11 3h2v3h-2z', 'M8.5 6h7', 'M8.5 6v1.5', 'M15.5 6v1.5'],
+    'placa-ipm': [R(2, 4, 20, 16, 2), R(7, 9, 7, 6, 0.5), 'M9 7v2', 'M12 7v2', 'M9 15v2', 'M12 15v2', 'M17.5 9v6'],
+    'bomba-vacuo': [R(2, 9, 12, 9, 1.5), 'M5 9V6h6v3', 'M5 18v2.5', 'M11 18v2.5', 'M14 13.5h3a2 2 0 0 1 2 2V21', C(19, 6.5, 2.5), 'M19 6.5l1-1'],
+    dreno: ['M12 3.5c1.6 2 2.5 3.4 2.5 4.6a2.5 2.5 0 0 1-5 0c0-1.2.9-2.6 2.5-4.6z', 'M3 13h18l-2 4.5H5z', 'M17 17.5V21'],
+    filtro: [R(3, 3, 18, 18, 1.5), 'M3 9h18', 'M3 15h18', 'M9 3v18', 'M15 3v18'],
+    tubulacao: ['M2 8h12a4 4 0 0 1 4 4v10', 'M2 14h7a2 2 0 0 1 2 2v6', 'M5 5.5v1', 'M9 5.5v1'],
+    'carga-termica': ['M3 11 12 4l9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z', 'M9 13.5c-1 1 1 2 0 3.5', 'M12 13.5c-1 1 1 2 0 3.5', 'M15 13.5c-1 1 1 2 0 3.5'],
+    multimetro: [R(5, 2, 14, 20, 2), R(8, 5, 8, 4, 0.5), C(12, 15, 2.5), 'M12 15l1.5-1.5'],
+    inverter: [R(7, 7, 10, 10, 1), 'M9.5 3v4', 'M14.5 3v4', 'M9.5 17v4', 'M14.5 17v4', 'M3 9.5h4', 'M3 14.5h4', 'M17 9.5h4', 'M17 14.5h4'],
+  }],
+];
+const MAPA = Object.assign({}, ...GRUPOS.map(g => g[1]));
+const ALIAS = { tsnow: 'nao-gela', thermo: 'gela-pouco', snow: 'gelo', drop: 'pinga', poff: 'desliga', pzap: 'nao-liga', vol: 'barulho', mon: 'codigo', cdot: 'led', home: 'inicio', ntc: 'sensor-ntc', ptsh: 'pt-sh', inv: 'inverter', docs: 'documento', doc: 'documento', lock: 'cadeado', user: 'usuario', gauge: 'medidor', busca: 'busca' };
+class Component extends DCLogic {
+  renderVals() {
+    const n = ALIAS[this.props.nome] || this.props.nome;
+    const cat = !!this.props.catalogo;
+    const rot = this.props.rotulo;
+    return {
+      catalogo: cat, gira: !cat && n === 'carregando', fixo: !cat && n !== 'carregando',
+      tracos: MAPA[n] || MAPA.neutro, t: this.props.tamanho || 24,
+      oculto: rot ? undefined : 'true', papel: rot ? 'img' : undefined, rotulo: rot,
+      grupos: cat ? GRUPOS.map(([t, m]) => ({ t: `${t} · ${Object.keys(m).length}`, itens: Object.entries(m).map(([k, d]) => ({ n: k, d })) })) : [],
+    };
+  }
+}
+</script>
+</body>
+</html>

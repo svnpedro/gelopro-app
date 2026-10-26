@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div role="radiogroup" aria-label="{{ rotulo }}" aria-invalid="{{ inval }}" aria-readonly="{{ roTxt }}" style="display:flex;flex-direction:column;gap:6px;min-width:0;">
+  <span style="font:600 16px/22px 'Roboto',sans-serif;color:{{ corRot }};">{{ rotulo }}</span>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;">
+    <sc-for list="{{ ops }}" as="o" hint-placeholder-count="5">
+      <button type="button" role="radio" aria-checked="{{ o.ck }}" disabled="{{ o.des }}" data-foco="{{ o.foco }}" onClick="{{ o.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:4px;border-radius:12px;border:{{ o.borda }};background:{{ o.fundo }};box-shadow:{{ o.sombra }};color:{{ o.cor }};font-family:'Roboto',sans-serif;font-size:16px;line-height:18px;font-weight:{{ o.peso }};cursor:{{ o.cursor }};pointer-events:{{ o.pe }};overflow-wrap:anywhere;hyphens:auto;transition:transform 120ms ease-out,box-shadow 180ms ease-out;--peca-hover:{{ o.hov }};--peca-press-bg:{{ o.actBg }};--peca-press:{{ o.act }};" style-hover="box-shadow:var(--peca-hover);" style-active="transform:translateY(1px);background:var(--peca-press-bg);box-shadow:var(--peca-press);">{{ o.l }}</button>
+    </sc-for>
+  </div>
+  <sc-if value="{{ temAjuda }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:{{ corAjuda }};">{{ ajuda }}</span></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:120},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Garantia contratual&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;valor&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;90 dias&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;erro&quot;,&quot;somente-leitura&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ajuda&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;erroMsg&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;opcoes&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(v: string) =&gt; void&quot;}}">
+const RAISE = 'var(--gp-mold-shadow)';
+const HOV = RAISE + ',inset 0 0 0 999px var(--gp-state-hover)', HOV_SEL = 'var(--gp-feature-shadow),inset 0 0 0 999px var(--gp-state-hover)';
+const ACT = 'var(--gp-mold-shadow-pressed)', ACT_SEL = 'var(--gp-mold-shadow-pressed),inset 0 0 0 999px var(--gp-state-pressed)';
+class Component extends DCLogic {
+  renderVals() {
+    const e = this.props.estado || 'normal';
+    const des = e === 'desabilitado', ro = e === 'somente-leitura', erro = e === 'erro';
+    const valor = this.props.valor;
+    const ops = (this.props.opcoes || ['30 dias', '90 dias', '6 meses', '1 ano', 'Livre']).map((l, i) => {
+      const on = l === valor, inativo = des || (ro && !on);
+      return {
+        l, ck: on ? 'true' : 'false', des: des || ro, foco: e === 'foco' && (on || (!valor && i === 0)) ? '1' : undefined,
+        acao: () => this.props.acao && this.props.acao(l), peso: on ? 700 : 600,
+        borda: on ? '1px solid transparent' : erro ? '2px solid var(--gp-error)' : inativo ? '1px dashed var(--gp-outline-variant)' : '1px solid transparent',
+        fundo: on ? 'var(--gp-mold-selected)' : inativo ? 'var(--gp-disabled)' : 'var(--gp-mold-raised)',
+        sombra: on ? 'var(--gp-feature-shadow)' : inativo ? 'none' : e === 'hover' && i === 1 ? RAISE + ',inset 0 0 0 999px var(--gp-state-hover)' : RAISE,
+        hov: on ? HOV_SEL : HOV, actBg: on ? 'var(--gp-mold-selected)' : 'var(--gp-mold-sunken)', act: on ? ACT_SEL : ACT,
+        cor: on ? 'var(--gp-on-selected)' : inativo ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)',
+        cursor: des || ro ? 'default' : 'pointer', pe: des || ro ? 'none' : 'auto',
+      };
+    });
+    const ajuda = erro ? 'Erro: ' + (this.props.erroMsg || 'escolha um prazo') : ro ? 'Somente leitura' : (this.props.ajuda || '');
+    return {
+      rotulo: this.props.rotulo ?? 'Garantia contratual', ops, inval: erro ? 'true' : undefined, roTxt: ro ? 'true' : undefined,
+      corRot: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', temAjuda: !!ajuda, ajuda, corAjuda: erro ? 'var(--gp-error)' : 'var(--gp-on-surface-variant)',
+    };
+  }
+}
+</script>
+</body>
+</html>

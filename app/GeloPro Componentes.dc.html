@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&amp;family=Figtree:wght@800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#c9cace;}
+a{color:#0047d6;}a:hover{color:#00307f;}
+button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
+:focus-visible,[data-foco="1"]{outline:3px solid var(--gp-focus);outline-offset:2px;}
+[data-campo]:focus-within{outline:3px solid var(--gp-focus);outline-offset:2px;}
+[data-chassi] :focus-visible,[data-chassi] [data-foco="1"]{outline-color:var(--gp-focus-chassis);}
+[data-chanfro] :focus-visible,[data-chanfro] [data-foco="1"]{outline-color:var(--gp-focus-key);outline-offset:-5px;}
+input::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
+</style>
+</helmet>
+<div style="min-height:100vh;box-sizing:border-box;padding:24px 16px 48px;font-family:'Roboto',sans-serif;color:#0a1220;display:flex;flex-direction:column;gap:24px;">
+  <header style="max-width:860px;display:flex;flex-direction:column;gap:8px;">
+    <span style="font:500 14px/20px 'Roboto',sans-serif;">GeloPro · Biblioteca v0.4 · contrato de cor v1.0</span>
+    <span style="font:800 28px/32px 'Figtree',sans-serif;letter-spacing:.02em;">Biblioteca de componentes</span>
+    <span style="font:400 16px/24px 'Roboto',sans-serif;text-wrap:pretty;">As mesmas peças que o aplicativo usa, montadas aqui em todos os estados, nos temas Titânio, Claro e Sol. Alterar uma peça ou uma cor no <strong>TemaGeloPro</strong> muda esta página e o aplicativo juntos. O relatório no fim mede o contraste no DOM renderizado: cores computadas, transparência composta sobre os fundos ancestrais e, em gradientes, a parada de menor contraste.</span>
+  </header>
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;">
+    <sc-for list="{{ temas }}" as="t" hint-placeholder-count="3">
+      <div style="flex:1 1 360px;max-width:420px;min-width:0;">
+      <dc-import name="TemaGeloPro" tema="{{ t.id }}" bloco="{{ true }}" hint-size="100%,2600px">
+        <section data-tema-col="{{ t.id }}" data-screen-label="{{ t.label }}" style="box-sizing:border-box;padding:16px 12px 20px;border-radius:40px;background:var(--gp-chassis);background-blend-mode:overlay,normal;display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:0 8px;">
+            <span style="font:800 20px/24px 'Figtree',sans-serif;color:var(--gp-on-chassis);">{{ t.nome }}</span>
+            <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-chassis-variant);">{{ t.uso }}</span>
+          </div>
+          <div style="padding:5px;border-radius:30px;background:var(--gp-bezel);">
+            <div style="box-sizing:border-box;padding:16px 12px 20px;border-radius:25px;background:var(--gp-visor);display:flex;flex-direction:column;gap:20px;">
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Cartão de sintoma · controle</span>
+                <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+                  <sc-for list="{{ placas }}" as="p" hint-placeholder-count="6">
+                    <div data-cc="{{ p.cc }}" style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+                      <div style="height:116px;"><dc-import name="PlacaSintoma" nome="{{ p.nome }}" estado="{{ p.e }}" icone="{{ p.icone }}" style="display:block;height:100%;" hint-size="100%,116px"></dc-import></div>
+                      <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-align:center;">{{ p.e }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Cartão informativo · não interativo</span>
+                <div data-cc="Cartão informativo · normal" style="box-sizing:border-box;padding:16px;border-radius:16px;border:1px solid var(--gp-outline-variant);background:var(--gp-card-info);display:flex;flex-direction:column;gap:4px;">
+                  <span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Fluxo de ar insuficiente</span>
+                  <span style="font:400 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Amostra · confirme na ficha</span>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Seletor · marca, capacidade, fluido</span>
+                <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 8px;">
+                  <sc-for list="{{ seletores }}" as="s" hint-placeholder-count="9">
+                    <div data-cc="{{ s.cc }}" style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+                      <dc-import name="SeletorChip" rotulo="{{ s.r }}" valor="{{ s.v }}" estado="{{ s.e }}" aviso="{{ s.aviso }}" style="display:block;" hint-size="100%,56px"></dc-import>
+                      <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-align:center;">{{ s.e }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Opção de lista e linha de ficha</span>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                  <sc-for list="{{ opcoes }}" as="o" hint-placeholder-count="6">
+                    <div data-cc="{{ o.cc }}" style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+                      <dc-import name="OpcaoLista" rotulo="{{ o.r }}" estado="{{ o.e }}" style="display:block;" hint-size="100%,56px"></dc-import>
+                      <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-align:center;">{{ o.e }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div data-cc="Linha de ficha · normal"><dc-import name="LinhaFicha" titulo="Pinga água na evaporadora" tipo="Sintoma" sub="Dreno, bandeja e caimento" style="display:block;" hint-size="100%,88px"></dc-import></div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Campo de cadastro</span>
+                <sc-for list="{{ campos }}" as="c" hint-placeholder-count="7">
+                  <div data-cc="{{ c.cc }}"><dc-import name="CampoTexto" rotulo="{{ c.r }}" valor="{{ c.v }}" placeholder="{{ c.ph }}" estado="{{ c.e }}" ajuda="{{ c.aj }}" icone="{{ c.i }}" style="display:block;" hint-size="100%,96px"></dc-import></div>
+                </sc-for>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Selo informativo · não interativo</span>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                  <sc-for list="{{ selos }}" as="x" hint-placeholder-count="5">
+                    <div data-cc="{{ x.cc }}"><dc-import name="Selo" texto="{{ x.t }}" tipo="{{ x.tipo }}" hint-size="100px,26px"></dc-import></div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Avisos e mensagens de erro</span>
+                <sc-for list="{{ avisos }}" as="a" hint-placeholder-count="4">
+                  <div data-cc="{{ a.cc }}"><dc-import name="Aviso" tipo="{{ a.tipo }}" titulo="{{ a.t }}" texto="{{ a.x }}" style="display:block;" hint-size="100%,72px"></dc-import></div>
+                </sc-for>
+              </div>
+
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Botões · primário e secundário</span>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                  <sc-for list="{{ teclas }}" as="k" hint-placeholder-count="8">
+                    <div data-cc="{{ k.cc }}" style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+                      <dc-import name="TeclaResposta" rotulo="{{ k.r }}" primaria="{{ k.pri }}" cantos="{{ k.c }}" estado="{{ k.e }}" style="display:block;" hint-size="100%,100px"></dc-import>
+                      <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-align:center;">{{ k.leg }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Fechamento · item de orçamento</span>
+                <sc-for list="{{ linhasOrc }}" as="lo" hint-placeholder-count="4">
+                  <div data-cc="{{ lo.cc }}" style="display:flex;flex-direction:column;gap:4px;">
+                    <dc-import name="LinhaOrcamento" n="{{ lo.n }}" descricao="{{ lo.d }}" valor="{{ lo.v }}" estado="{{ lo.e }}" style="display:block;" hint-size="100%,104px"></dc-import>
+                    <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ lo.e }}</span>
+                  </div>
+                </sc-for>
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Prazo de garantia contratual</span>
+                <sc-for list="{{ prazos }}" as="pz" hint-placeholder-count="3">
+                  <div data-cc="{{ pz.cc }}"><dc-import name="SeletorPrazo" rotulo="{{ pz.r }}" valor="{{ pz.v }}" estado="{{ pz.e }}" acao="{{ pz.acao }}" style="display:block;" hint-size="100%,104px"></dc-import></div>
+                </sc-for>
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Assinatura no dedo</span>
+                <sc-for list="{{ assins }}" as="as" hint-placeholder-count="3">
+                  <div data-cc="{{ as.cc }}"><dc-import name="AreaAssinatura" rotulo="{{ as.r }}" estado="{{ as.e }}" altura="{{ as.h }}" style="display:block;" hint-size="100%,170px"></dc-import></div>
+                </sc-for>
+                <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">QR Pix</span>
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                  <sc-for list="{{ pixs }}" as="px" hint-placeholder-count="3">
+                    <div data-cc="{{ px.cc }}" style="min-width:0;display:flex;flex-direction:column;gap:4px;">
+                      <dc-import name="QRPix" chave="+5511999999999" nome="Refrigeração Amostra" cidade="São Paulo" valor="{{ px.v }}" txid="ORC0001" estado="{{ px.e }}" tamanho="{{ 150 }}" style="display:block;" hint-size="100%,230px"></dc-import>
+                      <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-align:center;">{{ px.e }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+</div>
+          </div>
+
+          <div data-chassi="" style="display:flex;flex-direction:column;gap:16px;padding:0 4px;">
+            <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-chassis);">Visor técnico · leitura</span>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 8px;">
+              <sc-for list="{{ leituras }}" as="l" hint-placeholder-count="6">
+                <div data-cc="{{ l.cc }}" style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+                  <dc-import name="LeituraPoco" valor="{{ l.v }}" unidade="{{ l.u }}" origem="{{ l.o }}" faixa="{{ l.f }}" estado="{{ l.e }}" style="display:block;" hint-size="100%,124px"></dc-import>
+                  <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-chassis-variant);text-align:center;">{{ l.e }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-chassis);">Atalho</span>
+            <div data-cc="Atalho · normal"><dc-import name="AtalhoTecla" rotulo="Consultar fichas" icone="busca" style="display:block;" hint-size="100%,60px"></dc-import></div>
+            <div data-cc="Atalho · bloqueado (bônus)"><dc-import name="AtalhoTecla" rotulo="Laudo de inviabilidade" icone="doc" lock="{{ true }}" style="display:block;" hint-size="100%,60px"></dc-import></div>
+            <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-chassis);">Navegação inferior</span>
+            <nav aria-label="Exemplo de dock" data-chanfro="" style="box-sizing:border-box;padding:5px;border-radius:20px;background:var(--gp-chanfro);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;">
+              <sc-for list="{{ dock }}" as="d" hint-placeholder-count="6">
+                <div data-cc="{{ d.cc }}" style="min-width:0;"><dc-import name="TeclaDock" rot="{{ d.rot }}" icone="{{ d.icone }}" ativo="{{ d.ativo }}" lock="{{ d.lock }}" estado="{{ d.e }}" style="display:block;" hint-size="100%,56px"></dc-import></div>
+              </sc-for>
+            </nav>
+            <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-chassis-variant);text-wrap:pretty;">Início selecionado (barra, rótulo em negrito, aria-current) · NTC hover · PT/SH bloqueado · Inverter foco · Docs pressionado · Cofre desabilitado</span>
+          </div>
+        </section>
+      </dc-import>
+      </div>
+    </sc-for>
+  </div>
+
+  <section data-screen-label="Ícones" style="max-width:1100px;display:flex;flex-direction:column;gap:12px;">
+    <span style="font:800 22px/28px 'Figtree',sans-serif;">Ícones · fonte única IconeGP</span>
+    <span style="font:400 14px/20px 'Roboto',sans-serif;max-width:760px;text-wrap:pretty;">Grade 24 × 24, traço 1,75, pontas arredondadas, cor herdada do texto. Gerais e sintomas seguem o Lucide (licença ISC). Refrigeração é desenho próprio do GeloPro na mesma grade, para aprovação.</span>
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start;">
+      <sc-for list="{{ temas }}" as="t" hint-placeholder-count="3">
+        <div style="flex:1 1 360px;max-width:540px;min-width:0;">
+          <dc-import name="TemaGeloPro" tema="{{ t.id }}" bloco="{{ true }}" hint-size="100%,600px">
+            <div style="box-sizing:border-box;padding:16px;border-radius:25px;background:var(--gp-visor);display:flex;flex-direction:column;gap:8px;">
+              <span style="font:800 16px/20px 'Figtree',sans-serif;color:var(--gp-on-surface);">{{ t.nome }}</span>
+              <dc-import name="IconeGP" catalogo="{{ true }}" hint-size="100%,560px"></dc-import>
+            </div>
+          </dc-import>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="Documento" style="max-width:860px;display:flex;flex-direction:column;gap:12px;">
+    <span style="font:800 22px/28px 'Figtree',sans-serif;">Folha de documento · PDF</span>
+    <span style="font:400 14px/20px 'Roboto',sans-serif;max-width:720px;text-wrap:pretty;">Papel branco nos três temas. Titular no topo e no rodapé de todo orçamento, termo de garantia, recibo Pix e laudo. Texto de 16 px (12 pt) no mínimo.</span>
+    <dc-import name="TemaGeloPro" tema="titanio" bloco="{{ true }}" hint-size="100%,560px">
+      <dc-import name="FolhaDocumento" tipo="Orçamento" numero="0001" data="24/10/2026" titular="{{ titularEx }}" hint-size="100%,560px">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font:700 16px/24px 'Roboto',sans-serif;">Cliente</span>
+          <span>Maria Exemplo · Rua Amostra, 100 · Split 12.000 BTU/h LG, R410A</span>
+        </div>
+        <div style="display:flex;flex-direction:column;">
+          <sc-for list="{{ itensEx }}" as="it" hint-placeholder-count="3">
+            <div style="display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.v }}</span></div>
+          </sc-for>
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:12px 0 0;font-weight:700;"><span>Total</span><span style="font-variant-numeric:tabular-nums;">R$ 430,00</span></div>
+        </div>
+        <span style="color:var(--gp-on-paper-variant);">Amostra de layout. Valores ilustrativos.</span>
+      </dc-import>
+    </dc-import>
+  </section>
+
+  <section data-screen-label="Relatório de contraste" style="max-width:1100px;display:flex;flex-direction:column;gap:12px;">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <span style="font:800 22px/28px 'Figtree',sans-serif;">Relatório de contraste medido</span>
+      <button type="button" onClick="{{ medir }}" style="height:40px;padding:0 16px;border-radius:12px;border:1.5px solid #0a1220;background:#ffffff;color:#0a1220;font:600 14px/20px 'Roboto',sans-serif;cursor:pointer;">Medir de novo</button>
+      <span style="font:500 14px/20px 'Roboto',sans-serif;">{{ resumo }}</span>
+    </div>
+    <span style="font:400 14px/20px 'Roboto',sans-serif;max-width:860px;text-wrap:pretty;">Texto: 4,5:1, ou 3:1 se ≥ 24 px, ou ≥ 18,66 px em negrito (WCAG 1.4.3). Contorno, ícone e foco: 3:1 contra o fundo adjacente (1.4.11; no contorno de cartões e campos é decisão GeloPro quando o rótulo já identifica o controle). Componentes inativos aparecem como isentos, com a razão medida. Valores sem arredondamento na aprovação; a tabela mostra 3 casas.</span>
+    <div style="display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,2fr) minmax(0,.8fr) minmax(0,1.4fr) minmax(0,.7fr) minmax(0,.6fr) minmax(0,.8fr);border:1px solid #5b687d;border-radius:12px;overflow:hidden;background:#ffffff;font:400 12px/16px 'Roboto',sans-serif;color:#0a1220;">
+      <sc-for list="{{ cab }}" as="h" hint-placeholder-count="7"><span style="padding:8px;background:#0a1220;color:#ffffff;font-weight:600;">{{ h }}</span></sc-for>
+      <sc-for list="{{ linhas }}" as="r" hint-placeholder-count="0">
+        <span style="padding:6px 8px;border-top:1px solid #d3dbe4;">{{ r.tema }}</span>
+        <span style="padding:6px 8px;border-top:1px solid #d3dbe4;overflow-wrap:anywhere;">{{ r.comp }}</span>
+        <span style="padding:6px 8px;border-top:1px solid #d3dbe4;">{{ r.tipo }}</span>
+        <span style="padding:6px 8px;border-top:1px solid #d3dbe4;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:6px;"><span style="width:12px;height:12px;flex:none;border-radius:3px;border:1px solid #5b687d;background:{{ r.fg }};"></span>{{ r.fg }} / <span style="width:12px;height:12px;flex:none;border-radius:3px;border:1px solid #5b687d;background:{{ r.bg }};"></span>{{ r.bg }}</span>
+        <span style="padding:6px 8px;border-top:1px solid #d3dbe4;font-variant-numeric:tabular-nums;font-weight:600;">{{ r.razao }}</span>
+        <span style="padding:6px 8px;border-top:1px solid #d3dbe4;font-variant-numeric:tabular-nums;">{{ r.crit }}</span>
+        <span style="padding:6px 8px;border-top:1px solid #d3dbe4;font-weight:700;color:{{ r.cor }};">{{ r.res }}</span>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const h = React.createElement;
+
+const cc = (n, e) => `${n} · ${e}`;
+const PLACAS = [['Não gela', 'tsnow', 'normal'], ['Gela pouco', 'thermo', 'hover'], ['Forma gelo', 'snow', 'foco'], ['Pinga água', 'drop', 'pressionado'], ['Desliga sozinho', 'poff', 'carregando'], ['Não liga', 'pzap', 'desabilitado']];
+const SEL = [['MARCA', 'LG', 'normal', true], ['BTU/h', '12.000', 'hover'], ['FLUIDO', 'R410A', 'foco'], ['MARCA', 'Midea', 'pressionado'], ['BTU/h', '18.000', 'selecionado'], ['FLUIDO', 'R32', 'carregando'], ['MARCA', '—', 'erro'], ['BTU/h', '9.000', 'somente-leitura'], ['FLUIDO', 'R22', 'desabilitado']];
+const OPC = [['Electrolux', 'normal'], ['Springer', 'hover'], ['Samsung', 'selecionado'], ['Gree', 'foco'], ['Daikin', 'pressionado'], ['Agratto', 'desabilitado']];
+const CAMPOS = [
+  ['Nome da assistência', '', 'Como sai no PDF', 'normal', 'Aparece no cabeçalho do orçamento'], ['Buscar ficha', '', 'Sintoma, código ou componente', 'hover', '', 'busca'],
+  ['Telefone', '(11) 9', '(00) 00000-0000', 'foco', ''], ['CPF ou CNPJ', '123.456.789-00', 'Somente números', 'erro', ''],
+  ['Titular', 'Refrigeração Amostra', '', 'somente-leitura', ''], ['Chave Pix', '', 'Cadastre o titular antes', 'desabilitado', ''], ['CEP', '01310-100', '', 'carregando', 'Buscando endereço…'],
+];
+const SELOS = [['Etapa 1 de 4', 'info'], ['Registrado', 'sucesso'], ['Fora da faixa', 'erro'], ['Revisar', 'aviso'], ['Amostra', 'neutro']];
+const AVISOS = [['info', 'Modelo não identificado', 'Referências da marca valem só depois de identificar a linha.'], ['aviso', 'Sem medição nesta etapa', 'A hipótese vem só das respostas. Meça antes de concluir.'], ['erro', 'Não foi possível gerar o PDF', 'Confira o titular e tente de novo. Nada foi perdido.'], ['sucesso', 'Orçamento salvo', 'Fica no Cofre deste aparelho.']];
+const TECLAS = [['Normal', true, 'esq', 'normal'], ['Fraca', false, 'dir', 'normal'], ['Normal', true, 'esq', 'hover'], ['Fraca', false, 'dir', 'foco'], ['Normal', true, 'esq', 'pressionado'], ['Fraca', false, 'dir', 'carregando'], ['Gerar', true, 'esq', 'desabilitado'], ['Voltar', false, 'dir', 'desabilitado']];
+const LEIT = [['—', 'PSI', 'SEM MEDIÇÃO', 'R410A · faixa —', 'normal'], ['212', 'PSI', 'FORA DA FAIXA', '100–130 · amostra', 'erro'], ['', 'kΩ', '', 'Sensor · faixa —', 'carregando'], ['118', 'PSI', '', 'R410A · amostra', 'somente-leitura'], ['—', '°C', 'SEM MEDIÇÃO', 'Faixa —', 'desabilitado'], ['—', 'kΩ', 'SEM MEDIÇÃO', 'Sensor · faixa —', 'foco']];
+const DOCK = [['Início', 'home', 'selecionado', true], ['NTC/BTU', 'ntc', 'hover'], ['PT/SH', 'ptsh', 'normal', false, true], ['Inverter', 'inv', 'foco'], ['Docs', 'docs', 'pressionado'], ['Cofre', 'cofre', 'desabilitado']];
+
+const pc = (s) => { const n = (s.match(/[\d.]+/g) || []).map(Number); return n.length < 3 ? null : [n[0], n[1], n[2], n.length > 3 ? n[3] : 1]; };
+const cols = (s) => (s.replace(/url\([^)]*\)/g, '').match(/rgba?\([^)]+\)/g) || []).map(pc).filter(Boolean);
+const mix = (f, b) => [0, 1, 2].map(i => f[i] * f[3] + b[i] * (1 - f[3])).concat(1);
+const lin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+const lum = (c) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
+const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+const hx = (c) => '#' + c.slice(0, 3).map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+function layers(el) {
+  const cs = getComputedStyle(el), L = [];
+  if (cs.boxShadow && cs.boxShadow !== 'none') for (const m of cs.boxShadow.matchAll(/(rgba?\([^)]+\))\s+0px\s+0px\s+0px\s+(\d{3,})px\s+inset/g)) L.push([pc(m[1])]);
+  if (cs.backgroundImage && cs.backgroundImage.includes('gradient')) { const c = cols(cs.backgroundImage); if (c.length) L.push(c); }
+  const bc = pc(cs.backgroundColor); if (bc && bc[3] > 0) L.push([bc]);
+  return L;
+}
+const CACHE = new Map();
+function fundo(el) {
+  if (CACHE.has(el)) return CACHE.get(el);
+  const r = fundo0(el); CACHE.set(el, r); return r;
+}
+function fundo0(el) {
+  const st = [];
+  for (let n = el; n && n.nodeType === 1; n = n.parentElement) for (const l of layers(n)) { st.push(l); if (l.every(c => c[3] >= 1)) return compor(st); }
+  st.push([[201, 202, 206, 1]]); return compor(st);
+}
+function compor(st) {
+  let c = st[st.length - 1].map(x => x.slice(0, 3).concat(1));
+  for (let i = st.length - 2; i >= 0; i--) { const nx = []; for (const b of c) for (const f of st[i]) nx.push(mix(f, b)); c = nx.slice(0, 32); }
+  return c;
+}
+const inativo = (el) => !!el.closest('button:disabled,[aria-disabled="true"]') || !!(el.closest('label') && el.closest('label').querySelector('input:disabled'));
+
+class Component extends DCLogic {
+  state = { linhas: [], resumo: 'Medindo…', prazo: '90 dias' };
+  componentDidMount() { window.__gpMedir = () => this.medir(); }
+  medir() {
+    CACHE.clear();
+    const out = new Map();
+    const push = (tema, comp, tipo, fgc, bgs, crit, isento) => {
+      let worst = null;
+      for (const b of bgs) { const f = fgc[3] < 1 ? mix(fgc, b) : fgc; const r = ratio(f, b); if (!worst || r < worst.r) worst = { r, f, b }; }
+      if (!worst) return;
+      const k = [tema, comp, tipo, crit, isento].join('|');
+      const prev = out.get(k);
+      if (!prev || worst.r < prev.r) out.set(k, { tema, comp, tipo, fg: hx(worst.f), bg: hx(worst.b), r: worst.r, crit, isento });
+    };
+    document.querySelectorAll('[data-tema-col]').forEach(col => {
+      const tema = { titanio: 'Titânio', claro: 'Claro', sol: 'Sol' }[col.getAttribute('data-tema-col')] || 'Titânio';
+      const rotulo = (el) => { const w = el.closest('[data-cc]'); return w ? w.getAttribute('data-cc') : 'Moldura da revisão'; };
+      col.querySelectorAll('*').forEach(el => {
+        if (el.closest('svg') && el.tagName !== 'svg') return;
+        if (!el.getClientRects().length) return;
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden') return;
+        const txt = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()) || (el.tagName === 'INPUT' && (el.value || el.placeholder));
+        if (txt) {
+          const fs = parseFloat(cs.fontSize), fw = parseInt(cs.fontWeight, 10) || 400;
+          const big = fs >= 24 || (fs >= 18.66 && fw >= 700);
+          let fg = pc(cs.color);
+          if (el.tagName === 'INPUT' && !el.value) fg = pc(getComputedStyle(el, '::placeholder').color) || fg;
+          push(tema, rotulo(el), big ? 'texto grande' : 'texto', fg, fundo(el), big ? 3 : 4.5, inativo(el));
+        }
+        const bw = parseFloat(cs.borderTopWidth);
+        if (bw >= 1 && cs.borderTopStyle !== 'none' && el.matches('button,[data-campo],[role="group"]')) push(tema, rotulo(el), 'contorno', pc(cs.borderTopColor), fundo(el.parentElement), 3, inativo(el));
+        if (el.tagName === 'svg' && el.getAttribute('stroke') === 'currentColor') push(tema, rotulo(el), 'ícone', pc(cs.color), fundo(el.parentElement), 3, inativo(el));
+        if (el.getAttribute('data-foco') === '1') push(tema, rotulo(el), 'foco', pc(cs.outlineColor), parseFloat(cs.outlineOffset) < 0 ? fundo(el) : fundo(el.parentElement), 3, false);
+      });
+    });
+    const rows = [...out.values()].map(x => {
+      const ok = x.r >= x.crit;
+      return { ...x, razao: x.r.toFixed(3) + ':1', critTxt: x.crit + ':1', res: x.isento ? (ok ? 'isento · passa' : 'isento') : ok ? 'aprovado' : 'reprovado', ord: x.isento ? 1 : ok ? 2 : 0 };
+    }).sort((a, b) => a.ord - b.ord || a.tema.localeCompare(b.tema) || a.comp.localeCompare(b.comp) || a.tipo.localeCompare(b.tipo));
+    const rep = rows.filter(r => r.ord === 0).length, apr = rows.filter(r => r.ord === 2).length, ise = rows.filter(r => r.ord === 1).length;
+    window.__gpContraste = rows;
+    this.setState({ linhas: rows, resumo: `${rows.length} pares · ${apr} aprovados · ${rep} reprovados · ${ise} isentos (inativos)` });
+  }
+  renderVals() {
+    return {
+      temas: [{ id: 'titanio', nome: 'Titânio', uso: 'padrão · chassi titânio, visor safira escuro', label: 'Titânio' }, { id: 'claro', nome: 'Claro', uso: 'chassi prata · visor claro', label: 'Claro' }, { id: 'sol', nome: 'Sol', uso: 'alto contraste · luz forte', label: 'Sol' }],
+      placas: PLACAS.map(([nome, i, e]) => ({ nome, e, icone: i, cc: cc('Cartão de sintoma', e) })),
+      seletores: SEL.map(([r, v, e, aviso]) => ({ r, v, e, aviso: !!aviso, cc: cc('Seletor', e) })),
+      opcoes: OPC.map(([r, e]) => ({ r, e, cc: cc('Opção de lista', e) })),
+      campos: CAMPOS.map(([r, v, ph, e, aj, i]) => ({ r, v, ph, e, aj, i: i || 'nenhum', cc: cc('Campo', e) })),
+      selos: SELOS.map(([t, tipo]) => ({ t, tipo, cc: cc('Selo', tipo) })),
+      avisos: AVISOS.map(([tipo, t, x]) => ({ tipo, t, x, cc: cc('Aviso', tipo) })),
+      teclas: TECLAS.map(([r, pri, c, e]) => ({ r, pri, c, e, leg: (pri ? 'primária · ' : 'secundária · ') + e, cc: cc(pri ? 'Botão primário' : 'Botão secundário', e) })),
+      leituras: LEIT.map(([v, u, o, f, e]) => ({ v, u, o: o || undefined, f, e, cc: cc('Visor técnico', e) })),
+      dock: DOCK.map(([rot, i, e, ativo, lock]) => ({ rot, icone: i, e, ativo: !!ativo, lock: !!lock, cc: cc('Navegação inferior', lock ? 'bloqueado' : e) })),
+      linhasOrc: [['Limpeza da condensadora', '180,00', 'normal'], ['Capacitor 35+5 µF', '', 'erro'], ['Carga de fluido R410A', '250,00', 'somente-leitura'], ['', '', 'desabilitado']].map(([d, v, e], i) => ({ n: i + 1, d, v, e, cc: cc('Item de orçamento', e) })),
+      prazos: [['Garantia contratual', this.state.prazo, 'normal'], ['Garantia contratual', '', 'erro'], ['Garantia contratual', '6 meses', 'somente-leitura']].map(([r, v, e]) => ({ r, v, e, acao: (p) => this.setState({ prazo: p }), cc: cc('Prazo de garantia', e) })),
+      assins: [['Assinatura do cliente', 'normal', 140], ['Assinatura do cliente', 'erro', 120], ['Assinatura do técnico', 'desabilitado', 120]].map(([r, e, h]) => ({ r, e, h, cc: cc('Assinatura', e) })),
+      pixs: [[180, 'normal'], [0, 'erro']].map(([v, e]) => ({ v, e, cc: cc('QR Pix', e) })),
+      titularEx: { nome: 'Refrigeração Amostra', doc: '12.345.678/0001-95', pix: '+55 11 99999-9999', cidade: 'São Paulo' },
+      itensEx: [{ d: 'Limpeza da condensadora', v: 'R$ 180,00' }, { d: 'Carga de fluido R410A', v: 'R$ 250,00' }],
+      medir: () => this.medir(),
+      cab: ['Tema', 'Componente · estado', 'Tipo', 'Par efetivo (frente / fundo)', 'Razão', 'Critério', 'Resultado'],
+      linhas: this.state.linhas.map(r => ({ ...r, crit: r.critTxt, cor: r.ord === 0 ? '#b3140a' : r.ord === 1 ? '#343f53' : '#0a6b36' })),
+      resumo: this.state.resumo,
+    };
+  }
+}
+</script>
+</body>
+</html>

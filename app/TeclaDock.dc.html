@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" aria-current="{{ cur }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="position:relative;width:100%;min-width:0;box-sizing:border-box;border:0;padding:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:{{ cursor }};pointer-events:{{ pe }};" style-hover="filter:brightness(1.06);" style-active="filter:brightness(.96);">
+  <span data-tecla="" style="position:relative;flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;justify-content:center;color:{{ corIco }};transition:transform 120ms ease-out,box-shadow 180ms ease-out;">
+    <span aria-hidden="true" style="display:inline-flex;align-items:center;"><sc-if value="{{ icoNome }}" hint-placeholder-val="{{ false }}"><dc-import name="IconeGP" nome="{{ icoNome }}" tamanho="{{ 26 }}" hint-size="26px,26px"></dc-import></sc-if><sc-if value="{{ icoNo }}" hint-placeholder-val="{{ false }}">{{ icoNo }}</sc-if></span>
+    <sc-if value="{{ lock }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;top:3px;right:3px;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="cadeado" tamanho="{{ 12 }}" hint-size="12px,12px"></dc-import></span></sc-if>
+  </span>
+  <span style="max-width:100%;font-family:'Roboto',sans-serif;font-weight:{{ peso }};font-size:{{ fs }};letter-spacing:{{ ls }};line-height:16px;text-align:center;white-space:nowrap;color:{{ cor }};text-shadow:var(--gp-engrave);">{{ rot }}</span>
+</button>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:60,&quot;height&quot;:72},&quot;rot&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;NTC/BTU&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ativo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;lock&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;selecionado&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;icone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;ReactNode&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;cur&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+class Component extends DCLogic {
+  state = { w: 0 };
+  ref = React.createRef();
+  componentDidMount() {
+    const el = this.ref.current;
+    if (el && window.ResizeObserver) {
+      this.ro = new ResizeObserver(() => { const w = el.offsetWidth; if (w && w !== this.state.w) this.setState({ w }); });
+      this.ro.observe(el);
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
+  }
+  componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
+  renderVals() {
+    const rot = this.props.rot ?? '';
+    const e = this.props.estado || 'normal';
+    const ativo = !!this.props.ativo || e === 'selecionado', des = e === 'desabilitado';
+    // Rótulo curto: 14 px peso 600 (G-L1). Só encolhe se não couber na largura da coluna.
+    let fs = 14, ls = 0;
+    if (this.state.w) {
+      if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d');
+      const avail = this.state.w - 2;
+      this._ctx.font = `${ativo ? 700 : 600} 14px Roboto`;
+      const w12 = this._ctx.measureText(rot).width;
+      // Primeiro aperta o espaçamento (até −0,6 px); só depois reduz o corpo.
+      if (w12 > avail) ls = Math.max(-0.6, (avail - w12) / Math.max(1, rot.length - 1));
+      if (w12 + ls * (rot.length - 1) > avail) fs = Math.max(12, Math.floor(14 * avail / (w12 + ls * (rot.length - 1)) * 2) / 2);
+    }
+    return {
+      ref: this.ref, rot, icoNome: typeof this.props.icone === 'string' ? this.props.icone : null, icoNo: this.props.icone && typeof this.props.icone !== 'string' ? this.props.icone : null, acao: this.props.acao, des, foco: e === 'foco' ? '1' : undefined,
+      ariaTxt: this.props.aria ?? rot, cur: ativo ? (this.props.cur || 'page') : undefined, ativo, lock: !!this.props.lock, peso: ativo ? 700 : 600,
+      // Tecla cobalto 3D; a ativa ganha o contorno neon (referência 1. TITÂNIO). Rótulo fora da tecla, gravado no chassi.
+      fundo: des ? 'var(--gp-disabled)' : 'var(--gp-dock-key)',
+      borda: ativo ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-dock-key-edge)',
+      cor: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-chassis)', corIco: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-dock-icon)',
+      sombra: e === 'pressionado' ? 'var(--gp-tile-relief-pressed)' : des ? 'none' : ativo ? 'var(--gp-dock-ring-glow)' : 'var(--gp-dock-key-raise)',
+      desloc: e === 'pressionado' ? 'translateY(2px)' : 'none', cursor: des ? 'not-allowed' : 'pointer', pe: des ? 'none' : 'auto',
+      fs: fs + 'px', ls: ls.toFixed(2) + 'px',
+    };
+  }
+}
+</script>
+</body>
+</html>

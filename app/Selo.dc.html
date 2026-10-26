@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<span data-selo="" data-rotulo="" role="{{ papel }}" style="display:inline-flex;align-items:center;gap:6px;height:28px;max-width:100%;box-sizing:border-box;padding:0 10px 0 8px;border-radius:9999px;border:2px solid {{ borda }};background:{{ fundo }};color:{{ cor }};font:700 14px/1 'Roboto',sans-serif;letter-spacing:.01em;white-space:nowrap;pointer-events:none;">
+  <span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="{{ icoNome }}" tamanho="{{ 14 }}" hint-size="14px,14px"></dc-import></span>
+  <span style="flex:none;">{{ texto }}</span>
+</span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:160,&quot;height&quot;:40},&quot;texto&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Etapa 1 de 4&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tipo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;info&quot;,&quot;sucesso&quot;,&quot;erro&quot;,&quot;aviso&quot;,&quot;neutro&quot;],&quot;default&quot;:&quot;info&quot;,&quot;tsType&quot;:&quot;'info' | 'sucesso' | 'erro' | 'aviso' | 'neutro'&quot;},&quot;vivo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const COR = {
+  info: ['var(--gp-primary-container)', 'var(--gp-on-primary-container)', 'var(--gp-primary)'],
+  sucesso: ['var(--gp-success-container)', 'var(--gp-on-success-container)', 'var(--gp-success)'],
+  erro: ['var(--gp-error-container)', 'var(--gp-on-error-container)', 'var(--gp-error)'],
+  aviso: ['var(--gp-warning-container)', 'var(--gp-on-warning-container)', 'var(--gp-warning-outline)'],
+  neutro: ['transparent', 'var(--gp-on-surface-variant)', 'var(--gp-outline)'],
+};
+class Component extends DCLogic {
+  renderVals() {
+    const t = COR[this.props.tipo] ? this.props.tipo : 'info';
+    const [fundo, cor, borda] = COR[t];
+    return { texto: (this.props.texto ?? '').slice(0, 18), icoNome: t === 'aviso' ? 'alerta' : t, fundo, cor, borda, papel: this.props.vivo ? 'status' : undefined };
+  }
+}
+</script>
+</body>
+</html>

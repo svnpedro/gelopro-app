@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div data-tema="{{ tema }}" style="{{ vars }}">{{ conteudo }}</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;tema&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;titanio&quot;,&quot;claro&quot;,&quot;sol&quot;],&quot;default&quot;:&quot;titanio&quot;,&quot;tsType&quot;:&quot;'titanio' | 'claro' | 'sol'&quot;},&quot;bloco&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;extra&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Record&lt;string,string&gt;&quot;},&quot;children&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;ReactNode&quot;}}">
+// 26/10/2026 (Pedro): fechamento visual v5.2 travado na referência "1. TITÂNIO". Três modos com a mesma geometria:
+// titanio (padrão de fábrica) = chassi de titânio escovado, visor safira escuro e teclas cobalto 3D;
+// claro (Silver) = chassi prata, visor claro, cartões brancos e texto marinho; sol (alto contraste) = superfícies brancas e contorno marinho forte.
+// Papel (PDF e impressão) continua branco nos três.
+const GRAIN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.30 0 0 0 0 0.34 0 0 0 0 0.40 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+// Escovado horizontal: riscos finos de 1 px sobre o degradê metálico.
+const ESCOVADO = 'repeating-linear-gradient(180deg,rgba(255,255,255,.05) 0 1px,rgba(0,0,0,.035) 1px 2px,transparent 2px 4px)';
+const TITANIO = GRAIN + ', ' + ESCOVADO + ', linear-gradient(180deg,#9da4ae 0%,#949ba5 50%,#89909a 100%)';
+const PRATA = GRAIN + ', ' + ESCOVADO + ', linear-gradient(180deg,#e6ebf1 0%,#dfe5ec 50%,#d5dce4 100%)';
+const GRAVADO_ESCURO = '0 1px 2px rgba(7,20,38,0.65)', GRAVADO_CLARO = '0 1px 0 rgba(255,255,255,.65)';
+
+// Comum aos três: selos, avisos e etiquetas mantêm fundo claro e texto escuro próprio (contraste garantido em qualquer visor).
+const COMUM = {
+  '--gp-tag-sintoma': '#ffe1d2', '--gp-on-tag-sintoma': '#7a2410',
+  '--gp-tag-codigo': '#ebe3ff', '--gp-on-tag-codigo': '#3f1d8f',
+  '--gp-tag-componente': '#d5f2e1', '--gp-on-tag-componente': '#0c4a2a',
+  '--gp-tag-teste': '#d9e7fb', '--gp-on-tag-teste': '#17375e',
+  '--gp-tag-neutro': '#e2e7ee', '--gp-on-tag-neutro': '#19365c',
+  '--gp-answer-yes': 'linear-gradient(180deg,#166534 0%,#14532d 100%)',
+  '--gp-answer-no': 'linear-gradient(180deg,#991b1b 0%,#7f1d1d 100%)',
+  '--gp-answer-yes-solid': '#166534', '--gp-answer-no-solid': '#991b1b', '--gp-answer-neutral-solid': '#19365c', '--gp-on-answer': '#ffffff',
+  '--gp-key-navy-grad': 'linear-gradient(180deg,var(--gp-navy-hi) 0%,var(--gp-navy) 100%)',
+  '--gp-cta': '#c2410c', '--gp-on-cta': '#ffffff',
+  '--gp-scene-bg': '#071629', '--gp-on-scene': '#ffffff',
+  '--gp-alert': '#fde68a', '--gp-on-alert': '#78350f', '--gp-alert-edge': '#78350f', '--gp-alert-press': 'rgba(120,53,15,.10)',
+  '--gp-navy-deep': '#0b1426',
+  '--gp-on-navy': '#ffffff', '--gp-on-navy-label': '#dbeafe',
+  '--gp-error-container': '#fee2e2', '--gp-on-error-container': '#450a0a',
+  '--gp-success-container': '#d1fae5', '--gp-on-success-container': '#022c22',
+  '--gp-warning-container': '#fde68a', '--gp-on-warning-container': '#78350f', '--gp-warning-outline': '#b45309',
+  '--gp-ill-pipe': 'linear-gradient(180deg,#94a3b8 0%,#e2e8f0 45%,#64748b 100%)',
+  '--gp-ill-pipe-frost': 'linear-gradient(180deg,#ffffff 0%,#dbeafe 50%,#bfdbfe 100%)',
+  '--gp-ill-needle': '#ffffff',
+  '--gp-visor-glare': 'none',
+  '--gp-tile-well': 'transparent',
+  '--gp-tile-relief-pressed': 'inset 0 2px 6px rgba(0,0,0,.45)',
+  '--gp-key-disabled-cap': '#cbd5e1',
+  '--gp-paper': '#ffffff', '--gp-on-paper': '#02060d', '--gp-on-paper-variant': '#3d4a5c',
+  '--gp-paper-line': '#334155', '--gp-paper-rule': '#94a3b8', '--gp-on-paper-error': '#b91c1c',
+  // Chavinha de tema: peça física igual nos três modos.
+  '--gp-switch-track': '#1e2631', '--gp-switch-edge': '#67c6ff',
+  '--gp-switch-glow': '0 0 8px #38bdf8, inset 0 1px 4px rgba(0,0,0,0.7)',
+  '--gp-switch-knob': 'conic-gradient(#d1d5db, #6b7280, #e5e7eb, #4b5563, #d1d5db)',
+  '--gp-switch-knob-shadow': '0 1px 2px rgba(0,0,0,.55)',
+};
+
+const TEMAS = {
+  titanio: {
+    ...COMUM,
+    '--gp-desk': GRAIN + ', #e6eaef',
+    '--gp-rubber': 'linear-gradient(90deg,#1f242b 0%,#3a414b 7%,#2c323a 50%,#3a414b 93%,#1f242b 100%)',
+    '--gp-rubber-shadow': 'inset 0 2px 1px rgba(255,255,255,.16),inset 0 -4px 8px rgba(0,0,0,.4),0 28px 60px rgba(2,6,13,.35)',
+    '--gp-chassis': TITANIO,
+    '--gp-chassis-ring': 'inset 0 0 0 1px rgba(255,255,255,.35),0 0 0 1.5px #3a414b',
+    '--gp-chassis-edge': '#687280',
+    '--gp-chassis-rule': 'rgba(255,255,255,.35)',
+    '--gp-chassis-key': 'linear-gradient(180deg,#254f91 0%,#173463 100%)',
+    '--gp-on-chassis': '#ffffff', '--gp-on-chassis-variant': '#ffffff', '--gp-engrave': GRAVADO_ESCURO,
+    '--gp-led-tema': '#67c6ff',
+    '--gp-bezel': 'linear-gradient(180deg, #b8c0cc 0%, #687280 100%)',
+    '--gp-bezel-ring': '0 0 0 1px #5b6470, 0 2px 4px rgba(0,0,0,.25)',
+    '--gp-visor': 'linear-gradient(180deg, #061224 0%, #091930 100%)',
+    '--gp-visor-edge': '#020812',
+    '--gp-inset-soft': 'inset 0 3px 10px rgba(0,0,0,0.65)',
+    '--gp-inset-soft-sm': 'inset 0 2px 5px rgba(0,0,0,0.55)',
+    '--gp-chanfro': 'transparent',
+    '--gp-dock-bar-shadow': 'none',
+    // Pílula Marca | BTU/h | Fluido
+    '--gp-pill': '#1d2430', '--gp-pill-edge': '#b0b8c4', '--gp-on-pill': '#ffffff', '--gp-on-pill-label': '#ffffff',
+    '--gp-pill-div': 'rgba(255,255,255,0.16)', '--gp-pill-shadow': 'inset 0 2px 5px rgba(0,0,0,0.55), 0 2px 4px rgba(0,0,0,0.25)',
+    // Pílulas de leitura (dentro do visor) e barras de atalho (no chassi)
+    '--gp-reading': '#0c1d36', '--gp-reading-edge': '#7c8898', '--gp-on-reading': '#67c6ff',
+    '--gp-reading-shadow': 'inset 0 2px 4px rgba(0,0,0,.5)',
+    '--gp-bar': '#071426', '--gp-bar-edge': '#b0b8c4', '--gp-on-bar': '#ffffff',
+    '--gp-bar-shadow': 'inset 0 1px 0 rgba(255,255,255,.08), 0 2px 4px rgba(0,0,0,.3)',
+    // Placas 3x3 e teclas do dock
+    '--gp-tile': 'linear-gradient(180deg, #254f91 0%, #173463 100%)', '--gp-tile-border': '0',
+    '--gp-tile-relief': 'inset 0 1.5px 1px rgba(147,197,253,0.45), inset 0 -3px 6px rgba(4,10,24,0.6), 0 6px 12px rgba(2,6,14,0.55)',
+    '--gp-on-tile': '#ffffff', '--gp-on-tile-icon': '#67c6ff', '--gp-on-tile-shadow': '0 1px 2px rgba(0,0,0,.35)',
+    '--gp-dock-key': 'linear-gradient(180deg, #254f91 0%, #173463 100%)', '--gp-dock-key-edge': '#0b1a33',
+    '--gp-dock-key-raise': 'inset 0 1.5px 1px rgba(147,197,253,0.45), inset 0 -2px 4px rgba(4,10,24,0.6), 0 4px 8px rgba(2,6,14,0.5)',
+    '--gp-dock-ring': '#67c6ff', '--gp-dock-ring-glow': '0 0 12px #38bdf8, inset 0 0 6px rgba(103,198,255,0.5)',
+    '--gp-on-dock-icon': '#67c6ff', '--gp-on-dock-key': '#ffffff', '--gp-dock-indicator': '#67c6ff',
+    '--gp-dock-off': 'linear-gradient(180deg, #254f91 0%, #173463 100%)', '--gp-on-dock-off': '#ffffff', '--gp-on-dock-off-icon': '#67c6ff', '--gp-dock-edge': '#0b1a33',
+    '--gp-dock-off-raise': '0 4px 8px rgba(2,6,14,0.5)',
+    // Telas secundárias dentro do visor escuro
+    '--gp-card-action': '#0f2340', '--gp-card-info': '#0c1d36', '--gp-field': '#0a182d', '--gp-card-edge': '#284975',
+    '--gp-sec-key': '#13294a', '--gp-sec-edge': '#5b86c4', '--gp-on-sec': '#ffffff', '--gp-on-sec-accent': '#67c6ff',
+    '--gp-sec-raise': 'inset 0 1px 0 rgba(147,197,253,.25), 0 2px 4px rgba(0,0,0,.45)', '--gp-sec-sunk': 'inset 0 2px 5px rgba(0,0,0,.6)',
+    '--gp-navy': '#173463', '--gp-navy-hi': '#254f91', '--gp-on-navy-accent': '#93c5fd',
+    '--gp-on-surface-accent': '#67c6ff',
+    '--gp-ill-stroke': '#67c6ff', '--gp-ill-flow': '#93c5fd', '--gp-ill-grid': '#0f2340', '--gp-ill-grid-line': 'rgba(147,197,253,.35)',
+    '--gp-ill-dirt': 'rgba(148,163,184,.85)', '--gp-ill-meter': '#284975', '--gp-ill-band': 'rgba(103,198,255,.18)', '--gp-ill-band-edge': '#67c6ff',
+    '--gp-surface': '#0c1d36', '--gp-surface-container-lowest': '#0f2340', '--gp-surface-container-low': '#0c1d36',
+    '--gp-surface-container': '#0a182d', '--gp-surface-container-high': '#13294a', '--gp-surface-container-highest': '#284975',
+    '--gp-on-surface': '#ffffff', '--gp-on-surface-variant': '#93c5fd',
+    '--gp-outline': '#5b7aa6', '--gp-outline-variant': '#284975',
+    '--gp-primary': '#67c6ff', '--gp-on-primary': '#061224',
+    '--gp-accent-fill': '#1d4ed8', '--gp-on-accent-fill': '#ffffff',
+    '--gp-primary-container': '#173463', '--gp-on-primary-container': '#ffffff',
+    '--gp-error': '#fca5a5', '--gp-on-error': '#061224', '--gp-success': '#86efac',
+    '--gp-display': '#0a182d', '--gp-on-display': '#ffffff', '--gp-on-display-variant': '#93c5fd',
+    '--gp-on-display-error': '#fca5a5', '--gp-on-display-ok': '#86efac',
+    '--gp-on-disabled': '#7f93b0',
+    '--gp-focus': '#67c6ff', '--gp-focus-chassis': '#ffffff', '--gp-focus-key': '#67c6ff',
+    '--gp-scrim': 'rgba(2,6,13,.65)',
+    '--gp-state-hover': 'rgba(147,197,253,.08)', '--gp-state-pressed': 'rgba(147,197,253,.16)',
+    '--gp-shadow-raise': 'rgba(0,0,0,.55)', '--gp-highlight': 'rgba(147,197,253,.35)',
+    '--gp-key': '#13294a', '--gp-key-edge': '#284975', '--gp-key-inner': '#0a182d',
+    '--gp-on-key': '#ffffff', '--gp-on-key-variant': '#93c5fd', '--gp-key-indicator': '#67c6ff',
+    '--gp-key-primary-ring': 'linear-gradient(180deg,#3b82f6 0,#1e3a8a 100%)', '--gp-key-primary-cap': 'linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%)',
+    '--gp-key-neutral-ring': 'linear-gradient(180deg,#475569 0,#0f172a 100%)', '--gp-key-neutral-cap': 'linear-gradient(180deg, #334155 0%, #1e293b 100%)',
+    '--gp-on-key-cap': '#ffffff', '--gp-on-key-disabled': '#475569',
+    '--gp-key-hover': 'rgba(147,197,253,.08)', '--gp-key-pressed': 'rgba(0,0,0,.25)', '--gp-key-shadow': 'rgba(0,0,0,.6)',
+  },
+  claro: {
+    ...COMUM,
+    '--gp-desk': GRAIN + ', #e6eaef',
+    '--gp-rubber': 'linear-gradient(90deg,var(--gp-navy-deep) 0%,var(--gp-navy-hi) 7%,var(--gp-navy) 50%,var(--gp-navy-hi) 93%,var(--gp-navy-deep) 100%)',
+    '--gp-rubber-shadow': 'inset 0 2px 1px rgba(255,255,255,.14),inset 0 -4px 8px rgba(11,18,32,.35),0 28px 60px rgba(2,6,13,.35)',
+    '--gp-chassis': PRATA,
+    '--gp-chassis-ring': 'inset 0 0 0 1px rgba(255,255,255,.6),0 0 0 1.5px var(--gp-navy-deep)',
+    '--gp-chassis-edge': '#9aa3b0',
+    '--gp-chassis-rule': '#f3f5f8',
+    '--gp-chassis-key': 'linear-gradient(180deg,#ffffff 0%,#dfe3e9 100%)',
+    '--gp-on-chassis': '#091e42', '--gp-on-chassis-variant': '#091e42', '--gp-engrave': GRAVADO_CLARO,
+    '--gp-led-tema': '#19365c',
+    '--gp-bezel': 'linear-gradient(180deg,#f4f6f9 0%,#c8cfd8 50%,#9aa3b0 100%)',
+    '--gp-bezel-ring': '0 0 0 1px #9aa3b0, 0 2px 4px rgba(9,30,66,.12)',
+    '--gp-visor': '#eef2f6',
+    '--gp-visor-edge': '#c1c7d0',
+    '--gp-inset-soft': 'inset 0 3px 8px rgba(11,18,32,.18)',
+    '--gp-inset-soft-sm': 'inset 0 2px 5px rgba(11,18,32,.18)',
+    '--gp-chanfro': 'transparent',
+    '--gp-dock-bar-shadow': 'none',
+    '--gp-pill': '#ffffff', '--gp-pill-edge': '#9aa3b0', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#19365c',
+    '--gp-pill-div': 'rgba(9,30,66,0.16)', '--gp-pill-shadow': 'inset 0 2px 4px rgba(9,30,66,0.12), 0 2px 4px rgba(9,30,66,0.12)',
+    '--gp-reading': '#ffffff', '--gp-reading-edge': '#626f86', '--gp-on-reading': '#19365c',
+    '--gp-reading-shadow': 'inset 0 2px 4px rgba(9,30,66,.1)',
+    '--gp-bar': '#19365c', '--gp-bar-edge': '#9aa3b0', '--gp-on-bar': '#ffffff',
+    '--gp-bar-shadow': 'inset 0 1px 0 rgba(255,255,255,.12), 0 2px 4px rgba(9,30,66,.2)',
+    '--gp-tile': 'linear-gradient(180deg,#24466f 0%,#19365c 100%)', '--gp-tile-border': '0',
+    '--gp-tile-relief': 'inset 0 1.5px 1px rgba(191,219,254,0.35), inset 0 -3px 6px rgba(4,10,24,0.35), 0 4px 8px rgba(9,30,66,0.3)',
+    '--gp-on-tile': '#ffffff', '--gp-on-tile-icon': '#bfdbfe', '--gp-on-tile-shadow': '0 1px 2px rgba(0,0,0,.3)',
+    '--gp-dock-key': 'linear-gradient(180deg,#24466f 0%,#19365c 100%)', '--gp-dock-key-edge': '#19365c',
+    '--gp-dock-key-raise': 'inset 0 1.5px 1px rgba(191,219,254,0.35), 0 3px 6px rgba(9,30,66,0.3)',
+    '--gp-dock-ring': '#2563eb', '--gp-dock-ring-glow': '0 0 10px rgba(37,99,235,.55)',
+    '--gp-on-dock-icon': '#bfdbfe', '--gp-on-dock-key': '#ffffff', '--gp-dock-indicator': '#bfdbfe',
+    '--gp-dock-off': 'linear-gradient(180deg,#24466f 0%,#19365c 100%)', '--gp-on-dock-off': '#ffffff', '--gp-on-dock-off-icon': '#bfdbfe', '--gp-dock-edge': '#19365c',
+    '--gp-dock-off-raise': '0 3px 6px rgba(9,30,66,0.3)',
+    '--gp-card-action': '#ffffff', '--gp-card-info': '#ffffff', '--gp-field': '#ffffff', '--gp-card-edge': '#dfe1e6',
+    '--gp-sec-key': '#ffffff', '--gp-sec-edge': '#19365c', '--gp-on-sec': '#19365c', '--gp-on-sec-accent': '#19365c',
+    '--gp-sec-raise': '0 1px 2px rgba(9,30,66,.25)', '--gp-sec-sunk': 'inset 0 2px 4px rgba(9,30,66,.2)',
+    '--gp-navy': '#19365c', '--gp-navy-hi': '#24466f', '--gp-on-navy-accent': '#93c5fd',
+    '--gp-on-surface-accent': '#19365c',
+    '--gp-ill-stroke': '#19365c', '--gp-ill-flow': '#19365c', '--gp-ill-grid': '#f3f5f8', '--gp-ill-grid-line': 'rgba(25,54,92,.35)',
+    '--gp-ill-dirt': 'rgba(71,85,105,.85)', '--gp-ill-meter': '#cbd5e1', '--gp-ill-band': 'rgba(25,54,92,.18)', '--gp-ill-band-edge': '#24466f',
+    '--gp-surface': '#eef2f6', '--gp-surface-container-lowest': '#ffffff', '--gp-surface-container-low': '#ffffff',
+    '--gp-surface-container': '#ebecf0', '--gp-surface-container-high': '#dfe1e6', '--gp-surface-container-highest': '#c1c7d0',
+    '--gp-on-surface': '#091e42', '--gp-on-surface-variant': '#2c3e5d',
+    '--gp-outline': '#626f86', '--gp-outline-variant': '#c1c7d0',
+    '--gp-primary': '#19365c', '--gp-on-primary': '#ffffff',
+    '--gp-accent-fill': '#19365c', '--gp-on-accent-fill': '#ffffff',
+    '--gp-primary-container': '#e9f2ff', '--gp-on-primary-container': '#091e42',
+    '--gp-error': '#7f1d1d', '--gp-on-error': '#ffffff', '--gp-success': '#064e3b',
+    '--gp-display': '#ffffff', '--gp-on-display': '#091e42', '--gp-on-display-variant': '#2c3e5d',
+    '--gp-on-display-error': '#7f1d1d', '--gp-on-display-ok': '#064e3b',
+    '--gp-on-disabled': '#626f86',
+    '--gp-focus': '#19365c', '--gp-focus-chassis': '#19365c', '--gp-focus-key': '#2563eb',
+    '--gp-scrim': 'rgba(15,23,42,.55)',
+    '--gp-state-hover': 'rgba(9,30,66,.06)', '--gp-state-pressed': 'rgba(9,30,66,.12)',
+    '--gp-shadow-raise': 'rgba(11,18,32,.35)', '--gp-highlight': 'rgba(255,255,255,.9)',
+    '--gp-key': '#ffffff', '--gp-key-edge': '#c1c7d0', '--gp-key-inner': '#cbd5e1',
+    '--gp-on-key': '#091e42', '--gp-on-key-variant': '#2c3e5d', '--gp-key-indicator': '#19365c',
+    '--gp-key-primary-ring': 'linear-gradient(180deg,#24466f 0,#0b1426 100%)', '--gp-key-primary-cap': 'linear-gradient(180deg,#24466f 0%,#19365c 100%)',
+    '--gp-key-neutral-ring': 'linear-gradient(180deg,#19365c 0,#19365c 100%)', '--gp-key-neutral-cap': '#ffffff',
+    '--gp-on-key-cap': '#ffffff', '--gp-on-key-disabled': '#475569',
+    '--gp-key-hover': 'rgba(9,30,66,.06)', '--gp-key-pressed': 'rgba(11,18,32,.14)', '--gp-key-shadow': 'rgba(11,18,32,.35)',
+  },
+  sol: {
+    ...COMUM,
+    '--gp-desk': GRAIN + ', #e3e8ee',
+    '--gp-rubber': 'linear-gradient(90deg,var(--gp-navy-deep) 0%,var(--gp-navy-hi) 7%,var(--gp-navy) 50%,var(--gp-navy-hi) 93%,var(--gp-navy-deep) 100%)',
+    '--gp-rubber-shadow': 'inset 0 2px 1px rgba(255,255,255,.14),inset 0 -4px 8px rgba(11,18,32,.35),0 28px 60px rgba(2,6,13,.35)',
+    '--gp-chassis': '#ffffff',
+    '--gp-chassis-ring': 'inset 0 0 0 2px #091e42',
+    '--gp-chassis-edge': '#091e42',
+    '--gp-chassis-rule': '#091e42',
+    '--gp-chassis-key': '#ffffff',
+    '--gp-on-chassis': '#091e42', '--gp-on-chassis-variant': '#091e42', '--gp-engrave': 'none',
+    '--gp-led-tema': '#091e42',
+    '--gp-bezel': '#091e42',
+    '--gp-bezel-ring': 'none',
+    '--gp-visor': '#ffffff',
+    '--gp-visor-edge': '#091e42',
+    '--gp-inset-soft': 'none',
+    '--gp-inset-soft-sm': 'none',
+    '--gp-chanfro': 'transparent',
+    '--gp-dock-bar-shadow': 'none',
+    '--gp-pill': '#ffffff', '--gp-pill-edge': '#091e42', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#091e42',
+    '--gp-pill-div': '#091e42', '--gp-pill-shadow': 'none',
+    '--gp-reading': '#ffffff', '--gp-reading-edge': '#091e42', '--gp-on-reading': '#091e42', '--gp-reading-shadow': 'none',
+    '--gp-bar': '#ffffff', '--gp-bar-edge': '#091e42', '--gp-on-bar': '#091e42', '--gp-bar-shadow': 'none',
+    '--gp-tile': '#ffffff', '--gp-tile-border': '2px solid #091e42',
+    '--gp-tile-relief': '0 2px 0 #091e42',
+    '--gp-on-tile': '#091e42', '--gp-on-tile-icon': '#091e42', '--gp-on-tile-shadow': 'none',
+    '--gp-dock-key': '#ffffff', '--gp-dock-key-edge': '#091e42', '--gp-dock-key-raise': '0 2px 0 #091e42',
+    '--gp-dock-ring': '#091e42', '--gp-dock-ring-glow': 'inset 0 0 0 2px #091e42',
+    '--gp-on-dock-icon': '#091e42', '--gp-on-dock-key': '#091e42', '--gp-dock-indicator': '#091e42',
+    '--gp-dock-off': '#ffffff', '--gp-on-dock-off': '#091e42', '--gp-on-dock-off-icon': '#091e42', '--gp-dock-edge': '#091e42',
+    '--gp-dock-off-raise': '0 2px 0 #091e42',
+    '--gp-card-action': '#ffffff', '--gp-card-info': '#ffffff', '--gp-field': '#ffffff', '--gp-card-edge': '#091e42',
+    '--gp-sec-key': '#ffffff', '--gp-sec-edge': '#091e42', '--gp-on-sec': '#091e42', '--gp-on-sec-accent': '#091e42',
+    '--gp-sec-raise': '0 2px 0 #091e42', '--gp-sec-sunk': 'inset 0 2px 0 #091e42',
+    '--gp-navy': '#091e42', '--gp-navy-hi': '#19365c', '--gp-on-navy-accent': '#bfdbfe',
+    '--gp-on-surface-accent': '#091e42',
+    '--gp-ill-stroke': '#091e42', '--gp-ill-flow': '#091e42', '--gp-ill-grid': '#ffffff', '--gp-ill-grid-line': 'rgba(9,30,66,.5)',
+    '--gp-ill-dirt': 'rgba(51,65,85,.9)', '--gp-ill-meter': '#cbd5e1', '--gp-ill-band': 'rgba(9,30,66,.18)', '--gp-ill-band-edge': '#091e42',
+    '--gp-surface': '#ffffff', '--gp-surface-container-lowest': '#ffffff', '--gp-surface-container-low': '#ffffff',
+    '--gp-surface-container': '#f1f2f4', '--gp-surface-container-high': '#dfe1e6', '--gp-surface-container-highest': '#c1c7d0',
+    '--gp-on-surface': '#091e42', '--gp-on-surface-variant': '#091e42',
+    '--gp-outline': '#091e42', '--gp-outline-variant': '#44546f',
+    '--gp-primary': '#091e42', '--gp-on-primary': '#ffffff',
+    '--gp-accent-fill': '#091e42', '--gp-on-accent-fill': '#ffffff',
+    '--gp-primary-container': '#e9f2ff', '--gp-on-primary-container': '#091e42',
+    '--gp-error': '#991b1b', '--gp-on-error': '#ffffff', '--gp-success': '#047857',
+    '--gp-display': '#ffffff', '--gp-on-display': '#091e42', '--gp-on-display-variant': '#091e42',
+    '--gp-on-display-error': '#7f1d1d', '--gp-on-display-ok': '#064e3b',
+    '--gp-on-disabled': '#44546f',
+    '--gp-focus': '#091e42', '--gp-focus-chassis': '#091e42', '--gp-focus-key': '#091e42',
+    '--gp-scrim': 'rgba(15,23,42,.45)',
+    '--gp-state-hover': 'rgba(9,30,66,.06)', '--gp-state-pressed': 'rgba(9,30,66,.12)',
+    '--gp-shadow-raise': 'rgba(2,6,13,.3)', '--gp-highlight': 'rgba(255,255,255,1)',
+    '--gp-key': '#ffffff', '--gp-key-edge': '#091e42', '--gp-key-inner': '#cbd5e1',
+    '--gp-on-key': '#091e42', '--gp-on-key-variant': '#091e42', '--gp-key-indicator': '#091e42',
+    '--gp-key-primary-ring': 'linear-gradient(180deg,#091e42 0,#091e42 100%)', '--gp-key-primary-cap': '#091e42',
+    '--gp-key-neutral-ring': 'linear-gradient(180deg,#091e42 0,#091e42 100%)', '--gp-key-neutral-cap': '#ffffff',
+    '--gp-on-key-cap': '#ffffff', '--gp-on-key-disabled': '#334155',
+    '--gp-key-hover': 'rgba(9,30,66,.06)', '--gp-key-pressed': 'rgba(2,6,13,.16)', '--gp-key-shadow': 'rgba(2,6,13,.3)',
+  },
+};
+// Nome antigo do tema claro (v5.1 e telas salvas antes de 26/10).
+const NOME = { bancada: 'claro', titanio: 'titanio', claro: 'claro', sol: 'sol' };
+const aliases = () => ({
+  '--gp-dialog': 'var(--gp-visor)', '--gp-icon-well': 'var(--gp-accent-fill)', '--gp-on-icon-well': 'var(--gp-on-accent-fill)',
+  '--gp-selected': 'var(--gp-primary-container)', '--gp-on-selected': 'var(--gp-on-primary-container)', '--gp-selected-border': 'var(--gp-primary)',
+  '--gp-readonly': 'var(--gp-card-info)', '--gp-disabled': 'var(--gp-card-info)',
+});
+
+// Peças moldadas (relevo, poço, texto de exemplo): tokens derivados das cores acima.
+// Camada de cor sólida vira linear-gradient(c,c) porque só a última camada do background aceita cor pura.
+const MOLDE = {
+  '--gp-mold-raised': 'linear-gradient(var(--gp-card-action),var(--gp-card-action)) padding-box,linear-gradient(var(--gp-sec-edge),var(--gp-sec-edge)) border-box',
+  '--gp-mold-sunken': 'linear-gradient(var(--gp-surface-container),var(--gp-surface-container)) padding-box,linear-gradient(var(--gp-sec-edge),var(--gp-sec-edge)) border-box',
+  '--gp-mold-selected': 'linear-gradient(165deg,var(--gp-accent-fill) 0%,var(--gp-navy-deep) 100%) padding-box,linear-gradient(180deg,var(--gp-primary) 0%,var(--gp-outline-variant) 50%,var(--gp-primary-container) 100%) border-box',
+  '--gp-well': 'linear-gradient(var(--gp-field),var(--gp-field)) padding-box,linear-gradient(180deg,var(--gp-outline-variant) 0%,var(--gp-outline) 100%) border-box',
+  '--gp-on-feature': 'var(--gp-on-accent-fill)',
+  '--gp-on-selected': 'var(--gp-on-accent-fill)',
+  '--gp-placeholder': 'var(--gp-on-surface-variant)',
+  '--gp-panel-shadow': 'none',
+  '--gp-well-shadow': 'inset 0 2px 6px var(--gp-shadow-raise)',
+  '--gp-icon-well-shadow': 'none',
+  '--gp-key-raise': '0 0 0 1px var(--gp-key-edge),0 1px 2px var(--gp-shadow-raise)',
+  '--gp-key-sunk': '0 0 0 1px var(--gp-key-edge),inset 0 3px 6px var(--gp-key-shadow)',
+  '--gp-display-well': '0 0 0 1px var(--gp-key-edge),inset 0 3px 8px var(--gp-key-shadow)',
+  '--gp-signal-glow': 'none',
+  '--gp-key-emboss': 'none',
+};
+const PECAS = {
+  titanio: { ...MOLDE, '--gp-mold-shadow': '0 2px 4px rgba(0,0,0,.45)', '--gp-mold-shadow-pressed': 'inset 0 2px 5px rgba(0,0,0,.6)', '--gp-feature-shadow': '0 0 10px rgba(56,189,248,.35)', '--gp-paper-inset': 'inset 0 2px 6px rgba(2,6,13,.3)', '--gp-key-glow': 'rgba(56,189,248,.35)' },
+  claro: { ...MOLDE, '--gp-mold-shadow': '0 1px 2px rgba(9,30,66,.25)', '--gp-mold-shadow-pressed': 'inset 0 2px 4px rgba(9,30,66,.2)', '--gp-feature-shadow': '0 1px 2px rgba(9,30,66,.3)', '--gp-paper-inset': 'inset 0 2px 6px rgba(2,6,13,.3)', '--gp-key-glow': 'rgba(37,99,235,.3)' },
+  sol: { ...MOLDE, '--gp-mold-selected': 'linear-gradient(var(--gp-accent-fill),var(--gp-accent-fill)) padding-box,linear-gradient(var(--gp-accent-fill),var(--gp-accent-fill)) border-box', '--gp-mold-shadow': '0 2px 0 #091e42', '--gp-mold-shadow-pressed': 'inset 0 2px 0 #091e42', '--gp-feature-shadow': 'none', '--gp-well-shadow': 'none', '--gp-paper-inset': 'inset 0 2px 5px rgba(2,6,13,.14)', '--gp-key-glow': 'rgba(9,30,66,.25)' },
+};
+
+class Component extends DCLogic {
+  static TEMAS = TEMAS;
+  renderVals() {
+    const t = NOME[this.props.tema] || 'titanio';
+    return {
+      tema: t,
+      vars: Object.assign({ display: this.props.bloco ? 'block' : 'contents', color: 'var(--gp-on-surface)' }, this.props.style || {}, aliases(), TEMAS[t], PECAS[t], this.props.extra || {}),
+      conteudo: this.props.children,
+    };
+  }
+}
+</script>
+</body>
+</html>
