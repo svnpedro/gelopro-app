@@ -83,7 +83,8 @@ const TEMAS = {
     // Pílulas de leitura (dentro do visor) e barras de atalho (no chassi)
     '--gp-reading': '#0c1d36', '--gp-reading-edge': '#7c8898', '--gp-on-reading': '#67c6ff',
     // Leitura e resultado: espera (—), valor medido e unidade. Valem nas pílulas e nos mostradores de PT/SH, NTC e carga térmica.
-    '--gp-on-reading-idle': '#94a3b8', '--gp-on-reading-val': '#4ade80', '--gp-on-reading-unit': '#67c6ff',
+    // O valor medido é neutro (branco / marinho), nunca verde: verde é "normal / ok" no contrato de cor e não pode marcar um desvio alto.
+    '--gp-on-reading-idle': '#94a3b8', '--gp-on-reading-val': '#ffffff', '--gp-on-reading-unit': '#67c6ff',
     '--gp-reading-shadow': 'inset 0 2px 4px rgba(0,0,0,.5)',
     '--gp-bar': '#071426', '--gp-bar-edge': '#b0b8c4', '--gp-on-bar': '#ffffff',
     '--gp-bar-shadow': 'inset 0 1px 0 rgba(255,255,255,.08), 0 2px 4px rgba(0,0,0,.3)',
@@ -150,7 +151,7 @@ const TEMAS = {
     '--gp-pill': '#ffffff', '--gp-pill-edge': '#9aa3b0', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#19365c',
     '--gp-pill-div': 'rgba(9,30,66,0.16)', '--gp-pill-shadow': 'inset 0 2px 4px rgba(9,30,66,0.12), 0 2px 4px rgba(9,30,66,0.12)',
     '--gp-reading': '#ffffff', '--gp-reading-edge': '#626f86', '--gp-on-reading': '#19365c',
-    '--gp-on-reading-idle': '#44546f', '--gp-on-reading-val': '#047857', '--gp-on-reading-unit': '#19365c',
+    '--gp-on-reading-idle': '#44546f', '--gp-on-reading-val': '#091e42', '--gp-on-reading-unit': '#19365c',
     '--gp-reading-shadow': 'inset 0 2px 4px rgba(9,30,66,.1)',
     '--gp-bar': '#19365c', '--gp-bar-edge': '#9aa3b0', '--gp-on-bar': '#ffffff',
     '--gp-bar-shadow': 'inset 0 1px 0 rgba(255,255,255,.12), 0 2px 4px rgba(9,30,66,.2)',
@@ -215,7 +216,7 @@ const TEMAS = {
     '--gp-pill': '#ffffff', '--gp-pill-edge': '#091e42', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#091e42',
     '--gp-pill-div': '#091e42', '--gp-pill-shadow': 'none',
     '--gp-reading': '#ffffff', '--gp-reading-edge': '#091e42', '--gp-on-reading': '#091e42', '--gp-reading-shadow': 'none',
-    '--gp-on-reading-idle': '#44546f', '--gp-on-reading-val': '#047857', '--gp-on-reading-unit': '#19365c',
+    '--gp-on-reading-idle': '#44546f', '--gp-on-reading-val': '#091e42', '--gp-on-reading-unit': '#19365c',
     '--gp-bar': '#ffffff', '--gp-bar-edge': '#091e42', '--gp-on-bar': '#091e42', '--gp-bar-shadow': 'none',
     '--gp-tile': '#ffffff', '--gp-tile-border': '2px solid #091e42',
     '--gp-tile-relief': '0 2px 0 #091e42',

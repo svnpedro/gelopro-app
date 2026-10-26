@@ -1005,7 +1005,7 @@ class Component extends DCLogic {
     const p = P[id];
     return v !== '—' && Date.now() - p.t < 700 ? `${p.n % 2 ? 'gpPulseResult' : 'gpPulseResult2'} 600ms ease-out` : 'none';
   }
-  // Mostrador de resultado: "12,3 °C" vira número (verde telemetria, 700) e unidade (ciano técnico, 600); "—" fica no tom de espera.
+  // Mostrador de resultado: "12,3 °C" vira número (neutro em destaque, 700) e unidade (ciano técnico, 600); "—" fica no tom de espera.
   // O espaço vai no início da unidade: se a coluna for estreita, a unidade desce para a linha de baixo e o número nunca parte.
   mostrador(id, v, visivel) {
     const i = v.lastIndexOf(' '), tem = v !== '—';
