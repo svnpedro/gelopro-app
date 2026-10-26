@@ -1,0 +1,19 @@
+/* Mantenha este CSS e acetinado-sedoso.svg na mesma pasta.
+   A textura contém os pixels originais da opção 5; não é um gradiente.
+   Não modifica tamanho, espaçamento, conteúdo, botões ou tipografia. */
+@layer reset, base, components, states, utilities;
+
+:root {
+  --gp-satin-surface: #c1c0c1;
+  --gp-satin-texture: url("./acetinado-sedoso.svg");
+}
+
+@layer components {
+  .gp-acetinado-sedoso {
+    background-color: var(--gp-satin-surface);
+    background-image: var(--gp-satin-texture);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+  }
+}

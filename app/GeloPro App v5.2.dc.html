@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&amp;family=Figtree:wght@800&amp;display=swap" rel="stylesheet">
+<link href="ref/acetinado-sedoso.css" rel="stylesheet">
 <style>
 html,body{margin:0;background:#e6eaef;}
 a{color:var(--gp-primary);}a:hover{color:var(--gp-on-primary-container);}
@@ -18,6 +19,9 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 :focus-visible,[data-foco="1"]{outline:3px solid var(--gp-focus);outline-offset:2px;}
 [data-campo]:focus-within{outline:3px solid var(--gp-focus);outline-offset:2px;}
 [data-chassi] :focus-visible{outline-color:var(--gp-focus-chassis);}
+/* Chassi: acabamento "Acetinado sedoso" (opção 5) pela classe .gp-acetinado-sedoso de ref/acetinado-sedoso.css (camada components), em titânio e claro.
+   O modo sol (alto contraste) mantém o chassi branco do tema: esta regra fica fora de camada e por isso vence a classe. */
+[data-tema=sol] [data-chassi]{background:var(--gp-chassis);}
 [data-vis] :focus-visible,[data-vis] [data-campo]:focus-within{outline-color:var(--gp-focus);}
 [data-chanfro] :focus-visible{outline-color:var(--gp-focus-key);outline-offset:-5px;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
@@ -53,7 +57,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
   <div data-lateral="" style="position:absolute;left:-3px;top:230px;width:5px;height:60px;border-radius:3px;background:var(--gp-chassis-edge);"></div>
   <div data-lateral="" style="position:absolute;right:-3px;top:200px;width:5px;height:66px;border-radius:3px;background:var(--gp-chassis-edge);"></div>
 
-  <div data-chassi="" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column;border-radius:50px;overflow:hidden;background:var(--gp-chassis);box-shadow:var(--gp-chassis-ring);">
+  <div data-chassi="" class="gp-acetinado-sedoso" style="position:relative;width:100%;height:100%;display:flex;flex-direction:column;border-radius:50px;overflow:hidden;box-shadow:var(--gp-chassis-ring);">
     <div aria-hidden="true" data-decor="" data-microfaixa="" style="position:relative;z-index:31;flex:none;height:22px;padding:env(safe-area-inset-top) 12px 0;pointer-events:none;"></div>
 
     <div inert="{{ inerte }}" aria-hidden="{{ fundoOculto }}" style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;">
