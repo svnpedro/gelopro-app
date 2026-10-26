@@ -112,7 +112,7 @@ input::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
                 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                   <sc-for list="{{ teclas }}" as="k" hint-placeholder-count="8">
                     <div data-cc="{{ k.cc }}" style="display:flex;flex-direction:column;gap:4px;min-width:0;">
-                      <dc-import name="TeclaResposta" rotulo="{{ k.r }}" primaria="{{ k.pri }}" cantos="{{ k.c }}" estado="{{ k.e }}" style="display:block;" hint-size="100%,100px"></dc-import>
+                      <dc-import name="TeclaResposta" rotulo="{{ k.r }}" primaria="{{ k.pri }}" estado="{{ k.e }}" style="display:block;" hint-size="100%,56px"></dc-import>
                       <span style="font:500 12px/16px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-align:center;">{{ k.leg }}</span>
                     </div>
                   </sc-for>
@@ -248,7 +248,7 @@ const CAMPOS = [
 ];
 const SELOS = [['Etapa 1 de 4', 'info'], ['Registrado', 'sucesso'], ['Fora da faixa', 'erro'], ['Revisar', 'aviso'], ['Amostra', 'neutro']];
 const AVISOS = [['info', 'Modelo não identificado', 'Referências da marca valem só depois de identificar a linha.'], ['aviso', 'Sem medição nesta etapa', 'A hipótese vem só das respostas. Meça antes de concluir.'], ['erro', 'Não foi possível gerar o PDF', 'Confira o titular e tente de novo. Nada foi perdido.'], ['sucesso', 'Orçamento salvo', 'Fica no Cofre deste aparelho.']];
-const TECLAS = [['Normal', true, 'esq', 'normal'], ['Fraca', false, 'dir', 'normal'], ['Normal', true, 'esq', 'hover'], ['Fraca', false, 'dir', 'foco'], ['Normal', true, 'esq', 'pressionado'], ['Fraca', false, 'dir', 'carregando'], ['Gerar', true, 'esq', 'desabilitado'], ['Voltar', false, 'dir', 'desabilitado']];
+const TECLAS = [['Normal', true, 'normal'], ['Fraca', false, 'normal'], ['Normal', true, 'hover'], ['Fraca', false, 'foco'], ['Normal', true, 'pressionado'], ['Fraca', false, 'carregando'], ['Gerar', true, 'desabilitado'], ['Voltar', false, 'desabilitado']];
 const LEIT = [['—', 'PSI', 'SEM MEDIÇÃO', 'R410A · faixa —', 'normal'], ['212', 'PSI', 'FORA DA FAIXA', '100–130 · amostra', 'erro'], ['', 'kΩ', '', 'Sensor · faixa —', 'carregando'], ['118', 'PSI', '', 'R410A · amostra', 'somente-leitura'], ['—', '°C', 'SEM MEDIÇÃO', 'Faixa —', 'desabilitado'], ['—', 'kΩ', 'SEM MEDIÇÃO', 'Sensor · faixa —', 'foco']];
 const DOCK = [['Início', 'home', 'selecionado', true], ['NTC/BTU', 'ntc', 'hover'], ['PT/SH', 'ptsh', 'normal', false, true], ['Inverter', 'inv', 'foco'], ['Docs', 'docs', 'pressionado'], ['Cofre', 'cofre', 'desabilitado']];
 
@@ -336,7 +336,7 @@ class Component extends DCLogic {
       campos: CAMPOS.map(([r, v, ph, e, aj, i]) => ({ r, v, ph, e, aj, i: i || 'nenhum', cc: cc('Campo', e) })),
       selos: SELOS.map(([t, tipo]) => ({ t, tipo, cc: cc('Selo', tipo) })),
       avisos: AVISOS.map(([tipo, t, x]) => ({ tipo, t, x, cc: cc('Aviso', tipo) })),
-      teclas: TECLAS.map(([r, pri, c, e]) => ({ r, pri, c, e, leg: (pri ? 'primária · ' : 'secundária · ') + e, cc: cc(pri ? 'Botão primário' : 'Botão secundário', e) })),
+      teclas: TECLAS.map(([r, pri, e]) => ({ r, pri, e, leg: (pri ? 'primária · ' : 'secundária · ') + e, cc: cc(pri ? 'Botão primário' : 'Botão secundário', e) })),
       leituras: LEIT.map(([v, u, o, f, e]) => ({ v, u, o: o || undefined, f, e, cc: cc('Visor técnico', e) })),
       dock: DOCK.map(([rot, i, e, ativo, lock]) => ({ rot, icone: i, e, ativo: !!ativo, lock: !!lock, cc: cc('Navegação inferior', lock ? 'bloqueado' : e) })),
       linhasOrc: [['Limpeza da condensadora', '180,00', 'normal'], ['Capacitor 35+5 µF', '', 'erro'], ['Carga de fluido R410A', '250,00', 'somente-leitura'], ['', '', 'desabilitado']].map(([d, v, e], i) => ({ n: i + 1, d, v, e, cc: cc('Item de orçamento', e) })),

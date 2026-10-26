@@ -66,23 +66,34 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           </div>
         </header>
 
-        <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:28px;background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
-          <div data-vis="" style="position:relative;height:100%;box-sizing:border-box;padding:12px 10px 12px;border-radius:25px;overflow:hidden;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);display:flex;flex-direction:column;gap:8px;">
+        <sc-if value="{{ temTopo }}" hint-placeholder-val="{{ false }}">
+          <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:8px;padding:0 6px;">
+            <button type="button" aria-label="Voltar" onClick="{{ voltar }}" style="width:48px;height:48px;flex:none;border-radius:14px;border:1px solid var(--gp-sec-edge);background:var(--gp-sec-key);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 120ms ease-out;" style-hover="filter:brightness(1.04);" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="voltar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
+            <div style="flex:1;min-width:0;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
+              <span style="font:500 16px/20px 'Roboto',sans-serif;color:var(--gp-on-pill-label);text-wrap:balance;">{{ kicker }}</span>
+              <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ titulo }}</span>
+            </div>
+            <sc-if value="{{ temSelo }}" hint-placeholder-val="{{ false }}"><dc-import name="Selo" texto="{{ seloTxt }}" tipo="info" vivo="{{ true }}" style="flex:none;" hint-size="104px,26px"></dc-import></sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
+        <div data-cabecalho="" style="flex:none;display:flex;align-items:flex-start;gap:8px;padding:0 6px;">
+          <button type="button" aria-label="Voltar" onClick="{{ voltar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="voltar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
+          <div style="flex:1;min-width:0;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
+            <span style="display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ titulo }}</span><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ seloTxt }}</span></span>
+            <h2 style="margin:0;font:700 18px/22px 'Roboto',sans-serif;color:var(--gp-on-pill);text-wrap:balance;">{{ pergunta }}</h2>
+          </div>
+          <button type="button" aria-label="Como verificar" aria-expanded="{{ dicaExp }}" onClick="{{ dicaToggle }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="info" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span></button>
+        </div>
+        </sc-if>
+
+        <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:{{ aroR }};background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
+          <div data-vis="" style="position:relative;height:100%;box-sizing:border-box;padding:12px 10px 12px;border-radius:{{ visR }};overflow:hidden;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);display:flex;flex-direction:column;gap:8px;">
 
             
 
             <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:16px;">
-              <sc-if value="{{ temTopo }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:none;display:flex;align-items:center;gap:8px;">
-                  <button type="button" aria-label="Voltar" onClick="{{ voltar }}" style="width:48px;height:48px;flex:none;border-radius:14px;border:1px solid var(--gp-sec-edge);background:var(--gp-sec-key);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 120ms ease-out;" style-hover="filter:brightness(1.04);" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="voltar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
-                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
-                    <span style="font:500 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:balance;">{{ kicker }}</span>
-                    <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ titulo }}</span>
-                  </div>
-                  <sc-if value="{{ temSelo }}" hint-placeholder-val="{{ false }}"><dc-import name="Selo" texto="{{ seloTxt }}" tipo="info" vivo="{{ true }}" style="flex:none;" hint-size="104px,26px"></dc-import></sc-if>
-                </div>
-              </sc-if>
-
               <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <h2 style="flex:none;margin:0;font:700 19px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);text-align:center;">O que o aparelho apresenta?</h2>
@@ -107,25 +118,17 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;animation:gpIn 180ms ease-out;">
                   <div style="flex:none;display:flex;flex-direction:column;gap:8px;">
-                  <div style="display:flex;align-items:flex-start;gap:8px;">
-                    <button type="button" aria-label="Voltar" onClick="{{ voltar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="voltar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
-                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
-                      <span style="display:flex;flex-wrap:wrap;align-items:baseline;column-gap:8px;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-accent);">{{ titulo }}</span><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ seloTxt }}</span></span>
-                      <h2 style="margin:0;font:700 18px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:balance;">{{ pergunta }}</h2>
-                    </div>
-                    <button type="button" aria-label="Como verificar" aria-expanded="{{ dicaExp }}" onClick="{{ dicaToggle }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="info" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span></button>
-                  </div>
                   <sc-if value="{{ dicaVis }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ dica }}</p></sc-if>
                   </div>
                   <div style="flex:1;min-height:0;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:{{ linhas }};gap:8px;">
                     <sc-for list="{{ opcoes }}" as="o" hint-placeholder-count="2">
-                      <div style="min-width:0;min-height:0;grid-column:{{ o.gcol }};display:flex;flex-direction:column;border-radius:18px;overflow:hidden;border:1px solid var(--gp-card-edge);background:var(--gp-card-action);">
-                        <sc-if value="{{ o.temBand }}" hint-placeholder-val="{{ true }}"><div style="position:relative;flex:1;min-height:120px;box-sizing:border-box;background:{{ o.band }};display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                      <div style="min-width:0;min-height:0;grid-column:{{ o.gcol }};display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1px solid var(--gp-card-edge);background:var(--gp-card-action);">
+                        <sc-if value="{{ o.temBand }}" hint-placeholder-val="{{ true }}"><div style="position:relative;flex:1;min-height:56px;box-sizing:border-box;background:{{ o.band }};display:flex;align-items:center;justify-content:center;overflow:hidden;">
                           <sc-if value="{{ o.temCena }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;inset:0;background-size:contain;background-position:center;background-repeat:no-repeat;background-image:{{ o.cenaBg }};display:block;"></span></sc-if>
                           <sc-if value="{{ o.semCena }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;max-height:100%;">{{ o.visual }}</span></sc-if>
                         </div></sc-if>
                         <sc-if value="{{ o.temLeg }}" hint-placeholder-val="{{ true }}"><span style="flex:none;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:5px 12px;background:var(--gp-card-action);font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);text-align:center;text-wrap:balance;">{{ o.c }}</span></sc-if>
-                        <button type="button" aria-label="{{ o.aria }}" onClick="{{ o.onClick }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 12px;border:0;background-color:{{ o.bgc }};background-image:{{ o.bg }};color:#ffffff;display:flex;align-items:center;justify-content:center;gap:10px;font:700 20px/24px 'Roboto',sans-serif;text-wrap:balance;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);" style-active="filter:brightness(.92);box-shadow:inset 0 3px 6px rgba(0,0,0,.3);">
+                        <button type="button" aria-label="{{ o.aria }}" onClick="{{ o.onClick }}" style="flex:none;min-height:56px;box-sizing:border-box;padding:4px 12px;border:0;background-color:{{ o.bgc }};background-image:{{ o.bg }};color:#ffffff;display:flex;align-items:center;justify-content:center;gap:10px;font:700 20px/24px 'Roboto',sans-serif;text-wrap:balance;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.22);" style-active="filter:brightness(.92);box-shadow:inset 0 3px 6px rgba(0,0,0,.3);">
                           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;"><path d="{{ o.d }}"></path></svg>{{ o.l }}
                         </button>
                       </div>
@@ -143,7 +146,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </div>
                   <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
                     <span style="flex:none;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">O que fazer agora</span>
-                    <ol style="flex:none;margin:0;padding:0;list-style:none;border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);overflow:hidden;">
+                    <ol style="flex:none;margin:0;padding:0;list-style:none;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);overflow:hidden;">
                       <sc-for list="{{ acoes }}" as="a" hint-placeholder-count="3">
                         <li style="display:flex;align-items:center;gap:12px;min-height:40px;box-sizing:border-box;padding:0 12px;border-top:{{ a.linha }};">
                           <span style="flex:none;width:28px;height:28px;border-radius:14px;background:var(--gp-primary-container);display:flex;align-items:center;justify-content:center;font:700 16px/18px 'Roboto',sans-serif;color:var(--gp-primary);">{{ a.n }}</span>
@@ -155,7 +158,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </div>
                   <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                     <sc-for list="{{ resKeys }}" as="o" hint-placeholder-count="2">
-                      <dc-import name="TeclaResposta" rotulo="{{ o.l }}" primaria="{{ o.pri }}" cantos="{{ o.cantos }}" aria="{{ o.aria }}" acao="{{ o.onClick }}" style="display:block;min-width:0;" hint-size="100%,100px"></dc-import>
+                      <dc-import name="TeclaResposta" rotulo="{{ o.l }}" primaria="{{ o.pri }}" aria="{{ o.aria }}" acao="{{ o.onClick }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
                     </sc-for>
                   </div>
                 </div>
@@ -163,13 +166,13 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
               <sc-if value="{{ telaCodigo }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
-                  <dc-import name="CampoTexto" aria="Código mostrado no display" valor="{{ codBusca }}" aoDigitar="{{ setCod }}" placeholder="Código ou parte da descrição" icone="busca" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
+                  <dc-import name="CampoTexto" aria="Código mostrado no display" valor="{{ codBusca }}" aoDigitar="{{ setCod }}" placeholder="Código ou parte da descrição" icone="busca" style="display:block;flex:none;" hint-size="100%,56px"></dc-import>
                   <span style="flex:none;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ codInfo }}</span>
                   <dc-import name="Aviso" tipo="aviso" titulo="Código aponta o circuito, não a peça" texto="Sozinho, não confirma a peça com defeito. Meça antes de trocar." style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <div role="list" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
                     <sc-for list="{{ codLista }}" as="c" hint-placeholder-count="0">
                       <div role="listitem" style="flex:none;">
-                        <button type="button" aria-expanded="{{ c.exp }}" onClick="{{ c.abrir }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 4px 8px 12px;border-radius:12px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-sec-raise);color:var(--gp-on-surface);display:grid;grid-template-columns:auto minmax(0,1fr) 32px;align-items:center;column-gap:12px;row-gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(1px);">
+                        <button type="button" aria-expanded="{{ c.exp }}" onClick="{{ c.abrir }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 4px 8px 12px;border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-sec-raise);color:var(--gp-on-surface);display:grid;grid-template-columns:auto minmax(0,1fr) 32px;align-items:center;column-gap:12px;row-gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(1px);">
                           <span style="font:700 20px/24px 'Roboto',sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ c.codigo }}</span>
                           <span style="font:500 16px/20px 'Roboto',sans-serif;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:{{ c.linhas }};overflow:hidden;text-wrap:pretty;">{{ c.descricao }}</span>
                           <span aria-hidden="true" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;transform:{{ c.seta }};"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
@@ -193,7 +196,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <dc-import name="CampoTexto" rotulo="Sucção (psig)" valor="{{ ptP }}" estado="{{ ptPE }}" erroMsg="{{ ptPM }}" aoDigitar="{{ setPtP }}" placeholder="Ex.: 118" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="Tubo de sucção (°C)" valor="{{ ptT }}" estado="{{ ptTE }}" erroMsg="{{ ptTM }}" aoDigitar="{{ setPtT }}" placeholder="Ex.: 12" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                   </div>
-                  <div role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;background:var(--gp-display);box-shadow:inset 0 3px 6px var(--gp-key-shadow);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                  <div role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;background:var(--gp-display);box-shadow:inset 0 3px 6px var(--gp-key-shadow);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                     <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                       <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);">{{ ptSatRot }}</span>
                       <span style="font:500 24px/28px 'Roboto',sans-serif;color:var(--gp-on-display);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ ptSat }}</span>
@@ -203,7 +206,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <span style="font:500 24px/28px 'Roboto',sans-serif;color:var(--gp-on-display);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ ptSH }}</span>
                     </div>
                   </div>
-                  <sc-if value="{{ ptTemPar }}" hint-placeholder-val="{{ false }}"><div style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Termômetro no tubo de sucção: preso e isolado</span><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:12px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ ptParErro }};"></span><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:12px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ ptParCerto }};"></span></div></div></sc-if>
+                  <sc-if value="{{ ptTemPar }}" hint-placeholder-val="{{ false }}"><div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Termômetro no tubo de sucção: preso e isolado</span><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ ptParErro }};"></span><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ ptParCerto }};"></span></div></div></sc-if>
                   <sc-if value="{{ ptFalta }}" hint-placeholder-val="{{ true }}"><dc-import name="Aviso" tipo="aviso" titulo="Medição insuficiente — informe pressão de sucção e temperatura do tubo" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-if value="{{ ptFora }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Pressão fora da tabela" texto="{{ ptForaX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="Aviso" tipo="info" titulo="{{ ptRefT }}" texto="{{ ptRefX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
@@ -225,7 +228,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <dc-import name="CampoTexto" rotulo="No sensor (°C)" valor="{{ ntcT }}" estado="{{ ntcTE }}" erroMsg="{{ ntcTM }}" aoDigitar="{{ setNtcT }}" placeholder="Ex.: 25" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                       <dc-import name="CampoTexto" rotulo="Medido (kΩ)" valor="{{ ntcR }}" estado="{{ ntcRE }}" erroMsg="{{ ntcRM }}" aoDigitar="{{ setNtcR }}" placeholder="Ex.: 10,2" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     </div>
-                    <div role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;background:var(--gp-display);box-shadow:inset 0 3px 6px var(--gp-key-shadow);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+                    <div role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;background:var(--gp-display);box-shadow:inset 0 3px 6px var(--gp-key-shadow);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
                       <sc-for list="{{ ntcOut }}" as="o" hint-placeholder-count="3">
                         <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                           <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ o.rot }}</span>
@@ -251,7 +254,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <dc-import name="CampoTexto" rotulo="Aparelhos (W)" valor="{{ bW }}" estado="{{ bE.w }}" erroMsg="{{ bM.w }}" aoDigitar="{{ bSetW }}" placeholder="300" modo="numeric" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                   </div>
                   <dc-import name="SeletorPrazo" rotulo="Exposição ao sol" opcoes="{{ bSolOps }}" valor="{{ bSol }}" acao="{{ bSetSol }}" style="display:block;flex:none;" hint-size="100%,76px"></dc-import>
-                  <div role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;background:var(--gp-display);box-shadow:inset 0 3px 6px var(--gp-key-shadow);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+                  <div role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;background:var(--gp-display);box-shadow:inset 0 3px 6px var(--gp-key-shadow);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
                     <sc-for list="{{ bOut }}" as="o" hint-placeholder-count="3">
                       <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                         <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ o.rot }}</span>
@@ -277,15 +280,15 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <dc-import name="Aviso" tipo="aviso" titulo="{{ invAvisoT }}" texto="{{ invAvisoX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <sc-for list="{{ invEtapas }}" as="e" hint-placeholder-count="3">
-                    <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                    <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <div style="display:flex;align-items:flex-start;gap:8px;">
                         <span style="flex:none;font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);font-variant-numeric:tabular-nums;">{{ e.n }}</span>
                         <span style="flex:1;min-width:0;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ e.t }}</span>
                         <dc-import name="Selo" texto="{{ e.selo }}" tipo="{{ e.seloTipo }}" style="flex:none;" hint-size="96px,26px"></dc-import>
                       </div>
                       <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ e.como }}</span>
-                      <sc-if value="{{ e.temPar }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:12px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ e.parErro }};"></span><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:12px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ e.parCerto }};"></span></div></sc-if>
-                      <div style="box-sizing:border-box;padding:8px 12px;border-radius:10px;background:var(--gp-display);display:flex;flex-direction:column;gap:2px;">
+                      <sc-if value="{{ e.temPar }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ e.parErro }};"></span><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ e.parCerto }};"></span></div></sc-if>
+                      <div style="box-sizing:border-box;padding:8px 12px;border-radius:16px;background:var(--gp-display);display:flex;flex-direction:column;gap:2px;">
                         <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);">Referência do manual</span>
                         <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display);text-wrap:pretty;">{{ e.ref }}</span>
                       </div>
@@ -318,7 +321,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-for list="{{ adic }}" as="a" hint-placeholder-count="3">
                       <sc-if value="{{ a.abre }}" hint-placeholder-val="{{ false }}"><dc-import name="LinhaFicha" tipo="Liberado" titulo="{{ a.t }}" sub="{{ a.x }}" acao="{{ a.acao }}" style="display:block;flex:none;" hint-size="100%,88px"></dc-import></sc-if>
                       <sc-if value="{{ a.fecha }}" hint-placeholder-val="{{ true }}">
-                      <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:6px;">
+                      <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:6px;">
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ a.t }}</span><dc-import name="Selo" texto="{{ a.selo }}" tipo="{{ a.tipo }}" hint-size="96px,26px"></dc-import></div>
                         <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ a.x }}</span>
                       </div>
@@ -331,15 +334,15 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaLaudo }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <dc-import name="CampoTexto" rotulo="Cliente" valor="{{ lCli }}" aoDigitar="{{ lSetCli }}" placeholder="Nome do cliente" estado="{{ lCliE }}" erroMsg="informe o cliente" style="display:block;flex:none;" hint-size="100%,74px"></dc-import>
-                  <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:4px;">
+                  <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:4px;">
                     <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Equipamento e medições registradas</span>
                     <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ fEquip }}</span>
                     <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);white-space:pre-line;">{{ lMed }}</span>
                   </div>
                   <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Constatações</span>
-                  <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:14px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Constatações" rows="3" value="{{ lConst }}" onInput="{{ lSetConst }}" placeholder="O que foi verificado e encontrado" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+                  <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Constatações" rows="3" value="{{ lConst }}" onInput="{{ lSetConst }}" placeholder="O que foi verificado e encontrado" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Conclusão</span>
-                  <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:14px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Conclusão" rows="3" value="{{ lConc }}" onInput="{{ lSetConc }}" placeholder="Por que o reparo não é viável" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+                  <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Conclusão" rows="3" value="{{ lConc }}" onInput="{{ lSetConc }}" placeholder="Por que o reparo não é viável" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <sc-if value="{{ lErro }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Faltam dados para o laudo" texto="Preencha cliente, constatações e conclusão." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="AtalhoTecla" rotulo="PDF do laudo de inviabilidade" icone="documento" acao="{{ lPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
                 </div>
@@ -360,17 +363,17 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><dc-import name="CampoTexto" rotulo="Registro no conselho" valor="{{ pmReg }}" aoDigitar="{{ pmSet.reg }}"  style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import><dc-import name="CampoTexto" rotulo="ART" valor="{{ pmArt }}" aoDigitar="{{ pmSet.art }}"  style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import></div>
                   <sc-if value="{{ pmSemRt }}" hint-placeholder-val="{{ true }}"><dc-import name="Aviso" tipo="aviso" titulo="Sem responsável técnico" texto="Obrigatório para sistemas acima de 60.000 BTU/h (Portaria 3.523, art. 6º). O PDF sai com o campo em branco." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">4. Ambientes climatizados</span>
-                  <span data-campo="1" style="flex:none;display:flex;box-sizing:border-box;padding:10px 14px;border-radius:14px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Ambientes climatizados" rows="3" value="{{ pmAmbs }}" onInput="{{ pmSet.ambs }}" placeholder="Ambiente, equipamento e BTU/h, um por linha" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+                  <span data-campo="1" style="flex:none;display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Ambientes climatizados" rows="3" value="{{ pmAmbs }}" onInput="{{ pmSet.ambs }}" placeholder="Ambiente, equipamento e BTU/h, um por linha" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">5. Plano de manutenção e controle</span>
                   <sc-for list="{{ pmGrupos }}" as="g" hint-placeholder-count="3">
-                    <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                    <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ g.t }}</span>
                       <sc-for list="{{ g.ativ }}" as="x" hint-placeholder-count="3"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ x }}</span></sc-for>
                       <dc-import name="CampoTexto" rotulo="Periodicidade" valor="{{ g.per }}" aoDigitar="{{ g.setPer }}" placeholder="Pelo responsável técnico" style="display:block;" hint-size="100%,74px"></dc-import>
                     </div>
                   </sc-for>
                   <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">6. Falha do equipamento e emergência</span>
-                  <span data-campo="1" style="flex:none;display:flex;box-sizing:border-box;padding:10px 14px;border-radius:14px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Recomendações em falha e emergência" rows="3" value="{{ pmEmerg }}" onInput="{{ pmSet.emerg }}" placeholder="Recomendações aos usuários" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+                  <span data-campo="1" style="flex:none;display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Recomendações em falha e emergência" rows="3" value="{{ pmEmerg }}" onInput="{{ pmSet.emerg }}" placeholder="Recomendações aos usuários" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <sc-if value="{{ pmErro }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Faltam dados para o PMOC" texto="Preencha o ambiente e o proprietário, locatário ou preposto." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="AtalhoTecla" rotulo="PDF do PMOC" icone="documento" acao="{{ pmPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
                   <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ pmFonte }}</span>
@@ -381,12 +384,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <dc-import name="Aviso" tipo="info" titulo="Textos prontos para editar" texto="{{ scDados }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <sc-for list="{{ scripts }}" as="c" hint-placeholder-count="3">
-                    <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                    <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ c.t }}</span>
                       <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);white-space:pre-line;text-wrap:pretty;">{{ c.x }}</span>
                       <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-                        <button type="button" aria-label="{{ c.ariaC }}" onClick="{{ c.copiar }}" style="height:48px;box-sizing:border-box;padding:0 12px;border-radius:14px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="copiar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>Copiar</button>
-                        <button type="button" aria-label="{{ c.ariaZ }}" onClick="{{ c.zap }}" style="height:48px;box-sizing:border-box;padding:0 12px;border-radius:14px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mensagem" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>WhatsApp</button>
+                        <button type="button" aria-label="{{ c.ariaC }}" onClick="{{ c.copiar }}" style="height:56px;box-sizing:border-box;padding:0 12px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="copiar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>Copiar</button>
+                        <button type="button" aria-label="{{ c.ariaZ }}" onClick="{{ c.zap }}" style="height:56px;box-sizing:border-box;padding:0 12px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mensagem" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>WhatsApp</button>
                       </div>
                     </div>
                   </sc-for>
@@ -425,7 +428,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ vTexto }}</span>
                     </div>
                   </div>
-                  <div style="flex:none;display:grid;grid-template-columns:{{ vCols }};gap:8px;"><sc-for list="{{ vKeys }}" as="k" hint-placeholder-count="1"><dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" cantos="{{ k.c }}" estado="{{ k.e }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,100px"></dc-import></sc-for></div>
+                  <div style="flex:none;display:grid;grid-template-columns:{{ vCols }};gap:8px;"><sc-for list="{{ vKeys }}" as="k" hint-placeholder-count="1"><dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" estado="{{ k.e }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import></sc-for></div>
                 </div>
               </sc-if>
             </div>
@@ -453,17 +456,18 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
     <div aria-hidden="{{ dHidden }}" style="position:absolute;inset:0;z-index:40;pointer-events:{{ dPE }};visibility:{{ dVis }};">
       <div onClick="{{ fecharDrawer }}" style="position:absolute;inset:0;background:var(--gp-scrim);opacity:{{ dOp }};transition:opacity 200ms ease-out;"></div>
-      <div role="dialog" aria-modal="true" aria-label="{{ dTitulo }}" style="position:absolute;left:8px;right:8px;bottom:8px;box-sizing:border-box;padding:5px;border-radius:30px 30px 44px 44px;background:var(--gp-bezel);transform:{{ dT }};transition:transform 200ms ease-out;">
-        <div data-vis="" style="max-height:620px;overflow-y:auto;scrollbar-width:none;box-sizing:border-box;padding:8px 16px 24px;border-radius:25px 25px 39px 39px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-key-edge),var(--gp-inset-soft);display:flex;flex-direction:column;gap:16px;">
-          <span style="align-self:center;width:44px;height:5px;border-radius:3px;background:var(--gp-outline-variant);"></span>
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
-              <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ dKicker }}</span>
-              <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ dTitulo }}</span>
+      <div role="dialog" aria-modal="true" aria-label="{{ dTitulo }}" style="position:absolute;left:8px;right:8px;bottom:8px;box-sizing:border-box;padding:8px 8px 10px;border-radius:24px;background:var(--gp-chassis);box-shadow:var(--gp-chassis-ring);transform:{{ dT }};transition:transform 200ms ease-out;display:flex;flex-direction:column;gap:8px;">
+          <span aria-hidden="true" data-decor="" style="align-self:center;width:44px;height:5px;border-radius:3px;background:var(--gp-chassis-edge);"></span>
+          <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:12px;padding:0 4px;">
+            <div style="flex:1;min-width:0;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
+              <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ dKicker }}</span>
+              <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ dTitulo }}</span>
             </div>
             <button type="button" aria-label="Fechar" onClick="{{ fecharDrawer }}" style="width:48px;height:48px;flex:none;border-radius:14px;border:1px solid var(--gp-sec-edge);background:var(--gp-sec-key);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-hover="filter:brightness(1.04);" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
           </div>
 
+        <div style="flex:none;padding:3px;border-radius:24px;background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
+        <div data-vis="" style="max-height:540px;overflow-y:auto;scrollbar-width:none;box-sizing:border-box;padding:16px 16px 24px;border-radius:21px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);display:flex;flex-direction:column;gap:16px;">
           <sc-if value="{{ dSel }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:16px;">
               <sc-if value="{{ dNota }}" hint-placeholder-val="{{ false }}">
@@ -482,7 +486,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
           <sc-if value="{{ dLista }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:16px;">
-              <dc-import name="CampoTexto" aria="Buscar ficha" valor="{{ busca }}" aoDigitar="{{ setBusca }}" placeholder="Sintoma, código ou componente" icone="busca" style="display:block;" hint-size="100%,48px"></dc-import>
+              <dc-import name="CampoTexto" aria="Buscar ficha" valor="{{ busca }}" aoDigitar="{{ setBusca }}" placeholder="Sintoma, código ou componente" icone="busca" style="display:block;" hint-size="100%,56px"></dc-import>
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ fichasInfo }}</span>
               <div style="display:flex;flex-direction:column;gap:8px;">
                 <sc-for list="{{ fichas }}" as="f" hint-placeholder-count="4">
@@ -499,7 +503,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <dc-import name="Selo" texto="Amostra" tipo="neutro" hint-size="96px,26px"></dc-import>
               </div>
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">Ficha estruturada única, a mesma usada pelo percurso guiado. O conteúdo entra com a documentação interna.</span>
-              <div style="border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);overflow:hidden;">
+              <div style="border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);overflow:hidden;">
                 <sc-for list="{{ secoes }}" as="x" hint-placeholder-count="6">
                   <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;box-sizing:border-box;padding:0 16px;border-top:{{ x.linha }};">
                     <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ x.n }}</span>
@@ -507,9 +511,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </div>
                 </sc-for>
               </div>
-              <button type="button" onClick="{{ voltarLista }}" style="height:48px;border-radius:14px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Voltar à lista</button>
+              <button type="button" onClick="{{ voltarLista }}" style="height:56px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Voltar à lista</button>
             </div>
           </sc-if>
+        </div>
         </div>
       </div>
     </div>
@@ -517,23 +522,23 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
     <sc-if value="{{ fAberto }}" hint-placeholder-val="{{ false }}">
     <div ref="{{ fRef }}" role="dialog" aria-modal="true" aria-label="{{ fTitulo }}" style="position:absolute;inset:0;z-index:27;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));background:var(--gp-chassis);background-blend-mode:overlay,normal;display:flex;flex-direction:column;gap:12px;">
-      <div style="flex:none;display:flex;align-items:center;gap:8px;padding:0 4px;">
+      <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:8px;padding:0 4px;">
         <button type="button" aria-label="Sair do fechamento" onClick="{{ fSair }}" style="width:48px;height:48px;flex:none;border:0;border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--gp-on-sec-accent);background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);cursor:pointer;" style-active="transform:translateY(2px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
-        <div style="flex:1;min-width:0;display:flex;flex-direction:column;">
-          <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-chassis);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ fKicker }}</span>
-          <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-chassis);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ fTitulo }}</span>
+        <div style="flex:1;min-width:0;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
+          <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-pill-label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ fKicker }}</span>
+          <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ fTitulo }}</span>
         </div>
         <dc-import name="Selo" texto="{{ fPassoTxt }}" tipo="info" vivo="{{ true }}" style="flex:none;" hint-size="96px,26px"></dc-import>
       </div>
-      <div style="flex:1;min-height:0;padding:5px;border-radius:30px;background:var(--gp-bezel);">
-        <div data-vis="" style="height:100%;box-sizing:border-box;padding:16px;border-radius:25px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-key-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
+      <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:24px;background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
+        <div data-vis="" style="height:100%;box-sizing:border-box;padding:16px;border-radius:21px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
 
           <sc-if value="{{ fP1 }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:12px;">
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Cliente</span>
               <dc-import name="CampoTexto" rotulo="Nome do cliente" valor="{{ fCliNome }}" aoDigitar="{{ fSetCliNome }}" placeholder="Como sai no documento" estado="{{ fCliNomeE }}" erroMsg="informe o nome do cliente" style="display:block;" hint-size="100%,74px"></dc-import>
               <dc-import name="CampoTexto" rotulo="WhatsApp do cliente" valor="{{ fCliTel }}" aoDigitar="{{ fSetCliTel }}" placeholder="DDD e número" modo="tel" ajuda="Opcional. Usado no botão de envio." style="display:block;" hint-size="100%,96px"></dc-import>
-              <div style="box-sizing:border-box;padding:12px;border-radius:14px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:4px;">
+              <div style="box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:4px;">
                 <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Equipamento (troque em Marca, BTU/h e Fluido)</span>
                 <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ fEquip }}</span>
                 <sc-if value="{{ fTemDiag }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ fDiag }}</span></sc-if>
@@ -542,10 +547,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-for list="{{ fItens }}" as="it" hint-placeholder-count="1">
                 <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="{{ it.e }}" campoErro="{{ it.ce }}" erroMsg="{{ it.em }}" aoDescricao="{{ it.setD }}" aoValor="{{ it.setV }}" aoRemover="{{ it.rem }}" style="display:block;" hint-size="100%,104px"></dc-import>
               </sc-for>
-              <button type="button" onClick="{{ fAddItem }}" style="height:48px;box-sizing:border-box;border-radius:14px;border:1px dashed var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>Adicionar item</button>
-              <sc-if value="{{ fPodeSugerir }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ fSugerir }}" style="height:48px;box-sizing:border-box;border-radius:14px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Usar as ações do diagnóstico</button></sc-if>
+              <button type="button" onClick="{{ fAddItem }}" style="height:56px;box-sizing:border-box;border-radius:16px;border:1px dashed var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>Adicionar item</button>
+              <sc-if value="{{ fPodeSugerir }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ fSugerir }}" style="height:56px;box-sizing:border-box;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Usar as ações do diagnóstico</button></sc-if>
               <dc-import name="CampoTexto" rotulo="Custo interno" valor="{{ fCusto }}" estado="{{ fCustoE }}" erroMsg="{{ fCustoM }}" aoDigitar="{{ fSetCusto }}" placeholder="0,00" modo="decimal" ajuda="Só para você. Não sai em documento nem na visão do cliente." style="display:block;" hint-size="100%,96px"></dc-import>
-              <div role="status" style="box-sizing:border-box;padding:12px 16px;border-radius:14px;background:var(--gp-display);display:flex;flex-direction:column;gap:2px;">
+              <div role="status" style="box-sizing:border-box;padding:12px 16px;border-radius:16px;background:var(--gp-display);display:flex;flex-direction:column;gap:2px;">
                 <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);">Total ao cliente</span><span style="font:500 24px/28px 'Roboto',sans-serif;color:var(--gp-on-display);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div>
                 <sc-if value="{{ fTemCusto }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);text-align:right;">{{ fMargemTxt }}</span></sc-if>
               </div>
@@ -584,7 +589,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <div style="display:flex;flex-direction:column;gap:12px;">
               <dc-import name="QRPix" chave="{{ fPixChave }}" nome="{{ fPixNome }}" cidade="{{ fPixCidade }}" valor="{{ fTotal }}" txid="{{ fTxid }}" tamanho="{{ 200 }}" style="display:block;" hint-size="100%,280px"></dc-import>
               <dc-import name="AtalhoTecla" rotulo="Copiar código Pix" icone="copiar" acao="{{ fCopiar }}" style="display:block;" hint-size="100%,60px"></dc-import>
-              <button type="button" aria-pressed="{{ fRecTxt }}" onClick="{{ fToggleRec }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:14px;border:{{ fRecBorda }};background:{{ fRecFundo }};color:{{ fRecCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
+              <button type="button" aria-pressed="{{ fRecTxt }}" onClick="{{ fToggleRec }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ fRecBorda }};background:{{ fRecFundo }};color:{{ fRecCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
                 <span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="{{ fRecIco }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
                 <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">Conferi o recebimento no extrato do banco</span>
               </button>
@@ -599,20 +604,20 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
       </div>
       <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
         <sc-for list="{{ fKeys }}" as="k" hint-placeholder-count="2">
-          <dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" cantos="{{ k.c }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,100px"></dc-import>
+          <dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
         </sc-for>
       </div>
     </div>
     </sc-if>
     <sc-if value="{{ portao }}" hint-placeholder-val="{{ false }}">
     <div ref="{{ pRef }}" tabindex="-1" role="dialog" aria-modal="true" aria-label="{{ pTitulo }}" style="position:absolute;inset:0;z-index:28;outline:none;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));background:var(--gp-chassis);background-blend-mode:overlay,normal;display:flex;flex-direction:column;gap:12px;">
-      <div style="flex:1;min-height:0;padding:5px;border-radius:30px;background:var(--gp-bezel);">
-        <div data-vis="" style="height:100%;box-sizing:border-box;padding:20px 16px;border-radius:25px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-key-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
-          <div style="flex:none;display:flex;flex-direction:column;gap:4px;">
-            <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ pKicker }}</span>
-            <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:balance;">{{ pTitulo }}</span>
-            <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ pTexto }}</span>
-          </div>
+      <div data-cabecalho="" style="flex:none;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
+        <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ pKicker }}</span>
+        <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);text-wrap:balance;">{{ pTitulo }}</span>
+      </div>
+      <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:24px;background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
+        <div data-vis="" style="height:100%;box-sizing:border-box;padding:16px;border-radius:21px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
+          <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ pTexto }}</span>
           <sc-if value="{{ pForm }}" hint-placeholder-val="{{ false }}">
             <sc-for list="{{ campos }}" as="f" hint-placeholder-count="4">
               <dc-import name="CampoTexto" rotulo="{{ f.r }}" valor="{{ f.v }}" aoDigitar="{{ f.set }}" placeholder="{{ f.ph }}" estado="{{ f.e }}" erroMsg="{{ f.err }}" ajuda="{{ f.aj }}" modo="{{ f.modo }}" style="display:block;flex:none;" hint-size="100%,96px"></dc-import>
@@ -628,7 +633,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
       </div>
       <div style="flex:none;display:grid;grid-template-columns:{{ pCols }};gap:8px;">
         <sc-for list="{{ pKeys }}" as="k" hint-placeholder-count="1">
-          <dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" cantos="{{ k.c }}" estado="{{ k.e }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,100px"></dc-import>
+          <dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" estado="{{ k.e }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
         </sc-for>
       </div>
     </div>
@@ -656,27 +661,6 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:460,&quot;height&quot;:980},&quot;aparelho&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;375&quot;,&quot;390&quot;,&quot;430&quot;],&quot;default&quot;:&quot;390&quot;,&quot;tsType&quot;:&quot;'375' | '390' | '430'&quot;},&quot;tema&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;titanio&quot;,&quot;claro&quot;,&quot;sol&quot;],&quot;default&quot;:&quot;titanio&quot;,&quot;tsType&quot;:&quot;'titanio' | 'claro' | 'sol'&quot;},&quot;simular&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;real&quot;,&quot;sem licença&quot;,&quot;cadastro&quot;,&quot;plano 90 dias&quot;,&quot;plano 90 vencido&quot;,&quot;vitalício&quot;],&quot;default&quot;:&quot;real&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 const h = React.createElement;
-const SO = [23.7, 24.2, 2.15], SI = [23.1, 20.9, 2.2], SMB = [17.6, 19.3, 1.8], BIG = [69.7, 72.4, 1.92];
-const KC2 = [[SO, SI, SMB, BIG], [SI, SO, BIG, SMB]];
-const KC3 = [[SO, SI, SMB, BIG], [SI, SI, SMB, SMB], [SI, SO, BIG, SMB]];
-const KFULL = [SO, SO, BIG, BIG];
-const f2 = (v) => Math.round(v * 100) / 100;
-const keyPath = (w, hh, c, ix, it, ib) => {
-  const k = c.map(([rh, rv, n], i) => [Math.max(1, rh - ix), Math.max(1, rv - (i < 2 ? it : ib)), n]);
-  const pts = []; const S = 12;
-  const arc = (cx, cy, sx, sy, rh, rv, n, a0, a1) => { for (let j = 0; j <= S; j++) { const p = a0 + (a1 - a0) * j / S; const c2 = Math.pow(Math.abs(Math.cos(p)), 2 / n), s2 = Math.pow(Math.abs(Math.sin(p)), 2 / n); pts.push([cx + sx * rh * c2, cy + sy * rv * s2]); } };
-  const [TL, TR, BR, BL] = k; const H = Math.PI / 2;
-  arc(w - TR[0], TR[1], 1, -1, TR[0], TR[1], TR[2], H, 0);
-  arc(w - BR[0], hh - BR[1], 1, 1, BR[0], BR[1], BR[2], 0, H);
-  arc(BL[0], hh - BL[1], -1, 1, BL[0], BL[1], BL[2], H, 0);
-  arc(TL[0], TL[1], -1, -1, TL[0], TL[1], TL[2], 0, H);
-  return "path('M " + pts.map(p => f2(p[0]) + ' ' + f2(p[1])).join(' L ') + " Z')";
-};
-const RING1 = 'var(--gp-key-primary-ring)', CAP1 = 'var(--gp-key-primary-cap)';
-const RING2 = 'var(--gp-key-neutral-ring)', CAP2 = 'var(--gp-key-neutral-cap)';
-const SH = 'drop-shadow(0 0 .6px var(--gp-key-edge)) drop-shadow(0 8px 10px var(--gp-key-shadow))';
-const SHP = 'drop-shadow(0 0 .6px var(--gp-key-edge)) drop-shadow(0 3px 4px var(--gp-key-shadow))';
-
 const ico = (paths, s = 24) => h('svg', { width: s, height: s, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.75, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }, paths.map((d, i) => h('path', { key: i, d })));
 const IC = { snow: ['M2 12h20', 'M12 2v20', 'm20 16-4-4 4-4', 'm4 8 4 4-4 4', 'm16 4-4 4-4-4', 'm8 20 4-4 4 4'] }; // só para a ilustração do tubo com gelo; ícones de interface vêm de IconeGP
 
@@ -734,6 +718,8 @@ const DK = [
 const BTU_MAX = Math.max(...OPTS.btu.list.map(v => Number(v.replace(/\./g, '')))); // maior capacidade da lista de BTU/h
 const DEV = { '375': 812, '390': 844, '430': 932 };
 const CFG = { vendas: '', upgrade: '', rotas: { 'ROTA-A-AMOSTRA': 'BASE_90', 'ROTA-B-AMOSTRA': 'LIFETIME_6', 'UPGRADE-AMOSTRA': 'LIFETIME_6' } };
+// Avisos de prototipagem ("Protótipo", nome de variável CFG) só aparecem com ?teste=1; nunca no fluxo do cliente.
+const TESTE = (() => { try { return new URLSearchParams(location.search).get('teste') === '1'; } catch (e) { return false; } })();
 const K_LIC = 'gelopro.licenca', K_TIT = 'gelopro.titular', DIA = 864e5;
 const ler = (k) => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
 const gravar = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
@@ -1009,20 +995,6 @@ class Component extends DCLogic {
     const w = this._ctx.measureText(txt).width;
     return w <= avail ? max : Math.max(min, Math.floor(max * avail / w * 2) / 2);
   }
-  key(id, w, c, pri, label, onClick) {
-    const pressed = this.state.pk === id;
-    const l = c[3] === BIG, r = c[2] === BIG;
-    const ps = w < 110 ? 4 : 10;
-    return {
-      l: label, aria: label, onClick,
-      clipO: keyPath(w, 100, c, 0, 0, 0), clipC: keyPath(w - 12, 88, c, 6, 5.5, 6.5),
-      ring: pri ? RING1 : RING2, cap: pri ? CAP1 : CAP2,
-      pad: l && r ? `0 ${ps}px 2px` : l ? `0 0 2px ${ps}px` : r ? `0 ${ps}px 2px 0` : '0 0 2px',
-      fs: this.fit(label, 24, w - 12 - (l || r ? ps : 0) - 12, 19) + 'px',
-      capT: pressed ? 'translateY(3px)' : 'none', filt: pressed ? SHP : SH,
-      down: () => this.setState({ pk: id }),
-    };
-  }
   vazio(modo, extra) {
     this.setState(st => ({ prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela: 'vazio', modo, modK: null, drawer: null, ...extra }));
   }
@@ -1056,19 +1028,19 @@ class Component extends DCLogic {
     const gk = st.pecasFalta ? 'pecas' : !lic ? 'sem' : vencido ? 'vencido' : !tit ? (cad.passo === 'conf' && okCad ? 'conf' : 'form') : null;
     const PORT = {
       pecas: { k: 'Carregamento', t: 'Parte do app não carregou', x: `Faltam: ${(st.pecasFalta || []).join(', ')}. Sem elas, seletores, garantia ou documentos ficariam vazios.`,
-        keys: [{ l: 'Tentar de novo', pri: true, c: 'unica', aria: 'Buscar de novo as partes que faltam', acao: () => { this.setState({ pecasFalta: null }); this.precarregarPecas(); } }],
+        keys: [{ l: 'Tentar de novo', pri: true, aria: 'Buscar de novo as partes que faltam', acao: () => { this.setState({ pecasFalta: null }); this.precarregarPecas(); } }],
         av: ['aviso', 'Confira a internet', 'Tentar de novo busca só o que falta, sem recarregar a página. O atendimento em andamento continua.'] },
       sem: { k: 'Licença', t: 'Licença não encontrada neste aparelho', x: 'Abra o link de ativação que chegou depois da compra, neste mesmo aparelho.',
-        keys: [{ l: 'Ver planos', pri: true, c: 'esq', acao: () => this.abrirUrl(CFG.vendas, 'O endereço da página de vendas ainda não foi definido.') }, { l: 'Amostra', pri: false, c: 'dir', aria: 'Abrir o app em modo Amostra, sem gravar licença', acao: () => this.entrarAmostra() }],
-        av: st.pMsg ? ['aviso', st.pMsg, 'Defina o endereço em CFG.vendas.'] : ['info', 'Protótipo', 'Amostra abre o app só nesta sessão: não grava licença nem titular, e os documentos de teste ficam num Cofre separado, com número AMOSTRA-. Os links reais entram quando os endereços de compra estiverem definidos.'] },
+        keys: [{ l: 'Ver planos', pri: true, acao: () => this.abrirUrl(CFG.vendas, 'O endereço da página de vendas ainda não foi definido.') }, { l: 'Amostra', pri: false, aria: 'Abrir o app em modo Amostra, sem gravar licença', acao: () => this.entrarAmostra() }],
+        av: st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.vendas.' : ''] : !TESTE ? null : ['info', 'Protótipo', 'Amostra abre o app só nesta sessão: não grava licença nem titular, e os documentos de teste ficam num Cofre separado, com número AMOSTRA-. Os links reais entram quando os endereços de compra estiverem definidos.'] },
       vencido: { k: 'Plano de 90 dias', t: fim90 ? `Seus 90 dias terminaram em ${dataBR(fim90)}` : '', x: 'Os documentos já gerados continuam disponíveis para leitura e exportação.',
-        keys: [{ l: 'Vitalício', pri: true, c: 'unica', aria: 'Passar para o plano vitalício', acao: () => this.abrirUrl(CFG.upgrade, 'O endereço do upgrade ainda não foi definido.') }],
-        av: st.pMsg ? ['aviso', st.pMsg, 'Defina o endereço em CFG.upgrade.'] : ['info', 'O upgrade libera os seis bônus', 'Documentos antigos ficam no Cofre, que entra numa próxima etapa.'] },
+        keys: [{ l: 'Vitalício', pri: true, aria: 'Passar para o plano vitalício', acao: () => this.abrirUrl(CFG.upgrade, 'O endereço do upgrade ainda não foi definido.') }],
+        av: st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.upgrade.' : ''] : ['info', 'O upgrade libera os seis bônus', 'Documentos antigos ficam no Cofre, que entra numa próxima etapa.'] },
       form: { k: 'Primeiro acesso, passo 1 de 2', t: 'Quem emite os documentos', x: 'Preencha uma vez. Estes dados saem no topo e no rodapé de todo orçamento, garantia e recibo.',
-        keys: [{ l: 'Amostra', pri: false, c: 'esq', aria: 'Ver o app com dados de amostra, sem gravar', acao: () => this.entrarAmostra() }, { l: 'Continuar', pri: true, c: 'dir', acao: () => this.setState(x => ({ cad: { ...x.cad, tentou: true, passo: okCad ? 'conf' : 'form' } })) }],
+        keys: [{ l: 'Amostra', pri: false, aria: 'Ver o app com dados de amostra, sem gravar', acao: () => this.entrarAmostra() }, { l: 'Continuar', pri: true, acao: () => this.setState(x => ({ cad: { ...x.cad, tentou: true, passo: okCad ? 'conf' : 'form' } })) }],
         av: ['info', 'Só quer ver o app?', 'Toque em Amostra. Entra com dados de teste só nesta sessão; documentos de teste ficam separados dos reais.'] },
       conf: { k: 'Primeiro acesso, passo 2 de 2', t: 'Confira antes de travar', x: 'Depois de confirmar, estes dados não mudam mais neste aparelho.',
-        keys: [{ l: 'Corrigir', pri: false, c: 'esq', acao: () => this.setState(x => ({ cad: { ...x.cad, passo: 'form' } })) }, { l: 'Confirmar', pri: true, c: 'dir', aria: 'Confirmar e travar os dados do titular', acao: () => novoTit && this.confirmarTitular(novoTit) }],
+        keys: [{ l: 'Corrigir', pri: false, acao: () => this.setState(x => ({ cad: { ...x.cad, passo: 'form' } })) }, { l: 'Confirmar', pri: true, aria: 'Confirmar e travar os dados do titular', acao: () => novoTit && this.confirmarTitular(novoTit) }],
         av: ['aviso', 'Uso comercial travado', 'Nenhum orçamento sai com o nome, o CPF/CNPJ ou o Pix de outra pessoa.'] },
     };
     const PG = gk ? PORT[gk] : null;
@@ -1306,9 +1278,9 @@ class Component extends DCLogic {
       fPdfOrc: () => this.imprimir('orc', docBase()), fPdfGar: () => this.imprimir('gar', docBase()), fPdfRec: () => F && F.recebido && this.imprimir('rec', docBase()),
       fZap: () => { const num = this.numero(); const tel = dig(F.cliTel).replace(/^55/, ''); const msg = `Olá, ${F.cliNome}. Segue o orçamento nº ${num} de ${tit ? tit.nome : ''}:\n` + fi.map(x => `• ${x.d}: ${BRL.format(x.n || 0)}`).join('\n') + `\nTotal: ${BRL.format(fTotal)}\n${fGarLinha}\nPix copia e cola: ${payload()}`; window.open((tel ? 'https://wa.me/55' + tel : 'https://wa.me/') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener'); this.fSet({ msg: ['sucesso', 'Mensagem aberta no WhatsApp', tel ? 'Confira e envie.' : 'Sem telefone: escolha o contato no WhatsApp.'] }); },
       fTemMsg: !!(F && F.msg), fMsgTipo: F && F.msg ? F.msg[0] : 'info', fMsgT: F && F.msg ? F.msg[1] : '', fMsgX: F && F.msg ? F.msg[2] : '',
-      fKeys: fp === 1 ? [{ l: 'Sair', pri: false, c: 'esq', aria: 'Sair e manter o rascunho', acao: fSair }, { l: 'Continuar', pri: true, c: 'dir', aria: 'Continuar para a garantia', acao: avancar }]
-        : fp === 4 ? [{ l: 'Voltar', pri: false, c: 'esq', aria: 'Voltar', acao: voltarF }, { l: 'Concluir', pri: true, c: 'dir', aria: 'Concluir e começar outro atendimento', acao: () => this.setState(x => ATEND0(x.btu)) }]
-        : [{ l: 'Voltar', pri: false, c: 'esq', aria: 'Voltar', acao: voltarF }, { l: fp === 3 ? 'Aprovar' : 'Continuar', pri: true, c: 'dir', aria: fp === 3 ? 'Aprovar o orçamento' : 'Continuar', acao: avancar }],
+      fKeys: fp === 1 ? [{ l: 'Sair', pri: false, aria: 'Sair e manter o rascunho', acao: fSair }, { l: 'Continuar', pri: true, aria: 'Continuar para a garantia', acao: avancar }]
+        : fp === 4 ? [{ l: 'Voltar', pri: false, aria: 'Voltar', acao: voltarF }, { l: 'Concluir', pri: true, aria: 'Concluir e começar outro atendimento', acao: () => this.setState(x => ATEND0(x.btu)) }]
+        : [{ l: 'Voltar', pri: false, aria: 'Voltar', acao: voltarF }, { l: fp === 3 ? 'Aprovar' : 'Continuar', pri: true, aria: fp === 3 ? 'Aprovar o orçamento' : 'Continuar', acao: avancar }],
       temPrint: !!pd && (AVULSO.includes(pd) ? !!st.printDados : !!F), dTipo: pd === 'pmoc' ? 'Plano de Manutenção, Operação e Controle (PMOC)' : pd === 'reca' ? 'Recibo' : pd === 'laudo' ? 'Laudo de inviabilidade' : pd === 'gar' ? 'Termo de garantia' : pd === 'rec' ? 'Recibo Pix' : 'Orçamento', dNum: AVULSO.includes(pd) && st.printDados ? st.printDados.numero : F ? F.numero : '', dData: dataBR(Date.now()),
       dTit: tit ? { nome: tit.nome, doc: tit.docFmt, pix: tit.pix, cidade: tit.cidade } : {},
       dCli: AVULSO.includes(pd) && st.printDados ? st.printDados.cliente : F ? F.cliNome + (F.cliTel ? ' · ' + F.cliTel : '') : '', dEquip: AVULSO.includes(pd) && st.printDados && st.printDados.equip !== undefined ? st.printDados.equip : equip, dItensVis: pd !== 'rec' && !AVULSO.includes(pd), dItensTit: pd === 'gar' ? 'Serviços cobertos' : 'Itens',
@@ -1330,7 +1302,7 @@ class Component extends DCLogic {
         { r: 'Nome no documento', v: novoTit.nome, aj: '' }, { r: novoTit.docTipo, v: novoTit.docFmt, aj: '' },
         { r: 'Chave Pix (' + novoTit.pixTipo + ')', v: novoTit.pix, aj: '' }, { r: 'Cidade', v: novoTit.cidade, aj: '' },
       ] : [],
-      vKeys: vUpg ? [{ l: 'Voltar', pri: false, c: 'esq', e: 'normal', aria: 'Voltar', acao: null }, { l: 'Vitalício', pri: true, c: 'dir', e: 'normal', aria: 'Passar para o plano vitalício', acao: () => this.abrirUrl(CFG.upgrade, 'Endereço do upgrade ainda não definido.') }] : [{ l: 'Voltar', pri: false, c: 'unica', e: 'normal', aria: 'Voltar', acao: null }],
+      vKeys: vUpg ? [{ l: 'Voltar', pri: false, e: 'normal', aria: 'Voltar', acao: null }, { l: 'Vitalício', pri: true, e: 'normal', aria: 'Passar para o plano vitalício', acao: () => this.abrirUrl(CFG.upgrade, 'Endereço do upgrade ainda não definido.') }] : [{ l: 'Voltar', pri: false, e: 'normal', aria: 'Voltar', acao: null }],
       vCols: vUpg ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
       codBusca: st.cod, setCod: (e) => this.setState({ cod: e.target.value }),
       codInfo: st.baseErro ? `Base técnica não carregou (${st.baseErro})` : !B ? 'Carregando base técnica…' : mCod.length ? `${marca}: ${mCod.length} ${ePisc ? 'padrões de LED' : 'códigos'} na base. Para outra marca, toque em Marca.` : '',
@@ -1374,6 +1346,8 @@ class Component extends DCLogic {
         onClick: () => this.setState({ drawer: k }),
       })),
       temTopo: st.tela !== 'inicio' && st.tela !== 'etapa',
+      // Visor: a tela inicial mantém o aro de 28 px; as secundárias usam aro simétrico de 24 px (visor interno concêntrico, 21 px).
+      aroR: st.tela === 'inicio' ? '28px' : '24px', visR: st.tela === 'inicio' ? '25px' : '21px',
       kicker: st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? 'Checagem de técnico' : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.incon ? 'Resultado inconclusivo' : 'Hipótese pelas respostas') : m ? m.k : '',
       titulo: st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
       temSelo: st.tela === 'etapa', seloTxt: `Pergunta ${st.hist.length + 1}`,
@@ -1403,7 +1377,7 @@ class Component extends DCLogic {
         const tom = o.inc || E.tec && !/^(sim|n[ãa]o)/i.test(o.l) ? 'var(--gp-key-navy-grad)' : (o.sim || /^sim/i.test(o.l)) ? 'var(--gp-answer-yes)' : 'var(--gp-answer-no)';
         const bgc = tom === 'var(--gp-answer-yes)' ? 'var(--gp-answer-yes-solid)' : tom === 'var(--gp-answer-no)' ? 'var(--gp-answer-no-solid)' : 'var(--gp-answer-neutral-solid)';
         const sozinho = n > 2 && i === n - 1;
-        return { bgc, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, semCena: !temCena, temLeg: !!(E.tec && !temCena ? '' : o.c), bg: tom, d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, cantos: n === 2 ? (i ? 'dir' : 'esq') : ['esq', 'meio', 'dir'][i], onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
+        return { bgc, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, semCena: !temCena, temLeg: !!(E.tec && !temCena ? '' : o.c), bg: tom, d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
       }),
       resTitulo: r ? r.t : '',
       resNota: PC && r && r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : PC && r ? `Checagem rápida. Referência: ${r.escopo === 'UNIVERSAL' ? 'segurança (NR-10)' : PC.ref} (${fonteTxt(r.fonte)}). Em outro modelo, confirme.` : '',
@@ -1411,8 +1385,8 @@ class Component extends DCLogic {
       resBorda: r && r.incon ? 'var(--gp-outline-variant)' : 'var(--gp-primary)', resSelo: r && r.incon ? 'Inconclusivo' : 'Causa provável', resSeloTipo: r && r.incon ? 'neutro' : 'aviso',
       acoes: r ? r.a.map((t, i) => ({ n: i + 1, t, linha: i ? '1px solid var(--gp-outline-variant)' : '0' })) : [],
       resKeys: [
-        { l: 'Refazer', aria: 'Refazer', pri: false, cantos: 'esq', onClick: () => this.setState({ ...RESET }) },
-        { l: 'Orçamento', aria: 'Gerar orçamento', pri: true, cantos: 'dir', onClick: () => this.abrirFech() },
+        { l: 'Refazer', aria: 'Refazer', pri: false, onClick: () => this.setState({ ...RESET }) },
+        { l: 'Orçamento', aria: 'Gerar orçamento', pri: true, onClick: () => this.abrirFech() },
       ],
       vIconeNome: m ? m.i : 'info', vTitulo: m ? m.vt : '', vTexto: m ? m.vx : '',
       
