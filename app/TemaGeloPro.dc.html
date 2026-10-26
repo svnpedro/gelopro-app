@@ -11,14 +11,14 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;tema&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;titanio&quot;,&quot;claro&quot;,&quot;sol&quot;],&quot;default&quot;:&quot;titanio&quot;,&quot;tsType&quot;:&quot;'titanio' | 'claro' | 'sol'&quot;},&quot;bloco&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;extra&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Record&lt;string,string&gt;&quot;},&quot;children&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;ReactNode&quot;}}">
 // 26/10/2026 (Pedro): fechamento visual v5.2 travado na referência "1. TITÂNIO". Três modos com a mesma geometria:
-// titanio (padrão de fábrica) = chassi de titânio escovado, visor safira escuro e teclas cobalto 3D;
+// titanio (padrão de fábrica) = chassi de titânio acetinado, visor safira escuro e teclas cobalto 3D;
 // claro (Silver) = chassi prata, visor claro, cartões brancos e texto marinho; sol (alto contraste) = superfícies brancas e contorno marinho forte.
 // Papel (PDF e impressão) continua branco nos três.
 const GRAIN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.30 0 0 0 0 0.34 0 0 0 0 0.40 0 0 0 0.12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
-// Escovado horizontal: riscos finos de 1 px sobre o degradê metálico.
-const ESCOVADO = 'repeating-linear-gradient(180deg,rgba(255,255,255,.05) 0 1px,rgba(0,0,0,.035) 1px 2px,transparent 2px 4px)';
-const TITANIO = GRAIN + ', ' + ESCOVADO + ', linear-gradient(180deg,#9da4ae 0%,#949ba5 50%,#89909a 100%)';
-const PRATA = GRAIN + ', ' + ESCOVADO + ', linear-gradient(180deg,#e6ebf1 0%,#dfe5ec 50%,#d5dce4 100%)';
+// Opção 2 (Pedro, 26/10/2026): Prata Acetinado (Satin Anodized Silver). Microgrão isotrópico superfino, sem as listras do escovado.
+const ACETINADO = 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\'%3E%3Cfilter id=\'a\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'1.35\' numOctaves=\'2\' stitchTiles=\'stitch\'/%3E%3CfeColorMatrix values=\'0 0 0 0 0.45 0 0 0 0 0.50 0 0 0 0 0.58 0 0 0 0.06 0\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23a)\'/%3E%3C/svg%3E")';
+const TITANIO = ACETINADO + ', linear-gradient(135deg,#b8c1ce 0%,#a7b1bf 28%,#c2cad6 52%,#9aa4b2 78%,#aeb7c4 100%)';
+const PRATA = ACETINADO + ', linear-gradient(135deg,#e4e9f2 0%,#d4dbe6 40%,#eef2f7 58%,#bfc8d6 86%,#d2d9e4 100%)';
 const GRAVADO_ESCURO = '0 1px 2px rgba(7,20,38,0.65)', GRAVADO_CLARO = '0 1px 0 rgba(255,255,255,.65)';
 
 // Comum aos três: selos, avisos e etiquetas mantêm fundo claro e texto escuro próprio (contraste garantido em qualquer visor).
@@ -82,6 +82,8 @@ const TEMAS = {
     '--gp-pill-div': 'rgba(255,255,255,0.16)', '--gp-pill-shadow': 'inset 0 2px 5px rgba(0,0,0,0.55), 0 2px 4px rgba(0,0,0,0.25)',
     // Pílulas de leitura (dentro do visor) e barras de atalho (no chassi)
     '--gp-reading': '#0c1d36', '--gp-reading-edge': '#7c8898', '--gp-on-reading': '#67c6ff',
+    // Leitura e resultado: espera (—), valor medido e unidade. Valem nas pílulas e nos mostradores de PT/SH, NTC e carga térmica.
+    '--gp-on-reading-idle': '#94a3b8', '--gp-on-reading-val': '#4ade80', '--gp-on-reading-unit': '#67c6ff',
     '--gp-reading-shadow': 'inset 0 2px 4px rgba(0,0,0,.5)',
     '--gp-bar': '#071426', '--gp-bar-edge': '#b0b8c4', '--gp-on-bar': '#ffffff',
     '--gp-bar-shadow': 'inset 0 1px 0 rgba(255,255,255,.08), 0 2px 4px rgba(0,0,0,.3)',
@@ -148,6 +150,7 @@ const TEMAS = {
     '--gp-pill': '#ffffff', '--gp-pill-edge': '#9aa3b0', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#19365c',
     '--gp-pill-div': 'rgba(9,30,66,0.16)', '--gp-pill-shadow': 'inset 0 2px 4px rgba(9,30,66,0.12), 0 2px 4px rgba(9,30,66,0.12)',
     '--gp-reading': '#ffffff', '--gp-reading-edge': '#626f86', '--gp-on-reading': '#19365c',
+    '--gp-on-reading-idle': '#44546f', '--gp-on-reading-val': '#047857', '--gp-on-reading-unit': '#19365c',
     '--gp-reading-shadow': 'inset 0 2px 4px rgba(9,30,66,.1)',
     '--gp-bar': '#19365c', '--gp-bar-edge': '#9aa3b0', '--gp-on-bar': '#ffffff',
     '--gp-bar-shadow': 'inset 0 1px 0 rgba(255,255,255,.12), 0 2px 4px rgba(9,30,66,.2)',
@@ -212,6 +215,7 @@ const TEMAS = {
     '--gp-pill': '#ffffff', '--gp-pill-edge': '#091e42', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#091e42',
     '--gp-pill-div': '#091e42', '--gp-pill-shadow': 'none',
     '--gp-reading': '#ffffff', '--gp-reading-edge': '#091e42', '--gp-on-reading': '#091e42', '--gp-reading-shadow': 'none',
+    '--gp-on-reading-idle': '#44546f', '--gp-on-reading-val': '#047857', '--gp-on-reading-unit': '#19365c',
     '--gp-bar': '#ffffff', '--gp-bar-edge': '#091e42', '--gp-on-bar': '#091e42', '--gp-bar-shadow': 'none',
     '--gp-tile': '#ffffff', '--gp-tile-border': '2px solid #091e42',
     '--gp-tile-relief': '0 2px 0 #091e42',

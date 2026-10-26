@@ -24,6 +24,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @keyframes gpSpin{to{transform:rotate(360deg)}}
 @keyframes gpFlow{to{background-position:48px 0}}
 @keyframes gpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes gpPulseResult{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
+@keyframes gpPulseResult2{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @media (min-width:600px){[data-microfaixa]{padding:12px 28px 0 !important;}}
 @media (max-width:599.98px){[data-mesa]{display:block !important;min-height:0 !important;padding:0 !important;}[data-moldura]{width:100vw !important;height:100vh !important;height:100dvh !important;padding:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;}[data-lateral]{display:none !important;}[data-chassi]{border-radius:0 !important;box-shadow:none !important;}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:1ms !important;}}
@@ -105,9 +107,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <div role="group" aria-label="Leituras" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 2px;margin:-2px 0;">
                     <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
                       <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:999px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
-                        <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 6px;border-radius:999px;background:var(--gp-reading);border:2px solid var(--gp-reading-edge);box-shadow:var(--gp-reading-shadow);display:flex;align-items:center;justify-content:center;gap:5px;">
-                          <span style="font:700 18px/20px 'Roboto',sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
-                          <span style="font:700 18px/20px 'Roboto',sans-serif;white-space:nowrap;">{{ r.un }}</span>
+                        <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 6px;border-radius:999px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow);display:flex;align-items:center;justify-content:center;gap:5px;animation:{{ r.anim }};">
+                          <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
+                          <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
                         </span>
                       </button>
                     </sc-for>
@@ -197,14 +199,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <dc-import name="CampoTexto" rotulo="Tubo de sucção (°C)" valor="{{ ptT }}" estado="{{ ptTE }}" erroMsg="{{ ptTM }}" aoDigitar="{{ setPtT }}" placeholder="Ex.: 12" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                   </div>
                   <div role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;background:var(--gp-display);box-shadow:inset 0 3px 6px var(--gp-key-shadow);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-                    <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
-                      <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);">{{ ptSatRot }}</span>
-                      <span style="font:500 24px/28px 'Roboto',sans-serif;color:var(--gp-on-display);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ ptSat }}</span>
-                    </div>
-                    <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
-                      <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);">Superaquecimento</span>
-                      <span style="font:500 24px/28px 'Roboto',sans-serif;color:var(--gp-on-display);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ ptSH }}</span>
-                    </div>
+                    <sc-for list="{{ ptOut }}" as="o" hint-placeholder-count="2">
+                      <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
+                        <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);">{{ o.rot }}</span>
+                        <span style="display:inline-block;font-family:'Roboto',sans-serif;font-size:24px;line-height:28px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:var(--gp-on-reading-unit);">{{ o.un }}</span></span>
+                      </div>
+                    </sc-for>
                   </div>
                   <sc-if value="{{ ptTemPar }}" hint-placeholder-val="{{ false }}"><div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Termômetro no tubo de sucção: preso e isolado</span><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ ptParErro }};"></span><span aria-hidden="true" style="display:block;aspect-ratio:1 / 1;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);background-position:center;background-size:cover;background-repeat:no-repeat;background-image:{{ ptParCerto }};"></span></div></div></sc-if>
                   <sc-if value="{{ ptFalta }}" hint-placeholder-val="{{ true }}"><dc-import name="Aviso" tipo="aviso" titulo="Medição insuficiente — informe pressão de sucção e temperatura do tubo" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
@@ -232,7 +232,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <sc-for list="{{ ntcOut }}" as="o" hint-placeholder-count="3">
                         <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                           <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ o.rot }}</span>
-                          <span style="font:500 18px/24px 'Roboto',sans-serif;color:var(--gp-on-display);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ o.val }}</span>
+                          <span style="display:inline-block;font-family:'Roboto',sans-serif;font-size:18px;line-height:24px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:var(--gp-on-reading-unit);">{{ o.un }}</span></span>
                         </div>
                       </sc-for>
                     </div>
@@ -258,7 +258,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-for list="{{ bOut }}" as="o" hint-placeholder-count="3">
                       <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                         <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ o.rot }}</span>
-                        <span style="font:500 18px/24px 'Roboto',sans-serif;color:var(--gp-on-display);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ o.val }}</span>
+                        <span style="display:inline-block;font-family:'Roboto',sans-serif;font-size:18px;line-height:24px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:var(--gp-on-reading-unit);">{{ o.un }}</span></span>
                       </div>
                     </sc-for>
                   </div>
@@ -995,6 +995,27 @@ class Component extends DCLogic {
     const w = this._ctx.measureText(txt).width;
     return w <= avail ? max : Math.max(min, Math.floor(max * avail / w * 2) / 2);
   }
+  // Pulso de 600 ms quando um valor novo aparece numa tela visível. O nome alterna entre duas keyframes iguais
+  // (gpPulseResult/gpPulseResult2) para o navegador reiniciar a animação a cada valor; sem tela visível, nada é registrado,
+  // e a pílula da inicial pulsa na primeira vez que mostra o valor novo. prefers-reduced-motion zera tudo pelo CSS global.
+  pulso(id, v, visivel) {
+    if (!visivel) return 'none';
+    const P = this._pulso || (this._pulso = {}), a = P[id];
+    if (!a || a.v !== v) P[id] = { v, t: a ? Date.now() : 0, n: a ? a.n + 1 : 0 };
+    const p = P[id];
+    return v !== '—' && Date.now() - p.t < 700 ? `${p.n % 2 ? 'gpPulseResult' : 'gpPulseResult2'} 600ms ease-out` : 'none';
+  }
+  // Mostrador de resultado: "12,3 °C" vira número (verde telemetria, 700) e unidade (ciano técnico, 600); "—" fica no tom de espera.
+  // O espaço vai no início da unidade: se a coluna for estreita, a unidade desce para a linha de baixo e o número nunca parte.
+  mostrador(id, v, visivel) {
+    const i = v.lastIndexOf(' '), tem = v !== '—';
+    return { num: tem && i > 0 ? v.slice(0, i) : v, un: tem && i > 0 ? v.slice(i) : '', corN: tem ? 'var(--gp-on-reading-val)' : 'var(--gp-on-reading-idle)', pesoN: tem ? 700 : 500, anim: this.pulso(id, v, visivel) };
+  }
+  // Pílula de leitura da inicial: com medição, número em destaque, unidade em ciano e aro iluminado; sem medição, tudo em espera.
+  leitura(id, v, visivel) {
+    const tem = v !== '—';
+    return { corV: tem ? 'var(--gp-on-reading-val)' : 'var(--gp-on-reading-idle)', corU: tem ? 'var(--gp-on-reading-unit)' : 'var(--gp-on-reading-idle)', pesoU: tem ? 600 : 700, borda: tem ? 'var(--gp-dock-ring)' : 'var(--gp-reading-edge)', anim: this.pulso(id, v, visivel) };
+  }
   vazio(modo, extra) {
     this.setState(st => ({ prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela: 'vazio', modo, modK: null, drawer: null, ...extra }));
   }
@@ -1035,7 +1056,7 @@ class Component extends DCLogic {
         av: st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.vendas.' : ''] : !TESTE ? null : ['info', 'Protótipo', 'Amostra abre o app só nesta sessão: não grava licença nem titular, e os documentos de teste ficam num Cofre separado, com número AMOSTRA-. Os links reais entram quando os endereços de compra estiverem definidos.'] },
       vencido: { k: 'Plano de 90 dias', t: fim90 ? `Seus 90 dias terminaram em ${dataBR(fim90)}` : '', x: 'Os documentos já gerados continuam disponíveis para leitura e exportação.',
         keys: [{ l: 'Vitalício', pri: true, aria: 'Passar para o plano vitalício', acao: () => this.abrirUrl(CFG.upgrade, 'O endereço do upgrade ainda não foi definido.') }],
-        av: st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.upgrade.' : ''] : ['info', 'O upgrade libera os seis bônus', 'Documentos antigos ficam no Cofre, que entra numa próxima etapa.'] },
+        av: st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.upgrade.' : ''] : ['info', 'O upgrade libera os seis bônus', 'Inclusive o Cofre, com os documentos já emitidos neste aparelho.'] },
       form: { k: 'Primeiro acesso, passo 1 de 2', t: 'Quem emite os documentos', x: 'Preencha uma vez. Estes dados saem no topo e no rodapé de todo orçamento, garantia e recibo.',
         keys: [{ l: 'Amostra', pri: false, aria: 'Ver o app com dados de amostra, sem gravar', acao: () => this.entrarAmostra() }, { l: 'Continuar', pri: true, acao: () => this.setState(x => ({ cad: { ...x.cad, tentou: true, passo: okCad ? 'conf' : 'form' } })) }],
         av: ['info', 'Só quer ver o app?', 'Toque em Amostra. Entra com dados de teste só nesta sessão; documentos de teste ficam separados dos reais.'] },
@@ -1226,7 +1247,7 @@ class Component extends DCLogic {
       bArea: B2.area, bPes: B2.pes, bW: B2.w, bSetArea: sB('area'), bSetPes: sB('pes'), bSetW: sB('w'), bF1: B2.f1, bF2: B2.f2, bF3: B2.f3, bSetF1: sB('f1'), bSetF2: sB('f2'), bSetF3: sB('f3'),
       bE: Object.fromEntries(Object.entries(bErr).map(([k, v]) => [k, v ? 'erro' : 'normal'])), bM: bErr,
       bSolOps: ['Sombra/manhã', 'Sol da tarde'], bSol: B2.sol, bSetSol: (v) => this.setState(x => ({ btu: { ...x.btu, sol: v } })),
-      bOut: [{ rot: 'Estimativa', val: bEst ? fmtBTU(bEst) : '—' }, { rot: 'Aparelho', val: bAp ? fmtBTU(bAp) : '—' }, { rot: 'Folga', val: bDif === null ? '—' : (bDif > 0 ? '+' : '') + f1(bDif) + ' %' }],
+      bOut: [['Estimativa', bEst ? fmtBTU(bEst) : '—'], ['Aparelho', bAp ? fmtBTU(bAp) : '—'], ['Folga', bDif === null ? '—' : (bDif > 0 ? '+' : '') + f1(bDif) + ' %']].map(([rot, v]) => ({ rot, ...this.mostrador('btu-' + rot, v, st.tela === 'btu') })),
       bAcima: bEst !== null && bEst > BTU_MAX, bAcimaT: `Acima de ${BTU_MAX.toLocaleString('pt-BR')} BTU/h — exige múltiplos aparelhos ou dimensionamento de projeto.`,
       bTemVer: bDif !== null, bVerTipo: bDif !== null && bDif < 0 ? 'aviso' : 'info',
       bVerT: bDif !== null && bDif < 0 ? 'Aparelho abaixo da estimativa' : 'Aparelho cobre a estimativa',
@@ -1311,7 +1332,7 @@ class Component extends DCLogic {
       codVazioT: !mCod.length ? `Sem tabela de ${ePisc ? 'piscadas' : 'códigos'} para ${marca}` : `Nenhum código “${st.cod}” para ${marca}`,
       codVazioX: !mCod.length ? `Marcas na base: ${codMarcas.join(', ')}. Troque em Marca.` : 'Confira o que o display mostra e a linha do aparelho.',
       ptP: st.ptP, ptT: st.ptT, ptPM: medErro(st.ptP), ptTM: ptTErro, ptPE: medErro(st.ptP) ? 'erro' : 'normal', ptTE: ptTErro ? 'erro' : 'normal', setPtP: (e) => this.setState({ ptP: e.target.value }), setPtT: (e) => this.setState({ ptT: e.target.value }),
-      ptSatRot: `Saturação ${st.sel.fluido}`, ptSat: tsat === null ? '—' : f1(tsat) + ' °C', ptSH: sh === null ? '—' : f1(sh) + ' °C',
+      ptSatRot: `Saturação ${st.sel.fluido}`, ptOut: [{ rot: `Saturação ${st.sel.fluido}`, ...this.mostrador('pt-sat', tsat === null ? '—' : f1(tsat) + ' °C', st.tela === 'ptsh') }, { rot: 'Superaquecimento', ...this.mostrador('pt-sh', sh === null ? '—' : f1(sh) + ' °C', st.tela === 'ptsh') }],
       ptFalta: P === null || Tt === null, ptFora: P !== null && ptRows.length > 0 && tsat === null,
       ptForaX: ptRows.length ? `A tabela de ${st.sel.fluido} vai de ${f1(ptRows[0][0])} a ${f1(ptRows[ptRows.length - 1][0])} psig.` : '',
       ptRefT: elg.length ? `Elgin ${elg[0].linha}: ${elg[0].valor}` : `Sem faixa oficial de SH para ${marca} na base`,
@@ -1325,10 +1346,10 @@ class Component extends DCLogic {
       ntcDesc: sn ? `${sn.sensor}, ${ST_NTC[sn.status] || sn.status}` : '',
       ntcT: st.ntcT, ntcR: st.ntcR, ntcTM: ntcTErro, ntcRM: ntcRErro, ntcTE: ntcTErro ? 'erro' : 'normal', ntcRE: ntcRErro ? 'erro' : 'normal', setNtcT: (e) => this.setState({ ntcT: e.target.value }), setNtcR: (e) => this.setState({ ntcR: e.target.value }),
       ntcOut: [
-        { rot: 'Esperado', val: rexp === null ? '—' : fk(rexp) + ' kΩ' },
-        { rot: 'Diferença', val: dif === null ? '—' : (dif > 0 ? '+' : '') + f1(dif) + ' %' },
-        { rot: 'Equivale a', val: teq === null ? '—' : f1(teq) + ' °C' },
-      ],
+        ['Esperado', rexp === null ? '—' : fk(rexp) + ' kΩ'],
+        ['Diferença', dif === null ? '—' : (dif > 0 ? '+' : '') + f1(dif) + ' %'],
+        ['Equivale a', teq === null ? '—' : f1(teq) + ' °C'],
+      ].map(([rot, v]) => ({ rot, ...this.mostrador('ntc-' + rot, v, st.tela === 'ntc') })),
       ntcGlobal: !!sn && /^Midea/.test(sn.marca), ntcFonte: sn ? `Curva ${sn.arquivo_curva}, ${fonteTxt(sn.fonte_id)}. Valores interpolados na tabela, sem fórmula Beta.` : '',
       vars: { '--dw': W + 'px', '--dh': (cheio ? Math.round(innerHeight) + 16 : DEV[dev]) + 'px' },
       solPressed: sol ? 'true' : 'false',
@@ -1368,7 +1389,7 @@ class Component extends DCLogic {
         { un: 'PSI', v: tsat !== null ? st.ptP.trim() : '—', o: tsat !== null ? 'Informada' : st.ptP.trim() ? 'Valor inválido' : 'Sem medição', faixa: `Sucção, ${st.sel.fluido}`, aria: tsat !== null ? `Pressão de sucção ${st.ptP.trim()} psig, ${st.sel.fluido}. Toque para abrir o PT/SH` : `Pressão, ${st.sel.fluido}: sem medição válida. Toque para lançar`, onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
         { un: '°C', v: Tt !== null && !ptTErro ? st.ptT.trim() : '—', o: Tt !== null && !ptTErro ? 'Informada' : st.ptT.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Tubo de sucção', aria: Tt !== null && !ptTErro ? `Temperatura do tubo ${st.ptT.trim()} °C. Toque para abrir o PT/SH` : 'Temperatura: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
-      ],
+      ].map(r => ({ ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio') })),
       linhas: E.ops.map((o, i, a) => a.length > 2 && i === a.length - 1 ? 'auto' : 'minmax(0,1fr)').join(' '),
       opcoes: E.ops.map((o, i, arr) => {
         const n = arr.length, w = (pw - 8 * (n - 1)) / n;
