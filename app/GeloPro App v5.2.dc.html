@@ -45,6 +45,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @keyframes gpSpin{to{transform:rotate(360deg)}}
 @keyframes gpFlow{to{background-position:48px 0}}
 @keyframes gpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes gpBandeja{from{transform:translateY(calc(100% + 16px))}to{transform:translateY(0)}}
 @keyframes gpPulseResult{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @keyframes gpPulseResult2{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @media (min-width:768px){[data-microfaixa]{padding:12px 28px 0 !important;}}
@@ -237,6 +238,18 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
               <sc-if value="{{ telaPT }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                  <sc-if value="{{ ptTemAlerta }}" hint-placeholder-val="{{ false }}">
+                  <div data-bandeja="" style="flex:none;overflow:hidden;border-radius:16px;">
+        <div data-alerta-diamante="{{ ptAlerta.k }}" data-tom="{{ ptAlerta.tom }}" role="alert" style="box-sizing:border-box;padding:8px 8px 10px 16px;border-radius:16px;background:{{ ptAlerta.fundo }};box-shadow:inset 6px 0 0 {{ ptAlerta.viva }};display:flex;flex-direction:column;gap:8px;animation:gpBandeja 260ms ease-out;">
+          <div style="display:flex;align-items:flex-start;gap:8px;">
+            <span aria-hidden="true" style="flex:none;display:inline-flex;padding-top:13px;color:{{ ptAlerta.viva }};"><dc-import name="IconeGP" nome="{{ ptAlerta.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+            <span data-alerta-titulo="" style="flex:1;min-width:0;padding-top:13px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ ptAlerta.t }}</span>
+            <button type="button" data-alerta-fechar="" aria-label="Dispensar o alerta" onClick="{{ ptAlerta.fechar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:2px solid var(--gp-on-lucro, #ffffff);background:transparent;color:var(--gp-on-lucro, #ffffff);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
+          </div>
+          <sc-if value="{{ ptAlerta.temAcoes }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:{{ ptAlerta.cols }};gap:8px;"><sc-for list="{{ ptAlerta.acoes }}" as="a" hint-placeholder-count="2"><button type="button" data-alerta-acao="{{ a.k }}" onClick="{{ a.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-active="transform:translateY(1px);">{{ a.l }}</button></sc-for></div></sc-if>
+        </div>
+      </div>
+                  </sc-if>
                   <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                     <dc-import name="CampoTexto" rotulo="Sucção (psig)" valor="{{ ptP }}" estado="{{ ptPE }}" erroMsg="{{ ptPM }}" aoDigitar="{{ setPtP }}" placeholder="Ex.: 118" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="Tubo de sucção (°C)" valor="{{ ptT }}" estado="{{ ptTE }}" erroMsg="{{ ptTM }}" aoDigitar="{{ setPtT }}" placeholder="Ex.: 12" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
@@ -306,6 +319,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </sc-for>
                   </div>
                   <sc-if value="{{ bAcima }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="aviso" titulo="{{ bAcimaT }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
+                  <sc-if value="{{ bTemRec }}" hint-placeholder-val="{{ false }}"><div data-recomendacao="" style="flex:none;"><dc-import name="Aviso" tipo="info" titulo="{{ bRecT }}" texto="{{ bRecX }}" fixo="{{ true }}" style="display:block;" hint-size="100%,48px"></dc-import></div></sc-if>
                   <sc-if value="{{ bTemVer }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ bVerTipo }}" titulo="{{ bVerT }}" texto="{{ bVerX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-if value="{{ bTemVer }}" hint-placeholder-val="{{ false }}"><dc-import name="AtalhoTecla" rotulo="Levar ao laudo de quarto quente" icone="documento" acao="{{ bLaudo }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import></sc-if>
                   <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Fatores de amostra. Confirme antes de usar.</span>
@@ -599,6 +613,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
           <sc-if value="{{ fP1 }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:12px;">
+              <button type="button" data-modo-discreto="" aria-pressed="{{ fDiscretoOn }}" onClick="{{ fDiscretoToggle }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ fDiscretoBorda }};background:{{ fDiscretoFundo }};color:{{ fDiscretoCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
+                <span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="{{ fDiscretoIco }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+                <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">Ocultar custos/lucro (cliente ao lado)</span>
+              </button>
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Cliente</span>
               <dc-import name="CampoTexto" rotulo="Nome do cliente" valor="{{ fCliNome }}" aoDigitar="{{ fSetCliNome }}" placeholder="Como sai no documento" estado="{{ fCliNomeE }}" erroMsg="informe o nome do cliente" style="display:block;" hint-size="100%,74px"></dc-import>
               <dc-import name="CampoTexto" rotulo="WhatsApp do cliente" valor="{{ fCliTel }}" aoDigitar="{{ fSetCliTel }}" placeholder="DDD e número" modo="tel" ajuda="Opcional. Usado no botão de envio." style="display:block;" hint-size="100%,96px"></dc-import>
@@ -627,8 +645,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaF }}" rows="2" value="{{ it.fVal }}" onInput="{{ it.setF }}" placeholder="Ex.: R$ 180,00 a R$ 290,00" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                     <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Economia preventiva</span>
                     <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaE }}" rows="3" value="{{ it.eVal }}" onInput="{{ it.setE }}" placeholder="O que o cliente evita gastar com este serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
-                    <dc-import name="CampoTexto" rotulo="{{ it.custoRot }}" valor="{{ it.custoVal }}" aoDigitar="{{ it.setCustoTxt }}" placeholder="0,00" modo="decimal" estado="{{ it.custoE }}" erroMsg="valor inválido: use 45 ou 45,50" style="display:block;" hint-size="100%,74px"></dc-import>
-                    <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">Campo de texto vazio não sai no documento nem no WhatsApp. O custo da peça é só seu e entra no lucro líquido.</span>
+                    <sc-if value="{{ it.verCusto }}" hint-placeholder-val="{{ true }}"><dc-import name="CampoTexto" rotulo="{{ it.custoRot }}" valor="{{ it.custoVal }}" aoDigitar="{{ it.setCustoTxt }}" placeholder="0,00" modo="decimal" estado="{{ it.custoE }}" erroMsg="valor inválido: use 45 ou 45,50" style="display:block;" hint-size="100%,74px"></dc-import></sc-if>
+                    <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.edAjuda }}</span>
                   </div></sc-if>
                 </div>
               </sc-for>
@@ -637,6 +655,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ fCatVazio }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">A tabela de peças e serviços ainda está carregando. Lance o item à mão ou tente de novo em alguns segundos.</span></sc-if>
               <sc-if value="{{ fCatAberto }}" hint-placeholder-val="{{ false }}">
                 <div data-catalogo="" role="group" aria-label="Tabela de peças e serviços" style="display:flex;flex-direction:column;gap:8px;">
+                  <span data-porte="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fCatPorte }}</span>
                   <sc-for list="{{ fCat }}" as="c" hint-placeholder-count="3">
                     <div data-cat-item="{{ c.id }}" style="box-sizing:border-box;border-radius:16px;border:{{ c.borda }};background:var(--gp-card-action);display:flex;flex-direction:column;overflow:hidden;">
                       <div style="display:flex;align-items:stretch;">
@@ -648,7 +667,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                         <button type="button" data-detalhes="" aria-expanded="{{ c.detExp }}" aria-label="{{ c.detAria }}" onClick="{{ c.detToggle }}" style="flex:none;width:96px;min-height:56px;box-sizing:border-box;padding:0 8px;border:0;box-shadow:inset 1px 0 0 var(--gp-outline-variant);background:transparent;color:var(--gp-primary);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Detalhes</button>
                       </div>
                       <sc-if value="{{ c.det }}" hint-placeholder-val="{{ false }}"><div data-cat-detalhes="" style="box-sizing:border-box;padding:8px 12px 10px;box-shadow:inset 0 1px 0 var(--gp-outline-variant);display:flex;flex-direction:column;gap:4px;">
-                        <span data-bastidor="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ c.bastidor }}</span>
+                        <sc-if value="{{ c.verBast }}" hint-placeholder-val="{{ true }}"><span data-bastidor="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ c.bastidor }}</span></sc-if>
                         <sc-if value="{{ c.temDica }}" hint-placeholder-val="{{ false }}"><span data-dica="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Dica técnica:</strong> {{ c.dica }}</span></sc-if>
                         <sc-if value="{{ c.temEco }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Economia preventiva:</strong> {{ c.eco }}</span></sc-if>
                       </div></sc-if>
@@ -660,16 +679,21 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="{{ fJustifIco }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
                 <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">Incluir detalhamento técnico, faixa de tabela e economia preventiva no documento</span>
               </button>
+              <sc-if value="{{ fTemBonifChave }}" hint-placeholder-val="{{ false }}"><button type="button" role="switch" data-bonificar-visita="" aria-checked="{{ fBonifOn }}" onClick="{{ fBonifToggle }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ fBonifBorda }};background:{{ fBonifFundo }};color:{{ fBonifCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
+                <span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="{{ fBonifIco }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+                <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">{{ fBonifTxt }}</span>
+              </button></sc-if>
               <sc-if value="{{ fTemCombo }}" hint-placeholder-val="{{ false }}"><div data-combo-sugestao="" style="display:flex;flex-direction:column;gap:8px;">
                 <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Sugestões para complementar este atendimento</span>
                 <sc-for list="{{ fCombos }}" as="cb" hint-placeholder-count="2"><button type="button" data-combo="{{ cb.id }}" onClick="{{ cb.acao }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px dashed var(--gp-outline);background:var(--gp-card-action);color:var(--gp-on-surface);font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ cb.t }}</button></sc-for>
               </div></sc-if>
               <sc-if value="{{ fPodeSugerir }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ fSugerir }}" style="height:56px;box-sizing:border-box;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Usar as ações do diagnóstico</button></sc-if>
-              <dc-import name="CampoTexto" rotulo="Custo interno" valor="{{ fCusto }}" estado="{{ fCustoE }}" erroMsg="{{ fCustoM }}" aoDigitar="{{ fSetCusto }}" placeholder="0,00" modo="decimal" ajuda="Outros custos além das peças (deslocamento, material). Só para você: não sai em documento nem na visão do cliente." style="display:block;" hint-size="100%,96px"></dc-import>
+              <sc-if value="{{ fVerCusto }}" hint-placeholder-val="{{ true }}"><dc-import name="CampoTexto" rotulo="Custo interno" valor="{{ fCusto }}" estado="{{ fCustoE }}" erroMsg="{{ fCustoM }}" aoDigitar="{{ fSetCusto }}" placeholder="0,00" modo="decimal" ajuda="Outros custos além das peças (deslocamento, material). Só para você: não sai em documento nem na visão do cliente." style="display:block;" hint-size="100%,96px"></dc-import></sc-if>
               <div data-lucro-painel="" data-estado="{{ fLucroEst }}" role="status" style="box-sizing:border-box;padding:12px 14px 14px;border-radius:16px;background:{{ fLucroFundo }};box-shadow:inset 6px 0 0 {{ fLucroViva }};display:flex;flex-direction:column;gap:8px;">
+                <sc-if value="{{ fDiscreto }}" hint-placeholder-val="{{ false }}"><span data-posicao-tabela="" style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);">Posição na tabela de referência</span></sc-if>
                 <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);">Total ao cliente</span><span style="font:700 24px/28px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div>
                 <sc-if value="{{ fTemLucro }}" hint-placeholder-val="{{ false }}"><span data-lucro-liquido="" style="font:700 18px/24px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ fLucroTxt }}</span></sc-if>
-                <span data-lucro-msg="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ fLucroMsg }}</span>
+                <sc-if value="{{ fTemLucroMsg }}" hint-placeholder-val="{{ true }}"><span data-lucro-msg="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ fLucroMsg }}</span></sc-if>
                 <sc-if value="{{ fTemTermo }}" hint-placeholder-val="{{ false }}">
                   <div data-termometro="" role="meter" aria-label="Posição do valor na tabela de referência" aria-valuemin="0" aria-valuemax="{{ fTermMax }}" aria-valuenow="{{ fTermVal }}" aria-valuetext="{{ fTermTxt }}" style="position:relative;height:18px;box-sizing:border-box;border-radius:999px;border:2px solid var(--gp-on-lucro, #ffffff);overflow:hidden;display:flex;background:var(--gp-lucro-trilho, #0b1220);">
                     <span style="flex:none;width:{{ fTermZr }};background:var(--gp-lucro-vermelho-viva, #ef4444);"></span>
@@ -728,6 +752,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><div data-justificativa="" style="display:flex;flex-direction:column;gap:2px;padding:0 0 8px;"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.j }}</span><span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ it.faixa }}</span><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.eco }}</span></sc-if></div></sc-if>
                   </div>
                 </sc-for>
+                <sc-if value="{{ fTemBonif }}" hint-placeholder-val="{{ false }}"><span data-bonificacao="" style="padding:12px 0 0;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ fBonifLinha }}</span></sc-if>
                 <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0 0;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Total</span><span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div>
               </div>
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ fGarLinha }}</span>
@@ -760,6 +785,18 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           </sc-if>
         </div>
       </div>
+      <sc-if value="{{ fTemAlerta }}" hint-placeholder-val="{{ false }}">
+      <div data-bandeja="" style="flex:none;overflow:hidden;border-radius:16px;">
+        <div data-alerta-diamante="{{ fAlerta.k }}" data-tom="{{ fAlerta.tom }}" role="alert" style="box-sizing:border-box;padding:8px 8px 10px 16px;border-radius:16px;background:{{ fAlerta.fundo }};box-shadow:inset 6px 0 0 {{ fAlerta.viva }};display:flex;flex-direction:column;gap:8px;animation:gpBandeja 260ms ease-out;">
+          <div style="display:flex;align-items:flex-start;gap:8px;">
+            <span aria-hidden="true" style="flex:none;display:inline-flex;padding-top:13px;color:{{ fAlerta.viva }};"><dc-import name="IconeGP" nome="{{ fAlerta.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+            <span data-alerta-titulo="" style="flex:1;min-width:0;padding-top:13px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ fAlerta.t }}</span>
+            <button type="button" data-alerta-fechar="" aria-label="Dispensar o alerta" onClick="{{ fAlerta.fechar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:2px solid var(--gp-on-lucro, #ffffff);background:transparent;color:var(--gp-on-lucro, #ffffff);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
+          </div>
+          <sc-if value="{{ fAlerta.temAcoes }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:{{ fAlerta.cols }};gap:8px;"><sc-for list="{{ fAlerta.acoes }}" as="a" hint-placeholder-count="2"><button type="button" data-alerta-acao="{{ a.k }}" onClick="{{ a.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-active="transform:translateY(1px);">{{ a.l }}</button></sc-for></div></sc-if>
+        </div>
+      </div>
+      </sc-if>
       <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
         <sc-for list="{{ fKeys }}" as="k" hint-placeholder-count="2">
           <dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
@@ -807,10 +844,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
       <div style="display:flex;flex-direction:column;">
         <span style="font:700 16px/24px 'Roboto',sans-serif;padding-bottom:4px;">{{ dItensTit }}</span>
         <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-doc-economia="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.eco }}</span></sc-if></sc-if></div></sc-for>
+        <sc-if value="{{ dTemBonif }}" hint-placeholder-val="{{ false }}"><div data-doc-bonificacao="" style="padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);font:600 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dBonifLinha }}</div></sc-if>
         <div style="display:flex;justify-content:space-between;gap:16px;padding-top:12px;font-weight:700;"><span>Total</span><span style="font-variant-numeric:tabular-nums;">{{ dTotal }}</span></div>
       </div>
     </sc-if>
     <sc-for list="{{ dBlocos }}" as="b" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:4px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">{{ b.t }}</span><span style="font:500 16px/24px 'Roboto',sans-serif;white-space:pre-line;overflow-wrap:anywhere;">{{ b.x }}</span></div></sc-for>
+    <sc-if value="{{ dTemPrev }}" hint-placeholder-val="{{ false }}"><div data-doc-preventiva="" style="display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:2px dashed var(--gp-on-paper);border-radius:8px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">Etiqueta de próxima preventiva</span><span style="font:500 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dPrevLinha }}</span></div></sc-if>
     <sc-if value="{{ dTemFoto }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">Foto de evidência</span><span data-doc-foto="" role="img" aria-label="Foto de evidência do aparelho ou da medição" style="display:block;width:100%;height:300px;background-repeat:no-repeat;background-position:left center;background-size:contain;background-image:{{ dFotoBg }};-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span></div></sc-if>
     <sc-if value="{{ dTemAssin }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;width:320px;max-width:100%;"><span role="img" aria-label="Assinatura do cliente" style="display:block;width:100%;height:110px;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:{{ dAssinBg }};-webkit-print-color-adjust:exact;print-color-adjust:exact;border-bottom:1px solid var(--gp-on-paper);"></span><span style="color:var(--gp-on-paper-variant);">{{ dAssinLeg }}</span></div></sc-if>
   </dc-import>
@@ -859,7 +898,8 @@ const FERR = { visual: ['Inspeção visual', 'busca'], multimetro: ['Multímetro
 const SECOES = ['Problema', 'Hipóteses', 'Verificações', 'Referência', 'Resultados', 'Próximo passo'];
 const OPTS = {
   marca: { t: 'Marca', list: ['LG', 'Samsung', 'Midea', 'Gree', 'Elgin', 'Daikin', 'Fujitsu', 'Carrier', 'Consul', 'Electrolux', 'Springer', 'Philco', 'TCL', 'Agratto'] },
-  btu: { t: 'BTU/h', list: ['7.000', '9.000', '12.000', '18.000', '22.000', '24.000', '30.000', '36.000'] },
+  // Capacidades comerciais até 120.000 BTU/h (PR #20): Piso-Teto, Cassete, lojas, clínicas e empresas.
+  btu: { t: 'BTU/h', list: ['7.000', '9.000', '12.000', '18.000', '22.000', '24.000', '30.000', '36.000', '48.000', '60.000', '80.000', '90.000', '120.000'] },
   fluido: { t: 'Fluido', list: ['R410A', 'R32', 'R22'] },
 };
 const DK = [
@@ -870,7 +910,8 @@ const DK = [
   { id: 'docs', rot: 'Docs', i: 'docs', b: 0, n: 'Docs', d: 'Orçamento, garantia, assinatura, Pix, PDF e laudo de inviabilidade. Nunca fica bloqueado.' },
   { id: 'cofre', rot: 'Cofre', i: 'cofre', b: 1, n: 'Cofre', d: 'Histórico local, garantias, vencimentos e mensagens de um toque.' },
 ];
-const BTU_MAX = Math.max(...OPTS.btu.list.map(v => Number(v.replace(/\./g, '')))); // maior capacidade da lista de BTU/h
+// Teto de um ambiente atendido por split individual: acima dele, a carga térmica avisa que exige múltiplos aparelhos ou projeto.
+const BTU_SPLIT = 36000;
 const DEV = { '375': 812, '390': 844, '430': 932 };
 const CFG = { vendas: '', upgrade: '', rotas: { 'ROTA-A-AMOSTRA': 'BASE_90', 'ROTA-B-AMOSTRA': 'LIFETIME_6', 'UPGRADE-AMOSTRA': 'LIFETIME_6' } };
 // Avisos de prototipagem ("Protótipo", nome de variável CFG) só aparecem com ?teste=1; nunca no fluxo do cliente.
@@ -936,10 +977,12 @@ const SCRIPTS = [
   ['Lembrete de manutenção', v => `Olá, ${v.cli}. Já faz [tempo] desde a última manutenção do seu ar-condicionado. Quer agendar a limpeza? ${v.tit}`],
 ];
 const PM0 = () => ({ amb: '', end: '', cid: '', tel: '', prop: '', propDoc: '', propCont: '', rt: '', reg: '', art: '', ambs: '', emerg: '', per: {}, tentou: false });
-const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null, justif: true, catAberto: false, sug: [], ressalva: '', foto: null, fotoUrl: null, fotoErro: '' });
+const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null, justif: true, catAberto: false, sug: [], ressalva: '', foto: null, fotoUrl: null, fotoErro: '', discreto: false, bonif: false, bonifItem: null });
 // Assinatura como blob: o data URL tem ';' e o estilo do modelo corta o valor ali, então a imagem não chegava ao PDF.
 const blobDe = (d) => { try { const [cab, b64] = d.split(','), bin = atob(b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return URL.createObjectURL(new Blob([u8], { type: (cab.match(/^data:([^;,]+)/) || [])[1] || 'image/png' })); } catch (e) { return null; } };
 const dataBR = (ms) => new Date(ms).toLocaleDateString('pt-BR');
+// Soma meses sem pular para o mês seguinte (31/08 + 6 meses = 28/02 ou 29/02).
+const maisMeses = (ms, n) => { const d = new Date(ms), dia = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + n); d.setDate(Math.min(dia, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate())); return d.getTime(); };
 // Coluna de resposta da Etapa: 120 px úteis + 8 px de respiro de cada lado. A maior palavra da base ("Comportamento", 117 px em
 // Roboto 600 16 px) cabe sem hífen e sem reduzir a fonte. Legenda nova com palavra maior quebra o teste etapa.js.
 const COL_RESPOSTA = 136;
@@ -1034,17 +1077,25 @@ function montarCatalogo(rows) {
   return rows.filter(r => r.regiao === 'GELOPRO' && r.servico_id).map(r => {
     const min = num(r.valor_min), max = num(r.valor_max), tip = num(r.valor_tipico), cmin = num(r.custo_peca_min), cmax = num(r.custo_peca_max);
     return { id: r.servico_id, t: r.servico, un: r.unidade, j: r.justificativa_tecnica, min, max, tip,
-      tip18: num(r.valor_tipico_18000btu), cmin, cmax, cmed: cmax ? Math.round(((cmin || 0) + cmax) / 2) : 0,
-      dica: (r.dica_fechamento || '').trim(), eco: (r.economia_preventiva || '').trim(), combo: String(r.combo_sugerido || '').split(';').map(x => x.trim()).filter(Boolean),
-      faixaVal: min !== null && max !== null ? `${BRL.format(min)} a ${BRL.format(max)}` : '',
-      bastidor: [cmax ? `Custo médio da peça: ${R0(cmin || 0)}–${Math.round(cmax)}` : cmax === 0 ? 'Serviço sem peça: custo R$ 0' : '', min !== null && max !== null ? `Tabela praticada: ${R0(min)} a ${R0(max)}` : '', REF_BASTIDOR].filter(Boolean).join(' · ') };
+      tip18: num(r.valor_tipico_18000btu), tip36: num(r.valor_tipico_36000btu), cmin, cmax, cmed: cmax ? Math.round(((cmin || 0) + cmax) / 2) : 0,
+      dica: (r.dica_fechamento || '').trim(), eco: (r.economia_preventiva || '').trim(), combo: String(r.combo_sugerido || '').split(';').map(x => x.trim()).filter(Boolean) };
   });
 }
-// Valor típico pelo BTU/h do topo (a higienização passa a 320 em aparelho de 18.000 BTU/h ou mais) e custo da peça já marcado como compra.
+// Escalonamento em 3 portes pelo BTU/h do topo (PR #20): 1 residencial (até 12.000), 2 médio (18.000 a 30.000) e
+// 3 comercial / Piso-Teto / Cassete (36.000 ou mais). Serviço sensível ao porte tem valor_tipico_18000btu e valor_tipico_36000btu na tabela;
+// os demais ficam no valor típico base. O custo da peça já vem marcado como compra. Tudo segue editável no item.
 const btuNum = (b) => Number(String(b || '').replace(/\./g, '')) || 0;
-const tipDe = (c, btu) => btuNum(btu) >= 18000 && c.tip18 !== null ? c.tip18 : c.tip;
+const porteDe = (btu) => { const b = btuNum(btu); return b >= 36000 ? 3 : b >= 18000 ? 2 : 1; };
+const PORTE_ROT = { 1: 'Residencial', 2: 'Médio', 3: 'Comercial / Piso-Teto / Cassete' };
+const tipDe = (c, btu) => { const p = porteDe(btu); return p === 3 && c.tip36 !== null ? c.tip36 : p >= 2 && c.tip18 !== null ? c.tip18 : c.tip; };
+// Faixa de tabela do porte: piso e teto acompanham o típico na mesma proporção, arredondados a R$ 10 (no porte 1, a tabela base).
+const faixaDe = (c, btu) => { const tip = tipDe(c, btu), k = c.tip && tip !== c.tip ? tip / c.tip : 1, r10 = (v) => v === null || k === 1 ? v : Math.round(v * k / 10) * 10; return { min: r10(c.min), max: r10(c.max), tip }; };
+const faixaPorte = (c, btu) => { const f = faixaDe(c, btu); return f.min !== null && f.max !== null ? `${BRL.format(f.min)} a ${BRL.format(f.max)}` : ''; };
+// Bastidor do técnico: custo médio da peça e tabela praticada no porte. Nunca sai em documento, PDF ou WhatsApp.
+const bastDe = (c, btu) => { const f = faixaDe(c, btu); return [c.cmax ? `Custo médio da peça: ${R0(c.cmin || 0)}–${Math.round(c.cmax)}` : c.cmax === 0 ? 'Serviço sem peça: custo R$ 0' : '', f.min !== null && f.max !== null ? `Tabela praticada: ${R0(f.min)} a ${R0(f.max)}` : '', REF_BASTIDOR].filter(Boolean).join(' · '); };
 const v2 = (n) => (Math.round(n * 100) / 100).toFixed(2).replace('.', ',');
-const itemDe = (c, btu) => ({ d: c.t, v: tipDe(c, btu) !== null ? v2(tipDe(c, btu)) : '', sid: c.id, custo: c.cmed || 0 });
+// btu: porte em que o item foi lançado; a bandeja de alertas compara com o BTU/h do topo para oferecer a atualização de preço.
+const itemDe = (c, btu) => ({ d: c.t, v: tipDe(c, btu) !== null ? v2(tipDe(c, btu)) : '', sid: c.id, custo: c.cmed || 0, btu });
 // Foto de evidência: reduzida no canvas (lado maior 1024 px, JPEG 0,72) para caber no PDF sem pesar o atendimento.
 const reduzirFoto = (file) => new Promise(ok => {
   const u = URL.createObjectURL(file), im = new Image();
@@ -1053,9 +1104,23 @@ const reduzirFoto = (file) => new Promise(ok => {
   im.src = u;
 });
 const RESSALVAS = ['Garantia restrita exclusivamente à peça substituída', 'Aparelho necessita higienização futura; cliente ciente'];
+// Bandeja de alertas anti-prejuízo (PR #20). Peça elétrica/eletrônica nova sem higienização nem ressalva volta na garantia.
+const PECA_RETORNO = ['cap_partida', 'reparo_placa', 'placa_nova', 'compressor_troca'];
+const RESSALVA_BLINDAR = 'Cliente ciente da necessidade de higienização térmica; garantia restrita à peça substituída';
+const FLUIDO_ALERTA = {
+  R410A: { tom: 'neutro', ico: 'cilindro-fluido', t: 'Lembrete R410A (Blend): carregar exclusivamente na fase líquida (cilindro invertido/sifão) para não fracionar a mistura.' },
+  R32: { tom: 'ambar', ico: 'cilindro-fluido', t: 'Lembrete R32 (Classe A2L): exigir vácuo profundo e jamais pressurizar com ar comprimido ou oxigênio.' },
+};
+// Mesma paleta do Painel de Lucro: fundo escuro fixo e texto branco (≥ 9:1 nos 3 temas); a faixa lateral leva a cor viva.
+const ALERTA_TOM = {
+  vermelho: ['var(--gp-lucro-vermelho, #7f1d1d)', 'var(--gp-lucro-ambar-viva, #f59e0b)'], verde: ['var(--gp-lucro-verde, #064e3b)', 'var(--gp-lucro-ambar-viva, #f59e0b)'],
+  ambar: ['var(--gp-lucro-ambar, #78350f)', 'var(--gp-lucro-ambar-viva, #f59e0b)'], neutro: ['var(--gp-lucro-neutro, #1e293b)', 'var(--gp-lucro-verde-viva, #22c55e)'],
+};
 const visTxt = (t) => h('span', { 'aria-hidden': true, style: { font: "600 16px/22px 'Roboto',sans-serif", color: 'var(--gp-on-display)', textAlign: 'center', padding: '0 8px', overflowWrap: 'normal', textWrap: 'pretty' } }, t);
 const visGen = (sim) => h('svg', { width: 56, height: 56, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--gp-on-display)', strokeWidth: 1.75, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }, sim === 'inc' ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3' }), h('path', { key: 2, d: 'M12 17h.01' })] : sim ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm8 12.5 2.5 2.5 5-5.5' })] : [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm15 9-6 6' }), h('path', { key: 2, d: 'm9 9 6 6' })]);
 const CENAS = { gp04: 'ng04', gp05: 'ng05', ge03: 'ng05' };
+// Nomes de cena das etapas: <etapa>_sim/_nao e, quando a etapa reaproveita outra, a cena compartilhada de CENAS.
+const cenasDe = (etapas) => etapas.flatMap(e => ['_sim', '_nao'].flatMap(s => [e + s, (CENAS[e] || e) + s]));
 const TEMA_NOME = { titanio: 'titanio', claro: 'claro', bancada: 'claro', sol: 'sol' };
 const TEMA_PROX = { titanio: 'claro', claro: 'sol', sol: 'titanio' };
 const TEMA_ROT = { titanio: 'Titânio', claro: 'Claro', sol: 'Sol' };
@@ -1069,7 +1134,7 @@ const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDoc
 const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], res: null, modo: null, modK: null, prev: null };
 // Dados do atendimento (cliente, aparelho, medições, hipóteses, carga, laudo, orçamento, garantia, assinatura). Concluir volta a isto.
 // Ficam fora: titular, licença, tema e documentos emitidos (localStorage), e os fatores da carga térmica, que são ajuste do técnico.
-const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
+const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
 
 class Component extends DCLogic {
   state = { ...ATEND0(), lic: ler(K_LIC), tit: ler(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null };
@@ -1081,7 +1146,7 @@ class Component extends DCLogic {
     this._rs = () => this.forceUpdate(); window.addEventListener('resize', this._rs);
     this.carregar();
     this.precarregarPecas();
-    this.precarregarCenas();
+    this.listaCenas();
     this.ativarPelaUrl();
     let n = 0; this._fp = setInterval(() => { n++; const el = this.pRef.current; if (el && el.querySelector('input,button')) { this.focarPortao(); clearInterval(this._fp); } else if (n > 40 || (!el && n > 10)) clearInterval(this._fp); }, 150);
   }
@@ -1112,7 +1177,10 @@ class Component extends DCLogic {
       const arqs = [...new Set(ntc.map(r => r.arquivo_curva).filter(Boolean))];
       const cv = await Promise.all(arqs.map(get));
       const opc = await Promise.all(['inverter_checklist.csv', 'ntc_tolerancias.csv', 'pmoc_atividades.csv', 'percursos_etapas.csv', 'percursos_resultados.csv', 'piscadas.csv', 'codigos_erro_novos.csv', 'FONTES_novas.csv', 'percursos_tecnico_etapas.csv', 'percursos_tecnico_resultados.csv', 'FONTES_tecnico.csv', 'precos_regionais_2026.csv'].map(f => get(f).catch(() => [])));
-      this.setState({ base: { cod: [...cod, ...opc[6]], pisc: opc[5], perc: ligarTecnico(montarPercursos(opc[3], opc[4]), montarPercursos(opc[8], opc[9])), fon: Object.fromEntries([...fon, ...opc[7], ...opc[10]].map(f => [f.id, f])), pt, ntc, crit, curvas: Object.fromEntries(arqs.map((a, i) => [a, cv[i]])), inv: opc[0], tol: opc[1], pmoc: opc[2], cat: montarCatalogo(opc[11]) } });
+      const perc = ligarTecnico(montarPercursos(opc[3], opc[4]), montarPercursos(opc[8], opc[9]));
+      this.setState({ base: { cod: [...cod, ...opc[6]], pisc: opc[5], perc, fon: Object.fromEntries([...fon, ...opc[7], ...opc[10]].map(f => [f.id, f])), pt, ntc, crit, curvas: Object.fromEntries(arqs.map((a, i) => [a, cv[i]])), inv: opc[0], tol: opc[1], pmoc: opc[2], cat: montarCatalogo(opc[11]) } });
+      // Abertura leve: só as cenas da primeira pergunta de cada sintoma com percurso (Código no display e LED piscando abrem a tabela).
+      this.precarregarCenas(cenasDe(SINTOMAS.filter(x => x.id !== 'codigo' && x.id !== 'led').map(x => perc[x.id] && perc[x.id].inicio).filter(Boolean)));
     } catch (e) { this.setState({ baseErro: String(e.message || e) }); }
   }
   // Peças que só aparecem depois (gavetas, fechamento, PDF) são buscadas na abertura, com nova tentativa.
@@ -1139,20 +1207,30 @@ class Component extends DCLogic {
       if (falta.length || this.state.pecasFalta) this.setState({ pecasFalta: falta.length ? falta : null });
     });
   }
-  // Cenas viram endereço local na abertura: a pergunta não depende da rede no meio do atendimento. Sem cena, a tecla mostra o ícone.
-  // A lista vem de imagens/cenas/cenas.json (gerado por processar-cenas-25d.py); sem ela, usa as 38 cenas da checagem rápida.
-  precarregarCenas(tentativa = 1) {
-    const lista = this._lista ? Promise.resolve(this._lista) : fetch('imagens/cenas/cenas.json' + CENAS_V, { cache: 'no-store' }).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(l => (this._lista = new Set(l))).catch(() => CENAS_OK);
-    lista.then(L => {
-    const faltam = [...L].filter(n => !this.state.cenas[n]);
-    if (!faltam.length && this._lista) return;
-    Promise.all(faltam.map(n => fetch('imagens/cenas/' + n + '.webp' + CENAS_V, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(n + ' ' + r.status); return r.blob(); }).then(b => [n, URL.createObjectURL(b)]).catch(() => null))).then(rs => {
-      const ok = rs.filter(Boolean);
-      if (ok.length) this.setState(x => ({ cenas: { ...x.cenas, ...Object.fromEntries(ok) } }));
-      if ((ok.length < faltam.length || !this._lista) && tentativa < 4) this._cenas = setTimeout(() => this.precarregarCenas(tentativa + 1), 2000 * tentativa);
-    });
+  // Cenas viram endereço local antes da pergunta aparecer: o atendimento não depende da rede. Sem cena, a tecla mostra o ícone.
+  // Leveza para celular de entrada (2 GB de RAM, PR #20): na abertura só cenas.json e as cenas da primeira pergunta de cada sintoma;
+  // o resto entra em lote quando o técnico toca no sintoma (percurso rápido e técnico) ou abre Inverter / PT/SH, nunca as 102 de uma vez.
+  // A lista vem de imagens/cenas/cenas.json (gerado por processar-cenas-25d.py); sem ela, usa as 38 cenas da checagem rápida e tenta de novo depois.
+  listaCenas() {
+    if (this._lista) return Promise.resolve(this._lista);
+    return this._listaP || (this._listaP = fetch('imagens/cenas/cenas.json' + CENAS_V, { cache: 'no-store' }).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(l => (this._lista = new Set(l))).catch(() => { this._listaP = null; return CENAS_OK; }));
+  }
+  precarregarCenas(nomes, tentativa = 1) {
+    this.listaCenas().then(L => {
+      const pedidas = this._pedidas || (this._pedidas = new Set());
+      const faltam = [...new Set(nomes)].filter(n => L.has(n) && !this.state.cenas[n] && (tentativa > 1 || !pedidas.has(n)));
+      if (!faltam.length) return;
+      faltam.forEach(n => pedidas.add(n));
+      Promise.all(faltam.map(n => fetch('imagens/cenas/' + n + '.webp' + CENAS_V, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(n + ' ' + r.status); return r.blob(); }).then(b => [n, URL.createObjectURL(b)]).catch(() => null))).then(rs => {
+        const ok = rs.filter(Boolean), erro = faltam.filter(n => !ok.some(o => o[0] === n));
+        if (ok.length) this.setState(x => ({ cenas: { ...x.cenas, ...Object.fromEntries(ok) } }));
+        if ((erro.length || !this._lista) && tentativa < 4) (this._cenas = this._cenas || []).push(setTimeout(() => this.precarregarCenas(erro.length ? erro : nomes, tentativa + 1), 2000 * tentativa));
+      });
     });
   }
+  // Lote do percurso (etapas rápidas e técnicas do sintoma, com as cenas compartilhadas de CENAS) ou do módulo (Inverter: inv_*; PT/SH: med_*).
+  precarregarPercurso(id) { const pc = this.state.base && this.state.base.perc && this.state.base.perc[id]; if (pc) this.precarregarCenas(cenasDe(Object.keys(pc.etapas))); }
+  precarregarModulo(tela) { const pre = { inv: 'inv_', ptsh: 'med_' }[tela]; if (pre) this.listaCenas().then(L => this.precarregarCenas([...L].filter(n => n.startsWith(pre)))); }
   // Montar orçamento: abre o fechamento já com a primeira peça/serviço sugerido pelo diagnóstico (valor típico editável); os demais
   // sugeridos ficam marcados no catálogo. Itens já lançados pelo técnico são mantidos.
   abrirFech(sug) {
@@ -1175,9 +1253,10 @@ class Component extends DCLogic {
     this.setState({ printDoc: tipo, printDados: doc }, () => setTimeout(() => { try { window.print(); } catch (e) {} }, 700));
   }
   abrir(tela, extra) {
+    this.precarregarModulo(tela);
     this.setState(st => ({ prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, ...extra }));
   }
-  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._cenas); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
+  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); clearInterval(this._fp); clearTimeout(this._pecas); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
   pRef = React.createRef();
   focarPortao() {
     const fe = this.fRef.current;
@@ -1286,7 +1365,7 @@ class Component extends DCLogic {
     // Entrada única por sintoma: tela inicial e fichas abrem o mesmo percurso da base técnica.
     const iniciar = (id, et) => {
       const pc = st.base && st.base.perc && st.base.perc[id], alvo = et ? (pc && pc.etapas[et] ? et : null) : pc && pc.inicio;
-      if (id !== 'led' && alvo) return this.setState({ ...RESET, drawer: null, tela: 'etapa', sint: id, etapa: alvo });
+      if (id !== 'led' && alvo) { this.precarregarPercurso(id); return this.setState({ ...RESET, drawer: null, tela: 'etapa', sint: id, etapa: alvo }); }
       if (id === 'led' && st.base && st.base.pisc && st.base.pisc.length) return this.abrir('codigo', { sint: 'led', cod: '' });
       if (id === 'codigo') return this.abrir('codigo', { sint: id });
       this.vazio(id === 'led' ? 'pisc' : 'sem', { sint: id });
@@ -1368,22 +1447,24 @@ class Component extends DCLogic {
     // ou o texto que o técnico editou no item (campo vazio some do documento). O custo da peça nunca sai daqui.
     const catDe = (x) => x.sid ? CAT.find(c => c.id === x.sid) || null : null;
     const justif = !!F && F.justif !== false;
+    // Modo cliente ao lado (PR #20): 1 toque esconde custo, bastidor, custo interno, combos e lucro; ficam itens, valores e o termômetro.
+    const discreto = !!F && !!F.discreto;
     const txtItem = (x, k, pad) => String(x[k] !== undefined && x[k] !== null ? x[k] : pad || '').trim();
     const jCli = (x) => {
       if (!justif) return { j: '', faixa: '', eco: '' };
-      const c = catDe(x), j = txtItem(x, 'j', c && c.j), fx = txtItem(x, 'faixa', c && c.faixaVal), e = txtItem(x, 'eco', c && c.eco);
+      const c = catDe(x), j = txtItem(x, 'j', c && c.j), fx = txtItem(x, 'faixa', c && faixaPorte(c, st.sel.btu)), e = txtItem(x, 'eco', c && c.eco);
       return { j: j ? `Procedimento incluso: ${ponto(j)}` : '', faixa: fx ? `Faixa de referência de tabela (peça + mão de obra + garantia): ${fx}` : '', eco: e ? `Economia preventiva: ${ponto(e)}` : '' };
     };
     // Painel de Lucro Líquido (bastidor): lucro = total − custo das peças (estoque R$ 0 ou compra pelo custo médio) − custo interno.
     // Termômetro: abaixo do piso da tabela (ou do custo) = vermelho; entre o piso e o típico = âmbar; no típico ou acima = verde. Nada trava o avanço.
     const custoDe = (x) => reais(String(x.custo ?? '')) || 0, custoPecas = fi.reduce((t, x) => t + custoDe(x), 0), custoTot = custoPecas + (custo || 0);
     const lucro = Math.round((fTotal - custoTot) * 100) / 100, margem = fTotal > 0 ? Math.round(lucro / fTotal * 100) : 0;
-    const somaTab = (k) => fi.reduce((t, x) => { const c = catDe(x); return t + (c ? (k === 'min' ? c.min : k === 'max' ? c.max : tipDe(c, st.sel.btu)) || 0 : x.n || 0); }, 0);
+    const somaTab = (k) => fi.reduce((t, x) => { const c = catDe(x); return t + (c ? faixaDe(c, st.sel.btu)[k] || 0 : x.n || 0); }, 0);
     const piso = somaTab('min'), tipico = somaTab('tip'), teto = somaTab('max');
     const temValor = fi.some(x => x.n > 0 || catDe(x));
     const lucroEst = !temValor ? 'vazio' : fTotal < piso - 0.004 || lucro <= 0 ? 'vermelho' : fTotal < tipico - 0.004 ? 'amarelo' : 'verde';
     // Ajuste de 1 toque: sobe só os itens da tabela que estão abaixo do alvo; o que o técnico já pôs acima fica como está.
-    const ajustado = (k) => fi.map(x => { const c = catDe(x), alvo = c ? (k === 'min' ? c.min : tipDe(c, st.sel.btu)) : null; return alvo !== null && alvo !== undefined && (x.n || 0) < alvo ? alvo : x.n || 0; });
+    const ajustado = (k) => fi.map(x => { const c = catDe(x), alvo = c ? faixaDe(c, st.sel.btu)[k] : null; return alvo !== null && alvo !== undefined && (x.n || 0) < alvo ? alvo : x.n || 0; });
     const alvoTotal = (k) => { const vs = ajustado(k), t = vs.reduce((a, b) => a + b, 0); return k === 'min' && t - custoTot <= 0 ? Math.ceil(custoTot) + 1 : Math.round(t * 100) / 100; };
     const ajustar = (k) => this.fSet(f => { const vs = ajustado(k), t = vs.reduce((a, b) => a + b, 0), falta = k === 'min' && t - custoTot <= 0 ? Math.ceil(custoTot) + 1 - t : 0;
       return { itens: f.itens.map((y, j) => j < vs.length ? { ...y, v: v2(vs[j] + (j === vs.length - 1 ? falta : 0)) } : y) }; });
@@ -1393,17 +1474,49 @@ class Component extends DCLogic {
     const noOrc = new Set(fi.map(x => x.sid).filter(Boolean));
     const combos = !F ? [] : [...new Set(fi.flatMap(x => { const c = catDe(x); return c ? c.combo : []; }))].filter(id => !noOrc.has(id)).map(id => CAT.find(c => c.id === id)).filter(Boolean).slice(0, 2);
     const addCat = (c) => this.fSet(f => ({ catAberto: false, catDet: null, itens: f.itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...f.itens, itemDe(c, st.sel.btu)] }));
+    // Visita bonificada (PR #20): com ao menos 1 serviço além da visita, a taxa de diagnóstico vira ISENTO se o cliente aprovar hoje.
+    // Ligar a chave tira do orçamento o item da visita que estiver lançado (o valor vai para a linha de ancoragem); desligar devolve o item.
+    const cVisita = CAT.find(c => c.id === 'visita_diag');
+    const podeBonif = fi.some(x => (x.d.trim() || x.sid) && x.sid !== 'visita_diag');
+    const bonifVal = F && F.bonifItem ? reais(F.bonifItem.v) || 0 : cVisita && cVisita.tip !== null ? cVisita.tip : 120;
+    const bonif = !!F && !!F.bonif && podeBonif;
+    const bonifLinha = `Visita técnica e diagnóstico instrumentado: ${BRL.format(bonifVal)} → ISENTO (bonificado na aprovação imediata deste orçamento)`;
+    const bonifToggle = () => this.fSet(f => {
+      const vazio = (l) => l.every(x => !x.d.trim() && !String(x.v).trim());
+      if (f.bonif) return { bonif: false, bonifItem: null, itens: !f.bonifItem ? f.itens : vazio(f.itens) ? [f.bonifItem] : [...f.itens, f.bonifItem] };
+      const i = f.itens.findIndex(x => x.sid === 'visita_diag');
+      return { bonif: true, bonifItem: i >= 0 ? f.itens[i] : null, itens: i < 0 ? f.itens : f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }], itemEd: null };
+    });
+    // Etiqueta de próxima preventiva (PR #20): 6 meses a partir de hoje, no PDF do orçamento, no termo de garantia e no WhatsApp.
+    const prevLinha = `Próxima manutenção preventiva recomendada: ${dataBR(maisMeses(Date.now(), 6))} (6 meses) para preservar o rendimento e a economia de energia.`;
     // WhatsApp (passo 4): 3 modelos prontos; o técnico edita qualquer palavra antes de enviar. Custo de peça nunca entra.
     const zapModelo = (k) => {
       if (!F) return '';
       const num = F.numero || '', tn = tit ? tit.nome : '', pix = payload(), ate = diasGar(garTxt) ? ` (até ${dataBR(Date.now() + diasGar(garTxt) * DIA)})` : '';
       const ress = `Ressalva / estado encontrado: ${ressalva ? ponto(ressalva) : 'nenhuma registrada.'}`;
-      if (k === 2) return `Olá, ${F.cliNome}. Orçamento nº ${num} de ${tn}: ${fi.map(x => `${x.d} (${BRL.format(x.n || 0)})`).join('; ')}.\nTotal: ${BRL.format(fTotal)}\n${semGar ? 'Sem garantia contratual (aparelho no estado).' : `Garantia contratual: ${garTxt}.`}\n${ress}\nPix copia e cola: ${pix}`;
-      if (k === 3) return `Olá, ${F.cliNome}. Aqui é ${tn}. Passando para acompanhar o atendimento do orçamento nº ${num} (${equip}).\nServiços: ${fi.map(x => x.d).join('; ')}.\n${semGar ? 'Sem garantia contratual neste atendimento (aparelho no estado).' : `Sua garantia contratual é de ${garTxt}${ate}.`}\n${ress}\nQualquer sinal diferente no aparelho, me chame por aqui.`;
-      return `Olá, ${F.cliNome}. Segue o orçamento nº ${num} de ${tn}:\n` + fi.map(x => { const jc = jCli(x); return [`• ${x.d}: ${BRL.format(x.n || 0)}`, jc.j ? `  ${jc.j}` : '', jc.faixa ? `  ${jc.faixa}` : '', jc.eco ? `  ${jc.eco}` : ''].filter(Boolean).join('\n'); }).join('\n') + `\nTotal: ${BRL.format(fTotal)}\n${fGarLinha}\n${ress}\nPix copia e cola: ${pix}`;
+      const bon = bonif ? `${bonifLinha}\n` : '';
+      if (k === 2) return `Olá, ${F.cliNome}. Orçamento nº ${num} de ${tn}: ${fi.map(x => `${x.d} (${BRL.format(x.n || 0)})`).join('; ')}.\n${bon}Total: ${BRL.format(fTotal)}\n${semGar ? 'Sem garantia contratual (aparelho no estado).' : `Garantia contratual: ${garTxt}.`}\n${ress}\n${prevLinha}\nPix copia e cola: ${pix}`;
+      if (k === 3) return `Olá, ${F.cliNome}. Aqui é ${tn}. Passando para acompanhar o atendimento do orçamento nº ${num} (${equip}).\nServiços: ${fi.map(x => x.d).join('; ')}.\n${semGar ? 'Sem garantia contratual neste atendimento (aparelho no estado).' : `Sua garantia contratual é de ${garTxt}${ate}.`}\n${ress}\n${prevLinha}\nQualquer sinal diferente no aparelho, me chame por aqui.`;
+      return `Olá, ${F.cliNome}. Segue o orçamento nº ${num} de ${tn}:\n` + fi.map(x => { const jc = jCli(x); return [`• ${x.d}: ${BRL.format(x.n || 0)}`, jc.j ? `  ${jc.j}` : '', jc.faixa ? `  ${jc.faixa}` : '', jc.eco ? `  ${jc.eco}` : ''].filter(Boolean).join('\n'); }).join('\n') + `\n${bon}Total: ${BRL.format(fTotal)}\n${fGarLinha}\n${ress}\n${prevLinha}\nPix copia e cola: ${pix}`;
     };
     const zapAtual = () => F && fp === 4 ? (F.zapTxt !== null && F.zapTxt !== undefined ? F.zapTxt : zapModelo(F.zapModelo || 1)) : '';
     const ressalva = F ? (F.ressalva || '').trim() : '';
+    // Bandeja de alertas anti-prejuízo (PR #20): no máximo 1 por vez, na ordem retorno > porte > fluido; o × dispensa até o gatilho mudar.
+    // Porte não aparece no modo cliente ao lado (fala de preço); retorno e fluido são argumento técnico e continuam.
+    const aOff = st.alertaOff || {}, dispensar = (k) => () => this.setState(x => ({ alertaOff: { ...x.alertaOff, [k]: true } }));
+    const temSid = (ids) => fi.some(x => ids.includes(x.sid)), cHig = CAT.find(c => c.id === 'higienizacao');
+    const alertaFluido = () => FLUIDO_ALERTA[st.sel.fluido] && !aOff['fluido-' + st.sel.fluido] ? { k: 'fluido', ...FLUIDO_ALERTA[st.sel.fluido], fechar: dispensar('fluido-' + st.sel.fluido), acoes: [] } : null;
+    const sobePorte = F ? fi.map((x, i) => ({ x, i, c: catDe(x) })).filter(({ x, c }) => c && x.btu && porteDe(x.btu) !== porteDe(st.sel.btu) && (tipDe(c, st.sel.btu) || 0) > (x.n || 0)) : [];
+    const blindar = () => this.fSet(f => { const at = (f.ressalva || '').trim(); return at.includes(RESSALVA_BLINDAR) ? {} : { ressalva: at ? `${at.replace(/[.;]?$/, ';')} ${RESSALVA_BLINDAR}` : RESSALVA_BLINDAR }; });
+    const atualizarPorte = () => this.fSet(f => ({ itens: f.itens.map((y, j) => { const o = sobePorte.find(z => z.i === j); return o ? { ...y, v: v2(tipDe(o.c, st.sel.btu)), btu: st.sel.btu } : y; }) }));
+    const alertaF = !F || fp !== 1 ? null
+      : temSid(PECA_RETORNO) && !temSid(['higienizacao']) && !ressalva && !aOff.retorno ? { k: 'retorno', tom: 'vermelho', ico: 'alerta', t: 'Alerta de Retorno: Peça nova em aparelho sujo pode queimar na garantia.', fechar: dispensar('retorno'),
+        acoes: [...(cHig ? [{ k: 'higienizacao', l: '+ Incluir Higienização', acao: () => addCat(cHig) }] : []), { k: 'blindar', l: 'Blindar na Garantia', acao: blindar }] }
+      : sobePorte.length && !discreto && !aOff['porte-' + st.sel.btu] ? { k: 'porte', tom: 'verde', ico: 'ciclo', t: `Aparelho alterado para ${st.sel.btu} BTU/h. Atualizar preços para este porte?`, fechar: dispensar('porte-' + st.sel.btu),
+        acoes: [{ k: 'atualizar', l: 'Atualizar valores', acao: atualizarPorte }] }
+      : temSid(['carga_fluido']) ? alertaFluido() : null;
+    const alertaPT = st.tela === 'ptsh' ? alertaFluido() : null;
+    const vistaAlerta = (a) => a ? { ...a, fundo: ALERTA_TOM[a.tom][0], viva: ALERTA_TOM[a.tom][1], temAcoes: a.acoes.length > 0, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)' } : { k: '', tom: '', ico: 'info', t: '', fundo: 'none', viva: 'none', temAcoes: false, cols: 'none', acoes: [], fechar: null };
     const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, itens: fi.map(x => ({ d: x.d, v: x.n, ...jCli(x) })), total: fTotal, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto });
     const pd = st.printDoc;
     const B2 = st.btu, sB = (k) => (e) => { const v = e.target.value; this.setState(x => ({ btu: { ...x.btu, [k]: v } })); };
@@ -1421,6 +1534,7 @@ class Component extends DCLogic {
     const bAp = num(String(st.sel.btu).replace(/\./g, ''));
     const bDif = bEst && bAp ? (bAp - bEst) / bEst * 100 : null;
     const fmtBTU = (v) => Math.round(v).toLocaleString('pt-BR') + ' BTU/h';
+    const capRec = bEst ? OPTS.btu.list.map(btuNum).find(v => v >= bEst) || null : null;
     const LD = st.laudo, lMed = [ptOk ? `Sucção ${st.ptP.trim()} psig, tubo ${st.ptT.trim()} °C (${st.sel.fluido})` : '', ntcReg ? `Sensor NTC: ${st.ntcR.trim()} kΩ a ${ntcTReg ? st.ntcT.trim() : '—'} °C${rZero ? ' (zero: fora do cálculo)' : ''}` : '', bEst ? `Carga térmica estimada: ${fmtBTU(bEst)} para aparelho de ${st.sel.btu} BTU/h` : ''].filter(Boolean).join('\n') || 'Nenhuma medição registrada nesta sessão.';
     const lOk = LD.cli.trim().length >= 2 && LD.cons.trim() && LD.conc.trim();
     const docs = (ler(this.arq().docs) || []);
@@ -1556,7 +1670,10 @@ class Component extends DCLogic {
       bE: Object.fromEntries(Object.entries(bErr).map(([k, v]) => [k, v ? 'erro' : 'normal'])), bM: bErr,
       bSolOps: ['Sombra/manhã', 'Sol da tarde'], bSol: B2.sol, bSetSol: (v) => this.setState(x => ({ btu: { ...x.btu, sol: v } })),
       bOut: [['Estimativa', bEst ? fmtBTU(bEst) : '—'], ['Aparelho', bAp ? fmtBTU(bAp) : '—'], ['Folga', bDif === null ? '—' : (bDif > 0 ? '+' : '') + f1(bDif) + ' %']].map(([rot, v]) => ({ rot, ...this.mostrador('btu-' + rot, v, st.tela === 'btu') })),
-      bAcima: bEst !== null && bEst > BTU_MAX, bAcimaT: `Acima de ${BTU_MAX.toLocaleString('pt-BR')} BTU/h — exige múltiplos aparelhos ou dimensionamento de projeto.`,
+      bAcima: bEst !== null && bEst > BTU_SPLIT, bAcimaT: `Acima de ${BTU_SPLIT.toLocaleString('pt-BR')} BTU/h — exige múltiplos aparelhos ou dimensionamento de projeto.`,
+      // Recomendação comercial (PR #20): menor capacidade da lista que cobre a estimativa, com as faixas Piso-Teto/Cassete de 48.000 e 60.000 BTU/h.
+      bTemRec: bEst !== null, bRecT: capRec ? `Capacidade recomendada: ${fmtBTU(capRec)}` : `Estimativa acima de ${fmtBTU(btuNum(OPTS.btu.list[OPTS.btu.list.length - 1]))}`,
+      bRecX: `${capRec ? `Porte ${PORTE_ROT[porteDe(capRec)]}.` : 'Divida a carga entre aparelhos da lista.'} Faixas Piso-Teto/Cassete: 48.000 e 60.000 BTU/h.`,
       bTemVer: bDif !== null, bVerTipo: bDif !== null && bDif < 0 ? 'aviso' : 'info',
       bVerT: bDif !== null && bDif < 0 ? 'Aparelho abaixo da estimativa' : 'Aparelho cobre a estimativa',
       bVerX: bDif !== null && bDif < 0 ? `Faltam cerca de ${fmtBTU(-bDif / 100 * bEst)}. Ambiente pode não chegar à temperatura pedida.` : 'Pela estimativa com os fatores informados.',
@@ -1587,32 +1704,41 @@ class Component extends DCLogic {
       fP1: fp === 1, fP2: fp === 2, fP3: fp === 3, fP4: fp === 4,
       fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: e.target.value }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
       fCliTel: F ? F.cliTel : '', fSetCliTel: (e) => this.fSet({ cliTel: e.target.value }),
-      fEquip: equip, fTemDiag: !!r, fDiag: r ? `Hipótese interna (não vai ao cliente): ${r.t}` : '',
+      fEquip: equip, fTemDiag: !!r && !discreto, fDiag: r ? `Hipótese interna (não vai ao cliente): ${r.t}` : '',
       fItens: fi.map((x, i) => { const semD = !x.d.trim(), semV = !(x.n > 0), err = tent && fp === 1 && (semD || semV), c = catDe(x);
         const setX = (k) => (e) => { const v = e.target.value; this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
         const setCusto = (v) => () => this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, custo: v } : y) }));
         const cx = reais(String(x.custo ?? '')), est = !!c && c.cmed > 0 && cx === 0, comp = !!c && c.cmed > 0 && cx === c.cmed;
         const tecla = (on) => ({ borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)' });
         const tE = tecla(est), tC = tecla(comp), ecoV = txtItem(x, 'eco', c && c.eco), ed = !!(F && F.itemEd === i);
-        return { n: i + 1, d: x.d, v: x.v, temRef: !!c, ref: c ? c.bastidor : '', e: err ? 'erro' : 'normal',
-        temCusto: !!c && c.cmed > 0, semPeca: !!c && !c.cmed, custoAria: `Custo da peça do item ${i + 1}`, estOn: est ? 'true' : 'false', compOn: comp ? 'true' : 'false',
+        return { n: i + 1, d: x.d, v: x.v, temRef: !!c && !discreto, ref: c ? bastDe(c, st.sel.btu) : '', e: err ? 'erro' : 'normal',
+        temCusto: !!c && c.cmed > 0 && !discreto, semPeca: !!c && !c.cmed && !discreto, verCusto: !discreto, custoAria: `Custo da peça do item ${i + 1}`, estOn: est ? 'true' : 'false', compOn: comp ? 'true' : 'false',
         setEst: setCusto(0), setComp: setCusto(c ? c.cmed : 0), compTxt: c ? `Comprar peça (~${R0(c.cmed).replace(' ', '\u00a0')})` : '',
         estBorda: tE.borda, estFundo: tE.fundo, estCor: tE.cor, compBorda: tC.borda, compFundo: tC.fundo, compCor: tC.cor,
         temDica: !!(c && c.dica), dica: c ? ponto(c.dica) : '', temEco: !!ecoV, eco: ponto(ecoV),
         edExp: ed ? 'true' : 'false', edAberto: ed, edTxt: ed ? 'Fechar a edição deste item' : 'Editar textos e faixa deste item', edToggle: () => this.fSet(f => ({ itemEd: f.itemEd === i ? null : i })),
-        jVal: txtItem(x, 'j', c && c.j), fVal: txtItem(x, 'faixa', c && c.faixaVal), eVal: ecoV, setJ: setX('j'), setF: setX('faixa'), setE: setX('eco'),
+        jVal: txtItem(x, 'j', c && c.j), fVal: txtItem(x, 'faixa', c && faixaPorte(c, st.sel.btu)), eVal: ecoV, setJ: setX('j'), setF: setX('faixa'), setE: setX('eco'),
+        edAjuda: discreto ? 'Campo de texto vazio não sai no documento nem no WhatsApp.' : 'Campo de texto vazio não sai no documento nem no WhatsApp. O custo da peça é só seu e entra no lucro líquido.',
         custoRot: `Custo real da peça do item ${i + 1} (só para você)`, custoVal: x.custo === undefined || x.custo === null ? '' : typeof x.custo === 'number' ? v2(x.custo) : x.custo, setCustoTxt: setX('custo'), custoE: reaisErro(x.custo) ? 'erro' : 'normal',
         ariaJ: `Procedimento incluso do item ${i + 1}`, ariaF: `Faixa de referência de tabela do item ${i + 1}`, ariaE: `Economia preventiva do item ${i + 1}`, ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itemEd: null, itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
       fAddItem: () => this.fSet(f => ({ itens: [...f.itens, { d: '', v: '' }] })),
       // Catálogo "+ Adicionar peça ou serviço da tabela" (bastidor do técnico).
       fCatTxt: F && F.catAberto ? 'Fechar a tabela de peças e serviços' : '+ Adicionar peça ou serviço da tabela', fCatExp: F && F.catAberto ? 'true' : 'false', fCatAberto: !!(F && F.catAberto) && CAT.length > 0,
+      fCatPorte: `Valores do porte ${PORTE_ROT[porteDe(st.sel.btu)]} (${st.sel.btu} BTU/h). Tudo editável no item.`,
       fCatToggle: () => this.fSet(f => ({ catAberto: !f.catAberto })), fCatVazio: !!(F && F.catAberto) && !CAT.length,
       fCat: CAT.map(c => { const sug = !!F && (F.sug || []).includes(c.id), ja = !!F && F.itens.some(x => x.sid === c.id), tip = tipDe(c, st.sel.btu) || 0, det = !!F && F.catDet === c.id;
-        return { id: c.id, t: c.t, preco: `Valor sugerido ${BRL.format(tip)} ${c.un}${ja ? ' · já no orçamento' : ''}`, bastidor: c.bastidor, sug, aria: `Adicionar ${c.t}. Valor sugerido ${BRL.format(tip)}${sug ? '. Indicado pelo diagnóstico' : ''}`,
+        return { id: c.id, t: c.t, preco: `Valor sugerido ${BRL.format(tip)} ${c.un}${ja ? ' · já no orçamento' : ''}`, bastidor: bastDe(c, st.sel.btu), verBast: !discreto, sug, aria: `Adicionar ${c.t}. Valor sugerido ${BRL.format(tip)}${sug ? '. Indicado pelo diagnóstico' : ''}`,
         borda: sug ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)', det, detExp: det ? 'true' : 'false', detAria: `Detalhes: ${c.t}`,
         detToggle: () => this.fSet(f => ({ catDet: f.catDet === c.id ? null : c.id })), temDica: !!c.dica, dica: ponto(c.dica), temEco: !!c.eco, eco: ponto(c.eco),
         acao: () => addCat(c) }; }),
-      fTemCombo: fp === 1 && combos.length > 0, fCombos: combos.map(c => ({ id: c.id, t: `+ ${c.t} (+${R0(Math.max(0, (tipDe(c, st.sel.btu) || 0) - (c.cmed || 0)))} de lucro líquido)`, acao: () => addCat(c) })),
+      fTemCombo: fp === 1 && combos.length > 0 && !discreto, fCombos: combos.map(c => ({ id: c.id, t: `+ ${c.t} (+${R0(Math.max(0, (tipDe(c, st.sel.btu) || 0) - (c.cmed || 0)))} de lucro líquido)`, acao: () => addCat(c) })),
+      // Modo cliente ao lado e visita bonificada (PR #20), com o mesmo desenho de chave do detalhamento técnico.
+      fDiscreto: discreto, fVerCusto: !discreto, fDiscretoOn: discreto ? 'true' : 'false', fDiscretoToggle: () => this.fSet(f => ({ discreto: !f.discreto, catDet: null })),
+      fDiscretoIco: discreto ? 'sucesso' : 'neutro', fDiscretoBorda: discreto ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fDiscretoFundo: discreto ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', fDiscretoCor: discreto ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',
+      fTemBonifChave: !!F && (podeBonif || !!F.bonif), fBonifOn: F && F.bonif ? 'true' : 'false', fBonifToggle: bonifToggle, fBonifTxt: `Bonificar taxa de diagnóstico (${BRL.format(bonifVal)} → ${BRL.format(0)}) se aprovar hoje`,
+      fBonifIco: F && F.bonif ? 'sucesso' : 'neutro', fBonifBorda: F && F.bonif ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fBonifFundo: F && F.bonif ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', fBonifCor: F && F.bonif ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',
+      fTemBonif: bonif, fBonifLinha: bonifLinha,
+      fTemAlerta: !!alertaF, fAlerta: vistaAlerta(alertaF), ptTemAlerta: !!alertaPT, ptAlerta: vistaAlerta(alertaPT),
       fJustif: justif, fJustifTxt: justif ? 'true' : 'false', fJustifToggle: () => this.fSet(f => ({ justif: f.justif === false })),
       fJustifIco: justif ? 'sucesso' : 'neutro', fJustifBorda: justif ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fJustifFundo: justif ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', fJustifCor: justif ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',
       // Ressalva / estado encontrado e foto de evidência (opcionais): saem no orçamento, na aprovação e no termo de garantia.
@@ -1625,7 +1751,7 @@ class Component extends DCLogic {
       fTemRessalva: !!ressalva, fRessalvaLinha: ressalva ? `Ressalva / estado encontrado: ${ponto(ressalva)}` : '',
       fPodeSugerir: !!r && !!F && F.itens.every(x => !x.d.trim()), fSugerir: () => r && this.fSet({ itens: r.a.map(d => ({ d, v: '' })) }),
       fCusto: F ? F.custo : '', fSetCusto: (e) => this.fSet({ custo: e.target.value }), fTemCusto: custo !== null, fCustoE: custoErro ? 'erro' : 'normal', fCustoM: custoErro,
-      fLucroEst: lucroEst, fLucroFundo: LUCRO[lucroEst][0], fLucroViva: LUCRO[lucroEst][1], fTemLucro: temValor,
+      fLucroEst: lucroEst, fLucroFundo: LUCRO[lucroEst][0], fLucroViva: LUCRO[lucroEst][1], fTemLucro: temValor && !discreto, fTemLucroMsg: !discreto,
       fLucroTxt: `SEU LUCRO LÍQUIDO: ${BRL.format(lucro)} (${margem}% de margem)`,
       fLucroMsg: lucroEst === 'vazio' ? 'Lance os itens para ver o lucro e a posição do valor na tabela.'
         : lucroEst === 'verde' ? 'Valor alinhado à tabela de referência'
@@ -1633,8 +1759,8 @@ class Component extends DCLogic {
         : lucro <= 0 ? `Abaixo do custo (${BRL.format(custoTot)}). Ajuste antes de fechar.` : `Abaixo do piso da tabela (${BRL.format(piso)}).`,
       fTemTermo: temValor, fTermMax: String(Math.round(escala)), fTermVal: String(Math.round(fTotal)), fTermTxt: `${BRL.format(fTotal)}; piso ${BRL.format(piso)}, típico ${BRL.format(tipico)}`,
       fTermZr: pct(piso) + '%', fTermZa: Math.max(0, pct(tipico) - pct(piso)) + '%', fTermPos: `calc(${pct(fTotal)}% + ${fTotal <= 0 ? 3 : pct(fTotal) >= 100 ? -3 : 0}px)`,
-      fTermZonas: [['vermelho', 'Abaixo do piso', 'left'], ['amarelo', 'Na média da tabela', 'center'], ['verde', 'Margem alta', 'right']].map(([k, t, al]) => ({ t, al, atual: lucroEst === k ? 'true' : undefined, peso: lucroEst === k ? 700 : 600, sub: lucroEst === k ? 'underline' : 'none' })),
-      fTemAjuste: lucroEst === 'amarelo' || lucroEst === 'vermelho', fAjusteTxt: lucroEst === 'amarelo' ? `Ajustar para ${BRL.format(alvoAj)}` : 'Ajustar para o piso',
+      fTermZonas: [['vermelho', 'Abaixo do piso', 'left'], ['amarelo', 'Na média da tabela', 'center'], ['verde', discreto ? 'Acima da média' : 'Margem alta', 'right']].map(([k, t, al]) => ({ t, al, atual: lucroEst === k ? 'true' : undefined, peso: lucroEst === k ? 700 : 600, sub: lucroEst === k ? 'underline' : 'none' })),
+      fTemAjuste: (lucroEst === 'amarelo' || lucroEst === 'vermelho') && !discreto, fAjusteTxt: lucroEst === 'amarelo' ? `Ajustar para ${BRL.format(alvoAj)}` : 'Ajustar para o piso',
       fAjuste: () => ajustar(lucroEst === 'amarelo' ? 'tip' : 'min'),
       fTotal, fTotalTxt: BRL.format(fTotal),
       fPrazo: F ? F.prazo : '', fSetPrazo: (v) => this.fSet({ prazo: v }), fPrazoE: tent && fp === 2 && !F.prazo ? 'erro' : 'normal',
@@ -1660,6 +1786,7 @@ class Component extends DCLogic {
       dTit: tit ? { nome: tit.nome, doc: tit.docFmt, pix: tit.pix, cidade: tit.cidade } : {},
       dCli: AVULSO.includes(pd) && st.printDados ? st.printDados.cliente : F ? F.cliNome + (F.cliTel ? ' · ' + F.cliTel : '') : '', dEquip: AVULSO.includes(pd) && st.printDados && st.printDados.equip !== undefined ? st.printDados.equip : equip, dItensVis: pd !== 'rec' && !AVULSO.includes(pd), dItensTit: pd === 'gar' ? 'Serviços cobertos' : 'Itens',
       dItens: fi.map(x => { const jc = jCli(x); return { d: x.d, vf: x.n != null ? BRL.format(x.n) : '—', temJ: !!(jc.j || jc.faixa || jc.eco), j: jc.j, faixa: jc.faixa, temE: !!jc.eco, eco: jc.eco }; }), dTotal: BRL.format(fTotal),
+      dTemBonif: pd === 'orc' && bonif, dBonifLinha: bonifLinha, dTemPrev: !!F && (pd === 'orc' || pd === 'gar'), dPrevLinha: prevLinha,
       dBlocos: (pd === 'pmoc' || pd === 'reca') && st.printDados ? st.printDados.blocos : pd === 'laudo' && st.printDados ? [{ t: 'Medições registradas', x: st.printDados.medicoes }, { t: 'Constatações', x: st.printDados.constatacoes }, { t: 'Conclusão', x: st.printDados.conclusao }, { t: 'Observação', x: 'Laudo emitido pelo técnico titular com base nas verificações acima. Não substitui laudo de engenheiro quando exigido.' }] : !F || !pd ? [] : pd === 'orc' ? [...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia contratual', x: fGarLinha }, { t: 'Pagamento por Pix', x: `Chave ${tit ? tit.pix : ''} (${tit ? tit.pixTipo : ''}).\nCopia e cola: ${payload()}\nPix gerado não comprova pagamento.` }]
         : pd === 'gar' ? [{ t: 'Prazo contratual', x: semGar ? 'Sem garantia contratual neste atendimento (aparelho no estado).' : `${garTxt}, a partir de ${dataBR(Date.now())}.` }, { t: 'Cobre', x: garCobre }, { t: 'Não cobre', x: garNao }, ...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia legal', x: 'Este termo é complementar à garantia legal do Código de Defesa do Consumidor (arts. 24 e 26), que não pode ser excluída.' }]
         : [{ t: 'Recebimento', x: `Recebi de ${F.cliNome} o valor de ${BRL.format(fTotal)} por Pix, referente ao orçamento nº ${F.numero}. Recebimento conferido pelo titular no extrato bancário em ${dataBR(Date.now())}.` }],
@@ -1774,7 +1901,7 @@ class Component extends DCLogic {
       resNota: !PC || !r ? '' : r.banc ? `Componentes campeões de defeito neste sintoma, do mais comum ao menos comum (${fonteTxt(r.fonte)}). Meça para confirmar a peça; o orçamento já abre com a troca indicada.`
         : r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : `Checagem rápida, vale para qualquer marca. Base: ${fonteTxt(r.fonte)}.`,
       resLista: r && r.banc ? 'Causas prováveis' : 'O que fazer agora',
-      temServ: !!resServ, resServ: resServ ? `Orçamento sugerido: ${resServ.t} (${BRL.format(resServ.tip || 0)}, valor editável)` : '',
+      temServ: !!resServ, resServ: resServ ? `Orçamento sugerido: ${resServ.t} (${BRL.format(tipDe(resServ, st.sel.btu) || 0)}, valor editável)` : '',
       temProx: !!(r && r.prox), resProx: r && r.prox ? r.prox : '',
       resSelo: r && r.banc ? 'Causas prováveis' : 'Causa provável', resSeloTipo: r && r.banc ? 'info' : 'aviso',
       acoes: r ? r.a.map((t, i) => ({ n: i + 1, t, linha: i ? '1px solid var(--gp-outline-variant)' : '0' })) : [],
