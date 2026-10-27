@@ -1,0 +1,11 @@
+{
+  "name": "GeloPro",
+  "short_name": "GeloPro",
+  "lang": "pt-BR",
+  "start_url": "GeloPro%20App%20v5.2.dc.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#c1c0c1",
+  "theme_color": "#c1c0c1"
+}

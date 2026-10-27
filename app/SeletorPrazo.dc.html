@@ -17,7 +17,7 @@
   <sc-if value="{{ temAjuda }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:{{ corAjuda }};">{{ ajuda }}</span></sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:120},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Garantia contratual&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;valor&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;90 dias&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;erro&quot;,&quot;somente-leitura&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ajuda&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;erroMsg&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;opcoes&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(v: string) =&gt; void&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:120},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Garantia contratual&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;valor&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;30 dias&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;erro&quot;,&quot;somente-leitura&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ajuda&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;erroMsg&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;opcoes&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string[]&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(v: string) =&gt; void&quot;}}">
 const RAISE = 'var(--gp-mold-shadow)';
 const HOV = RAISE + ',inset 0 0 0 999px var(--gp-state-hover)', HOV_SEL = 'var(--gp-feature-shadow),inset 0 0 0 999px var(--gp-state-hover)';
 const ACT = 'var(--gp-mold-shadow-pressed)', ACT_SEL = 'var(--gp-mold-shadow-pressed),inset 0 0 0 999px var(--gp-state-pressed)';
@@ -26,7 +26,8 @@ class Component extends DCLogic {
     const e = this.props.estado || 'normal';
     const des = e === 'desabilitado', ro = e === 'somente-leitura', erro = e === 'erro';
     const valor = this.props.valor;
-    const ops = (this.props.opcoes || ['30 dias', '90 dias', '6 meses', '1 ano', 'Livre']).map((l, i) => {
+    // Garantia no ritmo real da rua (PR #19): Livre abre pílulas rápidas e texto aberto na tela que usa a peça.
+    const ops = (this.props.opcoes || ['7 dias', '15 dias', '30 dias', '60 dias', '90 dias', 'Livre']).map((l, i) => {
       const on = l === valor, inativo = des || (ro && !on);
       return {
         l, ck: on ? 'true' : 'false', des: des || ro, foco: e === 'foco' && (on || (!valor && i === 0)) ? '1' : undefined,

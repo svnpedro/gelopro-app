@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#c1c0c1">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -43,8 +47,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @keyframes gpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @keyframes gpPulseResult{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @keyframes gpPulseResult2{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
-@media (min-width:600px){[data-microfaixa]{padding:12px 28px 0 !important;}}
-@media (max-width:599.98px){[data-mesa]{display:block !important;min-height:0 !important;padding:0 !important;}[data-moldura]{width:100vw !important;height:100vh !important;height:100dvh !important;padding:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;}[data-lateral]{display:none !important;}[data-chassi]{border-radius:0 !important;box-shadow:none !important;}}
+@media (min-width:768px){[data-microfaixa]{padding:12px 28px 0 !important;}}
+/* Celular e tela vertical (até 767,98 px): o app ocupa 100vw × 100dvh e o fundo da página acompanha o chassi do tema ativo
+   (#c1c0c1 no Titânio e no Claro, #ffffff no Sol), para não sobrar faixa branca no Android nem no iPhone. */
+@media (max-width:767.98px){html,body{background:#c1c0c1 !important;width:100%;min-height:100%;overscroll-behavior:none;}html:has([data-tema=sol]),html:has([data-tema=sol]) body{background:#ffffff !important;}[data-mesa]{display:block !important;min-height:0 !important;padding:0 !important;background:transparent !important;}[data-moldura]{width:100vw !important;height:100vh !important;height:100dvh !important;padding:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;}[data-lateral]{display:none !important;}[data-chassi]{border-radius:0 !important;box-shadow:none !important;}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:1ms !important;}}
 @media print{@page{size:A4;margin:12mm}html,body{background:#fff !important}body *{visibility:hidden !important}[data-print],[data-print] *{visibility:visible !important}[data-print]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important}}
 </style>
@@ -81,7 +87,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <sc-for list="{{ chips }}" as="c" hint-placeholder-count="3">
               <button type="button" aria-label="{{ c.aria }}" aria-haspopup="dialog" onClick="{{ c.onClick }}" style="min-width:0;height:48px;box-sizing:border-box;padding:0 4px;border:0;border-left:{{ c.sep }};border-image:linear-gradient(180deg,transparent 18%,var(--gp-pill-div) 18%,var(--gp-pill-div) 82%,transparent 82%) 1;background:transparent;color:var(--gp-on-pill);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;" style-active="background:var(--gp-state-pressed);">
                 <span style="display:flex;align-items:center;gap:2px;font:600 14px/16px 'Roboto',sans-serif;color:var(--gp-on-pill-label);white-space:nowrap;">{{ c.rot }}<span aria-hidden="true" style="display:inline-flex;color:var(--gp-on-pill-val);"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 14 }}" hint-size="14px,14px"></dc-import></span></span>
-                <span data-pilula-valor="" style="max-width:100%;font-weight:700;font-size:{{ c.fs2 }};line-height:18px;font-family:'Roboto',sans-serif;white-space:nowrap;color:var(--gp-on-pill-val);">{{ c.val }}</span>
+                <span style="display:flex;align-items:center;justify-content:center;gap:4px;max-width:100%;min-width:0;"><sc-if value="{{ c.temLogo }}" hint-placeholder-val="{{ false }}"><dc-import name="LogoMarca" marca="{{ c.logo }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></sc-if><span data-pilula-valor="" style="min-width:0;font-weight:700;font-size:{{ c.fs2 }};line-height:18px;font-family:'Roboto',sans-serif;white-space:nowrap;color:var(--gp-on-pill-val);">{{ c.val }}</span></span>
               </button>
             </sc-for>
           </div>
@@ -95,6 +101,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ titulo }}</span>
             </div>
             <sc-if value="{{ temSelo }}" hint-placeholder-val="{{ false }}"><dc-import name="Selo" texto="{{ seloTxt }}" tipo="info" vivo="{{ true }}" style="flex:none;" hint-size="104px,26px"></dc-import></sc-if>
+            <sc-if value="{{ temLogoMod }}" hint-placeholder-val="{{ false }}"><span data-logo-modulo="{{ logoMod }}" style="flex:none;display:inline-flex;box-sizing:border-box;padding:4px;border-radius:14px;border:2px solid var(--gp-pill-edge);background:var(--gp-pill);box-shadow:var(--gp-pill-shadow);"><dc-import name="LogoMarca" marca="{{ logoMod }}" tamanho="{{ 44 }}" hint-size="44px,44px"></dc-import></span></sc-if>
           </div>
         </sc-if>
 
@@ -537,7 +544,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <span aria-hidden="true" style="flex:none;display:inline-flex;transform:{{ sc.seta }};color:var(--gp-on-surface-variant);"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
                     </button>
                     <sc-for list="{{ sc.itens }}" as="f" hint-placeholder-count="0">
-                      <button type="button" aria-label="{{ f.aria }}" onClick="{{ f.onClick }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 8px 8px 44px;border:0;box-shadow:inset 0 1px 0 var(--gp-outline-variant);background:transparent;display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-active="background:var(--gp-state-pressed);">
+                      <button type="button" aria-label="{{ f.aria }}" onClick="{{ f.onClick }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 8px 8px {{ f.pl }};border:0;box-shadow:inset 0 1px 0 var(--gp-outline-variant);background:transparent;display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-active="background:var(--gp-state-pressed);">
+                        <sc-if value="{{ f.temLogo }}" hint-placeholder-val="{{ false }}"><span data-logo-ficha="{{ f.logo }}" style="flex:none;display:inline-flex;"><dc-import name="LogoMarca" marca="{{ f.logo }}" tamanho="{{ 28 }}" hint-size="28px,28px"></dc-import></span></sc-if>
                         <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
                           <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:normal;">{{ f.t }}</span>
                           <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-accent);font-variant-numeric:tabular-nums;">{{ f.chave }}</span>
@@ -604,6 +612,24 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <div style="display:flex;flex-direction:column;gap:4px;">
                   <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="{{ it.e }}" campoErro="{{ it.ce }}" erroMsg="{{ it.em }}" aoDescricao="{{ it.setD }}" aoValor="{{ it.setV }}" aoRemover="{{ it.rem }}" style="display:block;" hint-size="100%,104px"></dc-import>
                   <sc-if value="{{ it.temRef }}" hint-placeholder-val="{{ false }}"><span data-bastidor="" style="padding:0 4px;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.ref }}</span></sc-if>
+                  <sc-if value="{{ it.temCusto }}" hint-placeholder-val="{{ false }}"><div data-custo-peca="" role="group" aria-label="{{ it.custoAria }}" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                    <button type="button" aria-pressed="{{ it.estOn }}" onClick="{{ it.setEst }}" style="min-width:0;min-height:56px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ it.estBorda }};background:{{ it.estFundo }};color:{{ it.estCor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Já tenho em estoque (Custo R$ 0)</button>
+                    <button type="button" aria-pressed="{{ it.compOn }}" onClick="{{ it.setComp }}" style="min-width:0;min-height:56px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ it.compBorda }};background:{{ it.compFundo }};color:{{ it.compCor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ it.compTxt }}</button>
+                  </div></sc-if>
+                  <sc-if value="{{ it.semPeca }}" hint-placeholder-val="{{ false }}"><span data-custo-peca="" style="padding:0 4px;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Serviço sem peça: custo R$ 0</span></sc-if>
+                  <sc-if value="{{ it.temDica }}" hint-placeholder-val="{{ false }}"><span data-dica="" style="padding:0 4px;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Dica técnica:</strong> {{ it.dica }}</span></sc-if>
+                  <sc-if value="{{ it.temEco }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="padding:0 4px;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Economia preventiva:</strong> {{ it.eco }}</span></sc-if>
+                  <button type="button" data-editar-item="" aria-expanded="{{ it.edExp }}" onClick="{{ it.edToggle }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ it.edTxt }}</button>
+                  <sc-if value="{{ it.edAberto }}" hint-placeholder-val="{{ false }}"><div data-editor-item="" style="display:flex;flex-direction:column;gap:8px;padding:4px 0 8px;">
+                    <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Procedimento incluso</span>
+                    <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaJ }}" rows="3" value="{{ it.jVal }}" onInput="{{ it.setJ }}" placeholder="O que está incluso neste serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+                    <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Faixa de referência de tabela</span>
+                    <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaF }}" rows="2" value="{{ it.fVal }}" onInput="{{ it.setF }}" placeholder="Ex.: R$ 180,00 a R$ 290,00" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+                    <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Economia preventiva</span>
+                    <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaE }}" rows="3" value="{{ it.eVal }}" onInput="{{ it.setE }}" placeholder="O que o cliente evita gastar com este serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+                    <dc-import name="CampoTexto" rotulo="{{ it.custoRot }}" valor="{{ it.custoVal }}" aoDigitar="{{ it.setCustoTxt }}" placeholder="0,00" modo="decimal" estado="{{ it.custoE }}" erroMsg="valor inválido: use 45 ou 45,50" style="display:block;" hint-size="100%,74px"></dc-import>
+                    <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">Campo de texto vazio não sai no documento nem no WhatsApp. O custo da peça é só seu e entra no lucro líquido.</span>
+                  </div></sc-if>
                 </div>
               </sc-for>
               <button type="button" onClick="{{ fAddItem }}" style="height:56px;box-sizing:border-box;border-radius:16px;border:1px dashed var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>Adicionar item</button>
@@ -612,24 +638,50 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ fCatAberto }}" hint-placeholder-val="{{ false }}">
                 <div data-catalogo="" role="group" aria-label="Tabela de peças e serviços" style="display:flex;flex-direction:column;gap:8px;">
                   <sc-for list="{{ fCat }}" as="c" hint-placeholder-count="3">
-                    <button type="button" data-servico="{{ c.id }}" aria-label="{{ c.aria }}" onClick="{{ c.acao }}" style="min-height:56px;box-sizing:border-box;padding:10px 12px;border-radius:16px;border:{{ c.borda }};background:var(--gp-card-action);display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
-                      <sc-if value="{{ c.sug }}" hint-placeholder-val="{{ false }}"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-sel-mark);">Indicado pelo diagnóstico</span></sc-if>
-                      <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ c.t }}</span>
-                      <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ c.preco }}</span>
-                      <span data-bastidor="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ c.bastidor }}</span>
-                    </button>
+                    <div data-cat-item="{{ c.id }}" style="box-sizing:border-box;border-radius:16px;border:{{ c.borda }};background:var(--gp-card-action);display:flex;flex-direction:column;overflow:hidden;">
+                      <div style="display:flex;align-items:stretch;">
+                        <button type="button" data-servico="{{ c.id }}" aria-label="{{ c.aria }}" onClick="{{ c.acao }}" style="flex:1;min-width:0;min-height:56px;box-sizing:border-box;padding:8px 12px;border:0;background:transparent;display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
+                          <sc-if value="{{ c.sug }}" hint-placeholder-val="{{ false }}"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-sel-mark);">Indicado pelo diagnóstico</span></sc-if>
+                          <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ c.t }}</span>
+                          <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ c.preco }}</span>
+                        </button>
+                        <button type="button" data-detalhes="" aria-expanded="{{ c.detExp }}" aria-label="{{ c.detAria }}" onClick="{{ c.detToggle }}" style="flex:none;width:96px;min-height:56px;box-sizing:border-box;padding:0 8px;border:0;box-shadow:inset 1px 0 0 var(--gp-outline-variant);background:transparent;color:var(--gp-primary);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Detalhes</button>
+                      </div>
+                      <sc-if value="{{ c.det }}" hint-placeholder-val="{{ false }}"><div data-cat-detalhes="" style="box-sizing:border-box;padding:8px 12px 10px;box-shadow:inset 0 1px 0 var(--gp-outline-variant);display:flex;flex-direction:column;gap:4px;">
+                        <span data-bastidor="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ c.bastidor }}</span>
+                        <sc-if value="{{ c.temDica }}" hint-placeholder-val="{{ false }}"><span data-dica="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Dica técnica:</strong> {{ c.dica }}</span></sc-if>
+                        <sc-if value="{{ c.temEco }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Economia preventiva:</strong> {{ c.eco }}</span></sc-if>
+                      </div></sc-if>
+                    </div>
                   </sc-for>
                 </div>
               </sc-if>
               <button type="button" role="switch" data-anti-pechincha="" aria-checked="{{ fJustifTxt }}" onClick="{{ fJustifToggle }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ fJustifBorda }};background:{{ fJustifFundo }};color:{{ fJustifCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
                 <span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="{{ fJustifIco }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
-                <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">Mostrar justificativa técnica e faixa de tabela para o cliente (anti-pechincha)</span>
+                <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">Incluir detalhamento técnico, faixa de tabela e economia preventiva no documento</span>
               </button>
+              <sc-if value="{{ fTemCombo }}" hint-placeholder-val="{{ false }}"><div data-combo-sugestao="" style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Sugestões para complementar este atendimento</span>
+                <sc-for list="{{ fCombos }}" as="cb" hint-placeholder-count="2"><button type="button" data-combo="{{ cb.id }}" onClick="{{ cb.acao }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px dashed var(--gp-outline);background:var(--gp-card-action);color:var(--gp-on-surface);font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ cb.t }}</button></sc-for>
+              </div></sc-if>
               <sc-if value="{{ fPodeSugerir }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ fSugerir }}" style="height:56px;box-sizing:border-box;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Usar as ações do diagnóstico</button></sc-if>
-              <dc-import name="CampoTexto" rotulo="Custo interno" valor="{{ fCusto }}" estado="{{ fCustoE }}" erroMsg="{{ fCustoM }}" aoDigitar="{{ fSetCusto }}" placeholder="0,00" modo="decimal" ajuda="Só para você. Não sai em documento nem na visão do cliente." style="display:block;" hint-size="100%,96px"></dc-import>
-              <div role="status" style="box-sizing:border-box;padding:12px 16px;border-radius:16px;background:var(--gp-display);display:flex;flex-direction:column;gap:2px;">
-                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);">Total ao cliente</span><span style="font:500 24px/28px 'Roboto',sans-serif;color:var(--gp-on-display);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div>
-                <sc-if value="{{ fTemCusto }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);text-align:right;">{{ fMargemTxt }}</span></sc-if>
+              <dc-import name="CampoTexto" rotulo="Custo interno" valor="{{ fCusto }}" estado="{{ fCustoE }}" erroMsg="{{ fCustoM }}" aoDigitar="{{ fSetCusto }}" placeholder="0,00" modo="decimal" ajuda="Outros custos além das peças (deslocamento, material). Só para você: não sai em documento nem na visão do cliente." style="display:block;" hint-size="100%,96px"></dc-import>
+              <div data-lucro-painel="" data-estado="{{ fLucroEst }}" role="status" style="box-sizing:border-box;padding:12px 14px 14px;border-radius:16px;background:{{ fLucroFundo }};box-shadow:inset 6px 0 0 {{ fLucroViva }};display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);">Total ao cliente</span><span style="font:700 24px/28px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div>
+                <sc-if value="{{ fTemLucro }}" hint-placeholder-val="{{ false }}"><span data-lucro-liquido="" style="font:700 18px/24px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ fLucroTxt }}</span></sc-if>
+                <span data-lucro-msg="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ fLucroMsg }}</span>
+                <sc-if value="{{ fTemTermo }}" hint-placeholder-val="{{ false }}">
+                  <div data-termometro="" role="meter" aria-label="Posição do valor na tabela de referência" aria-valuemin="0" aria-valuemax="{{ fTermMax }}" aria-valuenow="{{ fTermVal }}" aria-valuetext="{{ fTermTxt }}" style="position:relative;height:18px;box-sizing:border-box;border-radius:999px;border:2px solid var(--gp-on-lucro, #ffffff);overflow:hidden;display:flex;background:var(--gp-lucro-trilho, #0b1220);">
+                    <span style="flex:none;width:{{ fTermZr }};background:var(--gp-lucro-vermelho-viva, #ef4444);"></span>
+                    <span style="flex:none;width:{{ fTermZa }};background:var(--gp-lucro-ambar-viva, #f59e0b);"></span>
+                    <span style="flex:1;background:var(--gp-lucro-verde-viva, #22c55e);"></span>
+                    <span data-termometro-marcador="" style="position:absolute;top:0;bottom:0;left:{{ fTermPos }};width:6px;margin-left:-3px;border-radius:3px;background:var(--gp-on-lucro, #ffffff);box-shadow:0 0 0 2px var(--gp-lucro-trilho, #0b1220);"></span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;">
+                    <sc-for list="{{ fTermZonas }}" as="z" hint-placeholder-count="3"><span data-rotulo="" aria-current="{{ z.atual }}" style="font:{{ z.peso }} 14px/18px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-align:{{ z.al }};text-decoration:{{ z.sub }};text-underline-offset:3px;">{{ z.t }}</span></sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ fTemAjuste }}" hint-placeholder-val="{{ false }}"><button type="button" data-lucro-ajuste="" onClick="{{ fAjuste }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-active="transform:translateY(1px);">{{ fAjusteTxt }}</button></sc-if>
               </div>
             </div>
           </sc-if>
@@ -638,7 +690,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <div style="display:flex;flex-direction:column;gap:12px;">
               <dc-import name="Aviso" tipo="info" titulo="A garantia legal vale sempre" texto="A garantia legal do Código de Defesa do Consumidor (arts. 24 e 26) existe mesmo sem termo e não pode ser excluída. O prazo abaixo é contratual e complementar a ela." style="display:block;" hint-size="100%,48px"></dc-import>
               <dc-import name="SeletorPrazo" rotulo="Garantia contratual" valor="{{ fPrazo }}" estado="{{ fPrazoE }}" erroMsg="escolha um prazo" acao="{{ fSetPrazo }}" style="display:block;" hint-size="100%,104px"></dc-import>
-              <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><dc-import name="CampoTexto" rotulo="Prazo e escopo (texto livre)" valor="{{ fPrazoLivre }}" aoDigitar="{{ fSetPrazoLivre }}" placeholder="Ex.: 45 dias para a limpeza" estado="{{ fLivreE }}" erroMsg="descreva o prazo" style="display:block;" hint-size="100%,74px"></dc-import></sc-if>
+              <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><div data-prazo-rapido="" role="group" aria-label="Prazos rápidos" style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ fPrazoPilulas }}" as="pz" hint-placeholder-count="3"><button type="button" aria-pressed="{{ pz.on }}" onClick="{{ pz.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ pz.borda }};background:{{ pz.fundo }};color:{{ pz.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ pz.t }}</button></sc-for></div></sc-if>
+              <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><dc-import name="CampoTexto" rotulo="Prazo e escopo (texto livre)" valor="{{ fPrazoLivre }}" aoDigitar="{{ fSetPrazoLivre }}" placeholder="Ex.: 20 dias para a limpeza" estado="{{ fLivreE }}" erroMsg="descreva o prazo" style="display:block;" hint-size="100%,74px"></dc-import></sc-if>
               <dc-import name="CampoTexto" rotulo="O que a garantia cobre" valor="{{ fCobre }}" aoDigitar="{{ fSetCobre }}" placeholder="Os serviços listados no orçamento" style="display:block;" hint-size="100%,74px"></dc-import>
               <dc-import name="CampoTexto" rotulo="O que não cobre" valor="{{ fNaoCobre }}" aoDigitar="{{ fSetNaoCobre }}" placeholder="Ex.: mau uso, surto de energia" style="display:block;" hint-size="100%,74px"></dc-import>
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Ressalva / estado encontrado</span>
@@ -672,7 +725,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <sc-for list="{{ fItensRO }}" as="it" hint-placeholder-count="1">
                   <div style="display:flex;flex-direction:column;">
                     <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="somente-leitura" style="display:block;" hint-size="100%,44px"></dc-import>
-                    <sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><div data-justificativa="" style="display:flex;flex-direction:column;gap:2px;padding:0 0 8px;"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.j }}</span><span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ it.faixa }}</span></div></sc-if>
+                    <sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><div data-justificativa="" style="display:flex;flex-direction:column;gap:2px;padding:0 0 8px;"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.j }}</span><span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ it.faixa }}</span><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.eco }}</span></sc-if></div></sc-if>
                   </div>
                 </sc-for>
                 <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0 0;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Total</span><span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div>
@@ -695,6 +748,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <dc-import name="AtalhoTecla" rotulo="PDF do orçamento" icone="documento" acao="{{ fPdfOrc }}" style="display:block;" hint-size="100%,60px"></dc-import>
               <dc-import name="AtalhoTecla" rotulo="PDF do termo de garantia" icone="garantia" acao="{{ fPdfGar }}" style="display:block;" hint-size="100%,60px"></dc-import>
               <dc-import name="AtalhoTecla" rotulo="PDF do recibo Pix" icone="documento" estado="{{ fRecE }}" acao="{{ fPdfRec }}" style="display:block;" hint-size="100%,60px"></dc-import>
+              <div data-zap-editor="" style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Mensagem do WhatsApp</span>
+                <div role="group" aria-label="Modelos de mensagem" style="display:flex;flex-direction:column;gap:8px;"><sc-for list="{{ fZapModelos }}" as="zm" hint-placeholder-count="3"><button type="button" aria-pressed="{{ zm.on }}" onClick="{{ zm.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:{{ zm.borda }};background:{{ zm.fundo }};color:{{ zm.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ zm.t }}</button></sc-for></div>
+                <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Mensagem do WhatsApp editável" rows="12" value="{{ fZapTxt }}" onInput="{{ fSetZapTxt }}" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+                <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">Edite qualquer palavra antes de enviar. O custo das peças nunca entra na mensagem.</span>
+              </div>
               <dc-import name="AtalhoTecla" rotulo="Enviar no WhatsApp" icone="mensagem" acao="{{ fZap }}" style="display:block;" hint-size="100%,60px"></dc-import>
               <sc-if value="{{ fTemMsg }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ fMsgTipo }}" titulo="{{ fMsgT }}" texto="{{ fMsgX }}" style="display:block;" hint-size="100%,48px"></dc-import></sc-if>
             </div>
@@ -747,7 +806,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
     <sc-if value="{{ dItensVis }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-direction:column;">
         <span style="font:700 16px/24px 'Roboto',sans-serif;padding-bottom:4px;">{{ dItensTit }}</span>
-        <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span></sc-if></div></sc-for>
+        <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-doc-economia="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.eco }}</span></sc-if></sc-if></div></sc-for>
         <div style="display:flex;justify-content:space-between;gap:16px;padding-top:12px;font-weight:700;"><span>Total</span><span style="font-variant-numeric:tabular-nums;">{{ dTotal }}</span></div>
       </div>
     </sc-if>
@@ -844,7 +903,19 @@ const reaisErro = (v) => String(v ?? '').trim() && reais(v) === null ? 'valor in
 const AMOSTRA_T = { nome: 'Titular de amostra', doc: '00000000000', docFmt: '000.000.000-00', docTipo: 'CPF', pix: '+5511999999999', pixTipo: 'Telefone', cidade: 'São Paulo', amostra: true };
 const ARQ = { real: { docs: 'gelopro.docs', seq: 'gelopro.seq', pre: '' }, amostra: { docs: 'gelopro.docs.amostra', seq: 'gelopro.seq.amostra', pre: 'AMOSTRA-' } };
 const SPLIT = { area: [2, 500], pes: [0, 100], w: [0, 50000] }, FORA_SPLIT = 'Valor fora da faixa de um ambiente Split';
-const DIAS_GAR = { '30 dias': 30, '90 dias': 90, '6 meses': 182, '1 ano': 365 };
+// Garantia no ritmo da rua (PR #19): o prazo é o texto que o técnico escolheu (7, 15, 30, 60, 90 dias ou Livre). Cofre e lembrete
+// tiram os dias do próprio texto ("10 dias", "6 meses", "1 ano"); "Sem garantia (aparelho no estado)" não tem vencimento.
+const semGarantia = (t) => /^sem garantia/i.test(String(t || '').trim());
+const diasGar = (t) => { const s = String(t || '').toLowerCase(), m = s.match(/(\d+)\s*(dia|m[eê]s|ano)/); if (!m || semGarantia(s)) return null; const n = Number(m[1]); return m[2] === 'dia' ? n : m[2] === 'ano' ? n * 365 : Math.round(n * 30.4); };
+const PRAZOS_LIVRES = ['10 dias', '45 dias', 'Sem garantia (aparelho no estado)'];
+const ZAP_MODELOS = ['1. Completo + Tabela + Economia Preventiva', '2. Resumo Direto + Pix', '3. Acompanhamento Técnico'];
+// Referência que acompanha o custo médio da peça no bastidor do técnico (texto definido pelo Pedro; nunca sai para o cliente).
+const REF_BASTIDOR = 'Base SINAPI / Distribuidoras 2026';
+// Painel de Lucro Líquido: fundo escuro e texto branco fixos (com o hexadecimal de reserva, caso o TemaGeloPro em cache não tenha os tokens).
+const LUCRO = {
+  verde: ['var(--gp-lucro-verde, #064e3b)', 'var(--gp-lucro-verde-viva, #22c55e)'], amarelo: ['var(--gp-lucro-ambar, #78350f)', 'var(--gp-lucro-ambar-viva, #f59e0b)'],
+  vermelho: ['var(--gp-lucro-vermelho, #7f1d1d)', 'var(--gp-lucro-vermelho-viva, #ef4444)'], vazio: ['var(--gp-lucro-neutro, #1e293b)', 'var(--gp-lucro-trilho, #0b1220)'],
+};
 const BUMPS = [['tabela', 'Tabela regional de preços', 'Itens e valores editáveis para o orçamento'], ['pmoc', 'Contrato e checklist PMOC simplificado', 'Modelo editável de manutenção mensal'], ['scripts', 'Kit de scripts e recibos', 'Mensagens de aprovação e cobrança prontas']];
 const AVULSO = ['laudo', 'pmoc', 'reca'];
 const INV_OPS = ['Conforme', 'Fora', 'Não medido'];
@@ -963,12 +1034,17 @@ function montarCatalogo(rows) {
   return rows.filter(r => r.regiao === 'GELOPRO' && r.servico_id).map(r => {
     const min = num(r.valor_min), max = num(r.valor_max), tip = num(r.valor_tipico), cmin = num(r.custo_peca_min), cmax = num(r.custo_peca_max);
     return { id: r.servico_id, t: r.servico, un: r.unidade, j: r.justificativa_tecnica, min, max, tip,
-      vTip: tip !== null ? tip.toFixed(2).replace('.', ',') : '',
-      faixaCli: min !== null && max !== null ? `Faixa de referência de tabela (peça + mão de obra + garantia): ${BRL.format(min)} a ${BRL.format(max)}` : '',
-      bastidor: [cmin !== null && cmax !== null ? `Custo médio da peça: ${R0(cmin)}–${Math.round(cmax)}` : '', min !== null && max !== null ? `Tabela praticada: ${R0(min)} a ${R0(max)}` : ''].filter(Boolean).join(' · ') };
+      tip18: num(r.valor_tipico_18000btu), cmin, cmax, cmed: cmax ? Math.round(((cmin || 0) + cmax) / 2) : 0,
+      dica: (r.dica_fechamento || '').trim(), eco: (r.economia_preventiva || '').trim(), combo: String(r.combo_sugerido || '').split(';').map(x => x.trim()).filter(Boolean),
+      faixaVal: min !== null && max !== null ? `${BRL.format(min)} a ${BRL.format(max)}` : '',
+      bastidor: [cmax ? `Custo médio da peça: ${R0(cmin || 0)}–${Math.round(cmax)}` : cmax === 0 ? 'Serviço sem peça: custo R$ 0' : '', min !== null && max !== null ? `Tabela praticada: ${R0(min)} a ${R0(max)}` : '', REF_BASTIDOR].filter(Boolean).join(' · ') };
   });
 }
-const itemDe = (c) => ({ d: c.t, v: c.vTip, sid: c.id });
+// Valor típico pelo BTU/h do topo (a higienização passa a 320 em aparelho de 18.000 BTU/h ou mais) e custo da peça já marcado como compra.
+const btuNum = (b) => Number(String(b || '').replace(/\./g, '')) || 0;
+const tipDe = (c, btu) => btuNum(btu) >= 18000 && c.tip18 !== null ? c.tip18 : c.tip;
+const v2 = (n) => (Math.round(n * 100) / 100).toFixed(2).replace('.', ',');
+const itemDe = (c, btu) => ({ d: c.t, v: tipDe(c, btu) !== null ? v2(tipDe(c, btu)) : '', sid: c.id, custo: c.cmed || 0 });
 // Foto de evidência: reduzida no canvas (lado maior 1024 px, JPEG 0,72) para caber no PDF sem pesar o atendimento.
 const reduzirFoto = (file) => new Promise(ok => {
   const u = URL.createObjectURL(file), im = new Image();
@@ -1084,7 +1160,7 @@ class Component extends DCLogic {
       const F = st.fech || FECH0(), cat = (st.base && st.base.cat) || [], ids = (sug || []).filter(id => cat.some(c => c.id === id));
       const c = cat.find(x => x.id === ids[0]);
       let itens = F.itens;
-      if (c && !itens.some(x => x.sid === c.id)) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c)] : [...itens, itemDe(c)];
+      if (c && !itens.some(x => x.sid === c.id)) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...itens, itemDe(c, st.sel.btu)];
       return { fech: { ...F, itens, sug: ids.length ? ids : F.sug || [] }, fOpen: true, drawer: null };
     });
   }
@@ -1113,6 +1189,9 @@ class Component extends DCLogic {
   }
   componentDidUpdate(prev, prevSt) {
     if (prev.tema !== this.props.tema && this.state.tema !== null) this.setState({ tema: null });
+    // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #c1c0c1 no Titânio e no Claro.
+    const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
+    if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#c1c0c1'; if (tc.content !== cor) tc.content = cor; }
     this.focarPortao(); return;
     const el = this.pRef.current;
     if (el && el !== this._pFoco) { this._pFoco = el; requestAnimationFrame(() => { const alvo = el.querySelector('input:not([disabled]),button:not([disabled])'); (alvo || el).focus({ preventScroll: true }); }); }
@@ -1157,7 +1236,7 @@ class Component extends DCLogic {
     const tema = TEMA_NOME[st.tema || this.props.tema] || 'titanio';
     const sol = tema === 'sol';
     const dev = DEV[this.props.aparelho] ? this.props.aparelho : '390';
-    const cheio = innerWidth < 600, W = cheio ? Math.round(innerWidth) : Number(dev), faceW = cheio ? W : W - 16, pw = faceW - 61;
+    const cheio = innerWidth < 768, W = cheio ? Math.round(innerWidth) : Number(dev), faceW = cheio ? W : W - 16, pw = faceW - 61;
     const sim = this.props.simular || 'real';
     const lic = sim === 'real' ? (st.amostra ? st.licAm : st.lic) : sim === 'sem licença' ? null : sim === 'plano 90 dias' ? { plano: 'BASE_90', ativadoEm: Date.now() - 10 * DIA } : sim === 'plano 90 vencido' ? { plano: 'BASE_90', ativadoEm: Date.now() - 95 * DIA } : { plano: 'LIFETIME_6', ativadoEm: Date.now() - 30 * DIA, bumps: ['tabela', 'pmoc', 'scripts'] };
     const tit = sim === 'real' ? (st.amostra ? AMOSTRA_T : st.tit) : sim === 'cadastro' ? st.titSim : (st.tit || AMOSTRA_T);
@@ -1181,7 +1260,7 @@ class Component extends DCLogic {
     const PORT = {
       pecas: { k: 'Carregamento', t: 'Parte do app não carregou', x: `Faltam: ${(st.pecasFalta || []).join(', ')}. Sem elas, seletores, garantia ou documentos ficariam vazios.`,
         keys: [{ l: 'Tentar de novo', pri: true, aria: 'Buscar de novo as partes que faltam', acao: () => { this.setState({ pecasFalta: null }); this.precarregarPecas(); } }],
-        av: ['aviso', 'Confira a internet', 'Tentar de novo busca só o que falta, sem recarregar a página. O atendimento em andamento continua.'] },
+        av: ['aviso', 'Confira a conexão', 'Tentar de novo busca só o que falta, sem recarregar a página. O atendimento em andamento continua.'] },
       sem: { k: 'Licença', t: 'Licença não encontrada neste aparelho', x: 'Abra o link de ativação que chegou depois da compra, neste mesmo aparelho.',
         keys: [{ l: 'Ver planos', pri: true, acao: () => this.abrirUrl(CFG.vendas, 'O endereço da página de vendas ainda não foi definido.') }, { l: 'Amostra', pri: false, aria: 'Abrir o app em modo Amostra, sem gravar licença', acao: () => this.entrarAmostra() }],
         av: st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.vendas.' : ''] : !TESTE ? null : ['info', 'Protótipo', 'Amostra abre o app só nesta sessão: não grava licença nem titular, e os documentos de teste ficam num Cofre separado, com número AMOSTRA-. Os links reais entram quando os endereços de compra estiverem definidos.'] },
@@ -1213,7 +1292,7 @@ class Component extends DCLogic {
       this.vazio(id === 'led' ? 'pisc' : 'sem', { sint: id });
     };
     const MSG = {
-      sem: { k: 'O aparelho apresenta', t: s ? s.nome : '', vt: !st.base ? (st.baseErro ? 'A base técnica não carregou' : 'A base técnica ainda está carregando') : `Percurso de “${s ? s.nome : ''}” ainda não cadastrado`, vx: !st.base ? (st.baseErro ? `${st.baseErro}. Recarregue a página com internet.` : 'Volte e toque no sintoma de novo em alguns segundos.') : 'Entra com a base técnica. Enquanto isso, a ficha pode ser vista em Consultar fichas.', i: s ? s.i : 'gelo' },
+      sem: { k: 'O aparelho apresenta', t: s ? s.nome : '', vt: !st.base ? (st.baseErro ? 'A base técnica não carregou' : 'A base técnica ainda está carregando') : `Percurso de “${s ? s.nome : ''}” ainda não cadastrado`, vx: !st.base ? (st.baseErro ? `${st.baseErro}. Recarregue a página com a conexão de dados ligada.` : 'Volte e toque no sintoma de novo em alguns segundos.') : 'Entra com a base técnica. Enquanto isso, a ficha pode ser vista em Consultar fichas.', i: s ? s.i : 'gelo' },
       cod: { k: 'O aparelho apresenta', t: 'Código no display', vt: 'Entrada por código ainda não cadastrada', vx: 'O teclado de código e a tabela por marca entram com a base técnica.', i: 'codigo' },
       pisc: { k: 'O aparelho apresenta', t: 'LED piscando', vt: 'Contagem de piscadas ainda não cadastrada', vx: 'O LED que pisca no ritmo e a tabela por marca entram com a base técnica.', i: 'led' },
       leit: { k: 'Leitura', t: 'Lançar medição', vt: 'A leitura entra na etapa de medição', vx: 'O valor em PSI, kΩ ou °C é comparado com a faixa da etapa, com unidade e origem.', i: 'medidor' },
@@ -1276,18 +1355,54 @@ class Component extends DCLogic {
     // Cobertura e exclusões: o mesmo texto na tela de assinatura, no orçamento e no termo de garantia.
     const ponto = (s) => /[.!?]$/.test(s) ? s : s + '.';
     const garCobre = F ? ponto(F.cobre.trim() || 'Os serviços listados acima') : '', garNao = F ? ponto(F.naoCobre.trim() || 'Mau uso, oscilação de energia e peças não trocadas neste atendimento') : '';
-    const fGarLinha = garTxt ? `Garantia contratual: ${garTxt}. Cobre: ${garCobre} Não cobre: ${garNao} A garantia legal do Código de Defesa do Consumidor continua valendo.` : '';
+    const semGar = semGarantia(garTxt);
+    const fGarLinha = !garTxt ? '' : semGar ? `Sem garantia contratual neste atendimento (aparelho no estado). A garantia legal do Código de Defesa do Consumidor continua valendo.` : `Garantia contratual: ${garTxt}. Cobre: ${garCobre} Não cobre: ${garNao} A garantia legal do Código de Defesa do Consumidor continua valendo.`;
     const equip = `${st.sel.marca}, ${st.sel.btu} BTU/h, ${st.sel.fluido}`;
     const payload = () => { try { return window.GeloProPix && tit ? window.GeloProPix.payload({ chave: tit.pix, nome: tit.nome, cidade: tit.cidade, valor: fTotal, txid: 'ORC' + ((F && F.numero) || '') }) : ''; } catch (e) { return ''; } };
     const fItem = (i, k) => (e) => { const v = e.target.value; this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
     const avancar = () => { const ok = fp === 1 ? ok1 : fp === 2 ? ok2 : fp === 3 ? ok3 : true; if (!ok) return this.fSet({ tentou: fp }); if (fp === 3) this.numero(); this.fSet({ passo: Math.min(4, fp + 1), tentou: 0, msg: null }); };
     // Voltar de Aprovação ou Pix apaga a assinatura: o quadro reaparece em branco e o cliente assina de novo o que estiver na tela.
-    const voltarF = () => this.fSet({ passo: Math.max(1, fp - 1), tentou: 0, msg: null, ...(fp >= 3 ? { assin: null, assinUrl: null } : {}) });
+    const voltarF = () => this.fSet({ passo: Math.max(1, fp - 1), tentou: 0, msg: null, zapTxt: null, ...(fp >= 3 ? { assin: null, assinUrl: null } : {}) });
     const fSair = () => this.setState({ fOpen: false });
-    // Justificativa anti-pechincha (ligada por padrão): procedimento incluso e faixa de tabela do catálogo; o custo da peça nunca sai daqui.
+    // Detalhamento técnico no documento (ligado por padrão): procedimento incluso, faixa de tabela e economia preventiva do catálogo,
+    // ou o texto que o técnico editou no item (campo vazio some do documento). O custo da peça nunca sai daqui.
     const catDe = (x) => x.sid ? CAT.find(c => c.id === x.sid) || null : null;
     const justif = !!F && F.justif !== false;
-    const jCli = (x) => { const c = catDe(x); return justif && c ? { j: c.j ? `Procedimento incluso: ${c.j}.` : '', faixa: c.faixaCli } : { j: '', faixa: '' }; };
+    const txtItem = (x, k, pad) => String(x[k] !== undefined && x[k] !== null ? x[k] : pad || '').trim();
+    const jCli = (x) => {
+      if (!justif) return { j: '', faixa: '', eco: '' };
+      const c = catDe(x), j = txtItem(x, 'j', c && c.j), fx = txtItem(x, 'faixa', c && c.faixaVal), e = txtItem(x, 'eco', c && c.eco);
+      return { j: j ? `Procedimento incluso: ${ponto(j)}` : '', faixa: fx ? `Faixa de referência de tabela (peça + mão de obra + garantia): ${fx}` : '', eco: e ? `Economia preventiva: ${ponto(e)}` : '' };
+    };
+    // Painel de Lucro Líquido (bastidor): lucro = total − custo das peças (estoque R$ 0 ou compra pelo custo médio) − custo interno.
+    // Termômetro: abaixo do piso da tabela (ou do custo) = vermelho; entre o piso e o típico = âmbar; no típico ou acima = verde. Nada trava o avanço.
+    const custoDe = (x) => reais(String(x.custo ?? '')) || 0, custoPecas = fi.reduce((t, x) => t + custoDe(x), 0), custoTot = custoPecas + (custo || 0);
+    const lucro = Math.round((fTotal - custoTot) * 100) / 100, margem = fTotal > 0 ? Math.round(lucro / fTotal * 100) : 0;
+    const somaTab = (k) => fi.reduce((t, x) => { const c = catDe(x); return t + (c ? (k === 'min' ? c.min : k === 'max' ? c.max : tipDe(c, st.sel.btu)) || 0 : x.n || 0); }, 0);
+    const piso = somaTab('min'), tipico = somaTab('tip'), teto = somaTab('max');
+    const temValor = fi.some(x => x.n > 0 || catDe(x));
+    const lucroEst = !temValor ? 'vazio' : fTotal < piso - 0.004 || lucro <= 0 ? 'vermelho' : fTotal < tipico - 0.004 ? 'amarelo' : 'verde';
+    // Ajuste de 1 toque: sobe só os itens da tabela que estão abaixo do alvo; o que o técnico já pôs acima fica como está.
+    const ajustado = (k) => fi.map(x => { const c = catDe(x), alvo = c ? (k === 'min' ? c.min : tipDe(c, st.sel.btu)) : null; return alvo !== null && alvo !== undefined && (x.n || 0) < alvo ? alvo : x.n || 0; });
+    const alvoTotal = (k) => { const vs = ajustado(k), t = vs.reduce((a, b) => a + b, 0); return k === 'min' && t - custoTot <= 0 ? Math.ceil(custoTot) + 1 : Math.round(t * 100) / 100; };
+    const ajustar = (k) => this.fSet(f => { const vs = ajustado(k), t = vs.reduce((a, b) => a + b, 0), falta = k === 'min' && t - custoTot <= 0 ? Math.ceil(custoTot) + 1 - t : 0;
+      return { itens: f.itens.map((y, j) => j < vs.length ? { ...y, v: v2(vs[j] + (j === vs.length - 1 ? falta : 0)) } : y) }; });
+    const alvoAj = lucroEst === 'amarelo' ? alvoTotal('tip') : lucroEst === 'vermelho' ? alvoTotal('min') : 0;
+    const escala = Math.max(teto, fTotal, tipico) * 1.15 || 1, pct = (v) => Math.max(0, Math.min(100, v / escala * 100));
+    // Sugestões de complemento: até 2 serviços do combo dos itens lançados que ainda não estão no orçamento.
+    const noOrc = new Set(fi.map(x => x.sid).filter(Boolean));
+    const combos = !F ? [] : [...new Set(fi.flatMap(x => { const c = catDe(x); return c ? c.combo : []; }))].filter(id => !noOrc.has(id)).map(id => CAT.find(c => c.id === id)).filter(Boolean).slice(0, 2);
+    const addCat = (c) => this.fSet(f => ({ catAberto: false, catDet: null, itens: f.itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...f.itens, itemDe(c, st.sel.btu)] }));
+    // WhatsApp (passo 4): 3 modelos prontos; o técnico edita qualquer palavra antes de enviar. Custo de peça nunca entra.
+    const zapModelo = (k) => {
+      if (!F) return '';
+      const num = F.numero || '', tn = tit ? tit.nome : '', pix = payload(), ate = diasGar(garTxt) ? ` (até ${dataBR(Date.now() + diasGar(garTxt) * DIA)})` : '';
+      const ress = `Ressalva / estado encontrado: ${ressalva ? ponto(ressalva) : 'nenhuma registrada.'}`;
+      if (k === 2) return `Olá, ${F.cliNome}. Orçamento nº ${num} de ${tn}: ${fi.map(x => `${x.d} (${BRL.format(x.n || 0)})`).join('; ')}.\nTotal: ${BRL.format(fTotal)}\n${semGar ? 'Sem garantia contratual (aparelho no estado).' : `Garantia contratual: ${garTxt}.`}\n${ress}\nPix copia e cola: ${pix}`;
+      if (k === 3) return `Olá, ${F.cliNome}. Aqui é ${tn}. Passando para acompanhar o atendimento do orçamento nº ${num} (${equip}).\nServiços: ${fi.map(x => x.d).join('; ')}.\n${semGar ? 'Sem garantia contratual neste atendimento (aparelho no estado).' : `Sua garantia contratual é de ${garTxt}${ate}.`}\n${ress}\nQualquer sinal diferente no aparelho, me chame por aqui.`;
+      return `Olá, ${F.cliNome}. Segue o orçamento nº ${num} de ${tn}:\n` + fi.map(x => { const jc = jCli(x); return [`• ${x.d}: ${BRL.format(x.n || 0)}`, jc.j ? `  ${jc.j}` : '', jc.faixa ? `  ${jc.faixa}` : '', jc.eco ? `  ${jc.eco}` : ''].filter(Boolean).join('\n'); }).join('\n') + `\nTotal: ${BRL.format(fTotal)}\n${fGarLinha}\n${ress}\nPix copia e cola: ${pix}`;
+    };
+    const zapAtual = () => F && fp === 4 ? (F.zapTxt !== null && F.zapTxt !== undefined ? F.zapTxt : zapModelo(F.zapModelo || 1)) : '';
     const ressalva = F ? (F.ressalva || '').trim() : '';
     const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, itens: fi.map(x => ({ d: x.d, v: x.n, ...jCli(x) })), total: fTotal, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto });
     const pd = st.printDoc;
@@ -1310,7 +1425,7 @@ class Component extends DCLogic {
     const lOk = LD.cli.trim().length >= 2 && LD.cons.trim() && LD.conc.trim();
     const docs = (ler(this.arq().docs) || []);
     const porNum = {}; docs.forEach(d => { const k = d.numero || '—'; (porNum[k] = porNum[k] || []).push(d); });
-    const cofreL = Object.entries(porNum).map(([n, ds]) => { const ult = ds[ds.length - 1], base = ds.find(d => !AVULSO.includes(d.tipo)) || ult, dias = DIAS_GAR[base.garantia]; const venc = dias ? base.em + dias * DIA : null; return { n, ds, ult, base, venc }; }).sort((a, b) => b.ult.em - a.ult.em);
+    const cofreL = Object.entries(porNum).map(([n, ds]) => { const ult = ds[ds.length - 1], base = ds.find(d => !AVULSO.includes(d.tipo)) || ult, dias = diasGar(base.garantia); const venc = dias ? base.em + dias * DIA : null; return { n, ds, ult, base, venc }; }).sort((a, b) => b.ult.em - a.ult.em);
     const zap = (tel, msg) => window.open((dig(tel) ? 'https://wa.me/55' + dig(tel).replace(/^55/, '') : 'https://wa.me/') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
     const NOMES = { orc: 'Orçamento', gar: 'Garantia', rec: 'Recibo', laudo: 'Laudo', pmoc: 'PMOC', reca: 'Recibo avulso' };
     const bumps = (lic && lic.bumps) || [];
@@ -1332,7 +1447,7 @@ class Component extends DCLogic {
     const PM = st.pmoc, pmS = (k) => (e) => { const v = e.target.value; this.setState(x => ({ pmoc: { ...x.pmoc, [k]: v } })); };
     const pmG = []; ((B && B.pmoc) || []).forEach(r => { let g = pmG.find(x => x.t === r.grupo); if (!g) pmG.push(g = { t: r.grupo, ativ: [] }); g.ativ.push(r.atividade); });
     const pmOk = PM.amb.trim().length >= 2 && PM.prop.trim().length >= 2;
-    const garD = F && DIAS_GAR[garTxt] ? dataBR(Date.now() + DIAS_GAR[garTxt] * DIA) : '[data]';
+    const garD = F && diasGar(garTxt) ? dataBR(Date.now() + diasGar(garTxt) * DIA) : '[data]';
     const SV = { cli: F && F.cliNome.trim() ? F.cliNome.trim() : '[cliente]', tit: tit ? tit.nome : '[seu nome]', n: F && F.numero ? F.numero : '[nº]', val: F && fTotal > 0 ? BRL.format(fTotal) : '[valor]', pix: tit ? tit.pix : '[chave Pix]', gar: garD };
     const scMsg = (m) => this.setState({ scMsg: m });
     const RC = st.reca, rcN = reais(RC.val), rcOk = RC.cli.trim().length >= 2 && rcN > 0 && !!RC.ref.trim() && !!RC.forma;
@@ -1353,18 +1468,18 @@ class Component extends DCLogic {
         catF.push({ cat: 'sint', tipo: 'Etapa técnica', ico: fe[1], t: e.q, sub: `${x.nome} · etapa técnica ${i + 1}`, chave: fe[0], abrir: () => iniciar(x.id, e.id) });
       }); });
       const porMarca = (rows) => { const g = new Map(); rows.forEach(r => { const b = brand(r.marca); if (b) g.set(r.marca, [...(g.get(r.marca) || []), r]); }); return [...g.entries()]; };
-      porMarca(B.cod).forEach(([m, rs]) => { const b = brand(m); catF.push({ cat: 'cod', tipo: 'Código', ico: 'codigo', t: `Códigos de erro ${m.replace(/\//g, ' / ')}`, sub: comMarca(b, 'Tabela oficial por marca'), chave: `${rs.length} códigos`, abrir: () => this.abrir('codigo', { sint: 'codigo', cod: '', sel: { ...st.sel, marca: b } }) }); });
-      porMarca(B.pisc || []).forEach(([m, rs]) => { const b = brand(m); catF.push({ cat: 'cod', tipo: 'LED', ico: 'led', t: `Piscadas de LED ${m.replace(/\//g, ' / ')}`, sub: comMarca(b, 'Tabela de piscadas'), chave: `${rs.length} padrões`, abrir: () => this.abrir('codigo', { sint: 'led', cod: '', sel: { ...st.sel, marca: b } }) }); });
+      porMarca(B.cod).forEach(([m, rs]) => { const b = brand(m); catF.push({ cat: 'cod', logo: b, tipo: 'Código', ico: 'codigo', t: `Códigos de erro ${m.replace(/\//g, ' / ')}`, sub: comMarca(b, 'Tabela oficial por marca'), chave: `${rs.length} códigos`, abrir: () => this.abrir('codigo', { sint: 'codigo', cod: '', sel: { ...st.sel, marca: b } }) }); });
+      porMarca(B.pisc || []).forEach(([m, rs]) => { const b = brand(m); catF.push({ cat: 'cod', logo: b, tipo: 'LED', ico: 'led', t: `Piscadas de LED ${m.replace(/\//g, ' / ')}`, sub: comMarca(b, 'Tabela de piscadas'), chave: `${rs.length} padrões`, abrir: () => this.abrir('codigo', { sint: 'led', cod: '', sel: { ...st.sel, marca: b } }) }); });
       OPTS.fluido.list.forEach(f => {
         const col = f.toLowerCase() + '_psig', r = B.pt.map(x => [num(x.temp_c), num(x[col])]).filter(x => x[0] !== null && x[1] !== null).sort((a, b) => Math.abs(a[0] - 4.44) - Math.abs(b[0] - 4.44))[0];
         catF.push({ cat: 'gas', tipo: 'Tabela PT', ico: 'pt-sh', t: `Saturação e superaquecimento ${f}`, sub: f !== st.sel.fluido ? `PT/SH · abre com o fluido ${f}` : 'PT/SH com a tabela de vapor', chave: r ? `${f}: ${f1(r[0])} °C = ${Math.round(r[1])} psig` : '', abrir: lock ? upg('ptsh') : () => this.abrir('ptsh', { modK: 'ptsh', sel: { ...st.sel, fluido: f } }) });
       });
-      B.crit.filter(c => /^Superaquecimento correto/.test(c.criterio)).forEach(c => catF.push({ cat: 'gas', tipo: 'Critério', ico: 'pt-sh', t: `Superaquecimento ${c.marca} ${c.linha.replace(/\s*\(.*\)/, '')}`, sub: comMarca(brand(c.marca), 'Faixa oficial só desta linha'), chave: `R410A: SH ${c.valor.replace(/ C$/, ' °C')}`, abrir: lock ? upg('ptsh') : () => this.abrir('ptsh', { modK: 'ptsh', sel: { ...st.sel, marca: brand(c.marca), fluido: 'R410A' } }) }));
+      B.crit.filter(c => /^Superaquecimento correto/.test(c.criterio)).forEach(c => catF.push({ cat: 'gas', logo: brand(c.marca), tipo: 'Critério', ico: 'pt-sh', t: `Superaquecimento ${c.marca} ${c.linha.replace(/\s*\(.*\)/, '')}`, sub: comMarca(brand(c.marca), 'Faixa oficial só desta linha'), chave: `R410A: SH ${c.valor.replace(/ C$/, ' °C')}`, abrir: lock ? upg('ptsh') : () => this.abrir('ptsh', { modK: 'ptsh', sel: { ...st.sel, marca: brand(c.marca), fluido: 'R410A' } }) }));
       B.ntc.filter(r => r.arquivo_curva).forEach(r => { const b = brand(r.marca), tol = (B.tol || []).find(t => t.marca === r.marca && t.sensor === r.sensor);
-        catF.push({ cat: 'gas', tipo: 'Sensor NTC', ico: 'sensor-ntc', t: `Curva NTC ${r.marca.split(/[\/;]/)[0]} ${r.r25_kohm}K`, sub: comMarca(b, r.sensor), chave: `25 °C = ${r.r25_kohm} kΩ${tol ? ` · ±${tol.r25_tol_pct} %` : ''}`, abrir: lock ? upg('ntc') : () => this.abrir('ntc', { modK: 'ntc', ntcS: r.sensor, sel: { ...st.sel, marca: b } }) });
+        catF.push({ cat: 'gas', logo: b, tipo: 'Sensor NTC', ico: 'sensor-ntc', t: `Curva NTC ${r.marca.split(/[\/;]/)[0]} ${r.r25_kohm}K`, sub: comMarca(b, r.sensor), chave: `25 °C = ${r.r25_kohm} kΩ${tol ? ` · ±${tol.r25_tol_pct} %` : ''}`, abrir: lock ? upg('ntc') : () => this.abrir('ntc', { modK: 'ntc', ntcS: r.sensor, sel: { ...st.sel, marca: b } }) });
       });
       [...new Map((B.inv || []).map(r => [r.familia, r])).values()].forEach(r => { const b = brand(r.marca_escopo), n = B.inv.filter(x => x.familia === r.familia).length, fam = r.familia.split('_').map(w => w.replace(/^\w/, c => c.toUpperCase())).join(' ').replace('3d', '3D');
-        catF.push({ cat: 'inv', tipo: 'Inverter', ico: 'placa-ipm', t: `Checklist Inverter ${fam}`, sub: r.marca_escopo.split('/').includes(st.sel.marca) ? 'Placa e IPM, com cena de cada teste' : `Placa e IPM · abre com a marca ${b}`, chave: `${n} testes · ${r.marca_escopo.replace(/\//g, ', ')}`, abrir: lock ? upg('inv') : () => this.abrir('inv', { modK: 'inv', sel: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel : { ...st.sel, marca: b } }) });
+        catF.push({ cat: 'inv', logo: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel.marca : b, tipo: 'Inverter', ico: 'placa-ipm', t: `Checklist Inverter ${fam}`, sub: r.marca_escopo.split('/').includes(st.sel.marca) ? 'Placa e IPM, com cena de cada teste' : `Placa e IPM · abre com a marca ${b}`, chave: `${n} testes · ${r.marca_escopo.replace(/\//g, ', ')}`, abrir: lock ? upg('inv') : () => this.abrir('inv', { modK: 'inv', sel: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel : { ...st.sel, marca: b } }) });
       });
       if ((B.pmoc || []).length) { const temP = ((lic && lic.bumps) || []).includes('pmoc'), ng = new Set(B.pmoc.map(r => r.grupo)).size;
         catF.push({ cat: 'inv', tipo: 'PMOC', ico: 'calendario', t: 'Checklist PMOC simplificado', sub: temP ? 'Modelo editável com PDF' : 'Adicional de Docs · veja em Docs', chave: `${B.pmoc.length} atividades em ${ng} grupos`, abrir: () => temP ? this.abrir('pmoc', { modK: 'docs' }) : this.abrir('docs', { modK: 'docs' }) });
@@ -1373,7 +1488,7 @@ class Component extends DCLogic {
     // Ficha que troca a marca ou o fluido do atendimento avisa antes, na própria linha.
     const troca = (sub) => (sub.match(/abre com (?:a marca|o fluido) .+$/) || [''])[0].replace(/^abre/, 'Abre');
     const qF = norm(st.busca.trim()), catSel = st.fichaCat && st.fichaCat !== 'todos' ? st.fichaCat : null;
-    const fichasF = catF.filter(f => (!catSel || f.cat === catSel) && (!qF || norm([f.t, f.tipo, f.sub, f.chave].join(' ')).includes(qF))).map(f => ({ ...f, nota: troca(f.sub), aria: `${f.tipo}: ${f.t}${/[.?!]$/.test(f.t) ? '' : '.'} ${f.chave}. ${f.sub}`, onClick: f.abrir }));
+    const fichasF = catF.filter(f => (!catSel || f.cat === catSel) && (!qF || norm([f.t, f.tipo, f.sub, f.chave].join(' ')).includes(qF))).map(f => ({ ...f, temLogo: !!f.logo, pl: f.logo ? '8px' : '44px', nota: troca(f.sub), aria: `${f.tipo}: ${f.t}${/[.?!]$/.test(f.t) ? '' : '.'} ${f.chave}. ${f.sub}`, onClick: f.abrir }));
     // Faixa de diagnóstico na inicial (item 9 do Pedro): resumo do que as medições já dizem, com toque para a análise.
     // Regra Zero: veredito só onde a base tem faixa oficial (SH da Elgin Eco Inverter R410A; tolerância NTC declarada). Nas outras marcas, o valor sai sem veredito.
     const diags = [];
@@ -1473,14 +1588,31 @@ class Component extends DCLogic {
       fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: e.target.value }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
       fCliTel: F ? F.cliTel : '', fSetCliTel: (e) => this.fSet({ cliTel: e.target.value }),
       fEquip: equip, fTemDiag: !!r, fDiag: r ? `Hipótese interna (não vai ao cliente): ${r.t}` : '',
-      fItens: fi.map((x, i) => { const semD = !x.d.trim(), semV = !(x.n > 0), err = tent && fp === 1 && (semD || semV), c = catDe(x); return { n: i + 1, d: x.d, v: x.v, temRef: !!c, ref: c ? c.bastidor : '', e: err ? 'erro' : 'normal', ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
+      fItens: fi.map((x, i) => { const semD = !x.d.trim(), semV = !(x.n > 0), err = tent && fp === 1 && (semD || semV), c = catDe(x);
+        const setX = (k) => (e) => { const v = e.target.value; this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
+        const setCusto = (v) => () => this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, custo: v } : y) }));
+        const cx = reais(String(x.custo ?? '')), est = !!c && c.cmed > 0 && cx === 0, comp = !!c && c.cmed > 0 && cx === c.cmed;
+        const tecla = (on) => ({ borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)' });
+        const tE = tecla(est), tC = tecla(comp), ecoV = txtItem(x, 'eco', c && c.eco), ed = !!(F && F.itemEd === i);
+        return { n: i + 1, d: x.d, v: x.v, temRef: !!c, ref: c ? c.bastidor : '', e: err ? 'erro' : 'normal',
+        temCusto: !!c && c.cmed > 0, semPeca: !!c && !c.cmed, custoAria: `Custo da peça do item ${i + 1}`, estOn: est ? 'true' : 'false', compOn: comp ? 'true' : 'false',
+        setEst: setCusto(0), setComp: setCusto(c ? c.cmed : 0), compTxt: c ? `Comprar peça (~${R0(c.cmed).replace(' ', '\u00a0')})` : '',
+        estBorda: tE.borda, estFundo: tE.fundo, estCor: tE.cor, compBorda: tC.borda, compFundo: tC.fundo, compCor: tC.cor,
+        temDica: !!(c && c.dica), dica: c ? ponto(c.dica) : '', temEco: !!ecoV, eco: ponto(ecoV),
+        edExp: ed ? 'true' : 'false', edAberto: ed, edTxt: ed ? 'Fechar a edição deste item' : 'Editar textos e faixa deste item', edToggle: () => this.fSet(f => ({ itemEd: f.itemEd === i ? null : i })),
+        jVal: txtItem(x, 'j', c && c.j), fVal: txtItem(x, 'faixa', c && c.faixaVal), eVal: ecoV, setJ: setX('j'), setF: setX('faixa'), setE: setX('eco'),
+        custoRot: `Custo real da peça do item ${i + 1} (só para você)`, custoVal: x.custo === undefined || x.custo === null ? '' : typeof x.custo === 'number' ? v2(x.custo) : x.custo, setCustoTxt: setX('custo'), custoE: reaisErro(x.custo) ? 'erro' : 'normal',
+        ariaJ: `Procedimento incluso do item ${i + 1}`, ariaF: `Faixa de referência de tabela do item ${i + 1}`, ariaE: `Economia preventiva do item ${i + 1}`, ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itemEd: null, itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
       fAddItem: () => this.fSet(f => ({ itens: [...f.itens, { d: '', v: '' }] })),
       // Catálogo "+ Adicionar peça ou serviço da tabela" (bastidor do técnico).
       fCatTxt: F && F.catAberto ? 'Fechar a tabela de peças e serviços' : '+ Adicionar peça ou serviço da tabela', fCatExp: F && F.catAberto ? 'true' : 'false', fCatAberto: !!(F && F.catAberto) && CAT.length > 0,
       fCatToggle: () => this.fSet(f => ({ catAberto: !f.catAberto })), fCatVazio: !!(F && F.catAberto) && !CAT.length,
-      fCat: CAT.map(c => { const sug = !!F && (F.sug || []).includes(c.id), ja = !!F && F.itens.some(x => x.sid === c.id); return { id: c.id, t: c.t, preco: `Valor sugerido ${BRL.format(c.tip || 0)} ${c.un}${ja ? ' · já no orçamento' : ''}`, bastidor: c.bastidor, sug, aria: `${c.t}. ${c.bastidor}. Valor sugerido ${BRL.format(c.tip || 0)}${sug ? '. Indicado pelo diagnóstico' : ''}`,
-        borda: sug ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)',
-        acao: () => this.fSet(f => ({ catAberto: false, itens: f.itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c)] : [...f.itens, itemDe(c)] })) }; }),
+      fCat: CAT.map(c => { const sug = !!F && (F.sug || []).includes(c.id), ja = !!F && F.itens.some(x => x.sid === c.id), tip = tipDe(c, st.sel.btu) || 0, det = !!F && F.catDet === c.id;
+        return { id: c.id, t: c.t, preco: `Valor sugerido ${BRL.format(tip)} ${c.un}${ja ? ' · já no orçamento' : ''}`, bastidor: c.bastidor, sug, aria: `Adicionar ${c.t}. Valor sugerido ${BRL.format(tip)}${sug ? '. Indicado pelo diagnóstico' : ''}`,
+        borda: sug ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)', det, detExp: det ? 'true' : 'false', detAria: `Detalhes: ${c.t}`,
+        detToggle: () => this.fSet(f => ({ catDet: f.catDet === c.id ? null : c.id })), temDica: !!c.dica, dica: ponto(c.dica), temEco: !!c.eco, eco: ponto(c.eco),
+        acao: () => addCat(c) }; }),
+      fTemCombo: fp === 1 && combos.length > 0, fCombos: combos.map(c => ({ id: c.id, t: `+ ${c.t} (+${R0(Math.max(0, (tipDe(c, st.sel.btu) || 0) - (c.cmed || 0)))} de lucro líquido)`, acao: () => addCat(c) })),
       fJustif: justif, fJustifTxt: justif ? 'true' : 'false', fJustifToggle: () => this.fSet(f => ({ justif: f.justif === false })),
       fJustifIco: justif ? 'sucesso' : 'neutro', fJustifBorda: justif ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fJustifFundo: justif ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', fJustifCor: justif ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',
       // Ressalva / estado encontrado e foto de evidência (opcionais): saem no orçamento, na aprovação e no termo de garantia.
@@ -1493,12 +1625,23 @@ class Component extends DCLogic {
       fTemRessalva: !!ressalva, fRessalvaLinha: ressalva ? `Ressalva / estado encontrado: ${ponto(ressalva)}` : '',
       fPodeSugerir: !!r && !!F && F.itens.every(x => !x.d.trim()), fSugerir: () => r && this.fSet({ itens: r.a.map(d => ({ d, v: '' })) }),
       fCusto: F ? F.custo : '', fSetCusto: (e) => this.fSet({ custo: e.target.value }), fTemCusto: custo !== null, fCustoE: custoErro ? 'erro' : 'normal', fCustoM: custoErro,
-      fMargemTxt: custo !== null ? `Custo interno ${BRL.format(custo)}, margem ${BRL.format(fTotal - custo)}` : '',
+      fLucroEst: lucroEst, fLucroFundo: LUCRO[lucroEst][0], fLucroViva: LUCRO[lucroEst][1], fTemLucro: temValor,
+      fLucroTxt: `SEU LUCRO LÍQUIDO: ${BRL.format(lucro)} (${margem}% de margem)`,
+      fLucroMsg: lucroEst === 'vazio' ? 'Lance os itens para ver o lucro e a posição do valor na tabela.'
+        : lucroEst === 'verde' ? 'Valor alinhado à tabela de referência'
+        : lucroEst === 'amarelo' ? `Na média da tabela. Dá para acrescentar +${BRL.format(alvoAj - fTotal)} e chegar ao valor típico.`
+        : lucro <= 0 ? `Abaixo do custo (${BRL.format(custoTot)}). Ajuste antes de fechar.` : `Abaixo do piso da tabela (${BRL.format(piso)}).`,
+      fTemTermo: temValor, fTermMax: String(Math.round(escala)), fTermVal: String(Math.round(fTotal)), fTermTxt: `${BRL.format(fTotal)}; piso ${BRL.format(piso)}, típico ${BRL.format(tipico)}`,
+      fTermZr: pct(piso) + '%', fTermZa: Math.max(0, pct(tipico) - pct(piso)) + '%', fTermPos: `calc(${pct(fTotal)}% + ${fTotal <= 0 ? 3 : pct(fTotal) >= 100 ? -3 : 0}px)`,
+      fTermZonas: [['vermelho', 'Abaixo do piso', 'left'], ['amarelo', 'Na média da tabela', 'center'], ['verde', 'Margem alta', 'right']].map(([k, t, al]) => ({ t, al, atual: lucroEst === k ? 'true' : undefined, peso: lucroEst === k ? 700 : 600, sub: lucroEst === k ? 'underline' : 'none' })),
+      fTemAjuste: lucroEst === 'amarelo' || lucroEst === 'vermelho', fAjusteTxt: lucroEst === 'amarelo' ? `Ajustar para ${BRL.format(alvoAj)}` : 'Ajustar para o piso',
+      fAjuste: () => ajustar(lucroEst === 'amarelo' ? 'tip' : 'min'),
       fTotal, fTotalTxt: BRL.format(fTotal),
       fPrazo: F ? F.prazo : '', fSetPrazo: (v) => this.fSet({ prazo: v }), fPrazoE: tent && fp === 2 && !F.prazo ? 'erro' : 'normal',
+      fPrazoPilulas: PRAZOS_LIVRES.map(t => { const on = !!F && F.prazoLivre.trim() === t; return { t, on: on ? 'true' : 'false', borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)', acao: () => this.fSet({ prazoLivre: t }) }; }),
       fLivre: !!F && F.prazo === 'Livre', fPrazoLivre: F ? F.prazoLivre : '', fSetPrazoLivre: (e) => this.fSet({ prazoLivre: e.target.value }), fLivreE: tent && fp === 2 && F.prazo === 'Livre' && !F.prazoLivre.trim() ? 'erro' : 'normal',
       fCobre: F ? F.cobre : '', fSetCobre: (e) => this.fSet({ cobre: e.target.value }), fNaoCobre: F ? F.naoCobre : '', fSetNaoCobre: (e) => this.fSet({ naoCobre: e.target.value }),
-      fCliLinha: F ? `Orçamento para ${F.cliNome || '—'}` : '', fItensRO: fi.map((x, i) => { const jc = jCli(x); return { n: i + 1, d: x.d, v: x.v, temJ: !!(jc.j || jc.faixa), j: jc.j, faixa: jc.faixa }; }), fGarLinha,
+      fCliLinha: F ? `Orçamento para ${F.cliNome || '—'}` : '', fItensRO: fi.map((x, i) => { const jc = jCli(x); return { n: i + 1, d: x.d, v: x.v, temJ: !!(jc.j || jc.faixa || jc.eco), j: jc.j, faixa: jc.faixa, temE: !!jc.eco, eco: jc.eco }; }), fGarLinha,
       fAssinE: tent && fp === 3 && !F.assin ? 'erro' : 'normal', fSetAssin: (u) => { if (F && F.assinUrl) URL.revokeObjectURL(F.assinUrl); this.fSet({ assin: u, assinUrl: u ? blobDe(u) : null }); },
       fPixChave: tit ? tit.pix : '', fPixNome: tit ? tit.nome : '', fPixCidade: tit ? tit.cidade : '', fTxid: 'ORC' + ((F && F.numero) || ''),
       fCopiar: () => { const p = payload(); const ok = () => this.fSet({ msg: ['sucesso', 'Código Pix copiado', 'Cole no app do banco ou envie ao cliente.'] }); const no = () => this.fSet({ msg: ['aviso', 'Não deu para copiar', p ? p : 'Gerador de Pix indisponível.'] }); if (p && navigator.clipboard) navigator.clipboard.writeText(p).then(ok, no); else no(); },
@@ -1506,7 +1649,9 @@ class Component extends DCLogic {
       fRecBorda: F && F.recebido ? '2px solid var(--gp-success)' : '1px solid var(--gp-outline)', fRecFundo: F && F.recebido ? 'var(--gp-success-container)' : 'var(--gp-card-action)', fRecCor: F && F.recebido ? 'var(--gp-on-success-container)' : 'var(--gp-on-surface)',
       fRecE: F && F.recebido ? 'normal' : 'desabilitado',
       fPdfOrc: () => this.imprimir('orc', docBase()), fPdfGar: () => this.imprimir('gar', docBase()), fPdfRec: () => F && F.recebido && this.imprimir('rec', docBase()),
-      fZap: () => { const num = this.numero(); const tel = dig(F.cliTel).replace(/^55/, ''); const msg = `Olá, ${F.cliNome}. Segue o orçamento nº ${num} de ${tit ? tit.nome : ''}:\n` + fi.map(x => { const jc = jCli(x); return [`• ${x.d}: ${BRL.format(x.n || 0)}`, jc.j ? `  ${jc.j}` : '', jc.faixa ? `  ${jc.faixa}` : ''].filter(Boolean).join('\n'); }).join('\n') + `\nTotal: ${BRL.format(fTotal)}\n${fGarLinha}` + (ressalva ? `\nRessalva / estado encontrado: ${ponto(ressalva)}` : '') + `\nPix copia e cola: ${payload()}`; window.open((tel ? 'https://wa.me/55' + tel : 'https://wa.me/') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener'); this.fSet({ msg: ['sucesso', 'Mensagem aberta no WhatsApp', tel ? 'Confira e envie.' : 'Sem telefone: escolha o contato no WhatsApp.'] }); },
+      fZapModelos: ZAP_MODELOS.map((t, k) => { const on = !!F && (F.zapModelo || 1) === k + 1; return { t, on: on ? 'true' : 'false', borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)', acao: () => this.fSet({ zapModelo: k + 1, zapTxt: null }) }; }),
+      fZapTxt: zapAtual(), fSetZapTxt: (e) => this.fSet({ zapTxt: e.target.value }),
+      fZap: () => { this.numero(); const tel = dig(F.cliTel).replace(/^55/, ''); window.open((tel ? 'https://wa.me/55' + tel : 'https://wa.me/') + '?text=' + encodeURIComponent(zapAtual()), '_blank', 'noopener'); this.fSet({ msg: ['sucesso', 'Mensagem aberta no WhatsApp', tel ? 'Confira e envie.' : 'Sem telefone: escolha o contato no WhatsApp.'] }); },
       fTemMsg: !!(F && F.msg), fMsgTipo: F && F.msg ? F.msg[0] : 'info', fMsgT: F && F.msg ? F.msg[1] : '', fMsgX: F && F.msg ? F.msg[2] : '',
       fKeys: fp === 1 ? [{ l: 'Sair', pri: false, aria: 'Sair e manter o rascunho', acao: fSair }, { l: 'Continuar', pri: true, aria: 'Continuar para a garantia', acao: avancar }]
         : fp === 4 ? [{ l: 'Voltar', pri: false, aria: 'Voltar', acao: voltarF }, { l: 'Concluir', pri: true, aria: 'Concluir e começar outro atendimento', acao: () => this.setState(x => ATEND0(x.btu)) }]
@@ -1514,9 +1659,9 @@ class Component extends DCLogic {
       temPrint: !!pd && (AVULSO.includes(pd) ? !!st.printDados : !!F), dTipo: pd === 'pmoc' ? 'Plano de Manutenção, Operação e Controle (PMOC)' : pd === 'reca' ? 'Recibo' : pd === 'laudo' ? 'Laudo de inviabilidade' : pd === 'gar' ? 'Termo de garantia' : pd === 'rec' ? 'Recibo Pix' : 'Orçamento', dNum: AVULSO.includes(pd) && st.printDados ? st.printDados.numero : F ? F.numero : '', dData: dataBR(Date.now()),
       dTit: tit ? { nome: tit.nome, doc: tit.docFmt, pix: tit.pix, cidade: tit.cidade } : {},
       dCli: AVULSO.includes(pd) && st.printDados ? st.printDados.cliente : F ? F.cliNome + (F.cliTel ? ' · ' + F.cliTel : '') : '', dEquip: AVULSO.includes(pd) && st.printDados && st.printDados.equip !== undefined ? st.printDados.equip : equip, dItensVis: pd !== 'rec' && !AVULSO.includes(pd), dItensTit: pd === 'gar' ? 'Serviços cobertos' : 'Itens',
-      dItens: fi.map(x => { const jc = jCli(x); return { d: x.d, vf: x.n != null ? BRL.format(x.n) : '—', temJ: !!(jc.j || jc.faixa), j: jc.j, faixa: jc.faixa }; }), dTotal: BRL.format(fTotal),
+      dItens: fi.map(x => { const jc = jCli(x); return { d: x.d, vf: x.n != null ? BRL.format(x.n) : '—', temJ: !!(jc.j || jc.faixa || jc.eco), j: jc.j, faixa: jc.faixa, temE: !!jc.eco, eco: jc.eco }; }), dTotal: BRL.format(fTotal),
       dBlocos: (pd === 'pmoc' || pd === 'reca') && st.printDados ? st.printDados.blocos : pd === 'laudo' && st.printDados ? [{ t: 'Medições registradas', x: st.printDados.medicoes }, { t: 'Constatações', x: st.printDados.constatacoes }, { t: 'Conclusão', x: st.printDados.conclusao }, { t: 'Observação', x: 'Laudo emitido pelo técnico titular com base nas verificações acima. Não substitui laudo de engenheiro quando exigido.' }] : !F || !pd ? [] : pd === 'orc' ? [...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia contratual', x: fGarLinha }, { t: 'Pagamento por Pix', x: `Chave ${tit ? tit.pix : ''} (${tit ? tit.pixTipo : ''}).\nCopia e cola: ${payload()}\nPix gerado não comprova pagamento.` }]
-        : pd === 'gar' ? [{ t: 'Prazo contratual', x: `${garTxt}, a partir de ${dataBR(Date.now())}.` }, { t: 'Cobre', x: garCobre }, { t: 'Não cobre', x: garNao }, ...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia legal', x: 'Este termo é complementar à garantia legal do Código de Defesa do Consumidor (arts. 24 e 26), que não pode ser excluída.' }]
+        : pd === 'gar' ? [{ t: 'Prazo contratual', x: semGar ? 'Sem garantia contratual neste atendimento (aparelho no estado).' : `${garTxt}, a partir de ${dataBR(Date.now())}.` }, { t: 'Cobre', x: garCobre }, { t: 'Não cobre', x: garNao }, ...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia legal', x: 'Este termo é complementar à garantia legal do Código de Defesa do Consumidor (arts. 24 e 26), que não pode ser excluída.' }]
         : [{ t: 'Recebimento', x: `Recebi de ${F.cliNome} o valor de ${BRL.format(fTotal)} por Pix, referente ao orçamento nº ${F.numero}. Recebimento conferido pelo titular no extrato bancário em ${dataBR(Date.now())}.` }],
       dTemFoto: !!F && (pd === 'orc' || pd === 'gar') && !!F.fotoUrl, dFotoBg: F && F.fotoUrl ? `url("${F.fotoUrl}")` : 'none',
       dTemAssin: !!F && pd !== 'rec' && !AVULSO.includes(pd) && !!F.assin, dAssinBg: F && F.assinUrl ? `url("${F.assinUrl}")` : 'none', dAssinLeg: F ? `Assinatura do cliente: ${F.cliNome}` : '',
@@ -1580,11 +1725,13 @@ class Component extends DCLogic {
       abrirFichas: () => this.setState({ drawer: 'fichas', fichaSel: null, busca: '', fichaCat: 'todos', fichaSec: null }),
       up: () => { if (this.state.pk) this.setState({ pk: null }); },
       chips: [['marca', 'Marca'], ['btu', 'BTU/h'], ['fluido', 'Fluido']].map(([k, rot]) => ({
-        rot, val: st.sel[k], fs2: this.fit(st.sel[k], 17, eqW * FR[k] / 100 - 4 - (k === 'marca' ? 0 : 1) - 2, 14) + 'px', sep: k === 'marca' ? '0' : '1px solid', aviso: k === 'marca',
+        rot, val: st.sel[k], temLogo: k === 'marca', logo: k === 'marca' ? st.sel.marca : '', fs2: this.fit(st.sel[k], 17, eqW * FR[k] / 100 - 4 - (k === 'marca' ? 24 : 1) - 2, 14) + 'px', sep: k === 'marca' ? '0' : '1px solid', aviso: k === 'marca',
         aria: k === 'marca' ? `Marca ${st.sel.marca}, modelo não identificado` : `${OPTS[k].t} ${st.sel[k]}`,
         onClick: () => this.setState({ drawer: k }),
       })),
       temTopo: st.tela !== 'inicio' && st.tela !== 'etapa',
+      // Logomarca da marca do atendimento nos módulos Código no display, LED piscando, NTC/BTU e Inverter.
+      temLogoMod: ['codigo', 'ntc', 'btu', 'inv'].includes(st.tela), logoMod: st.sel.marca,
       // Visor: a tela inicial mantém o aro de 28 px; as secundárias usam aro simétrico de 24 px (visor interno concêntrico, 21 px).
       aroR: st.tela === 'inicio' ? '28px' : '24px', visR: st.tela === 'inicio' ? '25px' : '21px',
       // Na Etapa o visor e a coluna encolhem o respiro (6 px) para entregar a altura às cenas.

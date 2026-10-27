@@ -288,6 +288,13 @@ const MOLDE = {
   '--gp-display-well': '0 0 0 1px var(--gp-key-edge),inset 0 3px 8px var(--gp-key-shadow)',
   '--gp-signal-glow': 'none',
   '--gp-key-emboss': 'none',
+  // Painel de Lucro Líquido do Orçamento (PR #19): fundo escuro fixo nos três temas e texto branco, contraste ≥ 9:1 em qualquer tema.
+  // A cor viva só pinta a faixa lateral e o termômetro; o estado também vem escrito (Abaixo do piso, Na média da tabela, Margem alta).
+  '--gp-lucro-verde': '#064e3b', '--gp-lucro-verde-viva': '#22c55e',
+  '--gp-lucro-ambar': '#78350f', '--gp-lucro-ambar-viva': '#f59e0b',
+  '--gp-lucro-vermelho': '#7f1d1d', '--gp-lucro-vermelho-viva': '#ef4444',
+  '--gp-lucro-neutro': '#1e293b', '--gp-lucro-trilho': '#0b1220',
+  '--gp-on-lucro': '#ffffff', '--gp-lucro-acao': '#ffffff', '--gp-on-lucro-acao': '#0b1220',
 };
 const PECAS = {
   titanio: { ...MOLDE, '--gp-mold-shadow': '0 2px 4px rgba(0,0,0,.45)', '--gp-mold-shadow-pressed': 'inset 0 2px 5px rgba(0,0,0,.6)', '--gp-feature-shadow': '0 0 10px rgba(56,189,248,.35)', '--gp-paper-inset': 'inset 0 2px 6px rgba(2,6,13,.3)', '--gp-key-glow': 'rgba(56,189,248,.35)' },
