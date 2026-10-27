@@ -803,7 +803,7 @@ const SIMPLES = {
   gp05: ['O filtro está sujo?', 'Desligue da energia antes de tirar o filtro.'],
   ge02: ['O gelo está na serpentina da evaporadora?', 'Só olhe. Não toque na serpentina.'],
   ge03: ['O filtro está sujo?', 'Desligue da energia antes de tirar o filtro.'],
-  pi02: ['O aparelho está desligado da energia?', 'Desligue o disjuntor antes de abrir. É regra da NR-10.'],
+  pi02: ['O aparelho está desligado da energia?', 'Desligue o disjuntor antes de abrir.'],
   pi03: ['A mangueira do dreno está solta?', 'Olhe a ligação do dreno com o aparelho desligado.'],
   pi04: ['O dreno sobe ou faz sifão logo na saída?', 'A água tem que descer sempre, sem curva para cima.'],
   pi05: ['O isolamento do cano está falhando?', 'Olhe a espuma de cada cano. Procure cano suando.'],
@@ -829,7 +829,7 @@ function montarPercursos(et, rs) {
     const e = p.etapas[r.etapa_id] = p.etapas[r.etapa_id] || { id: r.etapa_id, ord: Number(r.ordem), q: (SIMPLES[r.etapa_id] || [])[0] || r.pergunta, d: (SIMPLES[r.etapa_id] || [])[1] || r.como_verificar, ops: [], escopo: r.marca_escopo, fonte: r.fonte_id };
     e.ops.push({ l: r.opcao_rotulo, c: r.opcao_descricao, next: r.proxima_etapa_id || null, res: r.resultado_id || null, sim: r.opcao_id === 'sim', inc: r.opcao_id === 'inc' });
   });
-  rs.forEach(r => { const p = P[r.sintoma_id]; if (p) p.res[r.resultado_id] = { t: r.hipotese, a: r.acoes.split(';').map(x => x.trim()).filter(Boolean), prox: r.proximo_passo, escopo: r.marca_escopo, fonte: r.fonte_id, incon: /^inconclusivo/i.test(r.hipotese) }; });
+  rs.forEach(r => { const p = P[r.sintoma_id]; if (p) p.res[r.resultado_id] = { t: r.hipotese, a: r.acoes.split(';').map(x => x.trim()).filter(Boolean), prox: r.proximo_passo, escopo: r.marca_escopo, fonte: r.fonte_id, incon: false }; });
   Object.values(P).forEach(p => {
     const ids = Object.values(p.etapas).sort((a, b) => a.ord - b.ord);
     let ini = ids[0];
@@ -1252,7 +1252,7 @@ class Component extends DCLogic {
         onClick: () => this.setState({ drawer: k }),
       })),
       temTopo: st.tela !== 'inicio',
-      kicker: st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (PC ? (E.tec ? 'Checagem de técnico' : 'Checagem rápida') : 'Percurso de amostra') : st.tela === 'resultado' ? (r && r.incon ? 'Resultado inconclusivo' : 'Hipótese pelas respostas') : m ? m.k : '',
+      kicker: st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (PC ? (E.tec ? 'Checagem de técnico' : 'Checagem rápida') : 'Percurso de amostra') : st.tela === 'resultado' ? (r && r.incon ? 'Hipótese técnica de bancada' : 'Hipótese pelas respostas') : m ? m.k : '',
       titulo: st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
       temSelo: st.tela === 'etapa', seloTxt: PC ? `Pergunta ${st.hist.length + 1}` : `Etapa ${st.etapa + 1} de ${ETAPAS.length}`,
       voltar: () => this.setState(x => {
@@ -1279,7 +1279,7 @@ class Component extends DCLogic {
         return { l: o.l, pri: i === 0, cantos: n === 2 ? (i ? 'dir' : 'esq') : ['esq', 'meio', 'dir'][i], onClick: go(o), c: E.tec ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
       }),
       resTitulo: r ? r.t : '',
-      resNota: PC && r && r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : PC && r ? `Checagem rápida. Referência: ${r.escopo === 'UNIVERSAL' ? 'segurança (NR-10)' : PC.ref} (${fonteTxt(r.fonte)}). Em outro modelo, confirme.` : 'Amostra · confirme na ficha',
+      resNota: PC && r && r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : PC && r ? `Checagem rápida. Referência: ${r.escopo === 'UNIVERSAL' ? 'verificação de campo' : PC.ref} (${fonteTxt(r.fonte)}). Em outro modelo, confirme.` : 'Amostra · confirme na ficha',
       temProx: !!(r && r.prox), resProx: r && r.prox ? r.prox : '',
       resBorda: r && r.incon ? 'var(--gp-outline-variant)' : 'var(--gp-primary)',
       acoes: r ? r.a.map((t, i) => ({ n: i + 1, t, linha: i ? '1px solid var(--gp-outline-variant)' : '0' })) : [],
