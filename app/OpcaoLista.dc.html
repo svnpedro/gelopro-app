@@ -8,8 +8,8 @@
 <body>
 <x-dc>
 <button type="button" ref="{{ ref }}" role="option" aria-selected="{{ selTxt }}" aria-disabled="{{ ariaDes }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;min-width:0;min-height:56px;box-sizing:border-box;padding:0 12px 0 {{ padE }};border-radius:16px;border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;gap:8px;cursor:{{ cursor }};pointer-events:{{ pe }};text-align:left;transition:transform 120ms ease-out,box-shadow 180ms ease-out;--peca-hover:{{ hov }};--peca-press-bg:{{ actBg }};--peca-press:{{ act }};" style-hover="box-shadow:var(--peca-hover);" style-active="transform:translateY(1px);background:var(--peca-press-bg);box-shadow:var(--peca-press);">
-  <sc-if value="{{ temLogo }}" hint-placeholder-val="{{ false }}"><span data-pastilha="" data-decor="" aria-hidden="true" style="position:relative;flex:none;width:32px;height:32px;box-sizing:border-box;border-radius:9px;background:var(--gp-marca-pastilha);border:1px solid var(--gp-outline);display:flex;align-items:center;justify-content:center;"><dc-import name="LogoMarca" marca="{{ logo }}" tamanho="{{ 28 }}" hint-size="28px,28px"></dc-import>
-    <sc-if value="{{ selLogo }}" hint-placeholder-val="{{ false }}"><span data-check="" style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;box-sizing:border-box;border-radius:50%;background:var(--gp-accent-fill);border:1.5px solid var(--gp-dock-ring);color:var(--gp-on-sel-mark);display:flex;align-items:center;justify-content:center;"><dc-import name="IconeGP" nome="ok" tamanho="{{ 12 }}" hint-size="12px,12px"></dc-import></span></sc-if>
+  <sc-if value="{{ temLogo }}" hint-placeholder-val="{{ false }}"><span data-pastilha="" data-decor="" aria-hidden="true" style="position:relative;flex:none;width:40px;height:40px;box-sizing:border-box;border-radius:10px;background:#ffffff;border:1px solid var(--gp-outline,#9aa3ad);display:flex;align-items:center;justify-content:center;"><dc-import name="LogoMarca" marca="{{ logo }}" tamanho="{{ 36 }}" hint-size="36px,36px"></dc-import>
+    <sc-if value="{{ selLogo }}" hint-placeholder-val="{{ false }}"><span data-check="" style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;box-sizing:border-box;border-radius:50%;background:var(--gp-accent-fill,#1d4ed8);border:1.5px solid var(--gp-dock-ring,#67c6ff);color:var(--gp-on-sel-mark,#67c6ff);display:flex;align-items:center;justify-content:center;"><svg data-check-svg="" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
   </span></sc-if>
   <span style="flex:1;min-width:0;font-family:'Roboto',sans-serif;font-weight:{{ peso }};font-size:{{ fs }};line-height:20px;color:{{ cor }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rotulo }}</span>
   <sc-if value="{{ selTexto }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-check="" style="flex:none;color:var(--gp-on-sel-mark);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="sucesso" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></sc-if>
@@ -35,8 +35,9 @@ class Component extends DCLogic {
     if (this.state.w) {
       if (!this._c) this._c = document.createElement('canvas').getContext('2d');
       this._c.font = '600 16px Roboto';
-      // Com emblema de marca: respiro de 10 px, pastilha de 32 px e vão de 8 px; o check vira selo no canto da pastilha e não come largura.
-      const tw = this._c.measureText(rotulo).width, avail = this.state.w - (logo ? 10 + 32 + 8 + 14 : 30 + (sel ? 28 : 0));
+      // Com logomarca: respiro de 10 px, pastilha de 40 px e vão de 8 px; o check vira selo no canto da pastilha e não come largura.
+      // Pastilha branca e selo de check desenhados inline (sem IconeGP nem --gp-marca-*), para nunca virar quadrado preto ou traço com peça em cache.
+      const tw = this._c.measureText(rotulo).width, avail = this.state.w - (logo ? 10 + 40 + 8 + 14 : 30 + (sel ? 28 : 0));
       if (tw > avail) fs = Math.max(14, Math.floor(16 * avail / tw * 2) / 2);
     }
     return {

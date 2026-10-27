@@ -7,33 +7,95 @@
 </head>
 <body>
 <x-dc>
-<span aria-hidden="true" data-logo="{{ id }}" style="position:relative;flex:none;display:inline-flex;width:{{ t }}px;height:{{ t }}px;"><svg width="{{ t }}" height="{{ t }}" viewBox="0 0 32 32" style="display:block;"><path d="{{ forma }}" style="{{ cor }}"></path></svg><span style="{{ letra }}">{{ txt }}</span></span>
+<span aria-hidden="true" data-logo="{{ id }}" data-cor="{{ cor }}" style="position:relative;flex:none;display:inline-flex;width:{{ t }}px;height:{{ t }}px;background:#ffffff;border-radius:6px;">{{ arte }}</span>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:32,&quot;height&quot;:32},&quot;marca&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;LG&quot;,&quot;Samsung&quot;,&quot;Midea&quot;,&quot;Gree&quot;,&quot;Elgin&quot;,&quot;Daikin&quot;,&quot;Fujitsu&quot;,&quot;Carrier&quot;,&quot;Consul&quot;,&quot;Electrolux&quot;,&quot;Springer&quot;,&quot;Philco&quot;,&quot;TCL&quot;,&quot;Agratto&quot;],&quot;default&quot;:&quot;LG&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tamanho&quot;:{&quot;editor&quot;:&quot;number&quot;,&quot;default&quot;:26,&quot;tsType&quot;:&quot;number&quot;}}">
-// Fonte única dos emblemas das 14 marcas da gaveta Marca (pedido do Pedro, 27/10). Desenhos próprios do GeloPro, não as logomarcas
-// registradas: forma (círculo, oval inclinado ou retângulo) + sigla + cor de referência da marca (--gp-marca-*, no TemaGeloPro).
-// Servem para o técnico achar a marca de relance; o nome completo fica sempre ao lado e é o que o leitor de tela lê.
-const CIRC = 'M16 3a13 13 0 1 1 0 26 13 13 0 0 1 0-26z';
-const OVAL = 'M3.2 19.6C2 14.9 7.6 9.3 15.6 7.1c8-2.2 14.9-.6 16.1 4.1 1.2 4.7-4.4 10.3-12.4 12.5-8 2.2-14.9.6-16.1-4.1z';
-const RET = 'M6 7h20a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3z';
-const QUAD = 'M9 3h14a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6z';
-// [forma, sigla, tamanho da sigla em unidades de 32]
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:40,&quot;height&quot;:40},&quot;marca&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;LG&quot;,&quot;Samsung&quot;,&quot;Midea&quot;,&quot;Gree&quot;,&quot;Elgin&quot;,&quot;Daikin&quot;,&quot;Fujitsu&quot;,&quot;Carrier&quot;,&quot;Consul&quot;,&quot;Electrolux&quot;,&quot;Springer&quot;,&quot;Philco&quot;,&quot;TCL&quot;,&quot;Agratto&quot;],&quot;default&quot;:&quot;LG&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tamanho&quot;:{&quot;editor&quot;:&quot;number&quot;,&quot;default&quot;:36,&quot;tsType&quot;:&quot;number&quot;}}">
+// Fonte única das logomarcas das 14 marcas da gaveta Marca (pedido do Pedro, 27/10, PR #17).
+// Insígnias vetoriais simplificadas das identidades públicas, desenhadas em SVG com as cores hexadecimais cravadas nos atributos fill e stroke.
+// Nenhuma cor depende de variável CSS: com TemaGeloPro em cache parcial, fill sem valor cai em preto (#000), que foi o defeito visto no celular.
+// O fundo é branco fixo pelo mesmo motivo. O nome completo da marca fica sempre ao lado e é o que o leitor de tela lê.
+const h = React.createElement;
+const BR = '#ffffff';
+// Texto vetorial: textLength com spacingAndGlyphs mantém a largura igual em qualquer fonte instalada no celular.
+const T = (k, txt, x, y, s, cor, w, extra) => h('text', { key: k, x, y, fontSize: s, fill: cor, textAnchor: 'middle', fontFamily: 'Arial, Helvetica, Roboto, sans-serif', fontWeight: 700, textLength: w, lengthAdjust: 'spacingAndGlyphs', ...(extra || {}) }, txt);
+// [cor principal (a que o teste procura nos pixels), desenho no quadro de 40 × 40]
 const MARCAS = {
-  LG: [CIRC, 'LG', 12], Samsung: [OVAL, 'SA', 10.5], Midea: [QUAD, 'MI', 11.5], Gree: [CIRC, 'GR', 11.5], Elgin: [RET, 'EL', 11.5],
-  Daikin: [QUAD, 'DA', 11.5], Fujitsu: [CIRC, 'FU', 11.5], Carrier: [OVAL, 'CA', 10.5], Consul: [CIRC, 'CO', 11.5], Electrolux: [QUAD, 'EX', 11.5],
-  Springer: [RET, 'SP', 11.5], Philco: [CIRC, 'PH', 11.5], TCL: [RET, 'TCL', 9.5], Agratto: [QUAD, 'AG', 11.5],
+  LG: ['#A50034', () => [
+    h('circle', { key: 'c', cx: 20, cy: 15.5, r: 12.5, fill: '#A50034' }),
+    h('circle', { key: 'o', cx: 15, cy: 11, r: 1.8, fill: BR }),
+    h('path', { key: 'l', d: 'M19.6 7.4V18.6h4.4', fill: 'none', stroke: BR, strokeWidth: 2 }),
+    h('path', { key: 'g', d: 'M24.5 7.7A9 9 0 1 0 29 15.5h-4.6', fill: 'none', stroke: BR, strokeWidth: 1.8 }),
+    T('t', 'LG', 20, 38, 10, '#A50034', 14),
+  ]],
+  Samsung: ['#1428A0', () => [
+    h('ellipse', { key: 'e', cx: 20, cy: 20, rx: 19.2, ry: 9.6, fill: '#1428A0', transform: 'rotate(-14 20 20)' }),
+    T('t', 'SAMSUNG', 20, 22.4, 6.6, BR, 29),
+  ]],
+  Midea: ['#00609C', () => [
+    h('rect', { key: 'r', x: 2, y: 5, width: 36, height: 30, rx: 8, fill: '#00609C' }),
+    T('t', 'Midea', 20, 21.5, 10.5, BR, 27, { fontStyle: 'italic' }),
+    h('path', { key: 'a', d: 'M8 27.5Q20 34 32 27.5', fill: 'none', stroke: '#00B7E8', strokeWidth: 2.4, strokeLinecap: 'round' }),
+  ]],
+  Gree: ['#005A9C', () => [
+    h('rect', { key: 'r', x: 2, y: 8, width: 36, height: 24, rx: 5, fill: '#005A9C' }),
+    T('t', 'GREE', 20, 23.8, 12, BR, 28, { fontStyle: 'italic' }),
+    h('path', { key: 's', d: 'M8 27.2Q20 24.6 32 27.2', fill: 'none', stroke: BR, strokeWidth: 1.2, strokeLinecap: 'round' }),
+  ]],
+  Elgin: ['#C8102E', () => [
+    h('rect', { key: 'r', x: 2, y: 8, width: 36, height: 18, rx: 3, fill: '#C8102E' }),
+    T('t', 'ELGIN', 20, 20.6, 10, BR, 28),
+    h('rect', { key: 'b', x: 2, y: 27.5, width: 36, height: 4.5, rx: 2, fill: '#003DA5' }),
+  ]],
+  Daikin: ['#0097E0', () => [
+    h('path', { key: 'a', d: 'M20.5 3.5 32.5 23.5H8.5z', fill: '#0097E0' }),
+    h('path', { key: 'b', d: 'M24.6 10.3 32.5 23.5H15.2z', fill: '#003A70' }),
+    T('t', 'DAIKIN', 20, 35, 8.4, '#003A70', 32),
+  ]],
+  Fujitsu: ['#D9001B', () => [
+    h('path', { key: 'i', d: 'M14 11.5c0-2.3 1.7-3.8 3.7-3.8 3.9 0 6.7 7.6 10.6 7.6 2 0 3.7-1.5 3.7-3.8s-1.7-3.8-3.7-3.8c-3.9 0-6.7 7.6-10.6 7.6-2 0-3.7-1.5-3.7-3.8z', fill: 'none', stroke: '#D9001B', strokeWidth: 2.2 }),
+    T('t', 'FUJITSU', 20, 30, 8.6, '#D9001B', 34),
+  ]],
+  Carrier: ['#0033A0', () => [
+    h('ellipse', { key: 'e', cx: 20, cy: 20, rx: 19, ry: 12.8, fill: '#0033A0' }),
+    h('ellipse', { key: 'b', cx: 20, cy: 20, rx: 16.6, ry: 10.6, fill: 'none', stroke: BR, strokeWidth: 1.1 }),
+    T('t', 'Carrier', 20, 23.4, 9.6, BR, 25, { fontStyle: 'italic', fontFamily: 'Georgia, "Times New Roman", serif' }),
+  ]],
+  Consul: ['#00539B', () => [
+    h('rect', { key: 'r', x: 2, y: 9, width: 36, height: 22, rx: 11, fill: '#00539B' }),
+    h('path', { key: 's', d: 'M8.5 14.6Q20 7.8 31.5 14.6', fill: 'none', stroke: '#7AB800', strokeWidth: 2.4, strokeLinecap: 'round' }),
+    T('t', 'consul', 20, 25.2, 9.6, BR, 25),
+  ]],
+  Electrolux: ['#041E50', () => [
+    h('circle', { key: 'c', cx: 20, cy: 14.5, r: 12, fill: '#041E50' }),
+    h('path', { key: 'a', d: 'M10.5 12.6C14 7.8 23 6.3 29.6 9.6 22.6 9 15.4 10.6 10.5 15z', fill: BR }),
+    h('path', { key: 'b', d: 'M10.4 19.6C16 16.3 24 16 29.5 18.4 23.5 18.6 16.8 20.2 12 23z', fill: BR }),
+    T('t', 'Electrolux', 20, 36.6, 7, '#041E50', 35),
+  ]],
+  Springer: ['#003A70', () => [
+    h('rect', { key: 'r', x: 2, y: 2, width: 36, height: 36, rx: 7, fill: '#003A70' }),
+    T('s', 'S', 20, 24, 20, BR, 13, { fontStyle: 'italic' }),
+    T('t', 'SPRINGER', 20, 33.6, 5.8, BR, 30),
+  ]],
+  Philco: ['#1D3F8C', () => [
+    h('path', { key: 'p', d: 'M20 2.5 35 7v12c0 9-6.5 15.5-15 18.5C11.5 34.5 5 28 5 19V7z', fill: '#1D3F8C' }),
+    h('path', { key: 'b', d: 'M20 5.2 32.5 9v10c0 7.5-5.4 12.9-12.5 15.6C12.9 31.9 7.5 26.5 7.5 19V9z', fill: 'none', stroke: BR, strokeWidth: 0.9 }),
+    T('t', 'PHILCO', 20, 22.6, 7.6, BR, 22),
+  ]],
+  TCL: ['#E60012', () => [
+    h('rect', { key: 'r', x: 2, y: 10, width: 36, height: 20, rx: 2.5, fill: '#E60012' }),
+    T('t', 'TCL', 20, 25, 14, BR, 25),
+  ]],
+  Agratto: ['#004F8C', () => [
+    h('rect', { key: 'r', x: 3, y: 3, width: 34, height: 34, rx: 8, fill: '#004F8C' }),
+    h('path', { key: 'a', d: 'M20 6.5 30.5 28.5h-4.6l-2-4.8h-7.8l-2 4.8H9.5zM17.6 20.2h4.8L20 14.2z', fill: BR, fillRule: 'evenodd' }),
+    h('path', { key: 's', d: 'M9 33Q20 28.6 31 33', fill: 'none', stroke: '#4FC3F7', strokeWidth: 1.8, strokeLinecap: 'round' }),
+  ]],
 };
-const MARCA_ID = (m) => String(m || '').toLowerCase();
 class Component extends DCLogic {
   static MARCAS = MARCAS;
   renderVals() {
-    const m = MARCAS[this.props.marca] ? this.props.marca : 'LG', [forma, txt, fs] = MARCAS[m], t = this.props.tamanho || 26;
-    return {
-      id: m, forma, txt, t,
-      cor: `fill:var(--gp-marca-${MARCA_ID(m)});`,
-      // A sigla vai numa camada HTML sobre a forma vetorial (o motor do modelo não interpola texto dentro de <text> do SVG).
-      letra: `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 ${Math.round(fs * t / 32 * 10) / 10}px/1 Roboto,Arial,sans-serif;letter-spacing:-.02em;color:var(--gp-on-marca);white-space:nowrap;pointer-events:none;`,
-    };
+    const m = MARCAS[this.props.marca] ? this.props.marca : 'LG', [cor, arte] = MARCAS[m], t = this.props.tamanho || 36;
+    return { id: m, cor, t, arte: h('svg', { width: t, height: t, viewBox: '0 0 40 40', style: { display: 'block' }, 'aria-hidden': true }, arte()) };
   }
 }
 </script>

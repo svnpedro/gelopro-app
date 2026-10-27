@@ -182,7 +182,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ resNota }}</span>
                   </div>
                   <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
-                    <span style="flex:none;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">O que fazer agora</span>
+                    <span style="flex:none;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ resLista }}</span>
                     <ol style="flex:none;margin:0;padding:0;list-style:none;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);overflow:hidden;">
                       <sc-for list="{{ acoes }}" as="a" hint-placeholder-count="3">
                         <li style="display:flex;align-items:center;gap:12px;min-height:40px;box-sizing:border-box;padding:0 12px;border-top:{{ a.linha }};">
@@ -192,8 +192,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       </sc-for>
                     </ol>
                     <sc-if value="{{ temProx }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;"><strong style="font-weight:600;color:var(--gp-on-surface);">Depois: </strong>{{ resProx }}</span></sc-if>
+                    <sc-if value="{{ temServ }}" hint-placeholder-val="{{ false }}"><span data-res-servico="" style="flex:none;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ resServ }}</span></sc-if>
                   </div>
-                  <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                  <div data-res-teclas="" style="flex:none;display:grid;grid-template-columns:{{ resCols }};gap:8px;">
                     <sc-for list="{{ resKeys }}" as="o" hint-placeholder-count="2">
                       <dc-import name="TeclaResposta" rotulo="{{ o.l }}" primaria="{{ o.pri }}" aria="{{ o.aria }}" acao="{{ o.onClick }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
                     </sc-for>
@@ -600,9 +601,30 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </div>
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Itens do orçamento</span>
               <sc-for list="{{ fItens }}" as="it" hint-placeholder-count="1">
-                <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="{{ it.e }}" campoErro="{{ it.ce }}" erroMsg="{{ it.em }}" aoDescricao="{{ it.setD }}" aoValor="{{ it.setV }}" aoRemover="{{ it.rem }}" style="display:block;" hint-size="100%,104px"></dc-import>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                  <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="{{ it.e }}" campoErro="{{ it.ce }}" erroMsg="{{ it.em }}" aoDescricao="{{ it.setD }}" aoValor="{{ it.setV }}" aoRemover="{{ it.rem }}" style="display:block;" hint-size="100%,104px"></dc-import>
+                  <sc-if value="{{ it.temRef }}" hint-placeholder-val="{{ false }}"><span data-bastidor="" style="padding:0 4px;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.ref }}</span></sc-if>
+                </div>
               </sc-for>
               <button type="button" onClick="{{ fAddItem }}" style="height:56px;box-sizing:border-box;border-radius:16px;border:1px dashed var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>Adicionar item</button>
+              <button type="button" data-catalogo-botao="" aria-expanded="{{ fCatExp }}" onClick="{{ fCatToggle }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/22px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ fCatTxt }}</button>
+              <sc-if value="{{ fCatVazio }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">A tabela de peças e serviços ainda está carregando. Lance o item à mão ou tente de novo em alguns segundos.</span></sc-if>
+              <sc-if value="{{ fCatAberto }}" hint-placeholder-val="{{ false }}">
+                <div data-catalogo="" role="group" aria-label="Tabela de peças e serviços" style="display:flex;flex-direction:column;gap:8px;">
+                  <sc-for list="{{ fCat }}" as="c" hint-placeholder-count="3">
+                    <button type="button" data-servico="{{ c.id }}" aria-label="{{ c.aria }}" onClick="{{ c.acao }}" style="min-height:56px;box-sizing:border-box;padding:10px 12px;border-radius:16px;border:{{ c.borda }};background:var(--gp-card-action);display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
+                      <sc-if value="{{ c.sug }}" hint-placeholder-val="{{ false }}"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-sel-mark);">Indicado pelo diagnóstico</span></sc-if>
+                      <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ c.t }}</span>
+                      <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ c.preco }}</span>
+                      <span data-bastidor="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ c.bastidor }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <button type="button" role="switch" data-anti-pechincha="" aria-checked="{{ fJustifTxt }}" onClick="{{ fJustifToggle }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ fJustifBorda }};background:{{ fJustifFundo }};color:{{ fJustifCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
+                <span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="{{ fJustifIco }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+                <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">Mostrar justificativa técnica e faixa de tabela para o cliente (anti-pechincha)</span>
+              </button>
               <sc-if value="{{ fPodeSugerir }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ fSugerir }}" style="height:56px;box-sizing:border-box;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Usar as ações do diagnóstico</button></sc-if>
               <dc-import name="CampoTexto" rotulo="Custo interno" valor="{{ fCusto }}" estado="{{ fCustoE }}" erroMsg="{{ fCustoM }}" aoDigitar="{{ fSetCusto }}" placeholder="0,00" modo="decimal" ajuda="Só para você. Não sai em documento nem na visão do cliente." style="display:block;" hint-size="100%,96px"></dc-import>
               <div role="status" style="box-sizing:border-box;padding:12px 16px;border-radius:16px;background:var(--gp-display);display:flex;flex-direction:column;gap:2px;">
@@ -619,6 +641,23 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><dc-import name="CampoTexto" rotulo="Prazo e escopo (texto livre)" valor="{{ fPrazoLivre }}" aoDigitar="{{ fSetPrazoLivre }}" placeholder="Ex.: 45 dias para a limpeza" estado="{{ fLivreE }}" erroMsg="descreva o prazo" style="display:block;" hint-size="100%,74px"></dc-import></sc-if>
               <dc-import name="CampoTexto" rotulo="O que a garantia cobre" valor="{{ fCobre }}" aoDigitar="{{ fSetCobre }}" placeholder="Os serviços listados no orçamento" style="display:block;" hint-size="100%,74px"></dc-import>
               <dc-import name="CampoTexto" rotulo="O que não cobre" valor="{{ fNaoCobre }}" aoDigitar="{{ fSetNaoCobre }}" placeholder="Ex.: mau uso, surto de energia" style="display:block;" hint-size="100%,74px"></dc-import>
+              <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Ressalva / estado encontrado</span>
+              <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Ressalva / estado encontrado" rows="2" value="{{ fRessalva }}" onInput="{{ fSetRessalva }}" placeholder="Ex.: carenagem trincada antes do serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
+              <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Opcional. Toque numa sugestão para incluir. Sai no orçamento e no termo de garantia.</span>
+              <div data-ressalvas="" style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ fRessalvas }}" as="q" hint-placeholder-count="2">
+                  <button type="button" aria-pressed="{{ q.on }}" aria-label="{{ q.aria }}" onClick="{{ q.acao }}" style="min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ q.borda }};background:var(--gp-card-action);color:var(--gp-on-surface);font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ q.t }}</button>
+                </sc-for>
+              </div>
+              <div data-foto="" style="display:flex;flex-direction:column;gap:8px;">
+                <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Foto de evidência do aparelho ou da medição</span>
+                <label style="position:relative;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px dashed var(--gp-outline);color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;overflow:hidden;"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>{{ fFotoTxt }}</span><input type="file" accept="image/*" aria-label="Foto de evidência do aparelho ou da medição" onChange="{{ fFoto }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;"></label>
+                <sc-if value="{{ fTemFotoErro }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-error);">{{ fFotoErro }}</span></sc-if>
+                <sc-if value="{{ fTemFoto }}" hint-placeholder-val="{{ false }}">
+                  <span data-foto-previa="" role="img" aria-label="Prévia da foto de evidência" style="display:block;width:100%;height:160px;border-radius:12px;background-color:var(--gp-display);background-image:{{ fFotoBg }};background-size:contain;background-position:center;background-repeat:no-repeat;"></span>
+                  <button type="button" onClick="{{ fFotoRem }}" style="min-height:48px;box-sizing:border-box;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Remover foto</button>
+                </sc-if>
+              </div>
             </div>
           </sc-if>
 
@@ -631,11 +670,16 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </div>
               <div style="display:flex;flex-direction:column;">
                 <sc-for list="{{ fItensRO }}" as="it" hint-placeholder-count="1">
-                  <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="somente-leitura" style="display:block;" hint-size="100%,44px"></dc-import>
+                  <div style="display:flex;flex-direction:column;">
+                    <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="somente-leitura" style="display:block;" hint-size="100%,44px"></dc-import>
+                    <sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><div data-justificativa="" style="display:flex;flex-direction:column;gap:2px;padding:0 0 8px;"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.j }}</span><span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ it.faixa }}</span></div></sc-if>
+                  </div>
                 </sc-for>
                 <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 0 0;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Total</span><span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div>
               </div>
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ fGarLinha }}</span>
+              <sc-if value="{{ fTemRessalva }}" hint-placeholder-val="{{ false }}"><span data-ressalva="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ fRessalvaLinha }}</span></sc-if>
+              <sc-if value="{{ fTemFoto }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Foto de evidência anexada" style="display:block;width:100%;height:140px;border-radius:12px;background-color:var(--gp-display);background-image:{{ fFotoBg }};background-size:contain;background-position:center;background-repeat:no-repeat;"></span></sc-if>
               <dc-import name="AreaAssinatura" rotulo="Assinatura do cliente" estado="{{ fAssinE }}" erroMsg="o cliente precisa assinar para aprovar o orçamento" aoMudar="{{ fSetAssin }}" altura="{{ 150 }}" style="display:block;" hint-size="100%,190px"></dc-import>
             </div>
           </sc-if>
@@ -703,11 +747,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
     <sc-if value="{{ dItensVis }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-direction:column;">
         <span style="font:700 16px/24px 'Roboto',sans-serif;padding-bottom:4px;">{{ dItensTit }}</span>
-        <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div></sc-for>
+        <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span></sc-if></div></sc-for>
         <div style="display:flex;justify-content:space-between;gap:16px;padding-top:12px;font-weight:700;"><span>Total</span><span style="font-variant-numeric:tabular-nums;">{{ dTotal }}</span></div>
       </div>
     </sc-if>
     <sc-for list="{{ dBlocos }}" as="b" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:4px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">{{ b.t }}</span><span style="font:500 16px/24px 'Roboto',sans-serif;white-space:pre-line;overflow-wrap:anywhere;">{{ b.x }}</span></div></sc-for>
+    <sc-if value="{{ dTemFoto }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">Foto de evidência</span><span data-doc-foto="" role="img" aria-label="Foto de evidência do aparelho ou da medição" style="display:block;width:100%;height:300px;background-repeat:no-repeat;background-position:left center;background-size:contain;background-image:{{ dFotoBg }};-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span></div></sc-if>
     <sc-if value="{{ dTemAssin }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;width:320px;max-width:100%;"><span role="img" aria-label="Assinatura do cliente" style="display:block;width:100%;height:110px;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:{{ dAssinBg }};-webkit-print-color-adjust:exact;print-color-adjust:exact;border-bottom:1px solid var(--gp-on-paper);"></span><span style="color:var(--gp-on-paper-variant);">{{ dAssinLeg }}</span></div></sc-if>
   </dc-import>
 </div>
@@ -820,7 +865,7 @@ const SCRIPTS = [
   ['Lembrete de manutenção', v => `Olá, ${v.cli}. Já faz [tempo] desde a última manutenção do seu ar-condicionado. Quer agendar a limpeza? ${v.tit}`],
 ];
 const PM0 = () => ({ amb: '', end: '', cid: '', tel: '', prop: '', propDoc: '', propCont: '', rt: '', reg: '', art: '', ambs: '', emerg: '', per: {}, tentou: false });
-const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null });
+const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null, justif: true, catAberto: false, sug: [], ressalva: '', foto: null, fotoUrl: null, fotoErro: '' });
 // Assinatura como blob: o data URL tem ';' e o estilo do modelo corta o valor ali, então a imagem não chegava ao PDF.
 const blobDe = (d) => { try { const [cab, b64] = d.split(','), bin = atob(b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return URL.createObjectURL(new Blob([u8], { type: (cab.match(/^data:([^;,]+)/) || [])[1] || 'image/png' })); } catch (e) { return null; } };
 const dataBR = (ms) => new Date(ms).toLocaleDateString('pt-BR');
@@ -866,7 +911,6 @@ const SIMPLES = {
   gp05: ['O filtro está sujo?', 'Desligue da energia antes de tirar o filtro.'],
   ge02: ['O gelo está na serpentina da evaporadora?', 'Só olhe. Não toque na serpentina.'],
   ge03: ['O filtro está sujo?', 'Desligue da energia antes de tirar o filtro.'],
-  pi02: ['O aparelho está desligado da energia?', 'Desligue o disjuntor antes de abrir. É regra da NR-10.'],
   pi03: ['A mangueira do dreno está solta?', 'Olhe a ligação do dreno com o aparelho desligado.'],
   pi04: ['O dreno sobe ou faz sifão logo na saída?', 'A água tem que descer sempre, sem curva para cima.'],
   pi05: ['O isolamento do cano está falhando?', 'Olhe a espuma de cada cano. Procure cano suando.'],
@@ -877,7 +921,6 @@ const SIMPLES = {
   nl03: ['Está sem energia ou com o disjuntor desligado?', 'Olhe se tem luz e a chave do disjuntor. Não abra o quadro.'],
   nl04: ['As pilhas do controle são novas e estão certas?', 'Confira o lado + e −. Troque as duas.'],
   nl05: ['Tem algo entre o controle e o aparelho?', 'Aponte direto para o aparelho, sem nada na frente.'],
-  ba02: ['O aparelho está desligado e o acesso é seguro?', 'Desligue a energia. Cuidado com a altura.'],
   ba03: ['A base da condensadora está torta ou solta?', 'Com tudo desligado, olhe base e parafusos. Não se apoie no aparelho.'],
   ba04: ['Faltam os calços de borracha embaixo?', 'Veja se tem borracha entre a condensadora e a base.'],
 };
@@ -892,7 +935,7 @@ function montarPercursos(et, rs) {
     const e = p.etapas[r.etapa_id] = p.etapas[r.etapa_id] || { id: r.etapa_id, ord: Number(r.ordem), q: (SIMPLES[r.etapa_id] || [])[0] || r.pergunta, d: (SIMPLES[r.etapa_id] || [])[1] || r.como_verificar, ops: [], escopo: r.marca_escopo, fonte: r.fonte_id, ferr: r.ferramenta };
     e.ops.push({ l: r.opcao_rotulo, c: r.opcao_descricao, next: r.proxima_etapa_id || null, res: r.resultado_id || null, sim: r.opcao_id === 'sim', inc: r.opcao_id === 'inc' });
   });
-  rs.forEach(r => { const p = P[r.sintoma_id]; if (p) p.res[r.resultado_id] = { t: r.hipotese, a: r.acoes.split(';').map(x => x.trim()).filter(Boolean), prox: r.proximo_passo, escopo: r.marca_escopo, fonte: r.fonte_id, incon: /^inconclusivo/i.test(r.hipotese) }; });
+  rs.forEach(r => { const p = P[r.sintoma_id]; if (p) p.res[r.resultado_id] = { t: r.hipotese, a: r.acoes.split(';').map(x => x.trim()).filter(Boolean), prox: r.proximo_passo, escopo: r.marca_escopo, fonte: r.fonte_id, banc: /^hip[óo]tese t[ée]cnica de bancada/i.test(r.hipotese), serv: (r.servico_sugerido || '').split(';').map(x => x.trim()).filter(Boolean) }; });
   Object.values(P).forEach(p => {
     const ids = Object.values(p.etapas).sort((a, b) => a.ord - b.ord);
     let ini = ids[0];
@@ -902,16 +945,38 @@ function montarPercursos(et, rs) {
   });
   return P;
 }
-// Checagem de técnico (parte 2): toda saída inconclusiva da checagem rápida continua na primeira etapa técnica do mesmo sintoma.
+// Checagem de técnico (parte 2): todo resultado da checagem rápida termina em diagnóstico com orçamento (PR #17, sem "inconclusivo");
+// a checagem de técnico do mesmo sintoma abre pelo botão "Medir com instrumento" (tecInicio).
 function ligarTecnico(P, T) {
   Object.entries(T).forEach(([s, t]) => {
     const p = P[s]; if (!p || !t.inicio) return;
     Object.values(t.etapas).forEach(e => { e.tec = true; p.etapas[e.id] = e; });
     Object.entries(t.res).forEach(([k, r]) => { r.tec = true; p.res[k] = r; });
-    Object.values(p.etapas).forEach(e => { if (e.tec) return; e.ops.forEach(o => { const r = o.res && p.res[o.res]; if (r && !r.tec && r.incon) { o.next = t.inicio; o.res = null; } }); });
+    p.tecInicio = t.inicio;
   });
   return P;
 }
+// Catálogo do Orçamento (precos_regionais_2026.csv, região GELOPRO): descrição profissional, justificativa para o cliente,
+// faixa de tabela e valor típico editável. custo_peca_* é bastidor: só aparece para o técnico, nunca em documento, PDF ou WhatsApp.
+const R0 = (v) => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+function montarCatalogo(rows) {
+  return rows.filter(r => r.regiao === 'GELOPRO' && r.servico_id).map(r => {
+    const min = num(r.valor_min), max = num(r.valor_max), tip = num(r.valor_tipico), cmin = num(r.custo_peca_min), cmax = num(r.custo_peca_max);
+    return { id: r.servico_id, t: r.servico, un: r.unidade, j: r.justificativa_tecnica, min, max, tip,
+      vTip: tip !== null ? tip.toFixed(2).replace('.', ',') : '',
+      faixaCli: min !== null && max !== null ? `Faixa de referência de tabela (peça + mão de obra + garantia): ${BRL.format(min)} a ${BRL.format(max)}` : '',
+      bastidor: [cmin !== null && cmax !== null ? `Custo médio da peça: ${R0(cmin)}–${Math.round(cmax)}` : '', min !== null && max !== null ? `Tabela praticada: ${R0(min)} a ${R0(max)}` : ''].filter(Boolean).join(' · ') };
+  });
+}
+const itemDe = (c) => ({ d: c.t, v: c.vTip, sid: c.id });
+// Foto de evidência: reduzida no canvas (lado maior 1024 px, JPEG 0,72) para caber no PDF sem pesar o atendimento.
+const reduzirFoto = (file) => new Promise(ok => {
+  const u = URL.createObjectURL(file), im = new Image();
+  im.onload = () => { const k = Math.min(1, 1024 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(im.naturalWidth * k)); c.height = Math.max(1, Math.round(im.naturalHeight * k)); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); URL.revokeObjectURL(u); try { ok(c.toDataURL('image/jpeg', 0.72)); } catch (e) { ok(null); } };
+  im.onerror = () => { URL.revokeObjectURL(u); ok(null); };
+  im.src = u;
+});
+const RESSALVAS = ['Garantia restrita exclusivamente à peça substituída', 'Aparelho necessita higienização futura; cliente ciente'];
 const visTxt = (t) => h('span', { 'aria-hidden': true, style: { font: "600 16px/22px 'Roboto',sans-serif", color: 'var(--gp-on-display)', textAlign: 'center', padding: '0 8px', overflowWrap: 'normal', textWrap: 'pretty' } }, t);
 const visGen = (sim) => h('svg', { width: 56, height: 56, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--gp-on-display)', strokeWidth: 1.75, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }, sim === 'inc' ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3' }), h('path', { key: 2, d: 'M12 17h.01' })] : sim ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm8 12.5 2.5 2.5 5-5.5' })] : [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm15 9-6 6' }), h('path', { key: 2, d: 'm9 9 6 6' })]);
 const CENAS = { gp04: 'ng04', gp05: 'ng05', ge03: 'ng05' };
@@ -923,7 +988,7 @@ const TEMA_ICO = { titanio: 'lua', claro: 'sol-fraco', sol: 'sol' };
 // Versão das cenas: muda a cada troca de lote para o navegador não reaproveitar imagem antiga.
 const CENAS_V = '?v=3';
 // Reserva se cenas.json não carregar: as etapas da checagem rápida do lote 1 de 26/10 (sem ba02 e pi05, que não vieram no lote).
-const CENAS_OK = new Set('ba03 ba04 de02 de03 de04 ge02 gp02 gp03 ng02 ng03 ng04 ng05 nl02 nl03 nl04 nl05 pi02 pi03 pi04'.split(' ').flatMap(k => [k + '_sim', k + '_nao']));
+const CENAS_OK = new Set('ba03 ba04 de02 de03 de04 ge02 gp02 gp03 ng02 ng03 ng04 ng05 nl02 nl03 nl04 nl05 pi03 pi04'.split(' ').flatMap(k => [k + '_sim', k + '_nao']));
 const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDocumento', 'IconeGP', 'LinhaFicha', 'LinhaOrcamento', 'LogoMarca', 'OpcaoLista', 'PlacaSintoma', 'QRPix', 'SeletorPrazo', 'Selo', 'TeclaDock', 'TeclaResposta', 'TemaGeloPro'];
 const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], res: null, modo: null, modK: null, prev: null };
 // Dados do atendimento (cliente, aparelho, medições, hipóteses, carga, laudo, orçamento, garantia, assinatura). Concluir volta a isto.
@@ -970,8 +1035,8 @@ class Component extends DCLogic {
       const [cod, fon, pt, ntc, crit] = await Promise.all(['codigos_erro.csv', 'FONTES.csv', 'pt_r410a_r32_r22.csv', 'ntc_resumo.csv', 'criterios_operacionais.csv'].map(get));
       const arqs = [...new Set(ntc.map(r => r.arquivo_curva).filter(Boolean))];
       const cv = await Promise.all(arqs.map(get));
-      const opc = await Promise.all(['inverter_checklist.csv', 'ntc_tolerancias.csv', 'pmoc_atividades.csv', 'percursos_etapas.csv', 'percursos_resultados.csv', 'piscadas.csv', 'codigos_erro_novos.csv', 'FONTES_novas.csv', 'percursos_tecnico_etapas.csv', 'percursos_tecnico_resultados.csv', 'FONTES_tecnico.csv'].map(f => get(f).catch(() => [])));
-      this.setState({ base: { cod: [...cod, ...opc[6]], pisc: opc[5], perc: ligarTecnico(montarPercursos(opc[3], opc[4]), montarPercursos(opc[8], opc[9])), fon: Object.fromEntries([...fon, ...opc[7], ...opc[10]].map(f => [f.id, f])), pt, ntc, crit, curvas: Object.fromEntries(arqs.map((a, i) => [a, cv[i]])), inv: opc[0], tol: opc[1], pmoc: opc[2] } });
+      const opc = await Promise.all(['inverter_checklist.csv', 'ntc_tolerancias.csv', 'pmoc_atividades.csv', 'percursos_etapas.csv', 'percursos_resultados.csv', 'piscadas.csv', 'codigos_erro_novos.csv', 'FONTES_novas.csv', 'percursos_tecnico_etapas.csv', 'percursos_tecnico_resultados.csv', 'FONTES_tecnico.csv', 'precos_regionais_2026.csv'].map(f => get(f).catch(() => [])));
+      this.setState({ base: { cod: [...cod, ...opc[6]], pisc: opc[5], perc: ligarTecnico(montarPercursos(opc[3], opc[4]), montarPercursos(opc[8], opc[9])), fon: Object.fromEntries([...fon, ...opc[7], ...opc[10]].map(f => [f.id, f])), pt, ntc, crit, curvas: Object.fromEntries(arqs.map((a, i) => [a, cv[i]])), inv: opc[0], tol: opc[1], pmoc: opc[2], cat: montarCatalogo(opc[11]) } });
     } catch (e) { this.setState({ baseErro: String(e.message || e) }); }
   }
   // Peças que só aparecem depois (gavetas, fechamento, PDF) são buscadas na abertura, com nova tentativa.
@@ -1012,7 +1077,17 @@ class Component extends DCLogic {
     });
     });
   }
-  abrirFech() { this.setState(st => ({ fech: st.fech || FECH0(), fOpen: true, drawer: null })); }
+  // Montar orçamento: abre o fechamento já com a primeira peça/serviço sugerido pelo diagnóstico (valor típico editável); os demais
+  // sugeridos ficam marcados no catálogo. Itens já lançados pelo técnico são mantidos.
+  abrirFech(sug) {
+    this.setState(st => {
+      const F = st.fech || FECH0(), cat = (st.base && st.base.cat) || [], ids = (sug || []).filter(id => cat.some(c => c.id === id));
+      const c = cat.find(x => x.id === ids[0]);
+      let itens = F.itens;
+      if (c && !itens.some(x => x.sid === c.id)) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c)] : [...itens, itemDe(c)];
+      return { fech: { ...F, itens, sug: ids.length ? ids : F.sug || [] }, fOpen: true, drawer: null };
+    });
+  }
   fRef = React.createRef();
   fSet(patch) { this.setState(st => ({ fech: { ...st.fech, ...(typeof patch === 'function' ? patch(st.fech) : patch) } })); }
   arq() { return this.state.amostra ? ARQ.amostra : ARQ.real; }
@@ -1127,6 +1202,7 @@ class Component extends DCLogic {
     const E = (PC && PC.etapas[st.etapa]) || { q: '', d: '', ops: [] };
     const go = (o) => () => this.setState(x => o.res ? { tela: 'resultado', res: o.res, hist: [...x.hist, x.etapa], pk: null, dica: false } : { etapa: o.next, hist: [...x.hist, x.etapa], pk: null, dica: false });
     const r = st.res && PC ? PC.res[st.res] || null : null;
+    const CAT = (st.base && st.base.cat) || [], resServ = r ? CAT.find(c => c.id === r.serv[0]) || null : null;
     const mod = DK.find(k => k.id === st.modK);
     // Entrada única por sintoma: tela inicial e fichas abrem o mesmo percurso da base técnica.
     const iniciar = (id, et) => {
@@ -1208,7 +1284,12 @@ class Component extends DCLogic {
     // Voltar de Aprovação ou Pix apaga a assinatura: o quadro reaparece em branco e o cliente assina de novo o que estiver na tela.
     const voltarF = () => this.fSet({ passo: Math.max(1, fp - 1), tentou: 0, msg: null, ...(fp >= 3 ? { assin: null, assinUrl: null } : {}) });
     const fSair = () => this.setState({ fOpen: false });
-    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, itens: fi.map(x => ({ d: x.d, v: x.n })), total: fTotal, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre });
+    // Justificativa anti-pechincha (ligada por padrão): procedimento incluso e faixa de tabela do catálogo; o custo da peça nunca sai daqui.
+    const catDe = (x) => x.sid ? CAT.find(c => c.id === x.sid) || null : null;
+    const justif = !!F && F.justif !== false;
+    const jCli = (x) => { const c = catDe(x); return justif && c ? { j: c.j ? `Procedimento incluso: ${c.j}.` : '', faixa: c.faixaCli } : { j: '', faixa: '' }; };
+    const ressalva = F ? (F.ressalva || '').trim() : '';
+    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, itens: fi.map(x => ({ d: x.d, v: x.n, ...jCli(x) })), total: fTotal, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto });
     const pd = st.printDoc;
     const B2 = st.btu, sB = (k) => (e) => { const v = e.target.value; this.setState(x => ({ btu: { ...x.btu, [k]: v } })); };
     const bA = med(B2.area), bP = String(B2.pes).trim() ? med(B2.pes) : 1, bWv = String(B2.w).trim() ? med(B2.w) : 0, bf = med(B2.sol === 'Sol da tarde' ? B2.f2 : B2.f1), bfp = String(B2.f3).trim() ? med(B2.f3) : 0;
@@ -1392,8 +1473,24 @@ class Component extends DCLogic {
       fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: e.target.value }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
       fCliTel: F ? F.cliTel : '', fSetCliTel: (e) => this.fSet({ cliTel: e.target.value }),
       fEquip: equip, fTemDiag: !!r, fDiag: r ? `Hipótese interna (não vai ao cliente): ${r.t}` : '',
-      fItens: fi.map((x, i) => { const semD = !x.d.trim(), semV = !(x.n > 0), err = tent && fp === 1 && (semD || semV); return { n: i + 1, d: x.d, v: x.v, e: err ? 'erro' : 'normal', ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
+      fItens: fi.map((x, i) => { const semD = !x.d.trim(), semV = !(x.n > 0), err = tent && fp === 1 && (semD || semV), c = catDe(x); return { n: i + 1, d: x.d, v: x.v, temRef: !!c, ref: c ? c.bastidor : '', e: err ? 'erro' : 'normal', ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
       fAddItem: () => this.fSet(f => ({ itens: [...f.itens, { d: '', v: '' }] })),
+      // Catálogo "+ Adicionar peça ou serviço da tabela" (bastidor do técnico).
+      fCatTxt: F && F.catAberto ? 'Fechar a tabela de peças e serviços' : '+ Adicionar peça ou serviço da tabela', fCatExp: F && F.catAberto ? 'true' : 'false', fCatAberto: !!(F && F.catAberto) && CAT.length > 0,
+      fCatToggle: () => this.fSet(f => ({ catAberto: !f.catAberto })), fCatVazio: !!(F && F.catAberto) && !CAT.length,
+      fCat: CAT.map(c => { const sug = !!F && (F.sug || []).includes(c.id), ja = !!F && F.itens.some(x => x.sid === c.id); return { id: c.id, t: c.t, preco: `Valor sugerido ${BRL.format(c.tip || 0)} ${c.un}${ja ? ' · já no orçamento' : ''}`, bastidor: c.bastidor, sug, aria: `${c.t}. ${c.bastidor}. Valor sugerido ${BRL.format(c.tip || 0)}${sug ? '. Indicado pelo diagnóstico' : ''}`,
+        borda: sug ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)',
+        acao: () => this.fSet(f => ({ catAberto: false, itens: f.itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c)] : [...f.itens, itemDe(c)] })) }; }),
+      fJustif: justif, fJustifTxt: justif ? 'true' : 'false', fJustifToggle: () => this.fSet(f => ({ justif: f.justif === false })),
+      fJustifIco: justif ? 'sucesso' : 'neutro', fJustifBorda: justif ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fJustifFundo: justif ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', fJustifCor: justif ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',
+      // Ressalva / estado encontrado e foto de evidência (opcionais): saem no orçamento, na aprovação e no termo de garantia.
+      fRessalva: F ? F.ressalva || '' : '', fSetRessalva: (e) => this.fSet({ ressalva: e.target.value }),
+      fRessalvas: RESSALVAS.map(t => { const tem = !!F && (F.ressalva || '').includes(t); return { t, aria: `${tem ? 'Já incluída' : 'Incluir'}: ${t}`, on: tem ? 'true' : 'false', borda: tem ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)', acao: () => this.fSet(f => { const at = (f.ressalva || '').trim(); return at.includes(t) ? {} : { ressalva: at ? `${at.replace(/[.;]?$/, ';')} ${t}` : t }; }) }; }),
+      fFoto: (e) => { const file = e.target.files && e.target.files[0]; try { e.target.value = ''; } catch (er) {} if (!file) return; reduzirFoto(file).then(d => this.fSet(f => { if (!d) return { fotoErro: 'Não deu para ler esta imagem. Tente outra foto.' }; if (f.fotoUrl) URL.revokeObjectURL(f.fotoUrl); return { foto: d, fotoUrl: blobDe(d), fotoErro: '' }; })); },
+      fTemFoto: !!(F && F.foto), fFotoBg: F && F.fotoUrl ? `url("${F.fotoUrl}")` : 'none', fFotoErro: F ? F.fotoErro || '' : '', fTemFotoErro: !!(F && F.fotoErro),
+      fFotoTxt: F && F.foto ? 'Trocar a foto de evidência' : 'Anexar foto de evidência (opcional)',
+      fFotoRem: () => this.fSet(f => { if (f.fotoUrl) URL.revokeObjectURL(f.fotoUrl); return { foto: null, fotoUrl: null }; }),
+      fTemRessalva: !!ressalva, fRessalvaLinha: ressalva ? `Ressalva / estado encontrado: ${ponto(ressalva)}` : '',
       fPodeSugerir: !!r && !!F && F.itens.every(x => !x.d.trim()), fSugerir: () => r && this.fSet({ itens: r.a.map(d => ({ d, v: '' })) }),
       fCusto: F ? F.custo : '', fSetCusto: (e) => this.fSet({ custo: e.target.value }), fTemCusto: custo !== null, fCustoE: custoErro ? 'erro' : 'normal', fCustoM: custoErro,
       fMargemTxt: custo !== null ? `Custo interno ${BRL.format(custo)}, margem ${BRL.format(fTotal - custo)}` : '',
@@ -1401,7 +1498,7 @@ class Component extends DCLogic {
       fPrazo: F ? F.prazo : '', fSetPrazo: (v) => this.fSet({ prazo: v }), fPrazoE: tent && fp === 2 && !F.prazo ? 'erro' : 'normal',
       fLivre: !!F && F.prazo === 'Livre', fPrazoLivre: F ? F.prazoLivre : '', fSetPrazoLivre: (e) => this.fSet({ prazoLivre: e.target.value }), fLivreE: tent && fp === 2 && F.prazo === 'Livre' && !F.prazoLivre.trim() ? 'erro' : 'normal',
       fCobre: F ? F.cobre : '', fSetCobre: (e) => this.fSet({ cobre: e.target.value }), fNaoCobre: F ? F.naoCobre : '', fSetNaoCobre: (e) => this.fSet({ naoCobre: e.target.value }),
-      fCliLinha: F ? `Orçamento para ${F.cliNome || '—'}` : '', fItensRO: fi.map((x, i) => ({ n: i + 1, d: x.d, v: x.v })), fGarLinha,
+      fCliLinha: F ? `Orçamento para ${F.cliNome || '—'}` : '', fItensRO: fi.map((x, i) => { const jc = jCli(x); return { n: i + 1, d: x.d, v: x.v, temJ: !!(jc.j || jc.faixa), j: jc.j, faixa: jc.faixa }; }), fGarLinha,
       fAssinE: tent && fp === 3 && !F.assin ? 'erro' : 'normal', fSetAssin: (u) => { if (F && F.assinUrl) URL.revokeObjectURL(F.assinUrl); this.fSet({ assin: u, assinUrl: u ? blobDe(u) : null }); },
       fPixChave: tit ? tit.pix : '', fPixNome: tit ? tit.nome : '', fPixCidade: tit ? tit.cidade : '', fTxid: 'ORC' + ((F && F.numero) || ''),
       fCopiar: () => { const p = payload(); const ok = () => this.fSet({ msg: ['sucesso', 'Código Pix copiado', 'Cole no app do banco ou envie ao cliente.'] }); const no = () => this.fSet({ msg: ['aviso', 'Não deu para copiar', p ? p : 'Gerador de Pix indisponível.'] }); if (p && navigator.clipboard) navigator.clipboard.writeText(p).then(ok, no); else no(); },
@@ -1409,7 +1506,7 @@ class Component extends DCLogic {
       fRecBorda: F && F.recebido ? '2px solid var(--gp-success)' : '1px solid var(--gp-outline)', fRecFundo: F && F.recebido ? 'var(--gp-success-container)' : 'var(--gp-card-action)', fRecCor: F && F.recebido ? 'var(--gp-on-success-container)' : 'var(--gp-on-surface)',
       fRecE: F && F.recebido ? 'normal' : 'desabilitado',
       fPdfOrc: () => this.imprimir('orc', docBase()), fPdfGar: () => this.imprimir('gar', docBase()), fPdfRec: () => F && F.recebido && this.imprimir('rec', docBase()),
-      fZap: () => { const num = this.numero(); const tel = dig(F.cliTel).replace(/^55/, ''); const msg = `Olá, ${F.cliNome}. Segue o orçamento nº ${num} de ${tit ? tit.nome : ''}:\n` + fi.map(x => `• ${x.d}: ${BRL.format(x.n || 0)}`).join('\n') + `\nTotal: ${BRL.format(fTotal)}\n${fGarLinha}\nPix copia e cola: ${payload()}`; window.open((tel ? 'https://wa.me/55' + tel : 'https://wa.me/') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener'); this.fSet({ msg: ['sucesso', 'Mensagem aberta no WhatsApp', tel ? 'Confira e envie.' : 'Sem telefone: escolha o contato no WhatsApp.'] }); },
+      fZap: () => { const num = this.numero(); const tel = dig(F.cliTel).replace(/^55/, ''); const msg = `Olá, ${F.cliNome}. Segue o orçamento nº ${num} de ${tit ? tit.nome : ''}:\n` + fi.map(x => { const jc = jCli(x); return [`• ${x.d}: ${BRL.format(x.n || 0)}`, jc.j ? `  ${jc.j}` : '', jc.faixa ? `  ${jc.faixa}` : ''].filter(Boolean).join('\n'); }).join('\n') + `\nTotal: ${BRL.format(fTotal)}\n${fGarLinha}` + (ressalva ? `\nRessalva / estado encontrado: ${ponto(ressalva)}` : '') + `\nPix copia e cola: ${payload()}`; window.open((tel ? 'https://wa.me/55' + tel : 'https://wa.me/') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener'); this.fSet({ msg: ['sucesso', 'Mensagem aberta no WhatsApp', tel ? 'Confira e envie.' : 'Sem telefone: escolha o contato no WhatsApp.'] }); },
       fTemMsg: !!(F && F.msg), fMsgTipo: F && F.msg ? F.msg[0] : 'info', fMsgT: F && F.msg ? F.msg[1] : '', fMsgX: F && F.msg ? F.msg[2] : '',
       fKeys: fp === 1 ? [{ l: 'Sair', pri: false, aria: 'Sair e manter o rascunho', acao: fSair }, { l: 'Continuar', pri: true, aria: 'Continuar para a garantia', acao: avancar }]
         : fp === 4 ? [{ l: 'Voltar', pri: false, aria: 'Voltar', acao: voltarF }, { l: 'Concluir', pri: true, aria: 'Concluir e começar outro atendimento', acao: () => this.setState(x => ATEND0(x.btu)) }]
@@ -1417,10 +1514,11 @@ class Component extends DCLogic {
       temPrint: !!pd && (AVULSO.includes(pd) ? !!st.printDados : !!F), dTipo: pd === 'pmoc' ? 'Plano de Manutenção, Operação e Controle (PMOC)' : pd === 'reca' ? 'Recibo' : pd === 'laudo' ? 'Laudo de inviabilidade' : pd === 'gar' ? 'Termo de garantia' : pd === 'rec' ? 'Recibo Pix' : 'Orçamento', dNum: AVULSO.includes(pd) && st.printDados ? st.printDados.numero : F ? F.numero : '', dData: dataBR(Date.now()),
       dTit: tit ? { nome: tit.nome, doc: tit.docFmt, pix: tit.pix, cidade: tit.cidade } : {},
       dCli: AVULSO.includes(pd) && st.printDados ? st.printDados.cliente : F ? F.cliNome + (F.cliTel ? ' · ' + F.cliTel : '') : '', dEquip: AVULSO.includes(pd) && st.printDados && st.printDados.equip !== undefined ? st.printDados.equip : equip, dItensVis: pd !== 'rec' && !AVULSO.includes(pd), dItensTit: pd === 'gar' ? 'Serviços cobertos' : 'Itens',
-      dItens: fi.map(x => ({ d: x.d, vf: x.n != null ? BRL.format(x.n) : '—' })), dTotal: BRL.format(fTotal),
-      dBlocos: (pd === 'pmoc' || pd === 'reca') && st.printDados ? st.printDados.blocos : pd === 'laudo' && st.printDados ? [{ t: 'Medições registradas', x: st.printDados.medicoes }, { t: 'Constatações', x: st.printDados.constatacoes }, { t: 'Conclusão', x: st.printDados.conclusao }, { t: 'Observação', x: 'Laudo emitido pelo técnico titular com base nas verificações acima. Não substitui laudo de engenheiro quando exigido.' }] : !F || !pd ? [] : pd === 'orc' ? [{ t: 'Garantia contratual', x: fGarLinha }, { t: 'Pagamento por Pix', x: `Chave ${tit ? tit.pix : ''} (${tit ? tit.pixTipo : ''}).\nCopia e cola: ${payload()}\nPix gerado não comprova pagamento.` }]
-        : pd === 'gar' ? [{ t: 'Prazo contratual', x: `${garTxt}, a partir de ${dataBR(Date.now())}.` }, { t: 'Cobre', x: garCobre }, { t: 'Não cobre', x: garNao }, { t: 'Garantia legal', x: 'Este termo é complementar à garantia legal do Código de Defesa do Consumidor (arts. 24 e 26), que não pode ser excluída.' }]
+      dItens: fi.map(x => { const jc = jCli(x); return { d: x.d, vf: x.n != null ? BRL.format(x.n) : '—', temJ: !!(jc.j || jc.faixa), j: jc.j, faixa: jc.faixa }; }), dTotal: BRL.format(fTotal),
+      dBlocos: (pd === 'pmoc' || pd === 'reca') && st.printDados ? st.printDados.blocos : pd === 'laudo' && st.printDados ? [{ t: 'Medições registradas', x: st.printDados.medicoes }, { t: 'Constatações', x: st.printDados.constatacoes }, { t: 'Conclusão', x: st.printDados.conclusao }, { t: 'Observação', x: 'Laudo emitido pelo técnico titular com base nas verificações acima. Não substitui laudo de engenheiro quando exigido.' }] : !F || !pd ? [] : pd === 'orc' ? [...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia contratual', x: fGarLinha }, { t: 'Pagamento por Pix', x: `Chave ${tit ? tit.pix : ''} (${tit ? tit.pixTipo : ''}).\nCopia e cola: ${payload()}\nPix gerado não comprova pagamento.` }]
+        : pd === 'gar' ? [{ t: 'Prazo contratual', x: `${garTxt}, a partir de ${dataBR(Date.now())}.` }, { t: 'Cobre', x: garCobre }, { t: 'Não cobre', x: garNao }, ...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia legal', x: 'Este termo é complementar à garantia legal do Código de Defesa do Consumidor (arts. 24 e 26), que não pode ser excluída.' }]
         : [{ t: 'Recebimento', x: `Recebi de ${F.cliNome} o valor de ${BRL.format(fTotal)} por Pix, referente ao orçamento nº ${F.numero}. Recebimento conferido pelo titular no extrato bancário em ${dataBR(Date.now())}.` }],
+      dTemFoto: !!F && (pd === 'orc' || pd === 'gar') && !!F.fotoUrl, dFotoBg: F && F.fotoUrl ? `url("${F.fotoUrl}")` : 'none',
       dTemAssin: !!F && pd !== 'rec' && !AVULSO.includes(pd) && !!F.assin, dAssinBg: F && F.assinUrl ? `url("${F.assinUrl}")` : 'none', dAssinLeg: F ? `Assinatura do cliente: ${F.cliNome}` : '',
       dicaVis: !!st.dica, dicaExp: st.dica ? 'true' : 'false', dicaToggle: () => this.setState(x => ({ dica: !x.dica })), portao: !!PG, pRef: this.pRef, inerte: PG || (st.fOpen && st.fech) ? '' : undefined, fundoOculto: PG || (st.fOpen && st.fech) ? 'true' : undefined, pKicker: PG ? PG.k : '', pTitulo: PG ? PG.t : '', pTexto: PG ? PG.x : '',
       pForm: gk === 'form', pConf: gk === 'conf', pAviso: !!(PG && PG.av), pAvisoTipo: PG && PG.av ? PG.av[0] : 'info', pAvisoT: PG && PG.av ? PG.av[1] : '', pAvisoX: PG && PG.av ? PG.av[2] : '',
@@ -1491,7 +1589,7 @@ class Component extends DCLogic {
       aroR: st.tela === 'inicio' ? '28px' : '24px', visR: st.tela === 'inicio' ? '25px' : '21px',
       // Na Etapa o visor e a coluna encolhem o respiro (6 px) para entregar a altura às cenas.
       visPad: st.tela === 'etapa' ? '6px' : '12px 10px 12px', colGap: st.tela === 'etapa' ? '6px' : '8px',
-      kicker: st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? 'Checagem de técnico' : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.incon ? 'Resultado inconclusivo' : 'Hipótese pelas respostas') : m ? m.k : '',
+      kicker: st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? 'Checagem de técnico' : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.banc ? 'Hipótese técnica de bancada' : 'Hipótese pelas respostas') : m ? m.k : '',
       titulo: st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
       temSelo: st.tela === 'etapa', seloTxt: `Pergunta ${st.hist.length + 1}`,
       voltar: () => this.setState(x => {
@@ -1525,14 +1623,21 @@ class Component extends DCLogic {
           cartaoDir: sozinho ? 'column' : 'row', barDir: sozinho ? 'row' : 'column', barFlex: sozinho ? 'none' : `0 0 ${COL_RESPOSTA}px`, barW: sozinho ? '100%' : COL_RESPOSTA + 'px',
           barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
       }),
-      resTitulo: r ? r.t : '',
-      resNota: PC && r && r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : PC && r ? `Checagem rápida. Referência: ${r.escopo === 'UNIVERSAL' ? 'segurança (NR-10)' : PC.ref} (${fonteTxt(r.fonte)}). Em outro modelo, confirme.` : '',
+      resTitulo: r ? (r.banc ? 'Causas prováveis para medição e orçamento' : r.t) : '',
+      resNota: !PC || !r ? '' : r.banc ? `Componentes campeões de defeito neste sintoma, do mais comum ao menos comum (${fonteTxt(r.fonte)}). Meça para confirmar a peça; o orçamento já abre com a troca indicada.`
+        : r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : `Checagem rápida, vale para qualquer marca. Base: ${fonteTxt(r.fonte)}.`,
+      resLista: r && r.banc ? 'Causas prováveis' : 'O que fazer agora',
+      temServ: !!resServ, resServ: resServ ? `Orçamento sugerido: ${resServ.t} (${BRL.format(resServ.tip || 0)}, valor editável)` : '',
       temProx: !!(r && r.prox), resProx: r && r.prox ? r.prox : '',
-      resBorda: r && r.incon ? 'var(--gp-outline-variant)' : 'var(--gp-primary)', resSelo: r && r.incon ? 'Inconclusivo' : 'Causa provável', resSeloTipo: r && r.incon ? 'neutro' : 'aviso',
+      resSelo: r && r.banc ? 'Causas prováveis' : 'Causa provável', resSeloTipo: r && r.banc ? 'info' : 'aviso',
       acoes: r ? r.a.map((t, i) => ({ n: i + 1, t, linha: i ? '1px solid var(--gp-outline-variant)' : '0' })) : [],
+      // Todo resultado abre o orçamento (com a peça/serviço sugerido); na checagem rápida, o outro botão leva aos testes com instrumento.
+      // "Medir com instrumento" não cabe em meia tecla a 16 px: com ele, as duas teclas ficam empilhadas (Montar orçamento embaixo, perto do polegar).
+      resCols: PC && PC.tecInicio && r && !r.tec ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))',
       resKeys: [
-        { l: 'Refazer', aria: 'Refazer', pri: false, onClick: () => this.setState({ ...RESET }) },
-        { l: 'Orçamento', aria: 'Gerar orçamento', pri: true, onClick: () => this.abrirFech() },
+        PC && PC.tecInicio && r && !r.tec ? { l: 'Medir com instrumento', aria: 'Medir com instrumento: abrir a checagem de técnico', pri: false, onClick: () => this.setState(x => ({ tela: 'etapa', etapa: PC.tecInicio, res: null, pk: null, dica: false })) }
+          : { l: 'Refazer', aria: 'Refazer', pri: false, onClick: () => this.setState({ ...RESET }) },
+        { l: 'Montar orçamento', aria: 'Montar orçamento com a peça ou serviço sugerido', pri: true, onClick: () => this.abrirFech(r ? r.serv : []) },
       ],
       vIconeNome: m ? m.i : 'info', vTitulo: m ? m.vt : '', vTexto: m ? m.vx : '',
       
