@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<span aria-hidden="true" data-logo="{{ id }}" style="position:relative;flex:none;display:inline-flex;width:{{ t }}px;height:{{ t }}px;"><svg width="{{ t }}" height="{{ t }}" viewBox="0 0 32 32" style="display:block;"><path d="{{ forma }}" style="{{ cor }}"></path></svg><span style="{{ letra }}">{{ txt }}</span></span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:32,&quot;height&quot;:32},&quot;marca&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;LG&quot;,&quot;Samsung&quot;,&quot;Midea&quot;,&quot;Gree&quot;,&quot;Elgin&quot;,&quot;Daikin&quot;,&quot;Fujitsu&quot;,&quot;Carrier&quot;,&quot;Consul&quot;,&quot;Electrolux&quot;,&quot;Springer&quot;,&quot;Philco&quot;,&quot;TCL&quot;,&quot;Agratto&quot;],&quot;default&quot;:&quot;LG&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tamanho&quot;:{&quot;editor&quot;:&quot;number&quot;,&quot;default&quot;:26,&quot;tsType&quot;:&quot;number&quot;}}">
+// Fonte única dos emblemas das 14 marcas da gaveta Marca (pedido do Pedro, 27/10). Desenhos próprios do GeloPro, não as logomarcas
+// registradas: forma (círculo, oval inclinado ou retângulo) + sigla + cor de referência da marca (--gp-marca-*, no TemaGeloPro).
+// Servem para o técnico achar a marca de relance; o nome completo fica sempre ao lado e é o que o leitor de tela lê.
+const CIRC = 'M16 3a13 13 0 1 1 0 26 13 13 0 0 1 0-26z';
+const OVAL = 'M3.2 19.6C2 14.9 7.6 9.3 15.6 7.1c8-2.2 14.9-.6 16.1 4.1 1.2 4.7-4.4 10.3-12.4 12.5-8 2.2-14.9.6-16.1-4.1z';
+const RET = 'M6 7h20a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3z';
+const QUAD = 'M9 3h14a6 6 0 0 1 6 6v14a6 6 0 0 1-6 6H9a6 6 0 0 1-6-6V9a6 6 0 0 1 6-6z';
+// [forma, sigla, tamanho da sigla em unidades de 32]
+const MARCAS = {
+  LG: [CIRC, 'LG', 12], Samsung: [OVAL, 'SA', 10.5], Midea: [QUAD, 'MI', 11.5], Gree: [CIRC, 'GR', 11.5], Elgin: [RET, 'EL', 11.5],
+  Daikin: [QUAD, 'DA', 11.5], Fujitsu: [CIRC, 'FU', 11.5], Carrier: [OVAL, 'CA', 10.5], Consul: [CIRC, 'CO', 11.5], Electrolux: [QUAD, 'EX', 11.5],
+  Springer: [RET, 'SP', 11.5], Philco: [CIRC, 'PH', 11.5], TCL: [RET, 'TCL', 9.5], Agratto: [QUAD, 'AG', 11.5],
+};
+const MARCA_ID = (m) => String(m || '').toLowerCase();
+class Component extends DCLogic {
+  static MARCAS = MARCAS;
+  renderVals() {
+    const m = MARCAS[this.props.marca] ? this.props.marca : 'LG', [forma, txt, fs] = MARCAS[m], t = this.props.tamanho || 26;
+    return {
+      id: m, forma, txt, t,
+      cor: `fill:var(--gp-marca-${MARCA_ID(m)});`,
+      // A sigla vai numa camada HTML sobre a forma vetorial (o motor do modelo não interpola texto dentro de <text> do SVG).
+      letra: `position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 ${Math.round(fs * t / 32 * 10) / 10}px/1 Roboto,Arial,sans-serif;letter-spacing:-.02em;color:var(--gp-on-marca);white-space:nowrap;pointer-events:none;`,
+    };
+  }
+}
+</script>
+</body>
+</html>

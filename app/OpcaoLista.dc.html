@@ -7,12 +7,15 @@
 </head>
 <body>
 <x-dc>
-<button type="button" ref="{{ ref }}" role="option" aria-selected="{{ selTxt }}" aria-disabled="{{ ariaDes }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;min-width:0;min-height:56px;box-sizing:border-box;padding:0 12px 0 16px;border-radius:16px;border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;gap:8px;cursor:{{ cursor }};pointer-events:{{ pe }};text-align:left;transition:transform 120ms ease-out,box-shadow 180ms ease-out;--peca-hover:{{ hov }};--peca-press-bg:{{ actBg }};--peca-press:{{ act }};" style-hover="box-shadow:var(--peca-hover);" style-active="transform:translateY(1px);background:var(--peca-press-bg);box-shadow:var(--peca-press);">
+<button type="button" ref="{{ ref }}" role="option" aria-selected="{{ selTxt }}" aria-disabled="{{ ariaDes }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;min-width:0;min-height:56px;box-sizing:border-box;padding:0 12px 0 {{ padE }};border-radius:16px;border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;gap:8px;cursor:{{ cursor }};pointer-events:{{ pe }};text-align:left;transition:transform 120ms ease-out,box-shadow 180ms ease-out;--peca-hover:{{ hov }};--peca-press-bg:{{ actBg }};--peca-press:{{ act }};" style-hover="box-shadow:var(--peca-hover);" style-active="transform:translateY(1px);background:var(--peca-press-bg);box-shadow:var(--peca-press);">
+  <sc-if value="{{ temLogo }}" hint-placeholder-val="{{ false }}"><span data-pastilha="" data-decor="" aria-hidden="true" style="position:relative;flex:none;width:32px;height:32px;box-sizing:border-box;border-radius:9px;background:var(--gp-marca-pastilha);border:1px solid var(--gp-outline);display:flex;align-items:center;justify-content:center;"><dc-import name="LogoMarca" marca="{{ logo }}" tamanho="{{ 28 }}" hint-size="28px,28px"></dc-import>
+    <sc-if value="{{ selLogo }}" hint-placeholder-val="{{ false }}"><span data-check="" style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;box-sizing:border-box;border-radius:50%;background:var(--gp-accent-fill);border:1.5px solid var(--gp-dock-ring);color:var(--gp-on-sel-mark);display:flex;align-items:center;justify-content:center;"><dc-import name="IconeGP" nome="ok" tamanho="{{ 12 }}" hint-size="12px,12px"></dc-import></span></sc-if>
+  </span></sc-if>
   <span style="flex:1;min-width:0;font-family:'Roboto',sans-serif;font-weight:{{ peso }};font-size:{{ fs }};line-height:20px;color:{{ cor }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rotulo }}</span>
-  <sc-if value="{{ sel }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-check="" style="flex:none;color:var(--gp-on-sel-mark);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="sucesso" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></sc-if>
+  <sc-if value="{{ selTexto }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-check="" style="flex:none;color:var(--gp-on-sel-mark);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="sucesso" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></sc-if>
 </button>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:170,&quot;height&quot;:64},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Electrolux&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;sel&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;selecionado&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:170,&quot;height&quot;:64},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Electrolux&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;sel&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;logo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;selecionado&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
 const RAISE = 'var(--gp-mold-shadow)';
 const HOV = RAISE + ',inset 0 0 0 999px var(--gp-state-hover)', HOV_SEL = 'var(--gp-feature-shadow),inset 0 0 0 999px var(--gp-state-hover)';
 const ACT = 'var(--gp-mold-shadow-pressed)', ACT_SEL = 'var(--gp-mold-shadow-pressed),inset 0 0 0 999px var(--gp-state-pressed)';
@@ -27,16 +30,17 @@ class Component extends DCLogic {
   componentWillUnmount() { if (this.ro) this.ro.disconnect(); }
   renderVals() {
     const e = this.props.estado || 'normal';
-    const rotulo = this.props.rotulo ?? '', sel = !!this.props.sel || e === 'selecionado', des = e === 'desabilitado';
+    const rotulo = this.props.rotulo ?? '', sel = !!this.props.sel || e === 'selecionado', des = e === 'desabilitado', logo = this.props.logo || '';
     let fs = 16;
     if (this.state.w) {
       if (!this._c) this._c = document.createElement('canvas').getContext('2d');
       this._c.font = '600 16px Roboto';
-      const tw = this._c.measureText(rotulo).width, avail = this.state.w - 30 - (sel ? 28 : 0);
+      // Com emblema de marca: respiro de 10 px, pastilha de 32 px e vão de 8 px; o check vira selo no canto da pastilha e não come largura.
+      const tw = this._c.measureText(rotulo).width, avail = this.state.w - (logo ? 10 + 32 + 8 + 14 : 30 + (sel ? 28 : 0));
       if (tw > avail) fs = Math.max(14, Math.floor(16 * avail / tw * 2) / 2);
     }
     return {
-      ref: this.ref, rotulo, sel, selTxt: sel ? 'true' : 'false', acao: this.props.acao, fs: fs + 'px', des, ariaDes: des ? 'true' : undefined,
+      ref: this.ref, rotulo, sel, temLogo: !!logo, logo, selLogo: sel && !!logo, selTexto: sel && !logo, padE: logo ? '10px' : '16px', selTxt: sel ? 'true' : 'false', acao: this.props.acao, fs: fs + 'px', des, ariaDes: des ? 'true' : undefined,
       foco: e === 'foco' ? '1' : undefined, peso: sel ? 700 : 600,
       // Selecionada: aro neon --gp-dock-ring (o mesmo da tecla ativa do dock) e check em --gp-on-sel-mark.
       borda: des ? '1px dashed var(--gp-outline-variant)' : sel ? '1px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)',

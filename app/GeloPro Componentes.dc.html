@@ -161,9 +161,8 @@ input::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
             <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-chassis);">Atalho</span>
             <div data-cc="Atalho · normal"><dc-import name="AtalhoTecla" rotulo="Consultar fichas" icone="busca" style="display:block;" hint-size="100%,60px"></dc-import></div>
             <div data-cc="Atalho · bloqueado (bônus)"><dc-import name="AtalhoTecla" rotulo="Laudo de inviabilidade" icone="doc" lock="{{ true }}" style="display:block;" hint-size="100%,60px"></dc-import></div>
-            <div data-cc="Barra da inicial · estilo 1 (padrão)"><dc-import name="AtalhoTecla" pilula="{{ true }}" estilo="1" rotulo="Consultar fichas" icone="prancheta" style="display:block;" hint-size="100%,48px"></dc-import></div>
-            <div data-cc="Barra da inicial · estilo 2"><dc-import name="AtalhoTecla" pilula="{{ true }}" estilo="2" rotulo="Orçamento e garantia" icone="garantia" style="display:block;" hint-size="100%,48px"></dc-import></div>
-            <div data-cc="Barra da inicial · estilo 3"><dc-import name="AtalhoTecla" pilula="{{ true }}" estilo="3" rotulo="Consultar fichas" icone="prancheta" badge="57 fichas" style="display:block;" hint-size="100%,48px"></dc-import></div>
+            <div data-cc="Barra da inicial (pilula)"><dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Consultar fichas" icone="prancheta" style="display:block;" hint-size="100%,48px"></dc-import></div>
+            <div data-cc="Opção da gaveta Marca · com emblema (LogoMarca)"><dc-import name="OpcaoLista" rotulo="Electrolux" logo="Electrolux" sel="{{ true }}" style="display:block;max-width:180px;" hint-size="180px,56px"></dc-import></div>
             <span style="font:700 14px/20px 'Roboto',sans-serif;color:var(--gp-on-chassis);">Navegação inferior</span>
             <nav aria-label="Exemplo de dock" data-chanfro="" style="box-sizing:border-box;padding:5px;border-radius:20px;background:var(--gp-chanfro);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;">
               <sc-for list="{{ dock }}" as="d" hint-placeholder-count="6">

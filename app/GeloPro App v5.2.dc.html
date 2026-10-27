@@ -473,9 +473,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </div>
 
         <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
-          <div data-atalhos="" style="flex:none;display:grid;grid-template-columns:{{ atCols }};gap:{{ atGap }};padding:0 2px;">
-            <dc-import name="AtalhoTecla" pilula="{{ true }}" estilo="{{ atEstilo }}" badge="{{ atBadgeF }}" rotulo="Consultar fichas" icone="prancheta" acao="{{ abrirFichas }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
-            <dc-import name="AtalhoTecla" pilula="{{ true }}" estilo="{{ atEstilo }}" badge="{{ atBadgeO }}" rotulo="Orçamento e garantia" icone="garantia" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
+          <div data-atalhos="" style="flex:none;display:flex;flex-direction:column;gap:6px;padding:0 2px;">
+            <dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Consultar fichas" icone="prancheta" acao="{{ abrirFichas }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
+            <dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Orçamento e garantia" icone="garantia" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
           </div>
         </sc-if>
       </div>
@@ -513,7 +513,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
               <div role="listbox" aria-label="{{ dTitulo }}" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                 <sc-for list="{{ opcoesSel }}" as="op" hint-placeholder-count="6">
-                  <dc-import name="OpcaoLista" rotulo="{{ op.label }}" sel="{{ op.on }}" acao="{{ op.onClick }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
+                  <dc-import name="OpcaoLista" rotulo="{{ op.label }}" sel="{{ op.on }}" logo="{{ op.logo }}" acao="{{ op.onClick }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
 </sc-for>
               </div>
             </div>
@@ -526,55 +526,28 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <sc-for list="{{ fichaFiltros }}" as="fc" hint-placeholder-count="5"><button type="button" aria-pressed="{{ fc.on }}" onClick="{{ fc.acao }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:999px;border:{{ fc.borda }};background:{{ fc.fundo }};color:{{ fc.cor }};font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ fc.l }}</button></sc-for>
               </div>
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fichasInfo }}</span>
-              <sc-if value="{{ fmtA }}" hint-placeholder-val="{{ false }}">
-                <div data-formato="A" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-                  <sc-for list="{{ fichas }}" as="f" hint-placeholder-count="4">
-                    <button type="button" aria-label="{{ f.aria }}" onClick="{{ f.onClick }}" style="min-width:0;min-height:128px;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-mold-shadow);display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(1px);box-shadow:var(--gp-mold-shadow-pressed);">
-                      <span aria-hidden="true" style="display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="{{ f.ico }}" tamanho="{{ 32 }}" hint-size="32px,32px"></dc-import></span>
-                      <span style="display:inline-flex;align-items:center;height:22px;box-sizing:border-box;padding:0 8px;border-radius:9999px;background:{{ f.tag }};font:700 14px/1 'Roboto',sans-serif;color:{{ f.onTag }};white-space:nowrap;">{{ f.tipo }}</span>
-                      <span style="max-width:100%;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">{{ f.t }}</span>
+              <div data-formato="C" style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ fichaSecoes }}" as="sc" hint-placeholder-count="4">
+                  <div style="border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-mold-shadow);overflow:hidden;">
+                    <button type="button" aria-expanded="{{ sc.exp }}" onClick="{{ sc.acao }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:0 8px 0 12px;border:0;background:transparent;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;color:var(--gp-on-surface);" style-active="background:var(--gp-state-pressed);">
+                      <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="{{ sc.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+                      <span style="flex:1;min-width:0;font:700 16px/20px 'Roboto',sans-serif;">{{ sc.t }}</span>
+                      <span style="flex:none;min-width:28px;height:24px;box-sizing:border-box;padding:0 8px;border-radius:999px;background:var(--gp-medal);display:inline-flex;align-items:center;justify-content:center;font:700 14px/16px 'Roboto',sans-serif;color:var(--gp-on-tile-icon);">{{ sc.n }}</span>
+                      <span aria-hidden="true" style="flex:none;display:inline-flex;transform:{{ sc.seta }};color:var(--gp-on-surface-variant);"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
                     </button>
-                  </sc-for>
-                </div>
-              </sc-if>
-              <sc-if value="{{ fmtB }}" hint-placeholder-val="{{ false }}">
-                <div data-formato="B" style="display:flex;flex-direction:column;gap:8px;">
-                  <sc-for list="{{ fichas }}" as="f" hint-placeholder-count="4">
-                    <button type="button" aria-label="{{ f.aria }}" onClick="{{ f.onClick }}" style="width:100%;min-width:0;min-height:64px;box-sizing:border-box;padding:8px 4px 8px 8px;border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-mold-shadow);display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;" style-active="transform:translateY(1px);box-shadow:var(--gp-mold-shadow-pressed);">
-                      <span aria-hidden="true" style="flex:none;width:44px;height:44px;border-radius:12px;background:var(--gp-medal);box-shadow:var(--gp-reading-shadow);display:flex;align-items:center;justify-content:center;color:var(--gp-on-tile-icon);"><dc-import name="IconeGP" nome="{{ f.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
-                      <span style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
-                        <span style="max-width:100%;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">{{ f.t }}</span>
-                        <span style="max-width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;"><span style="display:inline-flex;align-items:center;height:22px;box-sizing:border-box;padding:0 8px;border-radius:9999px;background:{{ f.tag }};font:700 14px/1 'Roboto',sans-serif;color:{{ f.onTag }};white-space:nowrap;">{{ f.tipo }}</span><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-accent);font-variant-numeric:tabular-nums;">{{ f.chave }}</span></span>
-                        <sc-if value="{{ f.nota }}" hint-placeholder-val="{{ false }}"><span style="max-width:100%;font:500 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ f.nota }}</span></sc-if>
-                      </span>
-                      <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-variant);"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
-                    </button>
-                  </sc-for>
-                </div>
-              </sc-if>
-              <sc-if value="{{ fmtC }}" hint-placeholder-val="{{ false }}">
-                <div data-formato="C" style="display:flex;flex-direction:column;gap:8px;">
-                  <sc-for list="{{ fichaSecoes }}" as="sc" hint-placeholder-count="4">
-                    <div style="border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-mold-shadow);overflow:hidden;">
-                      <button type="button" aria-expanded="{{ sc.exp }}" onClick="{{ sc.acao }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:0 8px 0 12px;border:0;background:transparent;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;color:var(--gp-on-surface);" style-active="background:var(--gp-state-pressed);">
-                        <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="{{ sc.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
-                        <span style="flex:1;min-width:0;font:700 16px/20px 'Roboto',sans-serif;">{{ sc.t }}</span>
-                        <span style="flex:none;min-width:28px;height:24px;box-sizing:border-box;padding:0 8px;border-radius:999px;background:var(--gp-medal);display:inline-flex;align-items:center;justify-content:center;font:700 14px/16px 'Roboto',sans-serif;color:var(--gp-on-tile-icon);">{{ sc.n }}</span>
-                        <span aria-hidden="true" style="flex:none;display:inline-flex;transform:{{ sc.seta }};color:var(--gp-on-surface-variant);"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
+                    <sc-for list="{{ sc.itens }}" as="f" hint-placeholder-count="0">
+                      <button type="button" aria-label="{{ f.aria }}" onClick="{{ f.onClick }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 8px 8px 44px;border:0;box-shadow:inset 0 1px 0 var(--gp-outline-variant);background:transparent;display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-active="background:var(--gp-state-pressed);">
+                        <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+                          <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:normal;">{{ f.t }}</span>
+                          <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-accent);font-variant-numeric:tabular-nums;">{{ f.chave }}</span>
+                          <sc-if value="{{ f.nota }}" hint-placeholder-val="{{ false }}"><span data-nota="" style="font:500 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ f.nota }}</span></sc-if>
+                        </span>
+                        <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-variant);"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
                       </button>
-                      <sc-for list="{{ sc.itens }}" as="f" hint-placeholder-count="0">
-                        <button type="button" aria-label="{{ f.aria }}" onClick="{{ f.onClick }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 8px 8px 44px;border:0;box-shadow:inset 0 1px 0 var(--gp-outline-variant);background:transparent;display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-active="background:var(--gp-state-pressed);">
-                          <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
-                            <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:normal;">{{ f.t }}</span>
-                            <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-accent);font-variant-numeric:tabular-nums;">{{ f.chave }}</span>
-                          </span>
-                          <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-variant);"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
-                        </button>
-                      </sc-for>
-                    </div>
-                  </sc-for>
-                </div>
-              </sc-if>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
             </div>
           </sc-if>
 
@@ -775,14 +748,8 @@ const SINTOMAS = [
   { id: 'pinga', nome: 'Pinga água', i: 'drop' }, { id: 'desliga', nome: 'Desliga sozinho', i: 'poff' }, { id: 'naoliga', nome: 'Não liga', i: 'pzap' },
   { id: 'barulho', nome: 'Barulho', i: 'vol' }, { id: 'codigo', nome: 'Código no display', i: 'mon' }, { id: 'led', nome: 'LED piscando', i: 'cdot' },
 ];
-// Mostruário opcoes-home.html (26/10): ?botoes=1|2|3 (barras da inicial), ?icones=A|B|C (pacote dos 9 sintomas) e ?fichas=A|B|C
-// (formato da gaveta Consultar fichas). Sem parâmetro valem os padrões abaixo. Escolhido o formato, o padrão muda aqui e as outras opções saem.
-const OPC = (() => { let q; try { q = new URLSearchParams(location.search); } catch (e) { q = new Map(); } const v = (k, ok, pad) => { const x = String(q.get(k) || '').toUpperCase(); return ok.includes(x) ? x : pad; }; return { botoes: v('botoes', ['1', '2', '3'], '1'), icones: v('icones', ['A', 'B', 'C'], ''), fichas: v('fichas', ['A', 'B', 'C'], 'B') }; })();
-const ICO_SINT = { naogela: 'nao-gela', gelapouco: 'gela-pouco', gelo: 'gelo', pinga: 'pinga', desliga: 'desliga', naoliga: 'nao-liga', barulho: 'barulho', codigo: 'codigo', led: 'led' };
-const icoSint = (x) => OPC.icones ? OPC.icones.toLowerCase() + '-' + ICO_SINT[x.id] : x.i;
 // Catálogo de fichas: tudo o que a base técnica tem, por categoria. Cada ficha abre o destino real (percurso, tabela ou ferramenta).
 const FCAT = { sint: ['Sintomas', 'Sintoma'], gas: ['Sensores & Gás', 'Teste'], cod: ['Códigos & LED', 'Código'], inv: ['Inverter & Docs', 'Componente'] };
-const FTAG = { sint: 'sintoma', gas: 'teste', cod: 'codigo', inv: 'componente' };
 const FICO = { sint: 'alerta', gas: 'pt-sh', cod: 'codigo', inv: 'placa-ipm' };
 const FERR = { visual: ['Inspeção visual', 'busca'], multimetro: ['Multímetro', 'multimetro'], capacimetro: ['Capacímetro', 'capacitor'], nenhuma: ['Observação', 'info'] };
 const SECOES = ['Problema', 'Hipóteses', 'Verificações', 'Referência', 'Resultados', 'Próximo passo'];
@@ -957,7 +924,7 @@ const TEMA_ICO = { titanio: 'lua', claro: 'sol-fraco', sol: 'sol' };
 const CENAS_V = '?v=3';
 // Reserva se cenas.json não carregar: as etapas da checagem rápida do lote 1 de 26/10 (sem ba02 e pi05, que não vieram no lote).
 const CENAS_OK = new Set('ba03 ba04 de02 de03 de04 ge02 gp02 gp03 ng02 ng03 ng04 ng05 nl02 nl03 nl04 nl05 pi02 pi03 pi04'.split(' ').flatMap(k => [k + '_sim', k + '_nao']));
-const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDocumento', 'IconeGP', 'LinhaFicha', 'LinhaOrcamento', 'OpcaoLista', 'PlacaSintoma', 'QRPix', 'SeletorPrazo', 'Selo', 'TeclaDock', 'TeclaResposta', 'TemaGeloPro'];
+const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDocumento', 'IconeGP', 'LinhaFicha', 'LinhaOrcamento', 'LogoMarca', 'OpcaoLista', 'PlacaSintoma', 'QRPix', 'SeletorPrazo', 'Selo', 'TeclaDock', 'TeclaResposta', 'TemaGeloPro'];
 const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], res: null, modo: null, modK: null, prev: null };
 // Dados do atendimento (cliente, aparelho, medições, hipóteses, carga, laudo, orçamento, garantia, assinatura). Concluir volta a isto.
 // Ficam fora: titular, licença, tema e documentos emitidos (localStorage), e os fatores da carga térmica, que são ajuste do técnico.
@@ -1298,7 +1265,7 @@ class Component extends DCLogic {
       SINTOMAS.filter(x => x.id !== 'codigo' && x.id !== 'led').forEach(x => {
         const pc = B.perc[x.id]; if (!pc) return;
         const et = Object.values(pc.etapas), nr = et.filter(e => !e.tec).length, nt = et.filter(e => e.tec).length;
-        catF.push({ cat: 'sint', tipo: 'Sintoma', ico: icoSint(x), t: x.nome, sub: 'Percurso guiado, do mais barato ao mais caro', chave: `${nr} rápidas + ${nt} técnicas`, abrir: () => iniciar(x.id) });
+        catF.push({ cat: 'sint', tipo: 'Sintoma', ico: x.i, t: x.nome, sub: 'Percurso guiado, do mais barato ao mais caro', chave: `${nr} rápidas + ${nt} técnicas`, abrir: () => iniciar(x.id) });
       });
       SINTOMAS.forEach(x => { const pc = B.perc[x.id]; if (!pc) return; Object.values(pc.etapas).filter(e => e.tec).sort((a, b) => a.ord - b.ord).forEach((e, i) => {
         const fe = FERR[e.ferr] || ['Observação', 'info'];
@@ -1325,7 +1292,7 @@ class Component extends DCLogic {
     // Ficha que troca a marca ou o fluido do atendimento avisa antes, na própria linha.
     const troca = (sub) => (sub.match(/abre com (?:a marca|o fluido) .+$/) || [''])[0].replace(/^abre/, 'Abre');
     const qF = norm(st.busca.trim()), catSel = st.fichaCat && st.fichaCat !== 'todos' ? st.fichaCat : null;
-    const fichasF = catF.filter(f => (!catSel || f.cat === catSel) && (!qF || norm([f.t, f.tipo, f.sub, f.chave].join(' ')).includes(qF))).map(f => ({ ...f, nota: troca(f.sub), tag: `var(--gp-tag-${FTAG[f.cat]})`, onTag: `var(--gp-on-tag-${FTAG[f.cat]})`, aria: `${f.tipo}: ${f.t}${/[.?!]$/.test(f.t) ? '' : '.'} ${f.chave}. ${f.sub}`, onClick: f.abrir }));
+    const fichasF = catF.filter(f => (!catSel || f.cat === catSel) && (!qF || norm([f.t, f.tipo, f.sub, f.chave].join(' ')).includes(qF))).map(f => ({ ...f, nota: troca(f.sub), aria: `${f.tipo}: ${f.t}${/[.?!]$/.test(f.t) ? '' : '.'} ${f.chave}. ${f.sub}`, onClick: f.abrir }));
     // Faixa de diagnóstico na inicial (item 9 do Pedro): resumo do que as medições já dizem, com toque para a análise.
     // Regra Zero: veredito só onde a base tem faixa oficial (SH da Elgin Eco Inverter R410A; tolerância NTC declarada). Nas outras marcas, o valor sai sem veredito.
     const diags = [];
@@ -1506,9 +1473,6 @@ class Component extends DCLogic {
       irTitular: () => this.vazio('tit'),
       irLeitura: () => this.vazio('leit'),
       irOrcamento: () => this.abrirFech(),
-      // Barras da inicial: estilo escolhido no mostruário (padrão 1). As três opções são empilhadas, com 48 px cada.
-      atEstilo: OPC.botoes, atCols: 'minmax(0,1fr)', atGap: '6px',
-      atBadgeF: catF.length ? `${catF.length} fichas` : 'Fichas', atBadgeO: 'PDF + Pix',
       // Uma faixa por medição. Em tela baixa (ou com as duas medições em tela baixa) ficam lado a lado, cada uma em 2 linhas (valor; veredito).
       diags: diags.map(d => ({ ...d, verTxt: diagLado ? d.verCurto : '· ' + d.ver })), temDiag: diags.length > 0,
       dgCols: diagLado ? `repeat(${diags.length},minmax(0,1fr))` : 'minmax(0,1fr)', dgDir: diagLado ? 'column' : 'row', dgAlinha: diagLado ? 'flex-start' : 'baseline', dgLinha: !diagLado, dgPadD: diagLado ? '10px' : '6px',
@@ -1539,7 +1503,7 @@ class Component extends DCLogic {
       }),
       telaInicio: st.tela === 'inicio', telaEtapa: st.tela === 'etapa', telaResultado: st.tela === 'resultado', telaVazio: st.tela === 'vazio', telaCodigo: st.tela === 'codigo', telaPT: st.tela === 'ptsh', telaNTC: st.tela === 'ntc',
       sintomas: SINTOMAS.map((x, i) => ({
-        nome: x.nome, canto: 'nenhum', icone: icoSint(x),
+        nome: x.nome, canto: 'nenhum', icone: x.i,
         onClick: () => iniciar(x.id),
       })),
       pergunta: E.q, dica: E.d.replace('{F}', st.sel.fluido), temaAttr: tema,
@@ -1589,7 +1553,8 @@ class Component extends DCLogic {
       dSel, dNota: d === 'marca', dLista: d === 'fichas' && !st.fichaSel, dFicha: d === 'fichas' && !!st.fichaSel,
       opcoesSel: dSel ? OPTS[d].list.map(label => {
         const on = st.sel[d] === label;
-        return { label, on, sel: on ? 'true' : 'false', borda: on ? '1.5px solid var(--gp-primary)' : '1px solid var(--gp-outline-variant)', onClick: () => this.setState(x => ({ sel: { ...x.sel, [d]: label }, drawer: null })) };
+        // Gaveta Marca: emblema da marca na pastilha à esquerda (LogoMarca); BTU/h e Fluido só com texto.
+        return { label, on, logo: d === 'marca' ? label : '', sel: on ? 'true' : 'false', borda: on ? '1.5px solid var(--gp-primary)' : '1px solid var(--gp-outline-variant)', onClick: () => this.setState(x => ({ sel: { ...x.sel, [d]: label }, drawer: null })) };
       }) : [],
       busca: st.busca, setBusca: (e) => this.setState({ busca: e.target.value }),
       fichasInfo: catF.length ? `${fichasF.length === catF.length ? catF.length : fichasF.length + ' de ' + catF.length} fichas. Cada uma abre o percurso, a tabela ou a ferramenta real.` : 'A base técnica ainda está carregando.',
@@ -1597,8 +1562,6 @@ class Component extends DCLogic {
         const on = (st.fichaCat || 'todos') === k, n = k === 'todos' ? catF.length : catF.filter(f => f.cat === k).length;
         return { l: `${l} ${n}`, on: on ? 'true' : 'false', fundo: on ? 'var(--gp-accent-fill)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-accent-fill)' : 'var(--gp-on-surface)', borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)', acao: () => this.setState({ fichaCat: k, fichaSec: null }) };
       }),
-      fmtA: OPC.fichas === 'A', fmtB: OPC.fichas === 'B', fmtC: OPC.fichas === 'C',
-      fichas: fichasF,
       // Formato C: seções por categoria; buscando ou filtrando, as seções com resultado já vêm abertas.
       // Ao abrir a gaveta, a primeira seção já vem aberta (fichaSec null); depois vale a que o técnico tocou ('' = todas fechadas).
       fichaSecoes: Object.entries(FCAT).filter(([k]) => fichasF.some(f => f.cat === k)).map(([k, v], i) => {
