@@ -9,7 +9,7 @@
 <x-dc>
 <button type="button" ref="{{ ref }}" role="option" aria-selected="{{ selTxt }}" aria-disabled="{{ ariaDes }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;min-width:0;min-height:56px;box-sizing:border-box;padding:0 12px 0 16px;border-radius:16px;border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;gap:8px;cursor:{{ cursor }};pointer-events:{{ pe }};text-align:left;transition:transform 120ms ease-out,box-shadow 180ms ease-out;--peca-hover:{{ hov }};--peca-press-bg:{{ actBg }};--peca-press:{{ act }};" style-hover="box-shadow:var(--peca-hover);" style-active="transform:translateY(1px);background:var(--peca-press-bg);box-shadow:var(--peca-press);">
   <span style="flex:1;min-width:0;font-family:'Roboto',sans-serif;font-weight:{{ peso }};font-size:{{ fs }};line-height:20px;color:{{ cor }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rotulo }}</span>
-  <sc-if value="{{ sel }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;color:var(--gp-on-selected);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="sucesso" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></sc-if>
+  <sc-if value="{{ sel }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-check="" style="flex:none;color:var(--gp-on-sel-mark);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="sucesso" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></sc-if>
 </button>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:170,&quot;height&quot;:64},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Electrolux&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;sel&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;selecionado&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
@@ -38,9 +38,10 @@ class Component extends DCLogic {
     return {
       ref: this.ref, rotulo, sel, selTxt: sel ? 'true' : 'false', acao: this.props.acao, fs: fs + 'px', des, ariaDes: des ? 'true' : undefined,
       foco: e === 'foco' ? '1' : undefined, peso: sel ? 700 : 600,
-      borda: des ? '1px dashed var(--gp-outline-variant)' : '1px solid var(--gp-sec-edge)',
+      // Selecionada: aro neon --gp-dock-ring (o mesmo da tecla ativa do dock) e check em --gp-on-sel-mark.
+      borda: des ? '1px dashed var(--gp-outline-variant)' : sel ? '1px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)',
       fundo: sel ? 'var(--gp-mold-selected)' : des ? 'var(--gp-disabled)' : e === 'pressionado' ? 'var(--gp-mold-sunken)' : 'var(--gp-mold-raised)',
-      sombra: des ? 'none' : sel ? 'var(--gp-feature-shadow)' : e === 'hover' ? RAISE + ',inset 0 0 0 999px var(--gp-state-hover)' : e === 'pressionado' ? 'var(--gp-mold-shadow-pressed)' : RAISE,
+      sombra: des ? 'none' : sel ? '0 0 0 1px var(--gp-dock-ring),var(--gp-feature-shadow)' : e === 'hover' ? RAISE + ',inset 0 0 0 999px var(--gp-state-hover)' : e === 'pressionado' ? 'var(--gp-mold-shadow-pressed)' : RAISE,
       hov: sel ? HOV_SEL : HOV, actBg: sel ? 'var(--gp-mold-selected)' : 'var(--gp-mold-sunken)', act: sel ? ACT_SEL : ACT,
       desloc: e === 'pressionado' ? 'translateY(1px)' : 'none', cursor: des ? 'not-allowed' : 'pointer', pe: des ? 'none' : 'auto',
       cor: des ? 'var(--gp-on-disabled)' : sel ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GeloPro · Opções da Tela Inicial</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&amp;display=swap" rel="stylesheet">
+<style>
+/* Mostruário para o Pedro escolher 3 itens da Tela Inicial (documento de correções de 26/10, itens 1, 3 e 6).
+   O aparelho abaixo é o app real (iframe, modo Amostra). Cada chave só troca um parâmetro do endereço do app:
+   ?botoes=1|2|3 (barras abaixo do visor), ?icones=A|B|C (pacote dos 9 sintomas) e ?fichas=A|B|C (formato da gaveta Consultar fichas). */
+html, body { margin: 0; background: #e6eaef; color: #091e42; font: 500 16px/22px 'Roboto', system-ui, sans-serif; }
+.topo { position: sticky; top: 0; z-index: 2; box-sizing: border-box; padding: 8px 12px 6px; background: #e6eaef; display: flex; flex-direction: column; align-items: center; gap: 6px; box-shadow: 0 1px 0 rgba(9, 30, 66, .12); }
+.abas, .chaves { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.abas button, .chaves button { min-height: 48px; padding: 0 14px; border-radius: 12px; border: 2px solid #19365c; background: #ffffff; color: #19365c; font: 700 16px/20px 'Roboto', system-ui, sans-serif; cursor: pointer; }
+.abas button { border-radius: 999px; }
+.abas button[aria-selected="true"], .chaves button[aria-pressed="true"] { background: #19365c; color: #ffffff; }
+.abas button:focus-visible, .chaves button:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+.nota { max-width: 400px; margin: 0; text-align: center; font-size: 16px; line-height: 22px; font-weight: 500; color: #44546f; }
+.escolha { margin: 0; font-size: 16px; line-height: 22px; font-weight: 700; color: #19365c; text-align: center; }
+.palco { display: flex; justify-content: center; padding: 8px 0 16px; }
+.moldura { width: 390px; height: 844px; transform-origin: top center; }
+.moldura iframe { display: block; width: 390px; height: 844px; border: 0; border-radius: 12px; box-shadow: 0 6px 24px rgba(9, 30, 66, .25); background: #091e42; }
+</style>
+</head>
+<body>
+<div class="topo">
+  <div class="abas" role="tablist" aria-label="Item a escolher">
+    <button type="button" role="tab" data-aba="botoes" aria-selected="false">Botões</button>
+    <button type="button" role="tab" data-aba="icones" aria-selected="false">Ícones</button>
+    <button type="button" role="tab" data-aba="fichas" aria-selected="false">Fichas</button>
+  </div>
+  <div class="chaves" role="group" aria-label="Opções" id="chaves"></div>
+  <p class="nota" id="nota" aria-live="polite"></p>
+  <p class="escolha" id="escolha"></p>
+</div>
+<div class="palco" id="palco">
+  <div class="moldura" id="moldura">
+    <iframe id="app" title="GeloPro, app real em modo Amostra"></iframe>
+  </div>
+</div>
+<script>
+// O que já está aplicado no app sem parâmetro: Botões 1 (pedido do Pedro) e Fichas B (provisório, até a escolha). Ícones: os atuais.
+const ITENS = {
+  botoes: {
+    nome: 'Botões abaixo do visor',
+    padrao: '1',
+    op: {
+      1: ['Opção 1 ✓', '1 · Cápsula cobalto 3D com aro neon ciano, medalhão escuro com o ícone (prancheta / escudo de garantia) e seta › em ciano. Aplicada no app.'],
+      2: ['Opção 2', '2 · Placa dupla de instrumento: fundo safira escuro com bisel metálico, ícone num poço cobalto de 36×36 px e pílula "Abrir ›" à direita.'],
+      3: ['Opção 3', '3 · Teclas empilhadas em relevo de tecla primária (cobalto 3D), ícone ciano de 22 px e contador à direita ("57 fichas" / "PDF + Pix"). Lado a lado não coube: com o contador à direita, o rótulo ficaria com 35 px em 375 de largura.'],
+    },
+  },
+  icones: {
+    nome: 'Ícones dos 9 sintomas',
+    padrao: '',
+    op: {
+      '': ['Atuais', 'Atuais · Não gela e Gela pouco são dois termômetros quase iguais. Só para comparar.'],
+      A: ['Pacote A', 'A · Traço técnico (1,75): a evaporadora em cena. Não gela = split soprando ar quente, sem floco; Gela pouco = termômetro alto com meio floco; Forma gelo = serpentina com cristais; Pinga = evaporadora pingando; Desliga = disjuntor desarmado; Não liga = plugue cortado; Barulho = ventilador com ondas; Código = visor E1; LED = painel com LED piscando.'],
+      B: ['Pacote B', 'B · Traço forte (2,25): os mesmos 9 conceitos com menos elementos e traço mais grosso, para ler a 32 px em tela baixa e no sol.'],
+      C: ['Pacote C', 'C · Mostrador: cada ícone dentro de uma moldura de painel (traço 1,5), como indicador de instrumento. Grade mais uniforme; detalhe interno menor.'],
+    },
+  },
+  fichas: {
+    nome: 'Formato de Consultar fichas',
+    padrao: 'B',
+    op: {
+      A: ['Formato A', 'A · Grade de cartões 2×2: ícone grande em ciano, selo colorido da categoria e título direto. Mais visual, mais rolagem (57 fichas).'],
+      B: ['Formato B ✓', 'B · Cartões compactos: medalhão do ícone, título, selo e o valor-chave já visível (ex.: "R410A: 4,4 °C = 118 psig", "25 °C = 10 kΩ"). Aplicado provisoriamente no app.'],
+      C: ['Formato C', 'C · Painel por seções expansíveis (Sintomas, Sensores & Gás, Códigos & LED, Inverter & Docs) com contador. Um toque abre a seção, outro abre a ficha.'],
+    },
+  },
+};
+const app = document.getElementById('app');
+const chaves = document.getElementById('chaves');
+const nota = document.getElementById('nota');
+const escolha = document.getElementById('escolha');
+const abas = [...document.querySelectorAll('.abas button')];
+
+// Estado no endereço: #aba=fichas&botoes=1&icones=A&fichas=B (o link pode ser mandado já na opção certa).
+const est = { aba: 'botoes', botoes: '1', icones: '', fichas: 'B' };
+try { new URLSearchParams(location.hash.slice(1)).forEach((v, k) => { if (k === 'aba' ? ITENS[v] : ITENS[k] && v in ITENS[k].op) est[k] = v; }); } catch (e) {}
+
+function src() {
+  const q = new URLSearchParams({ amostra: '1', botoes: est.botoes, fichas: est.fichas });
+  if (est.icones) q.set('icones', est.icones);
+  return 'app/GeloPro%20App%20v5.2.dc.html?' + q.toString();
+}
+function desenhar() {
+  const it = ITENS[est.aba];
+  abas.forEach(b => b.setAttribute('aria-selected', String(b.dataset.aba === est.aba)));
+  chaves.innerHTML = '';
+  Object.entries(it.op).forEach(([k, [rot]]) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = rot; b.setAttribute('aria-pressed', String(est[est.aba] === k)); b.dataset.k = k;
+    b.addEventListener('click', () => { est[est.aba] = k; aplicar(); });
+    chaves.appendChild(b);
+  });
+  nota.textContent = it.op[est[est.aba]][1];
+  escolha.textContent = `Na tela: Botões ${est.botoes} · Ícones ${est.icones || 'atuais'} · Fichas ${est.fichas}`;
+}
+function aplicar() {
+  try { history.replaceState(null, '', '#' + new URLSearchParams(est).toString()); } catch (e) {}
+  desenhar();
+  const novo = src();
+  if (!app.src.endsWith(novo)) app.src = novo;
+  else if (est.aba === 'fichas') abrirFichas();
+}
+abas.forEach(b => b.addEventListener('click', () => { est.aba = b.dataset.aba; aplicar(); if (est.aba !== 'fichas') fecharGaveta(); }));
+
+// Na aba Fichas, abre a gaveta depois que a base técnica (CSVs) terminou de carregar.
+function abrirFichas() {
+  let n = 0;
+  const t = setInterval(() => {
+    const d = app.contentDocument, w = app.contentWindow; n++;
+    if (!d || n > 160) { if (n > 160) clearInterval(t); return; }
+    const base = w.performance.getEntriesByType('resource').some(r => /pmoc_atividades\.csv/.test(r.name) && r.responseEnd > 0);
+    if (!base) return;
+    const aberta = [...d.querySelectorAll('[data-fichas]')].some(x => x.getClientRects().length && !x.closest('[aria-hidden="true"]'));
+    if (aberta) { clearInterval(t); return; }
+    const b = [...d.querySelectorAll('button')].find(x => (x.getAttribute('aria-label') || '').trim() === 'Consultar fichas');
+    if (b) b.click();
+  }, 250);
+}
+function fecharGaveta() {
+  const d = app.contentDocument; if (!d) return;
+  const f = [...d.querySelectorAll('button')].find(x => x.getAttribute('aria-label') === 'Fechar' && !x.closest('[aria-hidden="true"]'));
+  if (f) f.click();
+}
+app.addEventListener('load', () => { if (est.aba === 'fichas') abrirFichas(); });
+
+// No celular mais estreito que 390 px, o aparelho inteiro encolhe na mesma proporção.
+function encaixar() {
+  const s = Math.min(1, (window.innerWidth - 8) / 390);
+  document.getElementById('moldura').style.transform = s < 1 ? `scale(${s})` : 'none';
+  document.getElementById('palco').style.height = Math.ceil(844 * s + 24) + 'px';
+}
+window.addEventListener('resize', encaixar);
+encaixar();
+aplicar();
+</script>
+</body>
+</html>

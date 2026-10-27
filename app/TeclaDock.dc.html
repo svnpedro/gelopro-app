@@ -12,7 +12,7 @@
     <span aria-hidden="true" style="display:inline-flex;align-items:center;"><sc-if value="{{ icoNome }}" hint-placeholder-val="{{ false }}"><dc-import name="IconeGP" nome="{{ icoNome }}" tamanho="{{ 26 }}" hint-size="26px,26px"></dc-import></sc-if><sc-if value="{{ icoNo }}" hint-placeholder-val="{{ false }}">{{ icoNo }}</sc-if></span>
     <sc-if value="{{ lock }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="position:absolute;top:3px;right:3px;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="cadeado" tamanho="{{ 12 }}" hint-size="12px,12px"></dc-import></span></sc-if>
   </span>
-  <span style="max-width:100%;font-family:'Roboto',sans-serif;font-weight:{{ peso }};font-size:{{ fs }};letter-spacing:{{ ls }};line-height:16px;text-align:center;white-space:nowrap;color:{{ cor }};text-shadow:var(--gp-engrave);">{{ rot }}</span>
+  <span style="max-width:calc(100% + 4px);font-family:'Roboto',sans-serif;font-weight:{{ peso }};font-size:{{ fs }};letter-spacing:{{ ls }};line-height:16px;text-align:center;white-space:nowrap;color:{{ cor }};text-shadow:var(--gp-engrave);">{{ rot }}</span>
 </button>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:60,&quot;height&quot;:72},&quot;rot&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;NTC/BTU&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ativo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;lock&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;selecionado&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;icone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;ReactNode&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;cur&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
@@ -36,11 +36,12 @@ class Component extends DCLogic {
     let fs = 14, ls = 0;
     if (this.state.w) {
       if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d');
-      const avail = this.state.w - 2;
+      // O rótulo pode usar os 4 px do vão entre colunas (2 px de cada lado, centralizado): "NTC/BTU" cabe em 14 px sem apertar.
+      const avail = this.state.w + 4;
       this._ctx.font = `${ativo ? 700 : 600} 14px Roboto`;
       const w12 = this._ctx.measureText(rot).width;
-      // Primeiro aperta o espaçamento (até −0,6 px); só depois reduz o corpo.
-      if (w12 > avail) ls = Math.max(-0.6, (avail - w12) / Math.max(1, rot.length - 1));
+      // Primeiro aperta o espaçamento (até −0,25 px, o limite do portão); só depois reduz o corpo.
+      if (w12 > avail) ls = Math.max(-0.25, (avail - w12) / Math.max(1, rot.length - 1));
       if (w12 + ls * (rot.length - 1) > avail) fs = Math.max(12, Math.floor(14 * avail / (w12 + ls * (rot.length - 1)) * 2) / 2);
     }
     return {

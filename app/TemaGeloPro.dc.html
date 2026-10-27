@@ -68,7 +68,9 @@ const TEMAS = {
     '--gp-chassis-edge': '#687280',
     '--gp-chassis-rule': 'rgba(255,255,255,.35)',
     '--gp-chassis-key': 'linear-gradient(180deg,#254f91 0%,#173463 100%)',
-    '--gp-on-chassis': '#ffffff', '--gp-on-chassis-variant': '#ffffff', '--gp-engrave': GRAVADO_ESCURO,
+    // 26/10 (Pedro, item 7): o chassi agora é o Acetinado sedoso claro (#c1c0c1, topo #d9d8d9). Branco ali dava 1,8:1;
+    // o topo, a chavinha e os rótulos do dock passam a marinho com gravado claro, como no tema Claro (9,1:1 sobre #c1c0c1).
+    '--gp-on-chassis': '#091e42', '--gp-on-chassis-variant': '#091e42', '--gp-engrave': GRAVADO_CLARO,
     '--gp-led-tema': '#67c6ff',
     '--gp-bezel': 'linear-gradient(180deg, #b8c0cc 0%, #687280 100%)',
     '--gp-bezel-ring': '0 0 0 1px #5b6470, 0 2px 4px rgba(0,0,0,.25)',
@@ -79,7 +81,8 @@ const TEMAS = {
     '--gp-chanfro': 'transparent',
     '--gp-dock-bar-shadow': 'none',
     // Pílula Marca | BTU/h | Fluido
-    '--gp-pill': '#1d2430', '--gp-pill-edge': '#b0b8c4', '--gp-on-pill': '#ffffff', '--gp-on-pill-label': '#ffffff',
+    // Valor escolhido (LG, 12.000, R410A) e a setinha no ciano dos ícones (#67c6ff, 8,1:1 sobre #1d2430); rótulos em branco (item 2 do Pedro).
+    '--gp-pill': '#1d2430', '--gp-pill-edge': '#b0b8c4', '--gp-on-pill': '#ffffff', '--gp-on-pill-label': '#ffffff', '--gp-on-pill-val': '#67c6ff',
     '--gp-pill-div': 'rgba(255,255,255,0.16)', '--gp-pill-shadow': 'inset 0 2px 5px rgba(0,0,0,0.55), 0 2px 4px rgba(0,0,0,0.25)',
     // Pílulas de leitura (dentro do visor) e barras de atalho (no chassi)
     '--gp-reading': '#0c1d36', '--gp-reading-edge': '#7c8898', '--gp-on-reading': '#67c6ff',
@@ -89,13 +92,14 @@ const TEMAS = {
     '--gp-reading-shadow': 'inset 0 2px 4px rgba(0,0,0,.5)',
     '--gp-bar': '#071426', '--gp-bar-edge': '#b0b8c4', '--gp-on-bar': '#ffffff',
     '--gp-bar-shadow': 'inset 0 1px 0 rgba(255,255,255,.08), 0 2px 4px rgba(0,0,0,.3)',
-    // Placas 3x3 e teclas do dock
+    // Placas 3x3 e teclas do dock. --gp-on-sel-mark = check da opção escolhida na gaveta (ciano no Titânio, igual ao aro neon);
+    // --gp-medal = medalhão escuro do ícone nas barras da inicial (branco no Sol, onde a tecla é branca).
     '--gp-tile': 'linear-gradient(180deg, #254f91 0%, #173463 100%)', '--gp-tile-border': '0',
     '--gp-tile-relief': 'inset 0 1.5px 1px rgba(147,197,253,0.45), inset 0 -3px 6px rgba(4,10,24,0.6), 0 6px 12px rgba(2,6,14,0.55)',
     '--gp-on-tile': '#ffffff', '--gp-on-tile-icon': '#67c6ff', '--gp-on-tile-shadow': '0 1px 2px rgba(0,0,0,.35)',
     '--gp-dock-key': 'linear-gradient(180deg, #254f91 0%, #173463 100%)', '--gp-dock-key-edge': '#0b1a33',
     '--gp-dock-key-raise': 'inset 0 1.5px 1px rgba(147,197,253,0.45), inset 0 -2px 4px rgba(4,10,24,0.6), 0 4px 8px rgba(2,6,14,0.5)',
-    '--gp-dock-ring': '#67c6ff', '--gp-dock-ring-glow': '0 0 12px #38bdf8, inset 0 0 6px rgba(103,198,255,0.5)',
+    '--gp-medal': '#0c1d36', '--gp-on-sel-mark': '#67c6ff', '--gp-dock-ring': '#67c6ff', '--gp-dock-ring-glow': '0 0 12px #38bdf8, inset 0 0 6px rgba(103,198,255,0.5)',
     '--gp-on-dock-icon': '#67c6ff', '--gp-on-dock-key': '#ffffff', '--gp-dock-indicator': '#67c6ff',
     '--gp-dock-off': 'linear-gradient(180deg, #254f91 0%, #173463 100%)', '--gp-on-dock-off': '#ffffff', '--gp-on-dock-off-icon': '#67c6ff', '--gp-dock-edge': '#0b1a33',
     '--gp-dock-off-raise': '0 4px 8px rgba(2,6,14,0.5)',
@@ -118,7 +122,7 @@ const TEMAS = {
     '--gp-display': '#0a182d', '--gp-on-display': '#ffffff', '--gp-on-display-variant': '#93c5fd',
     '--gp-on-display-error': '#fca5a5', '--gp-on-display-ok': '#86efac',
     '--gp-on-disabled': '#7f93b0',
-    '--gp-focus': '#67c6ff', '--gp-focus-chassis': '#ffffff', '--gp-focus-key': '#67c6ff',
+    '--gp-focus': '#67c6ff', '--gp-focus-chassis': '#091e42', '--gp-focus-key': '#67c6ff',
     '--gp-scrim': 'rgba(2,6,13,.65)',
     '--gp-state-hover': 'rgba(147,197,253,.08)', '--gp-state-pressed': 'rgba(147,197,253,.16)',
     '--gp-shadow-raise': 'rgba(0,0,0,.55)', '--gp-highlight': 'rgba(147,197,253,.35)',
@@ -149,7 +153,7 @@ const TEMAS = {
     '--gp-inset-soft-sm': 'inset 0 2px 5px rgba(11,18,32,.18)',
     '--gp-chanfro': 'transparent',
     '--gp-dock-bar-shadow': 'none',
-    '--gp-pill': '#ffffff', '--gp-pill-edge': '#9aa3b0', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#19365c',
+    '--gp-pill': '#ffffff', '--gp-pill-edge': '#9aa3b0', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#19365c', '--gp-on-pill-val': '#091e42',
     '--gp-pill-div': 'rgba(9,30,66,0.16)', '--gp-pill-shadow': 'inset 0 2px 4px rgba(9,30,66,0.12), 0 2px 4px rgba(9,30,66,0.12)',
     '--gp-reading': '#ffffff', '--gp-reading-edge': '#626f86', '--gp-on-reading': '#19365c',
     '--gp-on-reading-idle': '#44546f', '--gp-on-reading-val': '#091e42', '--gp-on-reading-unit': '#19365c',
@@ -161,7 +165,7 @@ const TEMAS = {
     '--gp-on-tile': '#ffffff', '--gp-on-tile-icon': '#bfdbfe', '--gp-on-tile-shadow': '0 1px 2px rgba(0,0,0,.3)',
     '--gp-dock-key': 'linear-gradient(180deg,#24466f 0%,#19365c 100%)', '--gp-dock-key-edge': '#19365c',
     '--gp-dock-key-raise': 'inset 0 1.5px 1px rgba(191,219,254,0.35), 0 3px 6px rgba(9,30,66,0.3)',
-    '--gp-dock-ring': '#2563eb', '--gp-dock-ring-glow': '0 0 10px rgba(37,99,235,.55)',
+    '--gp-medal': '#0b1426', '--gp-on-sel-mark': '#bfdbfe', '--gp-dock-ring': '#2563eb', '--gp-dock-ring-glow': '0 0 10px rgba(37,99,235,.55)',
     '--gp-on-dock-icon': '#bfdbfe', '--gp-on-dock-key': '#ffffff', '--gp-dock-indicator': '#bfdbfe',
     '--gp-dock-off': 'linear-gradient(180deg,#24466f 0%,#19365c 100%)', '--gp-on-dock-off': '#ffffff', '--gp-on-dock-off-icon': '#bfdbfe', '--gp-dock-edge': '#19365c',
     '--gp-dock-off-raise': '0 3px 6px rgba(9,30,66,0.3)',
@@ -214,7 +218,7 @@ const TEMAS = {
     '--gp-inset-soft-sm': 'none',
     '--gp-chanfro': 'transparent',
     '--gp-dock-bar-shadow': 'none',
-    '--gp-pill': '#ffffff', '--gp-pill-edge': '#091e42', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#091e42',
+    '--gp-pill': '#ffffff', '--gp-pill-edge': '#091e42', '--gp-on-pill': '#091e42', '--gp-on-pill-label': '#091e42', '--gp-on-pill-val': '#091e42',
     '--gp-pill-div': '#091e42', '--gp-pill-shadow': 'none',
     '--gp-reading': '#ffffff', '--gp-reading-edge': '#091e42', '--gp-on-reading': '#091e42', '--gp-reading-shadow': 'none',
     '--gp-on-reading-idle': '#44546f', '--gp-on-reading-val': '#091e42', '--gp-on-reading-unit': '#19365c',
@@ -223,7 +227,7 @@ const TEMAS = {
     '--gp-tile-relief': '0 2px 0 #091e42',
     '--gp-on-tile': '#091e42', '--gp-on-tile-icon': '#091e42', '--gp-on-tile-shadow': 'none',
     '--gp-dock-key': '#ffffff', '--gp-dock-key-edge': '#091e42', '--gp-dock-key-raise': '0 2px 0 #091e42',
-    '--gp-dock-ring': '#091e42', '--gp-dock-ring-glow': 'inset 0 0 0 2px #091e42',
+    '--gp-medal': '#ffffff', '--gp-on-sel-mark': '#ffffff', '--gp-dock-ring': '#091e42', '--gp-dock-ring-glow': 'inset 0 0 0 2px #091e42',
     '--gp-on-dock-icon': '#091e42', '--gp-on-dock-key': '#091e42', '--gp-dock-indicator': '#091e42',
     '--gp-dock-off': '#ffffff', '--gp-on-dock-off': '#091e42', '--gp-on-dock-off-icon': '#091e42', '--gp-dock-edge': '#091e42',
     '--gp-dock-off-raise': '0 2px 0 #091e42',
