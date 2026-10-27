@@ -75,6 +75,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <button type="button" aria-label="Titular" onClick="{{ irTitular }}" style="flex:1;min-width:0;min-height:48px;box-sizing:border-box;margin:0;padding:0;border:0;background:transparent;display:flex;align-items:center;text-align:left;cursor:pointer;" style-hover="filter:brightness(1.06);" style-active="transform:translateY(1px);">
               <span data-topo-nome="" style="display:block;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gp-on-chassis);text-shadow:var(--gp-engrave);font:700 16px/20px 'Figtree',sans-serif;letter-spacing:.01em;text-transform:uppercase;text-align:left;">{{ topoNome }}</span>
             </button>
+            <button type="button" data-sininho="" aria-label="{{ sinoAria }}" aria-haspopup="dialog" onClick="{{ abrirAvisos }}" style="position:relative;flex:none;width:48px;min-height:48px;box-sizing:border-box;margin:0 -6px 0 0;padding:0;border:0;background:transparent;color:var(--gp-on-chassis);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;" style-active="transform:translateY(1px);">
+              <span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="sino" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+              <span aria-hidden="true" style="font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;color:var(--gp-on-chassis);">Avisos</span>
+              <sc-if value="{{ temSinoBadge }}" hint-placeholder-val="{{ false }}"><span data-sininho-badge="{{ sinoN }}" aria-hidden="true" style="position:absolute;top:0;right:0;min-width:20px;height:20px;box-sizing:border-box;padding:0 5px;border-radius:999px;background:var(--gp-lucro-vermelho, #7f1d1d);box-shadow:0 0 0 2px var(--gp-chassis);color:var(--gp-on-lucro, #ffffff);font:700 14px/20px 'Roboto',sans-serif;text-align:center;font-variant-numeric:tabular-nums;">{{ sinoBadge }}</span></sc-if>
+            </button>
             <button type="button" aria-label="Tema Sol" aria-pressed="{{ solPressed }}" title="{{ temaTitulo }}" onClick="{{ toggleTema }}" style="flex:none;width:48px;min-height:48px;box-sizing:border-box;margin:0;padding:4px 0 0;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;" style-active="transform:translateY(1px);">
               <span aria-hidden="true" style="position:relative;display:block;width:48px;height:20px;box-sizing:border-box;border-radius:999px;background:var(--gp-switch-track);border:1.5px solid var(--gp-switch-edge);box-shadow:var(--gp-switch-glow);">
                 <span style="position:absolute;top:0.5px;left:{{ temaPino }};width:16px;height:16px;border-radius:50%;background:var(--gp-switch-knob);box-shadow:var(--gp-switch-knob-shadow);transition:left 200ms ease-out;"></span>
@@ -189,14 +194,15 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaResultado }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:16px;animation:gpIn 180ms ease-out;">
-                  <div style="flex:none;box-sizing:border-box;padding:16px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);box-shadow:var(--gp-mold-shadow);display:flex;flex-direction:column;gap:8px;">
-                    <dc-import name="Selo" texto="{{ resSelo }}" tipo="{{ resSeloTipo }}" style="align-self:flex-start;" hint-size="140px,26px"></dc-import>
-                    <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:balance;">{{ resTitulo }}</span>
-                    <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ resNota }}</span>
-                  </div>
-                  <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
-                    <span style="flex:none;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ resLista }}</span>
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                  <div data-res-rolagem="" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
+                    <div style="flex:none;box-sizing:border-box;padding:16px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);box-shadow:var(--gp-mold-shadow);display:flex;flex-direction:column;gap:8px;">
+                      <dc-import name="Selo" texto="{{ resSelo }}" tipo="{{ resSeloTipo }}" style="align-self:flex-start;" hint-size="140px,26px"></dc-import>
+                      <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:balance;">{{ resTitulo }}</span>
+                      <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ resNota }}</span>
+                      <span data-res-fonte="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ resFonte }}</span>
+                    </div>
+                    <span style="flex:none;padding-top:4px;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ resLista }}</span>
                     <ol style="flex:none;margin:0;padding:0;list-style:none;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);overflow:hidden;">
                       <sc-for list="{{ acoes }}" as="a" hint-placeholder-count="3">
                         <li style="display:flex;align-items:center;gap:12px;min-height:40px;box-sizing:border-box;padding:0 12px;border-top:{{ a.linha }};">
@@ -207,6 +213,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </ol>
                     <sc-if value="{{ temProx }}" hint-placeholder-val="{{ false }}"><span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;"><strong style="font-weight:600;color:var(--gp-on-surface);">Depois: </strong>{{ resProx }}</span></sc-if>
                     <sc-if value="{{ temServ }}" hint-placeholder-val="{{ false }}"><span data-res-servico="" style="flex:none;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ resServ }}</span></sc-if>
+                    <sc-if value="{{ temResAtalhos }}" hint-placeholder-val="{{ false }}"><div data-res-atalhos="" role="group" aria-label="Conferir agora com o instrumento" style="flex:none;display:flex;flex-direction:column;gap:8px;">
+                      <sc-for list="{{ resAtalhos }}" as="ra" hint-placeholder-count="1"><button type="button" data-res-atalho="{{ ra.k }}" aria-label="{{ ra.aria }}" onClick="{{ ra.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="{{ ra.ico }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>{{ ra.l }}</span></button></sc-for>
+                    </div></sc-if>
                   </div>
                   <div data-res-teclas="" style="flex:none;display:grid;grid-template-columns:{{ resCols }};gap:8px;">
                     <sc-for list="{{ resKeys }}" as="o" hint-placeholder-count="2">
@@ -250,6 +259,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           <div style="display:flex;align-items:flex-start;gap:8px;">
             <span aria-hidden="true" style="flex:none;display:inline-flex;padding-top:13px;color:{{ ptAlerta.viva }};"><dc-import name="IconeGP" nome="{{ ptAlerta.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
             <span data-alerta-titulo="" style="flex:1;min-width:0;padding-top:13px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ ptAlerta.t }}</span>
+            <sc-if value="{{ ptAlerta.temCont }}" hint-placeholder-val="{{ false }}"><button type="button" data-alerta-contador="{{ ptAlerta.n }}" aria-label="{{ ptAlerta.contAria }}" onClick="{{ ptAlerta.abrirTodos }}" style="flex:none;min-width:48px;height:48px;box-sizing:border-box;padding:0 8px;border-radius:14px;border:2px solid var(--gp-on-lucro, #ffffff);background:transparent;color:var(--gp-on-lucro, #ffffff);font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ ptAlerta.cont }}</button></sc-if>
             <button type="button" data-alerta-fechar="" aria-label="Dispensar o alerta" onClick="{{ ptAlerta.fechar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:2px solid var(--gp-on-lucro, #ffffff);background:transparent;color:var(--gp-on-lucro, #ffffff);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
           </div>
           <sc-if value="{{ ptAlerta.temAcoes }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:{{ ptAlerta.cols }};gap:8px;"><sc-for list="{{ ptAlerta.acoes }}" as="a" hint-placeholder-count="2"><button type="button" data-alerta-acao="{{ a.k }}" onClick="{{ a.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-active="transform:translateY(1px);">{{ a.l }}</button></sc-for></div></sc-if>
@@ -468,9 +478,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaCofre }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;animation:gpIn 180ms ease-out;">
                   <sc-if value="{{ cVazio }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="info" titulo="Nenhum documento emitido neste aparelho" texto="Orçamentos, garantias, recibos e laudos aparecem aqui depois do primeiro PDF." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
+                  <sc-if value="{{ temCofreFiltros }}" hint-placeholder-val="{{ false }}"><div data-cofre-filtros="{{ cofreFiltroK }}" role="group" aria-label="Filtrar os atendimentos do Cofre" style="flex:none;display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ cofreFiltros }}" as="cf" hint-placeholder-count="3"><button type="button" data-cofre-filtro="{{ cf.k }}" aria-pressed="{{ cf.on }}" onClick="{{ cf.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ cf.borda }};background:{{ cf.fundo }};color:{{ cf.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ cf.t }}</button></sc-for></div></sc-if>
+                  <sc-if value="{{ cofreFiltroVazio }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="info" titulo="{{ cofreFiltroVazioT }}" texto="Toque em Todos para ver os outros atendimentos." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-for list="{{ cofre }}" as="c" hint-placeholder-count="0">
                     <div style="flex:none;display:flex;flex-direction:column;gap:8px;">
-                      <dc-import name="LinhaFicha" tipo="{{ c.tipo }}" titulo="{{ c.t }}" sub="{{ c.s }}" acao="{{ c.acao }}" style="display:block;" hint-size="100%,88px"></dc-import>
+                      <dc-import name="LinhaFicha" tipo="{{ c.tipo }}" titulo="{{ c.t }}" extra="{{ c.aparelho }}" sub="{{ c.s }}" acao="{{ c.acao }}" style="display:block;" hint-size="100%,110px"></dc-import>
                       <sc-if value="{{ c.temPrev }}" hint-placeholder-val="{{ false }}"><div data-preventiva-cofre="" style="display:flex;flex-direction:column;gap:6px;padding:0 0 4px 12px;">
                         <span data-prev-data="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ c.prevTxt }}</span>
                         <button type="button" data-chamar-preventiva="" aria-label="{{ c.prevAria }}" onClick="{{ c.prevZap }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="mensagem" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>Chamar para preventiva no WhatsApp</span></button>
@@ -603,6 +615,27 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <button type="button" onClick="{{ voltarLista }}" style="height:56px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Voltar à lista</button>
             </div>
           </sc-if>
+
+          <sc-if value="{{ dAvisos }}" hint-placeholder-val="{{ false }}">
+            <div data-central-avisos="{{ avisoCatK }}" style="display:flex;flex-direction:column;gap:12px;">
+              <div data-avisos-categorias="" role="group" aria-label="Categorias de avisos" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                <sc-for list="{{ avisoCats }}" as="ac" hint-placeholder-count="4"><button type="button" data-aviso-categoria="{{ ac.k }}" aria-pressed="{{ ac.on }}" onClick="{{ ac.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ ac.borda }};background:{{ ac.fundo }};color:{{ ac.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ ac.t }}</button></sc-for>
+              </div>
+              <sc-if value="{{ avisoVazio }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="info" titulo="Nenhum aviso nesta categoria agora" texto="Os avisos de lucro, técnica e preventiva aparecem aqui assim que o atendimento pede." style="display:block;" hint-size="100%,48px"></dc-import></sc-if>
+              <sc-for list="{{ avisoItens }}" as="av" hint-placeholder-count="2">
+                <div data-aviso-item="{{ av.k }}" data-aviso-cat="{{ av.cat }}" style="box-sizing:border-box;padding:10px 12px 12px 16px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);box-shadow:inset 6px 0 0 {{ av.cor }};display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;align-items:flex-start;gap:10px;">
+                    <span aria-hidden="true" style="flex:none;display:inline-flex;padding-top:2px;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="{{ av.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;">
+                      <span style="display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:4px;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);"><span>{{ av.catRot }}</span><span data-aviso-horario="{{ av.em }}" style="font-variant-numeric:tabular-nums;">{{ av.quando }}</span><sc-if value="{{ av.novo }}" hint-placeholder-val="{{ false }}"><dc-import name="Selo" texto="Novo" tipo="info" hint-size="72px,28px"></dc-import></sc-if></span>
+                      <span data-aviso-titulo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ av.t }}</span>
+                    </div>
+                  </div>
+                  <sc-if value="{{ av.temAcoes }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:{{ av.cols }};gap:8px;"><sc-for list="{{ av.acoes }}" as="x" hint-placeholder-count="1"><button type="button" data-aviso-acao="{{ x.k }}" onClick="{{ x.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);">{{ x.l }}</button></sc-for></div></sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
         </div>
         </div>
       </div>
@@ -673,7 +706,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ fCatVazio }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">A tabela de peças e serviços ainda está carregando. Lance o item à mão ou tente de novo em alguns segundos.</span></sc-if>
               <sc-if value="{{ fCatAberto }}" hint-placeholder-val="{{ false }}">
                 <div data-catalogo="" role="group" aria-label="Tabela de peças e serviços" style="display:flex;flex-direction:column;gap:8px;">
+                  <div data-catalogo-abas="{{ fCatAba }}" role="group" aria-label="Categorias da tabela de peças e serviços" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><sc-for list="{{ fCatAbas }}" as="ca" hint-placeholder-count="5"><button type="button" data-catalogo-aba="{{ ca.k }}" aria-pressed="{{ ca.on }}" onClick="{{ ca.acao }}" style="grid-column:{{ ca.col }};min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ ca.borda }};background:{{ ca.fundo }};color:{{ ca.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ ca.t }}</button></sc-for></div>
                   <span data-porte="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fCatPorte }}</span>
+                  <sc-if value="{{ fCatAbaVazia }}" hint-placeholder-val="{{ false }}"><span data-catalogo-vazio="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fCatAbaVaziaTxt }}</span></sc-if>
                   <sc-for list="{{ fCat }}" as="c" hint-placeholder-count="3">
                     <div data-cat-item="{{ c.id }}" style="box-sizing:border-box;border-radius:16px;border:{{ c.borda }};background:var(--gp-card-action);display:flex;flex-direction:column;overflow:hidden;">
                       <div style="display:flex;align-items:stretch;">
@@ -827,6 +862,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           <div style="display:flex;align-items:flex-start;gap:8px;">
             <span aria-hidden="true" style="flex:none;display:inline-flex;padding-top:13px;color:{{ fAlerta.viva }};"><dc-import name="IconeGP" nome="{{ fAlerta.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
             <span data-alerta-titulo="" style="flex:1;min-width:0;padding-top:13px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ fAlerta.t }}</span>
+            <sc-if value="{{ fAlerta.temCont }}" hint-placeholder-val="{{ false }}"><button type="button" data-alerta-contador="{{ fAlerta.n }}" aria-label="{{ fAlerta.contAria }}" onClick="{{ fAlerta.abrirTodos }}" style="flex:none;min-width:48px;height:48px;box-sizing:border-box;padding:0 8px;border-radius:14px;border:2px solid var(--gp-on-lucro, #ffffff);background:transparent;color:var(--gp-on-lucro, #ffffff);font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ fAlerta.cont }}</button></sc-if>
             <button type="button" data-alerta-fechar="" aria-label="Dispensar o alerta" onClick="{{ fAlerta.fechar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:2px solid var(--gp-on-lucro, #ffffff);background:transparent;color:var(--gp-on-lucro, #ffffff);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
           </div>
           <sc-if value="{{ fAlerta.temAcoes }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:{{ fAlerta.cols }};gap:8px;"><sc-for list="{{ fAlerta.acoes }}" as="a" hint-placeholder-count="2"><button type="button" data-alerta-acao="{{ a.k }}" onClick="{{ a.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-active="transform:translateY(1px);">{{ a.l }}</button></sc-for></div></sc-if>
@@ -980,7 +1016,7 @@ const reaisErro = (v) => String(v ?? '').trim() && reais(v) === null ? 'valor in
 // Carga térmica: faixa de um ambiente atendido por split individual (definida pelo Pedro em 26/10). Fora dela não calcula nem vai ao laudo.
 // Modo Amostra: licença e titular só em memória; documentos e numeração em chaves próprias, nunca no Cofre real.
 const AMOSTRA_T = { nome: 'Titular de amostra', doc: '00000000000', docFmt: '000.000.000-00', docTipo: 'CPF', pix: '+5511999999999', pixTipo: 'Telefone', cidade: 'São Paulo', amostra: true };
-const ARQ = { real: { docs: 'gelopro.docs', seq: 'gelopro.seq', pre: '' }, amostra: { docs: 'gelopro.docs.amostra', seq: 'gelopro.seq.amostra', pre: 'AMOSTRA-' } };
+const ARQ = { real: { docs: 'gelopro.docs', seq: 'gelopro.seq', pre: '', avisos: 'gelopro.avisos' }, amostra: { docs: 'gelopro.docs.amostra', seq: 'gelopro.seq.amostra', pre: 'AMOSTRA-', avisos: 'gelopro.avisos.amostra' } };
 const SPLIT = { area: [2, 500], pes: [0, 100], w: [0, 50000] }, FORA_SPLIT = 'Valor fora da faixa de um ambiente Split';
 // Garantia no ritmo da rua (PR #19): o prazo é o texto que o técnico escolheu (7, 15, 30, 60, 90 dias ou Livre). Cofre e lembrete
 // tiram os dias do próprio texto ("10 dias", "6 meses", "1 ano"); "Sem garantia (aparelho no estado)" não tem vencimento.
@@ -1023,7 +1059,7 @@ const VISITA_VALORES = [60, 80, 100, 120, 150];
 // Quantidade por item (2 aparelhos, 8 metros de tubo): o valor do item é o unitário; subtotal e custo da peça multiplicam pela quantidade.
 const QTD_MAX = 99;
 const qtdDe = (x) => Math.max(1, Math.min(QTD_MAX, parseInt(String(x.q ?? '').replace(/\D/g, ''), 10) || 1));
-const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null, justif: true, catAberto: false, sug: [], ressalva: '', foto: null, fotoUrl: null, fotoErro: '', discreto: false, bonif: false, bonifItem: null, bonifVal: null, desc: 'nenhum', descLivre: '', validade: '3 dias' });
+const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null, justif: true, catAberto: false, sug: [], ressalva: '', foto: null, fotoUrl: null, fotoErro: '', discreto: false, bonif: false, bonifItem: null, bonifVal: null, desc: 'nenhum', descLivre: '', validade: '3 dias', catAba: 'todos' });
 // Assinatura como blob: o data URL tem ';' e o estilo do modelo corta o valor ali, então a imagem não chegava ao PDF.
 const blobDe = (d) => { try { const [cab, b64] = d.split(','), bin = atob(b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return URL.createObjectURL(new Blob([u8], { type: (cab.match(/^data:([^;,]+)/) || [])[1] || 'image/png' })); } catch (e) { return null; } };
 const dataBR = (ms) => new Date(ms).toLocaleDateString('pt-BR');
@@ -1163,6 +1199,26 @@ const ALERTA_TOM = {
   vermelho: ['var(--gp-lucro-vermelho, #7f1d1d)', 'var(--gp-lucro-ambar-viva, #f59e0b)'], verde: ['var(--gp-lucro-verde, #064e3b)', 'var(--gp-lucro-ambar-viva, #f59e0b)'],
   ambar: ['var(--gp-lucro-ambar, #78350f)', 'var(--gp-lucro-ambar-viva, #f59e0b)'], neutro: ['var(--gp-lucro-neutro, #1e293b)', 'var(--gp-lucro-verde-viva, #22c55e)'],
 };
+const T_RETORNO = 'Alerta de Retorno: Peça nova em aparelho sujo pode queimar na garantia.';
+// Catálogo em abas (PR #22): "Todos" vem marcada e mantém os 16 [data-servico] no DOM; "Indicados" filtra o que o diagnóstico sugeriu.
+const CAT_ABAS = [
+  ['eletrica', 'Elétrica & Placa', ['cap_partida', 'sensor_ntc', 'reparo_placa', 'placa_nova', 'motor_vent', 'fusivel_eletrica']],
+  ['limpeza', 'Limpeza, Gás & Dreno', ['higienizacao', 'limpeza_simples', 'carga_fluido', 'dreno_isol', 'bomba_dreno']],
+  ['instalacao', 'Instalação & Compressor', ['instalacao_split', 'desinstalacao', 'compressor_troca', 'tubo_metro', 'visita_diag']],
+];
+// Serviços em que o custo é insumo ou material (produto, isolamento, vedação), não peça: o botão de compra diz "Comprar insumo".
+const INSUMO = ['higienizacao', 'limpeza_simples', 'dreno_isol', 'desinstalacao'];
+// Central de Avisos do Sininho (PR #22): Todos + 3 categorias. O × da bandeja só tira o alerta da bandeja; ele continua aqui enquanto o gatilho vale.
+const AVISO_CATS = [['todos', 'Todos'], ['lucro', 'Lucro & Garantia'], ['tecnico', 'Técnico & Fluido'], ['prev', 'Preventivas & Sistema']];
+const AVISO_COR = { lucro: 'var(--gp-lucro-ambar-viva, #f59e0b)', tecnico: 'var(--gp-lucro-verde-viva, #22c55e)', prev: 'var(--gp-dock-ring)' };
+const T_NTC_PAR = 'Dica de dupla troca: ao substituir o sensor NTC, confira o de ambiente e o de degelo (serpentina). Trocar o par evita retorno.';
+const T_INVERTER = 'Lembrete Inverter: siga o checklist de placa e IPM e confirme a medição antes de condenar placa, IPM ou compressor.';
+// Registro das atualizações liberadas no sistema, com a data e a hora da liberação (horário do aparelho).
+const ATUALIZACOES = [
+  { k: 'sis-pr22', em: new Date(2026, 9, 27, 17, 30).getTime(), t: 'v5.2 Lapidação — Sininho de avisos com data e hora, catálogo e Cofre por categoria e peças pesadas em 3 portes', ir: 'cofre', l: 'Ir para o Cofre' },
+  { k: 'sis-diamante', em: new Date(2026, 9, 27, 16, 45).getTime(), t: 'v5.2 Diamante — Multiplicador comercial, 16 serviços em 3 portes e Cofre de 6 meses ativos', ir: 'tabela', l: 'Abrir a tabela de serviços' },
+];
+const dataHora = (ms) => { const d = new Date(ms); return `${d.toLocaleDateString('pt-BR')} · ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`; };
 const visTxt = (t) => h('span', { 'aria-hidden': true, style: { font: "600 16px/22px 'Roboto',sans-serif", color: 'var(--gp-on-display)', textAlign: 'center', padding: '0 8px', overflowWrap: 'normal', textWrap: 'pretty' } }, t);
 const visGen = (sim) => h('svg', { width: 56, height: 56, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--gp-on-display)', strokeWidth: 1.75, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }, sim === 'inc' ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3' }), h('path', { key: 2, d: 'M12 17h.01' })] : sim ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm8 12.5 2.5 2.5 5-5.5' })] : [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm15 9-6 6' }), h('path', { key: 2, d: 'm9 9 6 6' })]);
 const CENAS = { gp04: 'ng04', gp05: 'ng05', ge03: 'ng05' };
@@ -1181,7 +1237,7 @@ const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDoc
 const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], res: null, modo: null, modK: null, prev: null };
 // Dados do atendimento (cliente, aparelho, medições, hipóteses, carga, laudo, orçamento, garantia, assinatura). Concluir volta a isto.
 // Ficam fora: titular, licença, tema e documentos emitidos (localStorage), e os fatores da carga térmica, que são ajuste do técnico.
-const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
+const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
 
 class Component extends DCLogic {
   state = { ...ATEND0(), lic: ler(K_LIC), tit: ler(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null };
@@ -1320,6 +1376,10 @@ class Component extends DCLogic {
     // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #c1c0c1 no Titânio e no Claro.
     const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
     if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#c1c0c1'; if (tc.content !== cor) tc.content = cor; }
+    // Fechamento (PR #22): avançar ou voltar de passo abre o visor no topo (Aprovação e Pix nunca começam no meio da rolagem).
+    // O motor (support.js) não passa o estado anterior: o último passo visto fica em this._fPasso.
+    const pn = this.state.fOpen && this.state.fech ? this.state.fech.passo : null;
+    if (pn !== this._fPasso) { const v = pn && this._fPasso && this.fRef.current && this.fRef.current.querySelector('[data-vis]'); if (v) v.scrollTop = 0; this._fPasso = pn; }
     this.focarPortao(); return;
     const el = this.pRef.current;
     if (el && el !== this._pFoco) { this._pFoco = el; requestAnimationFrame(() => { const alvo = el.querySelector('input:not([disabled]),button:not([disabled])'); (alvo || el).focus({ preventScroll: true }); }); }
@@ -1539,10 +1599,16 @@ class Component extends DCLogic {
       if (u >= 0) { const falta = Math.max(0, alvo - liq(vs)); vs[u] = Math.ceil((vs[u] + falta / qu / (1 - descPct)) * 100 - 1e-6) / 100; for (let i = 0; i < 500 && liq(vs) < alvo - 0.004; i++) vs[u] = cent(vs[u] + 0.01); }
       return { itens: f.itens.map((y, j) => j < vs.length ? { ...y, v: v2(vs[j]) } : y) }; });
     const alvoAj = lucroEst === 'amarelo' ? alvoTotal('tip') : lucroEst === 'vermelho' ? alvoTotal('min') : 0;
+    // Desconto voluntário (PR #22): os itens da tabela já estão no típico e o total líquido segue acima do piso e do custo. O painel continua âmbar
+    // (pr21.js: -10% sobre o típico = âmbar com "Ajustar para"), mas a mensagem reconhece o desconto em vez de cobrar o técnico por ele.
+    const descVoluntario = temDesc && lucro > 0 && fTotal >= piso - 0.004 && fi.every(x => { const c = catDe(x); return !c || (x.n || 0) >= (faixaDe(c, st.sel.btu).tip || 0) - 0.004; });
     const escala = Math.max(teto, fTotal, tipico) * 1.15 || 1, pct = (v) => Math.max(0, Math.min(100, v / escala * 100));
     // Sugestões de complemento: até 2 serviços do combo dos itens lançados que ainda não estão no orçamento.
     const noOrc = new Set(fi.map(x => x.sid).filter(Boolean));
     const combos = !F ? [] : [...new Set(fi.flatMap(x => { const c = catDe(x); return c ? c.combo : []; }))].filter(id => !noOrc.has(id)).map(id => CAT.find(c => c.id === id)).filter(Boolean).slice(0, 2);
+    // Catálogo em abas (PR #22): filtro da aba escolhida; Todos mostra os 16.
+    const catAba = F && ['todos', 'indicados', ...CAT_ABAS.map(a => a[0])].includes(F.catAba) ? F.catAba : 'todos', sugIds = (F && F.sug) || [];
+    const catVis = CAT.filter(c => catAba === 'todos' || (catAba === 'indicados' ? sugIds.includes(c.id) : ((CAT_ABAS.find(a => a[0] === catAba) || [])[2] || []).includes(c.id)));
     const addCat = (c) => this.fSet(f => ({ catAberto: false, catDet: null, itens: f.itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...f.itens, itemDe(c, st.sel.btu)] }));
     // Visita bonificada (PR #20): com ao menos 1 serviço além da visita, a taxa de diagnóstico vira ISENTO se o cliente aprovar hoje.
     // Ligar a chave tira do orçamento o item da visita que estiver lançado (o valor vai para a linha de ancoragem); desligar devolve o item.
@@ -1585,14 +1651,21 @@ class Component extends DCLogic {
     const sobePorte = F ? fi.map((x, i) => ({ x, i, c: catDe(x) })).filter(({ x, c }) => c && x.btu && porteDe(x.btu) !== porteDe(st.sel.btu) && (tipDe(c, st.sel.btu) || 0) > (x.n || 0)) : [];
     const blindar = () => this.fSet(f => { const at = (f.ressalva || '').trim(); return at.includes(RESSALVA_BLINDAR) ? {} : { ressalva: at ? `${at.replace(/[.;]?$/, ';')} ${RESSALVA_BLINDAR}` : RESSALVA_BLINDAR }; });
     const atualizarPorte = () => this.fSet(f => ({ itens: f.itens.map((y, j) => { const o = sobePorte.find(z => z.i === j); return o ? { ...y, v: v2(tipDe(o.c, st.sel.btu)), btu: st.sel.btu } : y; }) }));
-    const alertaF = !F || fp !== 1 ? null
-      : temSid(PECA_RETORNO) && !temSid(['higienizacao']) && !ressalva && !aOff.retorno ? { k: 'retorno', tom: 'vermelho', ico: 'alerta', t: 'Alerta de Retorno: Peça nova em aparelho sujo pode queimar na garantia.', fechar: dispensar('retorno'),
-        acoes: [...(cHig ? [{ k: 'higienizacao', l: '+ Incluir Higienização', acao: () => addCat(cHig) }] : []), { k: 'blindar', l: 'Blindar na Garantia', acao: blindar }] }
-      : sobePorte.length && !discreto && !aOff['porte-' + st.sel.btu] ? { k: 'porte', tom: 'verde', ico: 'ciclo', t: `Aparelho alterado para ${st.sel.btu} BTU/h. Atualizar preços para este porte?`, fechar: dispensar('porte-' + st.sel.btu),
-        acoes: [{ k: 'atualizar', l: 'Atualizar valores', acao: atualizarPorte }] }
-      : temSid(['carga_fluido']) ? alertaFluido() : null;
+    // Retorno: peça elétrica/eletrônica nova sem higienização nem ressalva. As ações valem na bandeja e no Sininho (envolver = o que fazer depois).
+    const temRetorno = !!F && temSid(PECA_RETORNO) && !temSid(['higienizacao']) && !ressalva;
+    const acoesRetorno = (envolver) => [...(cHig ? [{ k: 'higienizacao', l: '+ Incluir Higienização', acao: envolver(() => addCat(cHig)) }] : []), { k: 'blindar', l: 'Blindar na Garantia', acao: envolver(blindar) }];
+    const tPorte = `Aparelho alterado para ${st.sel.btu} BTU/h. Atualizar preços para este porte?`;
+    // Fila da bandeja no passo 1 (retorno > porte > fluido), sem os dispensados: a bandeja mostra o 1º e diz "1 de N" quando há mais.
+    const filaF = !F || fp !== 1 ? [] : [
+      temRetorno && !aOff.retorno ? { k: 'retorno', tom: 'vermelho', ico: 'alerta', t: T_RETORNO, fechar: dispensar('retorno'), acoes: acoesRetorno((fn) => fn) } : null,
+      sobePorte.length && !discreto && !aOff['porte-' + st.sel.btu] ? { k: 'porte', tom: 'verde', ico: 'ciclo', t: tPorte, fechar: dispensar('porte-' + st.sel.btu), acoes: [{ k: 'atualizar', l: 'Atualizar valores', acao: atualizarPorte }] } : null,
+      temSid(['carga_fluido']) ? alertaFluido() : null,
+    ].filter(Boolean);
+    const alertaF = filaF[0] || null;
     const alertaPT = st.tela === 'ptsh' ? alertaFluido() : null;
-    const vistaAlerta = (a) => a ? { ...a, fundo: ALERTA_TOM[a.tom][0], viva: ALERTA_TOM[a.tom][1], temAcoes: a.acoes.length > 0, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)' } : { k: '', tom: '', ico: 'info', t: '', fundo: 'none', viva: 'none', temAcoes: false, cols: 'none', acoes: [], fechar: null };
+    const vistaAlerta = (a, n = 1) => a ? { ...a, fundo: ALERTA_TOM[a.tom][0], viva: ALERTA_TOM[a.tom][1], temAcoes: a.acoes.length > 0, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
+      n: String(n), temCont: n > 1, cont: `1 de ${n}`, contAria: `Alerta 1 de ${n}: ver todos na Central de Avisos`, abrirTodos: () => abrirAvisos() }
+      : { k: '', tom: '', ico: 'info', t: '', fundo: 'none', viva: 'none', temAcoes: false, cols: 'none', acoes: [], fechar: null, n: '0', temCont: false, cont: '', contAria: '', abrirTodos: null };
     const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: st.sel.marca, btu: st.sel.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto });
     const pd = st.printDoc;
     const B2 = st.btu, sB = (k) => (e) => { const v = e.target.value; this.setState(x => ({ btu: { ...x.btu, [k]: v } })); };
@@ -1620,6 +1693,47 @@ class Component extends DCLogic {
       const prevEm = AVULSO.includes(base.tipo) ? null : base.prevEm || maisMeses(base.em, 6); return { n, ds, ult, base, venc, prevEm }; }).sort((a, b) => b.ult.em - a.ult.em);
     const zap = (tel, msg) => window.open((dig(tel) ? 'https://wa.me/55' + dig(tel).replace(/^55/, '') : 'https://wa.me/') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
     const NOMES = { orc: 'Orçamento', gar: 'Garantia', rec: 'Recibo', laudo: 'Laudo', pmoc: 'PMOC', reca: 'Recibo avulso' };
+    // Aparelho do atendimento (Marca + BTU/h): campos gravados desde o PR #21 ou, em documento antigo, o texto do equipamento ("Midea, 18.000 BTU/h, R32").
+    const aparelhoDe = (b) => { const eq = String(b.equip || '').split(', '), temEq = /BTU\/h$/.test(eq[1] || ''), m = b.marca || (temEq ? eq[0] : ''), bt = b.btu || (temEq ? eq[1].replace(/\s*BTU\/h$/, '') : ''); return [m, bt ? `${bt} BTU/h` : ''].filter(Boolean).join(' '); };
+    // Cofre por categoria (PR #22): Todos (padrão), Preventiva 6 meses e Garantia ativa.
+    const garAtiva = (c) => !!c.venc && Date.now() <= c.venc;
+    const cofreK = ['prev', 'garantia'].includes(st.cofreFiltro) ? st.cofreFiltro : 'todos';
+    const cofreF = cofreK === 'prev' ? cofreL.filter(c => c.prevEm) : cofreK === 'garantia' ? cofreL.filter(garAtiva) : cofreL;
+
+    // Central de Avisos do Sininho (PR #22). Cada aviso tem categoria, data e hora e ação de 1 toque. Data e hora: a 1ª vez que o aviso apareceu
+    // neste atendimento, a emissão do documento (preventivas do Cofre) ou a liberação (sistema). O × da bandeja não apaga nada daqui.
+    const A0 = this._avisoEm || (this._avisoEm = {}), visto = (k) => A0[k] || (A0[k] = Date.now());
+    const noOrcamento = (fn) => () => { fn(); this.setState({ drawer: null, fOpen: true }); };
+    const irMod = (k) => () => lock ? this.vazio('upg', { modK: k, fOpen: false }) : this.abrir(k, { modK: k, fOpen: false });
+    const irCofre = (f) => () => lock ? this.vazio('upg', { modK: 'cofre', fOpen: false }) : this.abrir('cofre', { modK: 'cofre', cofreFiltro: f, cofreSel: null, fOpen: false });
+    const rTxt = r ? [r.t, ...r.a, r.prox || ''].join(' ') : '';
+    const avisos = [], aviso = (a) => avisos.push({ ...a, em: a.em || visto(a.k) });
+    if (F) {
+      if (temRetorno) aviso({ k: 'retorno', cat: 'lucro', ico: 'alerta', t: T_RETORNO, acoes: acoesRetorno(noOrcamento) });
+      if (sobePorte.length && !discreto) aviso({ k: 'porte-' + st.sel.btu, cat: 'lucro', ico: 'ciclo', t: tPorte, acoes: [{ k: 'atualizar', l: 'Atualizar valores', acao: noOrcamento(atualizarPorte) }] });
+      if (!discreto) combos.forEach(c => aviso({ k: 'combo-' + c.id, cat: 'lucro', ico: 'mais', t: `Sugestão de combo: ${c.t} (+${R0(Math.max(0, (tipDe(c, st.sel.btu) || 0) - (c.cmed || 0)))} de lucro líquido)`, acoes: [{ k: 'combo', l: '+ Incluir no orçamento', acao: noOrcamento(() => addCat(c)) }] }));
+      if (!discreto && (lucroEst === 'amarelo' || lucroEst === 'vermelho')) aviso({ k: 'margem', cat: 'lucro', ico: 'garantia', t: lucroEst === 'amarelo' ? `Margem: o total está abaixo do valor típico da tabela. Dá para chegar a ${BRL.format(alvoAj)}.` : `Margem: ${lucro <= 0 ? `abaixo do custo (${BRL.format(custoTot)})` : `abaixo do piso da tabela (${BRL.format(piso)})`}. Ajuste antes de fechar.`,
+        acoes: [{ k: 'ajustar', l: lucroEst === 'amarelo' ? `Ajustar para ${BRL.format(alvoAj)}` : 'Ajustar para o piso', acao: noOrcamento(() => ajustar(lucroEst === 'amarelo' ? 'tip' : 'min')) }] });
+    }
+    const iNtc = fi.findIndex(x => x.sid === 'sensor_ntc');
+    if (iNtc >= 0 && fi[iNtc].q === 1) aviso({ k: 'ntc-par', cat: 'tecnico', ico: 'sensor-ntc', t: T_NTC_PAR, acoes: [{ k: 'ntc-par', l: 'Lançar 2 sensores (Ambiente + Degelo)', acao: noOrcamento(() => this.fSet(f => ({ itens: f.itens.map((y, j) => j === iNtc ? { ...y, q: 2 } : y) }))) }] });
+    else if (iNtc < 0 && /\bNTC\b|termistor/i.test(rTxt)) aviso({ k: 'ntc-par', cat: 'tecnico', ico: 'sensor-ntc', t: T_NTC_PAR, acoes: [{ k: 'ntc', l: 'Abrir Sensor NTC', acao: irMod('ntc') }] });
+    if (temSid(['reparo_placa', 'placa_nova', 'compressor_troca']) || /placa|IPM|inverter/i.test(rTxt)) aviso({ k: 'inverter', cat: 'tecnico', ico: 'placa-ipm', t: T_INVERTER, acoes: [{ k: 'inv', l: 'Abrir Inverter', acao: irMod('inv') }] });
+    if (FLUIDO_ALERTA[st.sel.fluido]) aviso({ k: 'fluido-' + st.sel.fluido, cat: 'tecnico', ico: 'cilindro-fluido', t: FLUIDO_ALERTA[st.sel.fluido].t, persist: true, acoes: [{ k: 'ptsh', l: 'Abrir PT/SH', acao: irMod('ptsh') }] });
+    cofreL.filter(c => c.prevEm).sort((a, b) => a.prevEm - b.prevEm).slice(0, 5).forEach(c => { const b = c.base, ap = aparelhoDe(b);
+      aviso({ k: 'prev-' + c.n, cat: 'prev', ico: 'calendario', em: b.em, persist: true, t: `Preventiva de 6 meses: ${b.cliente || 'Cliente'}${ap ? ` (${ap})` : ''} em ${b.prevData || dataBR(c.prevEm)}`, acoes: [{ k: 'cofre', l: 'Ir para o Cofre', acao: irCofre('prev') }] }); });
+    ATUALIZACOES.forEach(u => aviso({ k: u.k, cat: 'prev', ico: 'info', em: u.em, persist: true, t: u.t,
+      acoes: [{ k: u.ir, l: u.l, acao: u.ir === 'cofre' ? irCofre('todos') : () => { this.abrirFech(); this.fSet({ catAberto: true, catAba: 'todos' }); } }] }));
+    Object.keys(A0).forEach(k => { if (!avisos.some(a => a.k === k)) delete A0[k]; });
+    // Lido: fluido, preventivas e sistema ficam gravados no aparelho; os do atendimento ficam no estado (Concluir zera) e valem para aquela
+    // ocorrência (data e hora): o aviso que some e volta, como o retorno depois de tirar a higienização, conta como novo de novo.
+    const lidosP = ler(this.arq().avisos) || {}, lidosA = st.avisosLidos || {}, naoLidos = avisos.filter(a => a.persist ? !lidosP[a.k] : lidosA[a.k] !== a.em);
+    const abrirAvisos = () => {
+      gravar(this.arq().avisos, { ...lidosP, ...Object.fromEntries(avisos.filter(a => a.persist).map(a => [a.k, 1])) });
+      this.setState(x => ({ drawer: 'avisos', avisoCat: 'todos', avisosNovos: naoLidos.map(a => a.k), avisosLidos: { ...x.avisosLidos, ...Object.fromEntries(avisos.filter(a => !a.persist).map(a => [a.k, a.em])) } }));
+    };
+    const avCat = AVISO_CATS.some(c => c[0] === st.avisoCat) ? st.avisoCat : 'todos';
+    const avLista = avisos.filter(a => avCat === 'todos' || a.cat === avCat).sort((a, b) => b.em - a.em);
     const bumps = (lic && lic.bumps) || [];
     const PASSOS = ['Orçamento', 'Garantia', 'Aprovação', 'Pix e documentos'];
     const IV = st.inv, invEt = B && B.inv ? B.inv.filter(r => r.marca_escopo.split('/').includes(marca)).sort((a, b) => num(a.ordem) - num(b.ordem)) : [];
@@ -1699,6 +1813,13 @@ class Component extends DCLogic {
       diags.push({ ico: 'sensor-ntc', val: `NTC ${st.ntcR.trim()} kΩ`, ver: v, verCurto: v.replace(' da tolerância', ' da toler.').replace(' da curva', ''), aria: `Diagnóstico da medição: sensor NTC ${st.ntcR.trim()} kΩ, ${v}. Toque para ver a análise no NTC`, acao: abrirMod('ntc') });
     }
     // Altura útil do aparelho: abaixo de 760 px a faixa de diagnóstico tira o título do visor; abaixo de 640 px ele sai sempre.
+    const resAt = !r ? [] : [
+      /superaquec|PT\/SH|\bSH\b|press[ãa]o (?:de|do) (?:fluido|suc)|carga de fluido/i.test(rTxt) ? { k: 'ptsh', ico: 'pt-sh', l: 'Conferir agora no PT/SH (superaquecimento)', aria: 'Conferir agora: abrir o PT/SH para medir o superaquecimento', acao: abrirMod('ptsh') } : null,
+      /\bNTC\b|termistor/i.test(rTxt) ? { k: 'ntc', ico: 'sensor-ntc', l: 'Conferir agora no Sensor NTC', aria: 'Conferir agora: abrir o Sensor NTC para medir a resistência', acao: abrirMod('ntc') } : null,
+    ].filter(Boolean);
+    const nomeTopo = tit && String(tit.nome || '').trim() ? String(tit.nome).trim() : 'SUA ASSISTÊNCIA', topoCheio = 'GELOPRO · ' + nomeTopo;
+    const topoW = faceW - 24 - 10 - 48 - 4 - 48;
+    const larguraTopo = (txt) => { if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d'); this._ctx.font = "700 16px 'Figtree', sans-serif"; return this._ctx.measureText(txt.toUpperCase()).width + 0.16 * txt.length; };
     const H = cheio ? innerHeight : DEV[dev], telaBaixa = H < 760, diagLado = telaBaixa && diags.length > 1, semTitulo = (diags.length && telaBaixa) || H < 640;
     const out = {
       invTem: invEt.length > 0, invSem: !invEt.length,
@@ -1768,21 +1889,23 @@ class Component extends DCLogic {
       lMed, lErro: LD.tentou && !lOk,
       lPdf: () => { if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } })); this.imprimir('laudo', { cliente: LD.cli, equip, medicoes: lMed, constatacoes: LD.cons, conclusao: LD.conc }); },
       cVazio: !cofreL.length,
-      cofre: cofreL.map(c => { const aberto = st.cofreSel === c.n, b = c.base, nome = tit ? tit.nome : '';
+      cofre: cofreF.map(c => { const aberto = st.cofreSel === c.n, b = c.base, nome = tit ? tit.nome : '';
         // Convite da preventiva para o aparelho daquele atendimento (Marca + BTU/h); documento antigo sem marca/btu tira os dois do texto do equipamento.
-        const eq = String(b.equip || '').split(', '), marcaP = b.marca || eq[0] || '', btuP = b.btu || (eq[1] || '').replace(/\s*BTU\/h$/, ''), prevData = c.prevEm ? b.prevData || dataBR(c.prevEm) : '';
-        const aparelho = [marcaP, btuP ? `${btuP} BTU/h` : ''].filter(Boolean).join(' ');
+        const prevData = c.prevEm ? b.prevData || dataBR(c.prevEm) : '', aparelho = aparelhoDe(b);
         const prevMsg = `Olá, ${b.cliente}. Aqui é ${nome}. Está na hora da manutenção preventiva de 6 meses do seu ar-condicionado${aparelho ? ' ' + aparelho : ''} (recomendada para ${prevData}). A higienização completa preserva o rendimento e a economia de energia. Quer agendar um horário?`;
         const msgs = [
           c.venc ? { l: 'Aviso de garantia', acao: () => zap(b.tel, `Olá, ${b.cliente}. A garantia contratual do serviço nº ${c.n} vale até ${dataBR(c.venc)}. Se notar algo diferente no aparelho, me avise.`) } : null,
           b.total ? { l: 'Lembrete de pagamento', acao: () => zap(b.tel, `Olá, ${b.cliente}. Passando para lembrar do orçamento nº ${c.n}, de ${BRL.format(b.total)}. Chave Pix: ${tit ? tit.pix : ''}. Qualquer dúvida, estou à disposição.`) } : null,
         ].filter(Boolean);
         // Selo curto (Nº do atendimento): os tipos de documento ficam na área aberta, sem corte no selo de 14 px (PR #21).
-        return { tipo: `Nº ${c.n}`, docsTxt: `Documentos: ${[...new Set(c.ds.map(d => NOMES[d.tipo]))].join(', ')}`, t: b.cliente || 'Cliente', s: [b.total ? BRL.format(b.total) : '', dataBR(c.ult.em), c.venc ? 'garantia até ' + dataBR(c.venc) : ''].filter(Boolean).join(', '),
+        return { tipo: `Nº ${c.n}`, aparelho, docsTxt: `Documentos: ${[...new Set(c.ds.map(d => NOMES[d.tipo]))].join(', ')}`, t: b.cliente || 'Cliente', s: [b.total ? BRL.format(b.total) : '', dataBR(c.ult.em), c.venc ? 'garantia até ' + dataBR(c.venc) : ''].filter(Boolean).join(', '),
           acao: () => this.setState(x => ({ cofreSel: x.cofreSel === c.n ? null : c.n })), aberto,
           gSelo: c.venc ? (Date.now() > c.venc ? 'Garantia vencida' : 'Garantia vigente') : 'Sem garantia', gTipo: c.venc ? (Date.now() > c.venc ? 'aviso' : 'sucesso') : 'neutro', msgs,
           temPrev: !!c.prevEm, prevTxt: `Próxima preventiva: ${prevData}`, prevAria: `Chamar ${b.cliente || 'o cliente'} para a preventiva no WhatsApp`, prevZap: () => zap(b.tel, prevMsg) };
       }),
+      temCofreFiltros: cofreL.length > 0, cofreFiltroK: cofreK,
+      cofreFiltros: [['todos', 'Todos', cofreL.length], ['prev', 'Preventiva 6 meses', cofreL.filter(c => c.prevEm).length], ['garantia', 'Garantia ativa', cofreL.filter(garAtiva).length]].map(([k, l, n]) => ({ k, ...pilula(cofreK === k, `${l} (${n})`, () => this.setState({ cofreFiltro: k, cofreSel: null })) })),
+      cofreFiltroVazio: cofreL.length > 0 && !cofreF.length, cofreFiltroVazioT: cofreK === 'prev' ? 'Nenhum atendimento com preventiva de 6 meses' : 'Nenhuma garantia ativa no Cofre',
       fAberto: !!(st.fOpen && F), fRef: this.fRef, fSair, fKicker: 'Fechamento', fTitulo: PASSOS[fp - 1], fPassoTxt: `Passo ${fp} de 4`,
       fP1: fp === 1, fP2: fp === 2, fP3: fp === 3, fP4: fp === 4,
       fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: e.target.value }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
@@ -1802,7 +1925,7 @@ class Component extends DCLogic {
         qMenosCor: x.q <= 1 ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', qMaisCor: x.q >= QTD_MAX ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)',
         temMult: x.q > 1 && x.n > 0, multTxt: x.q > 1 && x.n > 0 ? `${x.q} × ${BRL.format(x.n)} = ${BRL.format(x.s)}` : '',
         temCusto: !!c && c.cmed > 0 && !discreto, semPeca: !!c && !c.cmed && !discreto, verCusto: !discreto, custoAria: `Custo da peça do item ${i + 1}`, estOn: est ? 'true' : 'false', compOn: comp ? 'true' : 'false',
-        setEst: setCusto(0), setComp: setCusto(c ? c.cmed : 0), compTxt: c ? `Comprar peça (~${R0(c.cmed).replace(' ', '\u00a0')})` : '',
+        setEst: setCusto(0), setComp: setCusto(c ? c.cmed : 0), compTxt: c ? `${INSUMO.includes(c.id) ? 'Comprar insumo' : 'Comprar peça'} (~${R0(c.cmed).replace(' ', '\u00a0')})` : '',
         estBorda: tE.borda, estFundo: tE.fundo, estCor: tE.cor, compBorda: tC.borda, compFundo: tC.fundo, compCor: tC.cor,
         temDica: !!(c && c.dica), dica: c ? ponto(c.dica) : '', temEco: !!ecoV, eco: ponto(ecoV),
         edExp: ed ? 'true' : 'false', edAberto: ed, edTxt: ed ? 'Fechar a edição deste item' : 'Editar textos e faixa deste item', edToggle: () => this.fSet(f => ({ itemEd: f.itemEd === i ? null : i })),
@@ -1815,7 +1938,12 @@ class Component extends DCLogic {
       fCatTxt: F && F.catAberto ? 'Fechar a tabela de peças e serviços' : '+ Adicionar peça ou serviço da tabela', fCatExp: F && F.catAberto ? 'true' : 'false', fCatAberto: !!(F && F.catAberto) && CAT.length > 0,
       fCatPorte: `Valores do porte ${PORTE_ROT[porteDe(st.sel.btu)]} (${st.sel.btu} BTU/h). Tudo editável no item.`,
       fCatToggle: () => this.fSet(f => ({ catAberto: !f.catAberto })), fCatVazio: !!(F && F.catAberto) && !CAT.length,
-      fCat: CAT.map(c => { const sug = !!F && (F.sug || []).includes(c.id), ja = !!F && F.itens.some(x => x.sid === c.id), tip = tipDe(c, st.sel.btu) || 0, det = !!F && F.catDet === c.id;
+      // Abas do catálogo (PR #22): Todos (16, padrão), Indicados pelo diagnóstico e as 3 famílias; a 5ª ocupa a linha inteira.
+      fCatAba: catAba, fCatAbaVazia: !!F && F.catAberto && CAT.length > 0 && !catVis.length,
+      fCatAbaVaziaTxt: catAba === 'indicados' ? 'Nenhum item indicado neste orçamento: o diagnóstico ainda não sugeriu serviço. Use Todos ou uma categoria.' : 'Nenhum item nesta categoria.',
+      fCatAbas: [['todos', `Todos (${CAT.length})`], ['indicados', `Indicados (${CAT.filter(c => sugIds.includes(c.id)).length})`], ...CAT_ABAS.map(([k, l, ids]) => [k, `${l} (${CAT.filter(c => ids.includes(c.id)).length})`])]
+        .map(([k, l], i) => ({ k, col: i === 4 ? '1 / -1' : 'auto', ...pilula(catAba === k, l, () => this.fSet({ catAba: k, catDet: null })) })),
+      fCat: catVis.map(c => { const sug = !!F && (F.sug || []).includes(c.id), ja = !!F && F.itens.some(x => x.sid === c.id), tip = tipDe(c, st.sel.btu) || 0, det = !!F && F.catDet === c.id;
         return { id: c.id, t: c.t, preco: `Valor sugerido ${BRL.format(tip)} ${c.un}${ja ? ' · já no orçamento' : ''}`, bastidor: bastDe(c, st.sel.btu), verBast: !discreto, sug, aria: `Adicionar ${c.t}. Valor sugerido ${BRL.format(tip)}${sug ? '. Indicado pelo diagnóstico' : ''}`,
         borda: sug ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)', det, detExp: det ? 'true' : 'false', detAria: `Detalhes: ${c.t}`,
         detToggle: () => this.fSet(f => ({ catDet: f.catDet === c.id ? null : c.id })), temDica: !!c.dica, dica: ponto(c.dica), temEco: !!c.eco, eco: ponto(c.eco),
@@ -1836,7 +1964,7 @@ class Component extends DCLogic {
       fTemDesc: temDesc, fDescPainel: `${DESC_ROT}: -${BRL.format(descVal)} (subtotal ${BRL.format(subtotal)})`,
       fTotalRot: temDesc ? 'Total final' : 'Total', fDescLinha: `${DESC_ROT}: -${BRL.format(descVal)}`, fSubtotalLinha: `Subtotal dos serviços: ${BRL.format(subtotal)}`, fDescResumo: `Subtotal ${BRL.format(subtotal)} · desconto -${BRL.format(descVal)} · total final ${BRL.format(fTotal)}`,
       fValidade: validade, fValidadeOps: VALIDADES.map(t => pilula(validade === t, t, () => this.fSet({ validade: t }))), fValidadeLinha: validadeLinha,
-      fTemAlerta: !!alertaF, fAlerta: vistaAlerta(alertaF), ptTemAlerta: !!alertaPT, ptAlerta: vistaAlerta(alertaPT),
+      fTemAlerta: !!alertaF, fAlerta: vistaAlerta(alertaF, filaF.length), ptTemAlerta: !!alertaPT, ptAlerta: vistaAlerta(alertaPT),
       fJustif: justif, fJustifTxt: justif ? 'true' : 'false', fJustifToggle: () => this.fSet(f => ({ justif: f.justif === false })),
       fJustifIco: justif ? 'sucesso' : 'neutro', fJustifBorda: justif ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fJustifFundo: justif ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', fJustifCor: justif ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',
       // Ressalva / estado encontrado e foto de evidência (opcionais): saem no orçamento, na aprovação e no termo de garantia.
@@ -1853,6 +1981,7 @@ class Component extends DCLogic {
       fLucroTxt: `SEU LUCRO LÍQUIDO: ${BRL.format(lucro)} (${margem}% de margem)`,
       fLucroMsg: lucroEst === 'vazio' ? 'Lance os itens para ver o lucro e a posição do valor na tabela.'
         : lucroEst === 'verde' ? 'Valor alinhado à tabela de referência'
+        : lucroEst === 'amarelo' && descVoluntario ? `Desconto voluntário de ${BRL.format(descVal)} sobre itens já no valor típico: o lucro segue positivo. Para dar o desconto e ainda receber o típico, toque em Ajustar (+${BRL.format(alvoAj - fTotal)}).`
         : lucroEst === 'amarelo' ? `Na média da tabela. Dá para acrescentar +${BRL.format(alvoAj - fTotal)} e chegar ao valor típico.`
         : lucro <= 0 ? `Abaixo do custo (${BRL.format(custoTot)}). Ajuste antes de fechar.` : `Abaixo do piso da tabela (${BRL.format(piso)}).`,
       fTemTermo: temValor, fTermMax: String(Math.round(escala)), fTermVal: String(Math.round(fTotal)), fTermTxt: `${BRL.format(fTotal)}; piso ${BRL.format(piso)}, típico ${BRL.format(tipico)}`,
@@ -1940,7 +2069,15 @@ class Component extends DCLogic {
       // Faixa de 48 px sob o trilho: um ícone por posição do pino (Titânio = lua, Claro = sol fraco, Sol = sol pleno); a ativa fica cheia e marcada.
       temaIcones: ['titanio', 'claro', 'sol'].map(k => ({ ico: TEMA_ICO[k], op: k === tema ? 1 : 0.5, marca: k === tema ? 'currentColor' : 'transparent' })),
       toggleTema: () => this.setState({ tema: TEMA_PROX[tema] }),
-      topoNome: 'GELOPRO · ' + (tit && String(tit.nome || '').trim() ? String(tit.nome).trim() : 'SUA ASSISTÊNCIA'),
+      // Topo com o Sininho (PR #22): título, Sininho (48 px) e chavinha (48 px) dividem a linha. Quando "GELOPRO · NOME" não cabe inteiro
+      // (nomes longos em 375 e 390 px), o topo mostra só o nome do titular, sem reticências.
+      topoNome: larguraTopo(topoCheio) <= topoW - 1 ? topoCheio : nomeTopo,
+      sinoAria: naoLidos.length ? `Avisos: ${naoLidos.length} ${naoLidos.length === 1 ? 'novo' : 'novos'}` : 'Avisos: nenhum novo', abrirAvisos,
+      temSinoBadge: naoLidos.length > 0, sinoN: String(naoLidos.length), sinoBadge: naoLidos.length > 99 ? '99+' : String(naoLidos.length),
+      dAvisos: d === 'avisos', avisoCatK: avCat, avisoVazio: !avLista.length,
+      avisoCats: AVISO_CATS.map(([k, l]) => ({ k, ...pilula(avCat === k, `${l} (${k === 'todos' ? avisos.length : avisos.filter(a => a.cat === k).length})`, () => this.setState({ avisoCat: k })) })),
+      avisoItens: avLista.map(a => ({ k: a.k, cat: a.cat, catRot: (AVISO_CATS.find(c => c[0] === a.cat) || [])[1], em: String(a.em), quando: dataHora(a.em), t: a.t, ico: a.ico, cor: AVISO_COR[a.cat],
+        novo: (st.avisosNovos || []).includes(a.k), temAcoes: a.acoes.length > 0, acoes: a.acoes, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)' })),
       irTitular: () => this.vazio('tit'),
       irLeitura: () => this.vazio('leit'),
       irOrcamento: () => this.abrirFech(),
@@ -2003,8 +2140,12 @@ class Component extends DCLogic {
           barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
       }),
       resTitulo: r ? (r.banc ? 'Causas prováveis para medição e orçamento' : r.t) : '',
-      resNota: !PC || !r ? '' : r.banc ? `Componentes campeões de defeito neste sintoma, do mais comum ao menos comum (${fonteTxt(r.fonte)}). Meça para confirmar a peça; o orçamento já abre com a troca indicada.`
-        : r.tec ? `Checagem de técnico. Fonte: ${fonteTxt(r.fonte)}. Valores e limites vêm do manual do equipamento.` : `Checagem rápida, vale para qualquer marca. Base: ${fonteTxt(r.fonte)}.`,
+      // Sem código interno (PED01, T02, D11) nem nome de outro fabricante na tela (PR #22): a fonte vira o rótulo do aparelho do topo.
+      resNota: !PC || !r ? '' : r.banc ? 'Componentes campeões de defeito neste sintoma, do mais comum ao menos comum. Meça para confirmar a peça; o orçamento já abre com a troca indicada.'
+        : r.tec ? 'Checagem de técnico. Valores e limites vêm do manual do equipamento.' : 'Checagem rápida, vale para qualquer marca.',
+      resFonte: `Base técnica verificada · Aplicável a ${st.sel.marca} (${st.sel.btu} BTU/h · ${st.sel.fluido})`,
+      // Atalho secundário para conferir na hora: PT/SH quando o texto fala de superaquecimento, pressão ou carga de fluido; NTC quando fala do sensor.
+      temResAtalhos: resAt.length > 0, resAtalhos: resAt,
       resLista: r && r.banc ? 'Causas prováveis' : 'O que fazer agora',
       temServ: !!resServ, resServ: resServ ? `Orçamento sugerido: ${resServ.t} (${BRL.format(tipDe(resServ, st.sel.btu) || 0)}, valor editável)` : '',
       temProx: !!(r && r.prox), resProx: r && r.prox ? r.prox : '',
@@ -2032,8 +2173,8 @@ class Component extends DCLogic {
       dPE: d ? 'auto' : 'none', dVis: d ? 'visible' : 'hidden', dHidden: d ? 'false' : 'true', dOp: d ? 1 : 0,
       dT: d ? 'translateY(0)' : 'translateY(calc(100% + 24px))',
       fecharDrawer: () => this.setState({ drawer: null }),
-      dKicker: dSel ? 'Selecionar' : 'Base técnica',
-      dTitulo: dSel ? OPTS[d].t : st.fichaSel ? st.fichaSel.t : 'Consultar fichas',
+      dKicker: dSel ? 'Selecionar' : d === 'avisos' ? 'Sininho' : 'Base técnica',
+      dTitulo: dSel ? OPTS[d].t : d === 'avisos' ? 'Central de Avisos' : st.fichaSel ? st.fichaSel.t : 'Consultar fichas',
       dSel, dNota: d === 'marca', dLista: d === 'fichas' && !st.fichaSel, dFicha: d === 'fichas' && !!st.fichaSel,
       opcoesSel: dSel ? OPTS[d].list.map(label => {
         const on = st.sel[d] === label;

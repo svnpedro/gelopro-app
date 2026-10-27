@@ -8,7 +8,7 @@
 <body>
 <x-dc>
 <div style="display:flex;flex-direction:column;gap:6px;min-width:0;">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+  <div data-assinatura-cabecalho="" style="display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px;">
     <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;color:{{ corRot }};">{{ rotulo }}</span>
     <sc-if value="{{ podeLimpar }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ limpar }}" style="height:56px;box-sizing:border-box;padding:0 12px;border-radius:16px;border:1px solid transparent;background:var(--gp-mold-raised);box-shadow:var(--gp-mold-shadow);color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;transition:transform 120ms ease-out;" style-hover="box-shadow:var(--gp-mold-shadow),inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);background:var(--gp-mold-sunken);box-shadow:var(--gp-mold-shadow-pressed);">Limpar</button></sc-if>
   </div>
@@ -60,6 +60,7 @@ class Component extends DCLogic {
     const e = this.props.estado || 'normal';
     const des = e === 'desabilitado', ro = e === 'somente-leitura', erro = e === 'erro';
     const tem = this.state.traco;
+    // O cabeçalho [data-assinatura-cabecalho] reserva os 56 px do "Limpar" desde o início (PR #22): o botão aparece no 1º traço sem empurrar o quadro.
     const ajuda = erro ? 'Erro: ' + (this.props.erroMsg || 'assinatura obrigatória para emitir o documento') : ro ? 'Somente leitura · assinatura registrada' : des ? 'Disponível depois de preencher o orçamento' : '';
     return {
       rotulo: this.props.rotulo ?? 'Assinatura do cliente', cref: this.cref, alt: (this.props.altura || 160) + 'px',
