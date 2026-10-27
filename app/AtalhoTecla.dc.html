@@ -8,18 +8,18 @@
 <body>
 <x-dc>
 <sc-if value="{{ pilula }}" hint-placeholder-val="{{ false }}">
-  <button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;height:48px;box-sizing:border-box;padding:1px 0;border:0;border-radius:999px;background:transparent;transform:{{ desloc }};display:flex;color:{{ corT }};cursor:{{ cursor }};pointer-events:{{ pe }};transition:transform 120ms ease-out;" style-hover="filter:brightness(1.1);" style-active="transform:translateY(2px);filter:brightness(.95);">
-   <span style="flex:1;min-width:0;height:46px;box-sizing:border-box;padding:0 12px 0 5px;border:2px solid var(--gp-dock-ring);border-radius:999px;background:var(--gp-tile);box-shadow:{{ sombra1 }};display:flex;align-items:center;gap:10px;">
-    <span aria-hidden="true" style="flex:none;width:34px;height:34px;box-sizing:border-box;border-radius:50%;background:var(--gp-medal);box-shadow:var(--gp-reading-shadow);display:flex;align-items:center;justify-content:center;color:var(--gp-on-tile-icon);"><dc-import name="IconeGP" nome="{{ icoNome }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
+  <button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" disabled="{{ des }}" data-foco="{{ foco }}" data-verde="{{ verdeAttr }}" onClick="{{ acao }}" style="width:100%;height:48px;box-sizing:border-box;padding:1px 0;border:0;border-radius:999px;background:transparent;transform:{{ desloc }};display:flex;color:{{ corT }};cursor:{{ cursor }};pointer-events:{{ pe }};transition:transform 120ms ease-out;" style-hover="filter:brightness(1.1);" style-active="transform:translateY(2px);filter:brightness(.95);">
+   <span style="flex:1;min-width:0;height:46px;box-sizing:border-box;padding:0 12px 0 5px;border:2px solid {{ aro }};border-radius:999px;background:{{ capa }};box-shadow:{{ sombra1 }};display:flex;align-items:center;gap:10px;">
+    <span aria-hidden="true" style="flex:none;width:34px;height:34px;box-sizing:border-box;border-radius:50%;background:{{ medal }};box-shadow:var(--gp-reading-shadow);display:flex;align-items:center;justify-content:center;color:{{ icoCor }};"><dc-import name="IconeGP" nome="{{ icoNome }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
     <span style="flex:1;min-width:0;text-align:left;font-family:'Roboto',sans-serif;font-weight:700;font-size:17px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rotulo }}</span>
-    <sc-if value="{{ lock }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;color:var(--gp-on-tile-icon);"><dc-import name="IconeGP" nome="cadeado" tamanho="{{ 16 }}" hint-size="16px,16px"></dc-import></span></sc-if>
-    <sc-if value="{{ seta }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;color:var(--gp-on-tile-icon);"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span></sc-if>
+    <sc-if value="{{ lock }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;color:{{ icoCor }};"><dc-import name="IconeGP" nome="cadeado" tamanho="{{ 16 }}" hint-size="16px,16px"></dc-import></span></sc-if>
+    <sc-if value="{{ seta }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;color:{{ icoCor }};"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span></sc-if>
    </span>
   </button>
 </sc-if>
 <sc-if value="{{ tecla }}" hint-placeholder-val="{{ true }}">
 <div data-chanfro="" style="box-sizing:border-box;padding:6px;border-radius:22px;background:var(--gp-chanfro);">
-  <button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 14px 8px 16px;border:1px solid var(--gp-sec-edge);border-radius:16px;background:var(--gp-sec-key);box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;gap:12px;color:{{ cor }};cursor:{{ cursor }};pointer-events:{{ pe }};transition:transform 120ms ease-out;" style-hover="box-shadow:var(--gp-key-raise),inset 0 0 0 999px var(--gp-key-hover);" style-active="transform:translateY(2px);box-shadow:var(--gp-key-sunk);">
+  <button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" disabled="{{ des }}" data-foco="{{ foco }}" data-verde="{{ verdeAttr }}" onClick="{{ acao }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 14px 8px 16px;border:{{ bordaT }};border-radius:16px;background:{{ fundoT }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;gap:12px;color:{{ cor }};cursor:{{ cursor }};pointer-events:{{ pe }};transition:transform 120ms ease-out;" style-hover="box-shadow:var(--gp-key-raise),inset 0 0 0 999px var(--gp-key-hover);" style-active="transform:translateY(2px);box-shadow:var(--gp-key-sunk);">
     <span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="{{ icoNome }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
     <span style="flex:1;min-width:0;text-align:left;font-family:'Roboto',sans-serif;font-weight:600;font-size:16px;line-height:20px;text-wrap:pretty;">{{ rotulo }}</span>
     <sc-if value="{{ lock }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="cadeado" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span></sc-if>
@@ -28,10 +28,12 @@
 </div>
 </sc-if>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:360,&quot;height&quot;:64},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Consultar fichas&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;icone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;busca&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;lock&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;pilula&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:360,&quot;height&quot;:64},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Consultar fichas&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;icone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;busca&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;lock&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;pilula&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;verde&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
 const BASE = 'var(--gp-sec-raise)';
 // Barras da tela inicial (pilula), escolha do Pedro em 27/10 (opção 1 do mostruário): cápsula cobalto 3D com aro neon --gp-dock-ring,
 // medalhão escuro --gp-medal com o ícone ciano à esquerda (prancheta / garantia) e seta à direita.
+// verde (PR #23): ação que avança o dinheiro (Orçamento e garantia; Enviar no WhatsApp). Capa verde esmeralda --gp-verde-capa, aro verde vivo,
+// texto #ffffff (6,11:1 no pior ponto da capa, nos 3 temas). Reserva em hex se o tema em cache não tiver o token.
 class Component extends DCLogic {
   state = { w: 0 };
   ref = React.createRef();
@@ -44,14 +46,17 @@ class Component extends DCLogic {
   renderVals() {
     const rotulo = this.props.rotulo ?? '', lock = !!this.props.lock;
     const e = this.props.estado || 'normal', des = e === 'desabilitado';
-    const fs = 16;
+    const fs = 16, vd = !!this.props.verde && !des;
     return {
       ref: this.ref, rotulo, acao: this.props.acao, tecla: !this.props.pilula,
       pilula: !!this.props.pilula,
-      corT: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-tile)',
-      sombra1: e === 'pressionado' ? 'var(--gp-tile-relief-pressed)' : 'var(--gp-tile-relief),var(--gp-dock-ring-glow)', ariaTxt: (this.props.aria ?? rotulo) + (lock ? ', função bônus bloqueada' : ''),
+      corT: des ? 'var(--gp-on-disabled)' : vd ? 'var(--gp-on-verde, #ffffff)' : 'var(--gp-on-tile)', verdeAttr: vd ? '1' : undefined,
+      aro: vd ? 'var(--gp-verde-aro, #34d399)' : 'var(--gp-dock-ring)', capa: vd ? 'var(--gp-verde-capa, linear-gradient(180deg,#05704f 0%,#064e3b 100%))' : 'var(--gp-tile)',
+      medal: vd ? 'var(--gp-verde-medal, #022c22)' : 'var(--gp-medal)', icoCor: vd ? 'var(--gp-on-verde-icon, #a7f3d0)' : 'var(--gp-on-tile-icon)',
+      sombra1: e === 'pressionado' ? 'var(--gp-tile-relief-pressed)' : vd ? 'var(--gp-tile-relief),var(--gp-verde-brilho, 0 0 12px rgba(52,211,153,.6))' : 'var(--gp-tile-relief),var(--gp-dock-ring-glow)', ariaTxt: (this.props.aria ?? rotulo) + (lock ? ', função bônus bloqueada' : ''),
       icoNome: this.props.icone === 'doc' ? 'documento' : (this.props.icone || 'busca'), lock, seta: !lock, fs: fs + 'px', des, foco: e === 'foco' ? '1' : undefined,
-      cor: des ? 'var(--gp-on-key-disabled)' : 'var(--gp-on-sec)',
+      cor: des ? 'var(--gp-on-key-disabled)' : vd ? 'var(--gp-on-verde, #ffffff)' : 'var(--gp-on-sec)',
+      fundoT: vd ? 'var(--gp-verde-capa, linear-gradient(180deg,#05704f 0%,#064e3b 100%))' : 'var(--gp-sec-key)', bordaT: vd ? '2px solid var(--gp-verde-aro, #34d399)' : '1px solid var(--gp-sec-edge)',
       sombra: e === 'hover' ? BASE + ',inset 0 0 0 999px var(--gp-key-hover)' : e === 'pressionado' ? 'var(--gp-sec-sunk)' : des ? '0 0 0 1px var(--gp-key-edge)' : BASE,
       desloc: e === 'pressionado' ? 'translateY(2px)' : 'none', cursor: des ? 'not-allowed' : 'pointer', pe: des ? 'none' : 'auto',
     };

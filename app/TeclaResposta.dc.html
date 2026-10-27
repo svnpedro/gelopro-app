@@ -7,17 +7,20 @@
 </head>
 <body>
 <x-dc>
-<button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" onClick="{{ acao }}" onPointerDown="{{ down }}" onPointerUp="{{ up }}" onPointerLeave="{{ up }}" disabled="{{ des }}" aria-busy="{{ busy }}" data-foco="{{ foco }}" style="position:relative;display:block;width:100%;height:56px;box-sizing:border-box;padding:3px;border:0;border-radius:16px;background:{{ ring }};cursor:{{ cursor }};pointer-events:{{ pe }};filter:{{ filt }};--peca-hover:{{ hov }};" style-hover="filter:var(--peca-hover);">
+<button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" onClick="{{ acao }}" onPointerDown="{{ down }}" onPointerUp="{{ up }}" onPointerLeave="{{ up }}" disabled="{{ des }}" aria-busy="{{ busy }}" data-foco="{{ foco }}" data-verde="{{ verdeAttr }}" style="position:relative;display:block;width:100%;height:56px;box-sizing:border-box;padding:3px;border:0;border-radius:16px;background:{{ ring }};cursor:{{ cursor }};pointer-events:{{ pe }};filter:{{ filt }};--peca-hover:{{ hov }};" style-hover="filter:var(--peca-hover);">
   <span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;box-sizing:border-box;padding:0 12px;border-radius:13px;background:{{ cap }};transform:{{ capT }};transition:transform 120ms ease-out;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ fs }};line-height:24px;color:{{ corRot }};text-shadow:{{ emb }};white-space:nowrap;"><sc-if value="{{ car }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="carregando" tamanho="{{ 24 }}" hint-size="24px,24px"></dc-import></span></sc-if><sc-if value="{{ semCar }}" hint-placeholder-val="{{ true }}">{{ rotulo }}</sc-if></span>
 </button>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:200,&quot;height&quot;:80},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;primaria&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;carregando&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:200,&quot;height&quot;:80},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;primaria&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;verde&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;carregando&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
 // Tecla de ação simétrica: retângulo arredondado de 56 px, raio 16 nos quatro cantos, aro de 3 px e capa com raio 13 (concêntrico).
 const RING1 = 'var(--gp-key-primary-ring)', CAP1 = 'var(--gp-key-primary-cap)';
 const RING2 = 'var(--gp-key-neutral-ring)', CAP2 = 'var(--gp-key-neutral-cap)';
+// Verde comercial (PR #23): tecla primária que avança o dinheiro (Montar orçamento, Continuar, Aprovar). Reserva em hex se o tema em cache não tiver o token.
+const RINGV = 'var(--gp-key-verde-ring, linear-gradient(180deg,#34d399 0,#064e3b 100%))', CAPV = 'var(--gp-key-verde-cap, linear-gradient(180deg,#05704f 0%,#064e3b 100%))';
 const SH = 'drop-shadow(0 0 .6px var(--gp-key-edge)) drop-shadow(0 4px 6px var(--gp-key-shadow))';
 const SHP = 'drop-shadow(0 0 .6px var(--gp-key-edge)) drop-shadow(0 2px 3px var(--gp-key-shadow))';
 const GLOW = ' drop-shadow(0 3px 7px var(--gp-key-glow))';
+const GLOWV = ' drop-shadow(0 3px 7px var(--gp-key-verde-glow, rgba(52,211,153,.4)))';
 
 class Component extends DCLogic {
   state = { w: 0, pk: false };
@@ -39,17 +42,17 @@ class Component extends DCLogic {
   }
   renderVals() {
     const e = this.props.estado || 'normal', des = e === 'desabilitado', car = e === 'carregando';
-    const w = this.state.w, pri = !!this.props.primaria, pk = this.state.pk || e === 'pressionado';
+    const w = this.state.w, pri = !!this.props.primaria, pk = this.state.pk || e === 'pressionado'; const vd = pri && !!this.props.verde, GL = vd ? GLOWV : GLOW;
     const rot = this.props.rotulo ?? '';
     return {
       ref: this.ref, rotulo: rot, ariaTxt: (this.props.aria ?? rot) + (car ? ', carregando' : ''), acao: this.props.acao,
       des, car, semCar: !car, busy: car ? 'true' : undefined, foco: e === 'foco' ? '1' : undefined,
       cursor: des ? 'not-allowed' : car ? 'progress' : 'pointer', pe: des || car ? 'none' : 'auto',
-      corRot: des ? 'var(--gp-on-key-disabled)' : pri ? 'var(--gp-on-key-cap)' : 'var(--gp-on-sec)',
-      ring: des ? RING2 : pri ? RING1 : RING2, cap: des ? 'var(--gp-key-disabled-cap)' : pri ? CAP1 : CAP2,
+      corRot: des ? 'var(--gp-on-key-disabled)' : vd ? 'var(--gp-on-verde, #ffffff)' : pri ? 'var(--gp-on-key-cap)' : 'var(--gp-on-sec)', verdeAttr: vd && !des ? '1' : undefined,
+      ring: des ? RING2 : vd ? RINGV : pri ? RING1 : RING2, cap: des ? 'var(--gp-key-disabled-cap)' : vd ? CAPV : pri ? CAP1 : CAP2,
       fs: (w ? this.fit(rot, 20, w - 6 - 24, 16) : 20) + 'px',
-      capT: pk ? 'translateY(2px)' : 'none', filt: des ? 'none' : (e === 'hover' ? 'brightness(1.08) ' + SH : pk ? SHP : SH) + (pri && !pk ? GLOW : ''),
-      hov: des ? 'none' : 'brightness(1.08) ' + SH + (pri ? GLOW : ''), emb: des || !pri ? 'none' : 'var(--gp-key-emboss)',
+      capT: pk ? 'translateY(2px)' : 'none', filt: des ? 'none' : (e === 'hover' ? 'brightness(1.08) ' + SH : pk ? SHP : SH) + (pri && !pk ? GL : ''),
+      hov: des ? 'none' : 'brightness(1.08) ' + SH + (pri ? GL : ''), emb: des || !pri ? 'none' : 'var(--gp-key-emboss)',
       down: () => this.setState({ pk: true }),
       up: () => { if (this.state.pk) this.setState({ pk: false }); },
     };
@@ -59,12 +62,12 @@ class Component extends DCLogic {
 </head>
 <body>
 <x-dc>
-<button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" onClick="{{ acao }}" onPointerDown="{{ down }}" onPointerUp="{{ up }}" onPointerLeave="{{ up }}" disabled="{{ des }}" aria-busy="{{ busy }}" data-foco="{{ foco }}" style="position:relative;display:block;width:100%;height:100px;padding:0;border:0;background:transparent;cursor:{{ cursor }};pointer-events:{{ pe }};filter:{{ filt }};--peca-hover:{{ hov }};" style-hover="filter:var(--peca-hover);">
+<button type="button" ref="{{ ref }}" aria-label="{{ ariaTxt }}" onClick="{{ acao }}" onPointerDown="{{ down }}" onPointerUp="{{ up }}" onPointerLeave="{{ up }}" disabled="{{ des }}" aria-busy="{{ busy }}" data-foco="{{ foco }}" data-verde="{{ verdeAttr }}" style="position:relative;display:block;width:100%;height:100px;padding:0;border:0;background:transparent;cursor:{{ cursor }};pointer-events:{{ pe }};filter:{{ filt }};--peca-hover:{{ hov }};" style-hover="filter:var(--peca-hover);">
   <span style="position:absolute;inset:0;clip-path:{{ clipO }};border-radius:{{ radFb }};background:{{ ring }};"></span>
   <span style="position:absolute;top:5.5px;left:6px;right:6px;bottom:6.5px;box-sizing:border-box;padding:{{ pad }};display:flex;align-items:center;justify-content:center;clip-path:{{ clipC }};border-radius:{{ radFb }};background:{{ cap }};transform:{{ capT }};transition:transform 120ms ease-out;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ fs }};line-height:28px;color:{{ corRot }};text-shadow:{{ emb }};white-space:nowrap;"><sc-if value="{{ car }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="carregando" tamanho="{{ 24 }}" hint-size="24px,24px"></dc-import></span></sc-if><sc-if value="{{ semCar }}" hint-placeholder-val="{{ true }}">{{ rotulo }}</sc-if></span>
 </button>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:200,&quot;height&quot;:120},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;primaria&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;cantos&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;esq&quot;,&quot;meio&quot;,&quot;dir&quot;,&quot;unica&quot;],&quot;default&quot;:&quot;esq&quot;,&quot;tsType&quot;:&quot;'esq' | 'meio' | 'dir' | 'unica'&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;carregando&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:200,&quot;height&quot;:120},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;primaria&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;verde&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;cantos&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;esq&quot;,&quot;meio&quot;,&quot;dir&quot;,&quot;unica&quot;],&quot;default&quot;:&quot;esq&quot;,&quot;tsType&quot;:&quot;'esq' | 'meio' | 'dir' | 'unica'&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;hover&quot;,&quot;foco&quot;,&quot;pressionado&quot;,&quot;carregando&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;aria&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;acao&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
 const SO = [23.7, 24.2, 2.15], SI = [23.1, 20.9, 2.2], SMB = [17.6, 19.3, 1.8], BIG = [69.7, 72.4, 1.92];
 const SETS = { esq: [SO, SI, SMB, BIG], dir: [SI, SO, BIG, SMB], meio: [SI, SI, SMB, SMB], unica: [SO, SO, BIG, BIG] };
 const f2 = (v) => Math.round(v * 100) / 100;
@@ -81,9 +84,12 @@ const keyPath = (w, hh, c, ix, it, ib) => {
 };
 const RING1 = 'var(--gp-key-primary-ring)', CAP1 = 'var(--gp-key-primary-cap)';
 const RING2 = 'var(--gp-key-neutral-ring)', CAP2 = 'var(--gp-key-neutral-cap)';
+// Verde comercial (PR #23): tecla primária que avança o dinheiro (Montar orçamento, Continuar, Aprovar). Reserva em hex se o tema em cache não tiver o token.
+const RINGV = 'var(--gp-key-verde-ring, linear-gradient(180deg,#34d399 0,#064e3b 100%))', CAPV = 'var(--gp-key-verde-cap, linear-gradient(180deg,#05704f 0%,#064e3b 100%))';
 const SH = 'drop-shadow(0 0 .6px var(--gp-key-edge)) drop-shadow(0 8px 10px var(--gp-key-shadow))';
 const SHP = 'drop-shadow(0 0 .6px var(--gp-key-edge)) drop-shadow(0 3px 4px var(--gp-key-shadow))';
 const GLOW = ' drop-shadow(0 4px 9px var(--gp-key-glow))';
+const GLOWV = ' drop-shadow(0 4px 9px var(--gp-key-verde-glow, rgba(52,211,153,.4)))';
 
 class Component extends DCLogic {
   state = { w: 0, pk: false };
@@ -106,22 +112,22 @@ class Component extends DCLogic {
   renderVals() {
     const c = SETS[this.props.cantos] || SETS.meio;
     const e = this.props.estado || 'normal', des = e === 'desabilitado', car = e === 'carregando';
-    const w = this.state.w, pri = !!this.props.primaria, pk = this.state.pk || e === 'pressionado';
+    const w = this.state.w, pri = !!this.props.primaria, pk = this.state.pk || e === 'pressionado'; const vd = pri && !!this.props.verde, GL = vd ? GLOWV : GLOW;
     const l = c[3] === BIG, r = c[2] === BIG, ps = w && w < 110 ? 4 : 10;
     const rot = this.props.rotulo ?? '';
     return {
       ref: this.ref, rotulo: rot, ariaTxt: (this.props.aria ?? rot) + (car ? ', carregando' : ''), acao: this.props.acao,
       des, car, semCar: !car, busy: car ? 'true' : undefined, foco: e === 'foco' ? '1' : undefined,
       cursor: des ? 'not-allowed' : car ? 'progress' : 'pointer', pe: des || car ? 'none' : 'auto',
-      corRot: des ? 'var(--gp-on-key-disabled)' : pri ? 'var(--gp-on-key-cap)' : 'var(--gp-on-sec)',
+      corRot: des ? 'var(--gp-on-key-disabled)' : vd ? 'var(--gp-on-verde, #ffffff)' : pri ? 'var(--gp-on-key-cap)' : 'var(--gp-on-sec)', verdeAttr: vd && !des ? '1' : undefined,
       clipO: w ? keyPath(w, 100, c, 0, 0, 0) : 'none',
       clipC: w ? keyPath(w - 12, 88, c, 6, 5.5, 6.5) : 'none',
       radFb: `${c[0][0]}px ${c[1][0]}px ${c[2][0]}px ${c[3][0]}px / ${c[0][1]}px ${c[1][1]}px ${c[2][1]}px ${c[3][1]}px`,
-      ring: des ? RING2 : pri ? RING1 : RING2, cap: des ? 'var(--gp-key-disabled-cap)' : pri ? CAP1 : CAP2,
+      ring: des ? RING2 : vd ? RINGV : pri ? RING1 : RING2, cap: des ? 'var(--gp-key-disabled-cap)' : vd ? CAPV : pri ? CAP1 : CAP2,
       pad: l && r ? `0 ${ps}px 2px` : l ? `0 0 2px ${ps}px` : r ? `0 ${ps}px 2px 0` : '0 0 2px',
       fs: (w ? this.fit(rot, 24, w - 12 - (l || r ? ps : 0) - 12, 19) : 24) + 'px',
-      capT: pk ? 'translateY(3px)' : 'none', filt: des ? 'none' : (e === 'hover' ? 'brightness(1.08) ' + SH : pk ? SHP : SH) + (pri && !pk ? GLOW : ''),
-      hov: des ? 'none' : 'brightness(1.08) ' + SH + (pri ? GLOW : ''), emb: des || !pri ? 'none' : 'var(--gp-key-emboss)',
+      capT: pk ? 'translateY(3px)' : 'none', filt: des ? 'none' : (e === 'hover' ? 'brightness(1.08) ' + SH : pk ? SHP : SH) + (pri && !pk ? GL : ''),
+      hov: des ? 'none' : 'brightness(1.08) ' + SH + (pri ? GL : ''), emb: des || !pri ? 'none' : 'var(--gp-key-emboss)',
       down: () => this.setState({ pk: true }),
       up: () => { if (this.state.pk) this.setState({ pk: false }); },
     };
