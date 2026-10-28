@@ -8,14 +8,22 @@
 <body>
 <x-dc>
 <article aria-label="{{ tipo }}" style="width:100%;max-width:794px;min-width:0;box-sizing:border-box;padding:40px 40px 32px;background:var(--gp-paper);color:var(--gp-on-paper);font-family:'Roboto',sans-serif;display:flex;flex-direction:column;gap:24px;border:1px solid var(--gp-paper-rule);">
-  <header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:16px;border-bottom:2px solid var(--gp-on-paper);">
-    <div data-gp-isento="" style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:4px;">
-      <span style="font:700 24px/28px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ nome }}</span>
-      <span style="font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ linhaTitular }}</span>
+  <!-- Ordem de Serviço Executiva A4 (PR #40): faixa azul-marinho com a marca GeloPRO (slogan menor, ~66 % da largura do nome, centralizado
+       embaixo dele), a linha "ORDEM DE SERVIÇO / … · Nº" e o tipo à esquerda; o quadro do Titular / Assistência Técnica à direita. Cores em hex cravado. -->
+  <header data-os-cabecalho="" data-gp-isento="" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;margin:-40px -40px 0;padding:24px 40px 20px;background:{{ corFaixa }};color:#ffffff;border-bottom:3px solid #dee9f5;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+    <div data-os-marca="" style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px;">
+      <div data-gp-lockup="" style="display:inline-flex;flex-direction:column;align-items:center;gap:5px;">
+        <span data-gp-nome="" style="display:block;font:800 40px/40px 'Roboto',sans-serif;letter-spacing:-0.01em;white-space:nowrap;"><span style="color:{{ corGelo }};">{{ nomeA }}</span><span style="color:{{ corPro }};">{{ nomeB }}</span></span>
+        <span data-gp-slogan="" style="display:block;box-sizing:border-box;width:66%;contain:inline-size;font:500 9px/12px 'Roboto',sans-serif;letter-spacing:0.12em;text-align:center;text-wrap:balance;color:{{ corSlogan }};">{{ slogan }}</span>
+      </div>
+      <span data-os-linha="" style="font:700 12px/18px 'Roboto',sans-serif;letter-spacing:.04em;color:#ffffff;">{{ osLinha }} <span style="white-space:nowrap;">{{ osNum }}</span></span>
+      <span data-os-tipo="" style="font:700 16px/22px 'Roboto',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#ffffff;">{{ tipo }}</span>
+      <span style="font:500 14px/20px 'Roboto',sans-serif;color:#dee9f5;font-variant-numeric:tabular-nums;">{{ numData }}</span>
     </div>
-    <div style="flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right;">
-      <span style="font:700 16px/24px 'Roboto',sans-serif;letter-spacing:.04em;text-transform:uppercase;">{{ tipo }}</span>
-      <span style="font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ numData }}</span>
+    <div data-os-titular="" style="flex:0 1 300px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:12px 14px;border:1px solid {{ corQuadroBorda }};border-radius:8px;background:{{ corQuadro }};text-align:right;">
+      <span style="font:700 11px/16px 'Roboto',sans-serif;letter-spacing:.08em;color:#dee9f5;">TITULAR / ASSISTÊNCIA TÉCNICA</span>
+      <span style="font:700 18px/24px 'Roboto',sans-serif;color:#ffffff;overflow-wrap:anywhere;">{{ nome }}</span>
+      <sc-for list="{{ titLinhas }}" as="l" hint-placeholder-count="3"><span style="font:500 14px/20px 'Roboto',sans-serif;color:#dee9f5;overflow-wrap:anywhere;">{{ l }}</span></sc-for>
     </div>
   </header>
   <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:16px;font:500 16px/24px 'Roboto',sans-serif;">{{ conteudo }}</div>
@@ -28,14 +36,22 @@
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:800,&quot;height&quot;:560},&quot;tipo&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Orçamento&quot;,&quot;Termo de garantia&quot;,&quot;Recibo Pix&quot;,&quot;Laudo de inviabilidade&quot;],&quot;default&quot;:&quot;Orçamento&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;numero&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;0001&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;data&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;24/10/2026&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;titular&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{ nome: string; doc: string; pix: string; cidade?: string }&quot;},&quot;children&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;ReactNode&quot;}}">
 class Component extends DCLogic {
   renderVals() {
-    const t = this.props.titular || {};
+    const t = this.props.titular || {}, M = window.GeloProMarca || {}, C = M.cores || {};
     const nome = t.nome || 'Titular não cadastrado';
-    const doc = t.doc ? `${t.doc.replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF'} ${t.doc}` : 'CPF/CNPJ —';
+    const dg = String(t.doc || '').replace(/\D/g, '').length, docTipo = dg > 11 ? 'CNPJ' : 'CPF';
+    const doc = t.doc ? `${docTipo} ${t.doc}` : 'CPF/CNPJ —';
     const pix = t.pix ? `Pix ${t.pix}` : 'Pix —';
+    const tipo = this.props.tipo || 'Orçamento', num = this.props.numero ? ' · Nº ' + this.props.numero : '';
+    // Linha da OS por tipo: o orçamento é a proposta técnica; garantia, recibo, laudo e PMOC dizem o que são.
+    const os = /garantia/i.test(tipo) ? 'TERMO DE GARANTIA' : /recibo/i.test(tipo) ? 'RECIBO' : /laudo/i.test(tipo) ? 'LAUDO TÉCNICO' : /pmoc/i.test(tipo) ? 'PMOC' : 'PROPOSTA TÉCNICA';
+    const partes = M.partes || ['Gelo', 'PRO'];
     return {
-      nome, tipo: this.props.tipo || 'Orçamento',
-      linhaTitular: [doc, pix, t.cidade].filter(Boolean).join(' · '),
-      numData: [this.props.numero ? 'Nº ' + this.props.numero : '', this.props.data || ''].filter(Boolean).join(' · '),
+      nome, tipo,
+      nomeA: partes[0], nomeB: partes[1], slogan: M.slogan || 'INTELIGÊNCIA & DIAGNÓSTICO EM CLIMATIZAÇÃO',
+      corFaixa: C.faixa || '#0f345b', corGelo: C.gelo || '#ffffff', corPro: C.pro || '#9fd8ff', corSlogan: C.slogan || '#dee9f5', corQuadro: C.quadro || '#19416d', corQuadroBorda: C.quadroBorda || '#5b7fa6',
+      osLinha: `ORDEM DE SERVIÇO / ${os}`, osNum: num.replace(/^ · /, '· '),
+      titLinhas: [t.doc ? `${docTipo}: ${t.doc}` : 'CPF/CNPJ: —', t.cidade ? `Cidade: ${t.cidade}` : '', t.pix ? `Chave Pix: ${t.pix}` : 'Chave Pix: —'].filter(Boolean),
+      numData: [this.props.numero ? 'Nº ' + this.props.numero : '', this.props.data ? 'Emitido em ' + this.props.data : ''].filter(Boolean).join(' · '),
       rodape: `${nome} · ${doc} · ${pix}`,
       conteudo: this.props.children,
     };

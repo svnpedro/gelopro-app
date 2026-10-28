@@ -23,7 +23,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:340,&quot;height&quot;:230},&quot;rotulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Assinatura do cliente&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;foco&quot;,&quot;erro&quot;,&quot;somente-leitura&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;altura&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:160,&quot;tsType&quot;:&quot;number&quot;},&quot;erroMsg&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;imagem&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;},&quot;aoMudar&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(dataUrl: string | null) =&gt; void&quot;}}">
 class Component extends DCLogic {
-  state = { traco: false };
+  state = { traco: false, valida: false };
   cref = React.createRef();
   tracos = [];
   componentDidMount() { this.ligar(); }
@@ -51,17 +51,26 @@ class Component extends DCLogic {
     g.lineWidth = 2.5 * k; g.lineCap = 'round'; g.lineJoin = 'round';
     for (const t of this.tracos) { g.beginPath(); t.forEach(([x, y], i) => i ? g.lineTo(x * w, y * h) : g.moveTo(x * w, y * h)); if (t.length === 1) g.lineTo(t[0][0] * w + 0.1, t[0][1] * h); g.stroke(); }
   }
+  // PR #40 (S1-4): só vale como assinatura o traço que percorre pelo menos 25 px (soma de Math.hypot de cada trecho, em px de tela).
+  // Um clique seco (0 a 5 px) não aprova o orçamento; o traço de 130 px dos testes aprova normalmente.
+  percurso() {
+    const c = this._c; if (!c) return 0;
+    const r = c.getBoundingClientRect(); let d = 0;
+    for (const t of this.tracos) for (let i = 1; i < t.length; i++) d += Math.hypot((t[i][0] - t[i - 1][0]) * r.width, (t[i][1] - t[i - 1][1]) * r.height);
+    return d;
+  }
   emitir() {
-    const tem = this.tracos.length > 0;
-    if (tem !== this.state.traco) this.setState({ traco: tem });
-    if (this.props.aoMudar) this.props.aoMudar(tem ? this._c.toDataURL('image/png') : null);
+    const tem = this.tracos.length > 0, valida = tem && this.percurso() >= 25;
+    if (tem !== this.state.traco || valida !== this.state.valida) this.setState({ traco: tem, valida });
+    if (this.props.aoMudar) this.props.aoMudar(valida ? this._c.toDataURL('image/png') : null);
   }
   renderVals() {
     const e = this.props.estado || 'normal';
     const des = e === 'desabilitado', ro = e === 'somente-leitura', erro = e === 'erro';
     const tem = this.state.traco;
     // O cabeçalho [data-assinatura-cabecalho] reserva os 56 px do "Limpar" desde o início (PR #22): o botão aparece no 1º traço sem empurrar o quadro.
-    const ajuda = erro ? 'Erro: ' + (this.props.erroMsg || 'assinatura obrigatória para emitir o documento') : ro ? 'Somente leitura · assinatura registrada' : des ? 'Disponível depois de preencher o orçamento' : '';
+    const curta = !ro && !des && tem && !this.state.valida;
+    const ajuda = erro ? 'Erro: ' + (this.props.erroMsg || 'assinatura obrigatória para emitir o documento') : ro ? 'Somente leitura · assinatura registrada' : des ? 'Disponível depois de preencher o orçamento' : curta ? 'Traço curto: assine com o dedo, de ponta a ponta' : '';
     return {
       rotulo: this.props.rotulo ?? 'Assinatura do cliente', cref: this.cref, alt: (this.props.altura || 160) + 'px',
       desenhavel: !ro, temImg: ro && !!this.props.imagem, imgBg: this.props.imagem ? `url("${this.props.imagem}")` : 'none', vazio: !ro && !tem,

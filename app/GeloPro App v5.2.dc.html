@@ -153,6 +153,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:1ms !important;}}
 @media print{@page{size:A4;margin:12mm}html,body{background:#fff !important}body *{visibility:hidden !important}[data-print],[data-print] *{visibility:visible !important}[data-print]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important}[data-print],[data-print] *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}[data-print] [data-doc-fechamento],[data-print] [data-doc-foto-bloco],[data-print] [data-doc-assinatura],[data-print] [data-doc-preventiva]{page-break-inside:avoid;break-inside:avoid}}
 </style>
+<script src="marca-gelopro.js"></script>
 <script src="portao-gelopro.js"></script>
 <script src="pdf-gelopro.js"></script>
 </helmet>
@@ -1044,13 +1045,13 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Opcional. Toque numa sugestão para incluir; toque de novo para tirar. Sai no orçamento e no termo de garantia.</span>
               <div data-ressalvas="" style="display:flex;flex-direction:column;gap:8px;">
                 <sc-for list="{{ fRessalvas }}" as="q" hint-placeholder-count="2">
-                  <button type="button" aria-pressed="{{ q.on }}" aria-label="{{ q.aria }}" onClick="{{ q.acao }}" style="min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ q.borda }};background:{{ q.fundo }};color:{{ q.cor }};font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ q.t }}</button>
+                  <button type="button" aria-pressed="{{ q.on }}" aria-disabled="{{ q.bloq }}" aria-label="{{ q.aria }}" onClick="{{ q.acao }}" style="opacity:{{ q.opac }};min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ q.borda }};background:{{ q.fundo }};color:{{ q.cor }};font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ q.t }}</button>
                 </sc-for>
               </div>
               <button type="button" data-mais-ressalvas="" aria-expanded="{{ fRessMaisExp }}" onClick="{{ fRessMaisToggle }}" style="min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px dashed var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ fRessMaisTxt }}</button>
               <sc-if value="{{ fRessMaisAberto }}" hint-placeholder-val="{{ false }}"><div data-ressalvas-mais="" role="group" aria-label="Ressalvas de blindagem: infra embutida, placa e dreno" style="display:flex;flex-direction:column;gap:8px;">
                 <sc-for list="{{ fRessalvasMais }}" as="q" hint-placeholder-count="3">
-                  <button type="button" aria-pressed="{{ q.on }}" aria-label="{{ q.aria }}" onClick="{{ q.acao }}" style="min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ q.borda }};background:{{ q.fundo }};color:{{ q.cor }};font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ q.t }}</button>
+                  <button type="button" aria-pressed="{{ q.on }}" aria-disabled="{{ q.bloq }}" aria-label="{{ q.aria }}" onClick="{{ q.acao }}" style="opacity:{{ q.opac }};min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ q.borda }};background:{{ q.fundo }};color:{{ q.cor }};font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ q.t }}</button>
                 </sc-for>
               </div></sc-if>
               <div data-foto="" style="display:flex;flex-direction:column;gap:8px;">
@@ -1176,11 +1177,15 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 <sc-if value="{{ temPrint }}" hint-placeholder-val="{{ false }}">
 <div data-print="" aria-hidden="true" style="position:fixed;left:-10000px;top:0;width:794px;">
   <dc-import name="FolhaDocumento" tipo="{{ dTipo }}" numero="{{ dNum }}" data="{{ dData }}" titular="{{ dTit }}" hint-size="794px,1000px">
-    <div style="display:flex;flex-direction:column;gap:4px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">Cliente</span><span>{{ dCli }}</span><span style="color:var(--gp-on-paper-variant);">{{ dEquip }}</span></div>
+    <!-- PR #40: quadro Cliente & Equipamento em 2 colunas (caixa clara #f3f5f8 com moldura sutil #cbd3dd), igual ao PDF nativo. -->
+    <div data-doc-cliente-equip="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid #cbd3dd;border-radius:8px;background:#f3f5f8;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+      <div data-doc-cliente="" style="min-width:0;display:flex;flex-direction:column;gap:2px;padding:12px 16px;"><span style="font:700 12px/16px 'Roboto',sans-serif;letter-spacing:.08em;color:var(--gp-on-paper-variant);">CLIENTE</span><span style="font:700 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dCli }}</span></div>
+      <div data-doc-equip="" style="min-width:0;display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-left:1px solid #cbd3dd;"><span style="font:700 12px/16px 'Roboto',sans-serif;letter-spacing:.08em;color:var(--gp-on-paper-variant);">EQUIPAMENTO AFERIDO</span><span style="font:500 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dEquip }}</span></div>
+    </div>
     <sc-if value="{{ dItensVis }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-direction:column;">
         <span style="font:700 16px/24px 'Roboto',sans-serif;padding-bottom:4px;">{{ dItensTit }}</span>
-        <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-doc-economia="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.eco }}</span></sc-if></sc-if></div></sc-for>
+        <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><div data-doc-tecnica="" style="display:flex;flex-direction:column;gap:2px;margin:4px 0 0 24px;padding:8px 12px;background:#f3f5f8;border-left:3px solid #16a34a;border-radius:0 6px 6px 0;-webkit-print-color-adjust:exact;print-color-adjust:exact;"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-doc-economia="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.eco }}</span></sc-if></div></sc-if></div></sc-for>
         <sc-if value="{{ dTemBonif }}" hint-placeholder-val="{{ false }}"><div data-doc-bonificacao="" style="padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);font:600 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dBonifLinha }}</div></sc-if>
         <div data-doc-fechamento="" style="display:flex;flex-direction:column;"><sc-if value="{{ dTemDesc }}" hint-placeholder-val="{{ false }}"><div data-doc-desconto="" style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);font:600 16px/24px 'Roboto',sans-serif;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;"><span>{{ dSubtotalLinha }}</span><span>{{ dDescLinha }}</span></div></sc-if>
         <div style="display:flex;justify-content:space-between;gap:16px;padding-top:12px;font-weight:700;"><span>{{ dTotalRot }}</span><span style="font-variant-numeric:tabular-nums;">{{ dTotal }}</span></div>
@@ -1264,11 +1269,20 @@ const gravar = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); ret
 // Leitura blindada (PR #39, ataque destrutivo): licença, titular, Cofre, numeração e avisos corrompidos (JSON quebrado, tipo trocado, item nulo,
 // contador negativo ou infinito) viram vazio, nunca erro de tela. A numeração nunca fica abaixo do maior número já gravado no Cofre: um contador
 // estragado não repete número de documento emitido.
-const lerObj = (k) => { const v = ler(k); return v && typeof v === 'object' && !Array.isArray(v) ? v : null; };
+const lerObj = (k) => { const v = ler(k); return v && typeof v === 'object' && !Array.isArray(v) ? limparObj(v) : null; };
 const lerDocs = (k) => { const v = ler(k); return Array.isArray(v) ? v.filter(x => x && typeof x === 'object' && !Array.isArray(x) && x.numero && x.tipo) : []; };
 const numDoc = (x, pre) => { const n = parseInt(String(x.numero).slice(pre.length), 10); return Number.isSafeInteger(n) && n > 0 && n < 1e6 ? n : 0; };
 const lerSeq = (A) => { const n = Number(ler(A.seq)); return Math.max(Number.isSafeInteger(n) && n > 0 && n < 1e6 ? n : 0, ...lerDocs(A.docs).map(x => numDoc(x, A.pre))); };
 const dig = (v) => String(v || '').replace(/\D/g, '');
+// Sanitização anti-HTML/script (PR #40, achado S0 da extensão): nome do cliente, descrição, ressalva, titular, marca livre, laudo, PMOC e recibo
+// perdem qualquer tag e os sinais < e > ao salvar e ao exibir. "<img src=x onerror=alert(1)>" nunca chega ao documento, ao PDF nem ao WhatsApp.
+const limparTxt = (s) => String(s || '').replace(/<[^>]*>/g, '').replace(/[<>]/g, '');
+const limparFundo = (v) => typeof v === 'string' ? limparTxt(v) : Array.isArray(v) ? v.map(limparFundo) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, limparFundo(x)])) : v;
+const limparObj = (o) => o && typeof o === 'object' && !Array.isArray(o) ? Object.fromEntries(Object.entries(o).map(([k, v]) => [k, typeof v === 'string' ? limparTxt(v) : v])) : o;
+// WhatsApp (PR #40, S1-2): 55 inicial só é DDI do Brasil com 12 ou 13 dígitos. Com 10 ou 11 (55 991234567 = DDD 55 de Santa Maria/RS), o DDI 55
+// entra na frente: https://wa.me/5555991234567. Sem número, o técnico escolhe a conversa.
+const zapNum = (tel) => { const d = dig(tel); return !d ? '' : d.length >= 12 && /^55/.test(d) ? d : '55' + d; };
+const zapUrl = (tel, msg) => (zapNum(tel) ? 'https://wa.me/' + zapNum(tel) : 'https://wa.me/') + '?text=' + encodeURIComponent(msg);
 const cpfOk = (c) => { if (c.length !== 11 || /^(\d)\1+$/.test(c)) return false; const dv = (n) => { let t = 0; for (let i = 0; i < n; i++) t += +c[i] * (n + 1 - i); const r = (t * 10) % 11; return r === 10 ? 0 : r; }; return dv(9) === +c[9] && dv(10) === +c[10]; };
 const cnpjOk = (c) => { if (c.length !== 14 || /^(\d)\1+$/.test(c)) return false; const dv = (n) => { const w = n === 12 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; let t = 0; for (let i = 0; i < n; i++) t += +c[i] * w[i]; const r = t % 11; return r < 2 ? 0 : 11 - r; }; return dv(12) === +c[12] && dv(13) === +c[13]; };
 const fmtDoc = (d) => d.length === 11 ? d.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4') : d.length === 14 ? d.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5') : d;
@@ -1367,7 +1381,7 @@ const SCRIPTS = [
 const PM0 = () => ({ amb: '', end: '', cid: '', tel: '', prop: '', propDoc: '', propCont: '', rt: '', reg: '', art: '', ambs: '', emerg: '', per: {}, tentou: false });
 // Fechamento veterano (PR #21): desconto de 1 toque sobre o subtotal, validade curta da proposta e valor da visita no preço de cada bairro.
 const DESCONTOS = [['nenhum', 'Sem desconto', 0], ['pix5', '-5% no Pix', 0.05], ['pacote10', '-10% no pacote', 0.10], ['livre', 'Valor livre (-R$)', 0]];
-const DESC_ROT = 'Desconto concedido (pacote / pagamento via Pix)';
+const DESC_ROT = 'Desconto concedido (pacote / pagamento via Pix)', DESC_MAX = 0.9;
 const VALIDADES = ['3 dias', '5 dias', '7 dias', 'Somente hoje'];
 const VISITA_VALORES = [60, 80, 100, 120, 150];
 // Quantidade por item (2 aparelhos, 8 metros de tubo): o valor do item é o unitário; subtotal e custo da peça multiplicam pela quantidade.
@@ -1509,6 +1523,10 @@ const faixaDe = (c, btu) => { const tip = tipDe(c, btu), k = c.tip && tip !== c.
 const faixaPorte = (c, btu) => { const f = faixaDe(c, btu); return f.min !== null && f.max !== null ? `${BRL.format(f.min)} a ${BRL.format(f.max)}` : ''; };
 // Modo Esperto Comercial (PR #35): faixa que acompanha o valor cobrado (85 % a 125 %, em dezenas). R$ 380,00 → "R$ 320,00 a R$ 480,00".
 const faixaElastica = (v) => `${BRL.format(Math.round(v * 0.85 / 10) * 10)} a ${BRL.format(Math.round(v * 1.25 / 10) * 10)}`;
+// Teto de honestidade (PR #40, S0-1): até 1,6× o teto do porte a faixa acompanha o valor (85 % a 125 %); acima disso (R$ 50.000 numa placa de
+// tabela até R$ 1.470) nunca se inventa tabela: volta a faixa oficial do porte. R$ 380 no capacitor (teto R$ 290 × 1,6 = R$ 464) segue elástico.
+const TETO_ELASTICO = 1.6;
+const faixaHonesta = (c, btu, v) => { const f = faixaDe(c, btu); return f.max !== null && v > f.max + 0.004 && v <= f.max * TETO_ELASTICO + 0.004 ? faixaElastica(v) : faixaPorte(c, btu); };
 const AUTO_J = 'Execução técnica especializada com ferramental de precisão, insumos de primeira linha e ensaio operacional em carga';
 const AUTO_ECO = 'Previne agravamento de falha elétrica/mecânica e preserva a vida útil do equipamento';
 // Trava anti-isento (PR #35): a visita só vira ISENTO com pelo menos 1 outro serviço ou peça no orçamento. Se o último sair com a chave ligada,
@@ -1604,7 +1622,9 @@ const PDF_TITULO = { orc: 'Orçamento', gar: 'Termo de garantia', rec: 'Recibo P
 // Telefone no PDF: (11) 98765-4321 ou (11) 3456-7890; outro formato sai como foi digitado.
 const foneBR = (t) => { const d = dig(t).replace(/^55(?=\d{10,11}$)/, ''); return d.length === 11 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : d.length === 10 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}` : String(t || '').trim(); };
 const pdfNome = (tipo, num, cli) => window.GeloProPDF ? window.GeloProPDF.nomeArquivo(tipo, num, cli) : `${tipo}-${num}.pdf`;
-const docPdf = (tipo, d, tit, x = {}) => {
+const docPdf = (tipo, d0, tit0, x = {}) => {
+  // PR #40: registro do Cofre (inclusive o antigo, gravado antes da sanitização) e titular passam pelo limparTxt antes do PDF e do resumo.
+  const d = limparFundo(d0 || {}), tit = tit0 ? limparObj(tit0) : tit0;
   const em = d.em || Date.now(), avulso = AVULSO.includes(tipo), fech = tipo === 'orc' || tipo === 'gar', ressalva = String(d.ressalva || '').trim();
   const itens = d.itens || [], subtotal = d.subtotal !== undefined ? Number(d.subtotal) || 0 : itens.reduce((t, i) => t + (i.s ?? i.v ?? 0), 0);
   const total = d.total !== undefined ? Number(d.total) || 0 : subtotal, desc = Number(d.desconto) || 0, temDesc = desc > 0 && tipo !== 'rec';
@@ -1719,7 +1739,7 @@ const CENAS_V = '?v=4';
 // Reserva se cenas.json não carregar: as etapas da checagem rápida do lote 1 de 26/10 (sem ba02 e pi05, que não vieram no lote).
 const CENAS_OK = new Set('ba03 ba04 de02 de03 de04 ge02 gp02 gp03 ng02 ng03 ng04 ng05 nl02 nl03 nl04 nl05 pi03 pi04'.split(' ').flatMap(k => [k + '_sim', k + '_nao']));
 const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDocumento', 'IconeGP', 'LinhaFicha', 'LinhaOrcamento', 'LogoMarca', 'OpcaoLista', 'PlacaSintoma', 'QRPix', 'SeletorPrazo', 'Selo', 'TeclaDock', 'TeclaResposta', 'TemaGeloPro'];
-const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], resp: {}, res: null, modo: null, modK: null, prev: null, foco: null };
+const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], resp: {}, res: null, modo: null, modK: null, prev: null, foco: null, dica: false };
 // Dados do atendimento (cliente, aparelho, medições, hipóteses, carga, laudo, orçamento, garantia, assinatura). Concluir volta a isto.
 // Ficam fora: titular, licença, tema e documentos emitidos (localStorage), e os fatores da carga térmica, que são ajuste do técnico.
 const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, pdfPronto: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcNom: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, oemPlat: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
@@ -1846,10 +1866,14 @@ class Component extends DCLogic {
     // Preventiva de 6 meses no Cofre (PR #21): a mesma data da etiqueta impressa no orçamento e na garantia vira o dia de chamar o cliente.
     const em = Date.now(), prev = AVULSO.includes(tipo) ? {} : { prevEm: maisMeses(em, 6), prevData: dataBR(maisMeses(em, 6)) };
     const A = this.arq(), lista = lerDocs(A.docs), reg = { ...doc, tipo, numero: num, em, ...prev }; lista.push(reg); gravar(A.docs, lista);
-    // Plano A (window.print + [data-print]) segue igual. O título da aba vira o nome do arquivo: o "Salvar como PDF" do navegador já sai com ele.
+    // Plano A ([data-print] + window.print). PR #40 (S1-6): no Chrome real do técnico e na extensão, a janela nativa de impressão congelava a aba;
+    // ela só abre na bateria automática (window.__impressoes de contador ou HeadlessChrome do Playwright). No uso real o [data-print] é montado e
+    // o arquivo sai pelo PDF nativo (Planos B e C); o título da aba não muda. Na bateria, o título vira o nome do arquivo e volta no afterprint.
     const nome = pdfNome(tipo, num, doc.cliente);
-    try { if (this._titulo0 === undefined) this._titulo0 = document.title; document.title = nome.replace(/\.pdf$/i, ''); } catch (e) {}
-    this.setState({ printDoc: tipo, printDados: doc }, () => setTimeout(() => { try { window.print(); } catch (e) {} }, 700));
+    const imprime = typeof window.__impressoes === 'number' || /HeadlessChrome/i.test(navigator.userAgent || '');
+    if (imprime) { try { if (this._titulo0 === undefined) this._titulo0 = document.title; document.title = nome.replace(/\.pdf$/i, ''); } catch (e) {} }
+    else if (this._titulo0 !== undefined) { try { document.title = this._titulo0; } catch (e) {} }
+    this.setState({ printDoc: tipo, printDados: doc }, () => imprime && setTimeout(() => { try { window.print(); } catch (e) {} }, 700));
     // Planos B e C: o arquivo .pdf real, gerado no aparelho, com foto e assinatura do atendimento (orçamento e garantia).
     const F = this.state.fech, comImg = (tipo === 'orc' || tipo === 'gar') && F;
     this.gerarPdf(reg, { onde: { laudo: 'laudo', pmoc: 'pmoc', reca: 'reca' }[tipo] || 'fech', num }, { foto: comImg ? F.foto : null, assin: comImg ? F.assin : null });
@@ -2003,7 +2027,7 @@ class Component extends DCLogic {
     const fim90 = lic && plano === 'BASE_90' ? lic.ativadoEm + 90 * DIA : null;
     const vencido = fim90 !== null && Date.now() > fim90;
     const lock = plano === 'BASE_90';
-    const cad = st.cad, setCad = (k) => (e) => this.setState(x => ({ cad: { ...x.cad, [k]: e.target.value } }));
+    const cad = st.cad, setCad = (k) => (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ cad: { ...x.cad, [k]: v } })); };
     const dDoc = dig(cad.doc), pT = pixTipo(cad.pix);
     const erros = {
       nome: cad.nome.trim().length < 3 ? 'informe o nome que vai no documento' : '',
@@ -2071,7 +2095,7 @@ class Component extends DCLogic {
     const dSel = !!OPTS[d];
     const w2 = (pw - 8) / 2;
     const B = st.base, marca = st.sel.marca, marcaUni = !OPTS.marca.list.includes(marca);
-    const usarMarca = (nome) => { const n = String(nome || '').replace(/\s+/g, ' ').trim().slice(0, 24); if (!n) return; const c = [...OPTS.marca.list, ...MARCAS_OEM].find(x => norm(x) === norm(n)) || n;
+    const usarMarca = (nome) => { const n = limparTxt(nome).replace(/\s+/g, ' ').trim().slice(0, 24); if (!n) return; const c = [...OPTS.marca.list, ...MARCAS_OEM].find(x => norm(x) === norm(n)) || n;
       this.setState(x => ({ sel: { ...x.sel, marca: c }, drawer: null, marcaLivre: '', ...(c !== x.sel.marca ? { ntcS: null, oemPlat: null, codExp: null } : {}) })); };
     const fonteTxt = (ids) => (ids || '').split(';').filter(Boolean).map(id => { const f = B && B.fon[id]; return f ? `${id} · ${f.emissor}` : id; }).join('; ');
     // Fonte humana da curva (PR #27): o manual de serviço da lista ("Manual Midea Inverter"), ou a tabela do fabricante.
@@ -2116,6 +2140,8 @@ class Component extends DCLogic {
     }
     // Resistência: negativa é erro de digitação; zero é leitura real (curto ou escala), registrada mas fora do cálculo.
     const Tn = med(st.ntcT), Rlido = med(st.ntcR), rZero = Rlido === 0;
+    // Sensor em curto ou aberto (PR #40): abaixo de 0,15 kΩ é curto; acima de 450 kΩ é aberto. O aviso aponta direto para o orçamento do sensor.
+    const ntcFalha = Rlido !== null && Rlido > 0 && Rlido < 0.15 ? 'curto' : Rlido !== null && Rlido > 450 ? 'aberto' : '';
     const tCurva = pts.length ? [Math.min(...pts.map(p => p[0])), Math.max(...pts.map(p => p[0]))] : null, rCurva = pts.length ? [Math.min(...pts.map(p => p[1])), Math.max(...pts.map(p => p[1]))] : null;
     const rFora = Rlido !== null && Rlido > 0 && !!rCurva && (Rlido < rCurva[0] || Rlido > rCurva[1]);
     const Rn = Rlido !== null && Rlido > 0 && !rFora ? Rlido : null;
@@ -2134,7 +2160,8 @@ class Component extends DCLogic {
     // Desconto de pacote / Pix (PR #21): percentual sobre o subtotal ou valor livre (nunca maior que o subtotal). O total, o Pix e o lucro saem líquidos.
     const descK = F && DESCONTOS.some(d => d[0] === F.desc) ? F.desc : 'nenhum', descPct = (DESCONTOS.find(d => d[0] === descK) || [])[2] || 0;
     const descLivreN = F && descK === 'livre' ? reais(F.descLivre) : null, descLivreErro = F && descK === 'livre' ? reaisErro(F.descLivre) : '';
-    const descDe = (g) => descK === 'livre' ? Math.min(Math.max(0, descLivreN || 0), g) : cent(g * descPct);
+    // Teto do desconto (PR #40, S1-5): no máximo 90 % do subtotal. R$ 40.000 de desconto sobre R$ 33.000 nunca zera o orçamento.
+    const descDe = (g) => Math.min(descK === 'livre' ? Math.max(0, descLivreN || 0) : cent(g * descPct), cent(g * DESC_MAX));
     const descVal = cent(descDe(subtotal)), temDesc = descVal > 0;
     const fTotal = cent(subtotal - descVal);
     // Item no texto do cliente: com 1 unidade, o formato de sempre; com 2 ou mais, "2× Descrição (R$ 250,00 cada) — R$ 500,00".
@@ -2157,7 +2184,7 @@ class Component extends DCLogic {
     const fGarLinha = garLinhaDe(garTxt, garCobre, garNao);
     const equip = `${st.sel.marca}, ${st.sel.btu} BTU/h, ${st.sel.fluido}`;
     const payload = () => pixDe(tit, fTotal, F && F.numero);
-    const fItem = (i, k) => (e) => { const v = e.target.value; this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
+    const fItem = (i, k) => (e) => { const v = limparTxt(e.target.value); this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
     const avancar = () => { const ok = fp === 1 ? ok1 : fp === 2 ? ok2 : fp === 3 ? ok3 : true; if (!ok) return this.fSet({ tentou: fp }); if (fp === 3) this.numero(); this.fSet({ passo: Math.min(4, fp + 1), tentou: 0, msg: null }); };
     // Voltar de Aprovação ou Pix apaga a assinatura: o quadro reaparece em branco e o cliente assina de novo o que estiver na tela.
     // A caixa do PDF do passo 4 sai junto: voltar e aprovar de novo pede um arquivo novo.
@@ -2172,7 +2199,7 @@ class Component extends DCLogic {
     const txtItem = (x, k, pad) => String(x[k] !== undefined && x[k] !== null ? x[k] : pad || '').trim();
     // Faixa elástica (PR #35): sem faixa digitada pelo técnico, o valor cobrado acima do teto da tabela leva a faixa junto (nunca entrega ao
     // cliente que o preço passou da tabela); dentro ou abaixo do teto, a faixa exata da tabela. Faixa digitada no item vale como está.
-    const faixaPad = (x) => { const c = catDe(x); if (!c) return ''; const f = faixaDe(c, st.sel.btu); return f.max !== null && x.n > f.max + 0.004 ? faixaElastica(x.n) : faixaPorte(c, st.sel.btu); };
+    const faixaPad = (x) => { const c = catDe(x); return c ? faixaHonesta(c, st.sel.btu, x.n) : ''; };
     const jCli = (x) => {
       if (!justif) return { j: '', faixa: '', eco: '' };
       const c = catDe(x), j = txtItem(x, 'j', c && c.j), fx = txtItem(x, 'faixa', faixaPad(x)), e = txtItem(x, 'eco', c && c.eco);
@@ -2244,8 +2271,11 @@ class Component extends DCLogic {
     const zapAtual = () => F && fp === 4 ? (F.zapTxt !== null && F.zapTxt !== undefined ? F.zapTxt : zapModelo(F.zapModelo || 1)) : '';
     const ressalva = F ? (F.ressalva || '').trim() : '';
     const ressMais = !!F && !!F.ressMais;
-    const pilRessalva = (t) => { const tem = ressalva.includes(t), pl = pilula(tem, t, () => this.fSet(f => ({ ressalva: (f.ressalva || '').includes(t) ? semRessalva(f.ressalva, t) : comRessalva(f.ressalva, t) })));
-      return { ...pl, aria: `${tem ? 'Já incluída (toque para tirar)' : 'Incluir'}: ${t}`, borda: tem ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)' }; };
+    // PR #40 (S2-1): com a Higienização já no orçamento, "necessita higienização futura" contradiz o serviço: o toque para incluir é ignorado
+    // (se já estava incluída, o toque ainda tira).
+    const higNoOrc = fi.some(x => x.sid === 'higienizacao');
+    const pilRessalva = (t) => { const tem = ressalva.includes(t), bloq = !tem && higNoOrc && t === RESSALVA_HIG[1], pl = pilula(tem, t, () => !bloq && this.fSet(f => ({ ressalva: (f.ressalva || '').includes(t) ? semRessalva(f.ressalva, t) : comRessalva(f.ressalva, t) })));
+      return { ...pl, bloq: bloq ? 'true' : 'false', opac: bloq ? '0.55' : '1', aria: `${tem ? 'Já incluída (toque para tirar)' : 'Incluir'}: ${t}`, borda: tem ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)' }; };
     // Bandeja de alertas anti-prejuízo (PR #20): no máximo 1 por vez, na ordem retorno > porte > fluido; o × dispensa até o gatilho mudar.
     // Porte não aparece no modo cliente ao lado (fala de preço); retorno e fluido são argumento técnico e continuam.
     const aOff = st.alertaOff || {}, dispensar = (k) => () => this.setState(x => ({ alertaOff: { ...x.alertaOff, [k]: true } }));
@@ -2301,7 +2331,7 @@ class Component extends DCLogic {
     // Preventiva de 6 meses (PR #21): prevEm gravado no documento; atendimento salvo antes disso usa a data de emissão + 6 meses (a mesma regra da etiqueta).
     const cofreL = Object.entries(porNum).map(([n, ds]) => { const ult = ds[ds.length - 1], base = ds.find(d => !AVULSO.includes(d.tipo)) || ult, dias = diasGar(base.garantia); const venc = dias ? base.em + dias * DIA : null;
       const prevEm = AVULSO.includes(base.tipo) ? null : base.prevEm || maisMeses(base.em, 6); return { n, ds, ult, base, venc, prevEm }; }).sort((a, b) => b.ult.em - a.ult.em);
-    const zap = (tel, msg) => window.open((dig(tel) ? 'https://wa.me/55' + dig(tel).replace(/^55/, '') : 'https://wa.me/') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    const zap = (tel, msg) => window.open(zapUrl(tel, msg), '_blank', 'noopener');
     // Envio direto no WhatsApp (PR #26): Carga térmica, Laudo, PMOC e Recibo avulso, timbrados pelo titular e com a mesma validação do PDF.
     // Número do cliente só quando é celular conhecido (o do atendimento com o mesmo nome, ou o do PMOC); sem número, o técnico escolhe a conversa.
     const timbre = tit ? 'Titular: ' + [tit.nome, tit.docFmt ? `${tit.docTipo} ${tit.docFmt}` : '', tit.cidade].filter(Boolean).join(' · ') : false;
@@ -2395,14 +2425,14 @@ class Component extends DCLogic {
     }
     const dentro = tolBand && Rn !== null ? Rn >= tolBand[0] && Rn <= tolBand[1] : null;
     const faixaTxt = tolBand ? `${fk(tolBand[0])}–${fk(tolBand[1])} kΩ` : '';
-    const PM = st.pmoc, pmS = (k) => (e) => { const v = e.target.value; this.setState(x => ({ pmoc: { ...x.pmoc, [k]: v } })); };
+    const PM = st.pmoc, pmS = (k) => (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ pmoc: { ...x.pmoc, [k]: v } })); };
     const pmG = []; ((B && B.pmoc) || []).forEach(r => { let g = pmG.find(x => x.t === r.grupo); if (!g) pmG.push(g = { t: r.grupo, ativ: [] }); g.ativ.push(r.atividade); });
     const pmOk = PM.amb.trim().length >= 2 && PM.prop.trim().length >= 2;
     const garD = F && diasGar(garTxt) ? dataBR(Date.now() + diasGar(garTxt) * DIA) : '[data]';
     const SV = { cli: F && F.cliNome.trim() ? F.cliNome.trim() : '[cliente]', tit: tit ? tit.nome : '[seu nome]', n: F && F.numero ? F.numero : '[nº]', val: F && fTotal > 0 ? BRL.format(fTotal) : '[valor]', pix: tit ? tit.pix : '[chave Pix]', gar: garD };
     const scMsg = (m) => this.setState({ scMsg: m });
     const RC = st.reca, rcN = reais(RC.val), rcOk = RC.cli.trim().length >= 2 && rcN > 0 && !!RC.ref.trim() && !!RC.forma;
-    const rcS = (k) => (e) => { const v = e.target.value; this.setState(x => ({ reca: { ...x.reca, [k]: v } })); };
+    const rcS = (k) => (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ reca: { ...x.reca, [k]: v } })); };
     // Catálogo completo de fichas (item 3 do Pedro, 26/10), montado da base técnica carregada.
     const catF = [];
     if (B) {
@@ -2514,15 +2544,17 @@ class Component extends DCLogic {
       invOrcar: () => { const cFora = (IV.compressor || {}).r === 'Fora'; this.abrirFech(['reparo_placa', 'placa_nova', ...(cFora ? ['compressor_troca'] : [])], true, cFora ? ['compressor_troca'] : null); },
       invLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cons: invTxt ? (x.laudo.cons ? x.laudo.cons + '\n' : '') + (invUni ? `Checklist Inverter (procedimento universal, ${marca}):\n` : 'Checklist Inverter (manual Midea Mission2 3D):\n') + invTxt : x.laudo.cons } })),
       invFonte: invUni ? 'Procedimento universal de bancada (Base Técnica GeloPro): valores físicos da retificação de 220 V CA, do teste de diodo e do equilíbrio entre as fases.' : `${fonteTxt('F20')}; ${fonteTxt('F21')}. Status: oficial de outro país.`,
-      ntcTolTipo: rZero ? 'aviso' : tolR && dentro !== null ? (dentro ? 'sucesso' : 'aviso') : 'info',
-      ntcTolT: rZero ? 'Resistência zero não entra no cálculo' : !tolR ? 'Sem tolerância na base' : dentro === null ? `Tolerância declarada: R25 ±${tolR.r25_tol_pct}% e B ±${tolR.beta_tol_pct}%` : dentro ? `Dentro da tolerância (${faixaTxt})` : `Fora da tolerância (${faixaTxt})`,
-      ntcTolX: rZero ? 'Zero indica curto no sensor, no conector ou na fiação, ou multímetro fora da escala. Confira antes de comparar com a curva.' : !tolR ? 'Compare a diferença com a tolerância do fabricante antes de condenar o sensor.' : dentro === null ? `${tolR.escopo}. Informe temperatura e resistência.` : dentro ? `${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).` : `Repita a medição em outra temperatura e confira conector e fiação antes de condenar o sensor. ${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).`,
+      ntcTolTipo: rZero || ntcFalha ? 'aviso' : tolR && dentro !== null ? (dentro ? 'sucesso' : 'aviso') : 'info',
+      ntcTolT: rZero ? 'Resistência zero não entra no cálculo' : ntcFalha === 'curto' ? 'Sensor NTC em curto (abaixo de 0,15 kΩ)' : ntcFalha === 'aberto' ? 'Sensor NTC aberto (acima de 450 kΩ)' : !tolR ? 'Sem tolerância na base' : dentro === null ? `Tolerância declarada: R25 ±${tolR.r25_tol_pct}% e B ±${tolR.beta_tol_pct}%` : dentro ? `Dentro da tolerância (${faixaTxt})` : `Fora da tolerância (${faixaTxt})`,
+      ntcTolX: rZero ? 'Zero indica curto no sensor, no conector ou na fiação, ou multímetro fora da escala. Confira antes de comparar com a curva.'
+        : ntcFalha === 'curto' ? 'Resistência quase zero: sensor, conector ou fiação em curto. Troque o sensor e orce agora em "Orçar substituição de sensor NTC".'
+        : ntcFalha === 'aberto' ? 'Resistência muito alta: sensor rompido, conector solto ou fio partido. Troque o sensor e orce agora em "Orçar substituição de sensor NTC".' : !tolR ? 'Compare a diferença com a tolerância do fabricante antes de condenar o sensor.' : dentro === null ? `${tolR.escopo}. Informe temperatura e resistência.` : dentro ? `${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).` : `Repita a medição em outra temperatura e confira conector e fiação antes de condenar o sensor. ${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).`,
       telaPmoc: st.tela === 'pmoc', telaScripts: st.tela === 'scripts',
       pmSet: Object.fromEntries(['amb', 'end', 'cid', 'tel', 'prop', 'propDoc', 'propCont', 'rt', 'reg', 'art', 'ambs', 'emerg'].map(k => [k, pmS(k)])),
       pmAmb: PM.amb, pmEnd: PM.end, pmCid: PM.cid, pmTel: PM.tel, pmProp: PM.prop, pmPropDoc: PM.propDoc, pmPropCont: PM.propCont, pmRt: PM.rt, pmReg: PM.reg, pmArt: PM.art, pmAmbs: PM.ambs, pmEmerg: PM.emerg,
       pmAmbE: PM.tentou && PM.amb.trim().length < 2 ? 'erro' : 'normal', pmPropE: PM.tentou && PM.prop.trim().length < 2 ? 'erro' : 'normal',
       pmSemRt: !PM.rt.trim() || !PM.reg.trim(), pmErro: PM.tentou && !pmOk,
-      pmGrupos: pmG.map(g => ({ t: g.t, ativ: g.ativ.map(a => '• ' + a), per: PM.per[g.t] || '', setPer: (e) => { const v = e.target.value; this.setState(x => ({ pmoc: { ...x.pmoc, per: { ...x.pmoc.per, [g.t]: v } } })); } })),
+      pmGrupos: pmG.map(g => ({ t: g.t, ativ: g.ativ.map(a => '• ' + a), per: PM.per[g.t] || '', setPer: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ pmoc: { ...x.pmoc, per: { ...x.pmoc.per, [g.t]: v } } })); } })),
       pmPdf: () => {
         if (!pmOk) return this.setState(x => ({ pmoc: { ...x.pmoc, tentou: true } }));
         const L = (arr) => arr.map(a => `• ${a}\n   Data ______  Executado por ______________  Aprovado por ______________`).join('\n');
@@ -2593,9 +2625,9 @@ class Component extends DCLogic {
         { tipo: 'Cofre', t: 'Documentos emitidos', s: `${Object.keys(porNum).length} neste aparelho`, acao: () => lock ? this.vazio('upg', { modK: 'cofre' }) : this.setState({ tela: 'cofre', modK: 'cofre' }) },
       ],
       temAdic: true, adic: BUMPS.map(([id, t, x]) => { const tem = bumps.includes(id), pronto = id !== 'tabela'; return { t, x: tem && !pronto ? x + '. Conteúdo em pesquisa, entra na próxima versão.' : x + '.', selo: tem ? (pronto ? 'Liberado' : 'Em pesquisa') : 'Não comprado', tipo: tem ? (pronto ? 'sucesso' : 'aviso') : 'neutro', abre: tem && pronto, fecha: !(tem && pronto), acao: () => this.setState({ tela: id === 'pmoc' ? 'pmoc' : 'scripts', modK: 'docs' }) }; }),
-      lCli: LD.cli, lSetCli: (e) => { const v = e.target.value; this.setState(x => ({ laudo: { ...x.laudo, cli: v } })); }, lCliE: LD.tentou && LD.cli.trim().length < 2 ? 'erro' : 'normal',
-      lConst: LD.cons, lSetConst: (e) => { const v = e.target.value; this.setState(x => ({ laudo: { ...x.laudo, cons: v } })); },
-      lConc: LD.conc, lSetConc: (e) => { const v = e.target.value; this.setState(x => ({ laudo: { ...x.laudo, conc: v } })); },
+      lCli: LD.cli, lSetCli: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, cli: v } })); }, lCliE: LD.tentou && LD.cli.trim().length < 2 ? 'erro' : 'normal',
+      lConst: LD.cons, lSetConst: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, cons: v } })); },
+      lConc: LD.conc, lSetConc: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, conc: v } })); },
       lMed, lErro: LD.tentou && !lOk,
       // Laudo de inviabilidade (PR #35): a troca do aparelho vira orçamento na hora, com desinstalação e instalação no porte do topo.
       lOrcar: () => this.abrirFech(['desinstalacao', 'instalacao_split'], true, ['desinstalacao', 'instalacao_split']),
@@ -2639,11 +2671,11 @@ class Component extends DCLogic {
       cofreFiltroVazio: cofreL.length > 0 && !cofreF.length, cofreFiltroVazioT: cofreK === 'prev' ? 'Nenhum atendimento com preventiva de 6 meses' : 'Nenhuma garantia ativa no Cofre',
       fAberto: !!(st.fOpen && F), fRef: this.fRef, fSair, fKicker: 'Fechamento', fTitulo: PASSOS[fp - 1], fPassoTxt: `Passo ${fp} de 4`,
       fP1: fp === 1, fP2: fp === 2, fP3: fp === 3, fP4: fp === 4,
-      fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: e.target.value }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
+      fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: limparTxt(e.target.value) }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
       fCliTel: F ? F.cliTel : '', fSetCliTel: (e) => this.fSet({ cliTel: e.target.value }),
       fEquip: equip, fTemDiag: !!r && !discreto, fDiag: r ? `Hipótese interna (não vai ao cliente): ${r.t}` : '',
       fItens: fi.map((x, i) => { const semD = !x.d.trim(), semV = !(x.n > 0), err = tent && fp === 1 && (semD || semV), c = catDe(x);
-        const setX = (k) => (e) => { const v = e.target.value; this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
+        const setX = (k) => (e) => { const v = limparTxt(e.target.value); this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
         const setCusto = (v) => () => this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, custo: v } : y) }));
         const cm = c ? custoPorte(c, x.btu || st.sel.btu).cmed : 0, cx = reais(String(x.custo ?? '')), est = !!c && cm > 0 && cx === 0, comp = !!c && cm > 0 && cx === cm;
         const tecla = (on) => ({ borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)' });
@@ -2667,7 +2699,7 @@ class Component extends DCLogic {
         jVal: txtItem(x, 'j', c && c.j), fVal: txtItem(x, 'faixa', faixaPad(x)), eVal: ecoV, setJ: setX('j'), setF: setX('faixa'), setE: setX('eco'),
         // Auto-justificador (PR #35): em qualquer item (do catálogo ou do "+ Adicionar item"), 1 toque preenche procedimento e economia que
         // estiverem vazios e a faixa compatível com o valor digitado. Sem valor válido, o botão fica desligado.
-        autoJOff: !(x.n > 0), autoJ: () => { if (!(x.n > 0)) return; this.fSet(f => ({ itens: f.itens.map((y, j) => j !== i ? y : { ...y, j: txtItem(y, 'j', c && c.j) ? y.j : AUTO_J, faixa: faixaElastica(x.n), eco: txtItem(y, 'eco', c && c.eco) ? y.eco : AUTO_ECO }) })); },
+        autoJOff: !(x.n > 0), autoJ: () => { if (!(x.n > 0)) return; this.fSet(f => ({ itens: f.itens.map((y, j) => j !== i ? y : { ...y, j: txtItem(y, 'j', c && c.j) ? y.j : AUTO_J, faixa: c && faixaDe(c, st.sel.btu).max !== null && x.n > faixaDe(c, st.sel.btu).max * TETO_ELASTICO + 0.004 ? faixaPorte(c, st.sel.btu) : faixaElastica(x.n), eco: txtItem(y, 'eco', c && c.eco) ? y.eco : AUTO_ECO }) })); },
         edAjuda: discreto ? 'Campo de texto vazio não sai no documento nem no WhatsApp.' : 'Campo de texto vazio não sai no documento nem no WhatsApp. O custo da peça é só seu e entra no lucro líquido.',
         custoRot: `Custo real da peça do item ${i + 1} (só para você)`, custoVal: x.custo === undefined || x.custo === null ? '' : typeof x.custo === 'number' ? v2(x.custo) : x.custo, setCustoTxt: setX('custo'), custoE: reaisErro(x.custo) ? 'erro' : 'normal',
         ariaJ: `Procedimento incluso do item ${i + 1}`, ariaF: `Faixa de referência de tabela do item ${i + 1}`, ariaE: `Economia preventiva do item ${i + 1}`, ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itemEd: null, itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
@@ -2709,7 +2741,7 @@ class Component extends DCLogic {
       fJustif: justif, fJustifTxt: justif ? 'true' : 'false', fJustifToggle: () => this.fSet(f => ({ justif: f.justif === false })),
       fJustifIco: justif ? 'sucesso' : 'neutro', fJustifBorda: justif ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fJustifFundo: justif ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', fJustifCor: justif ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',
       // Ressalva / estado encontrado e foto de evidência (opcionais): saem no orçamento, na aprovação e no termo de garantia.
-      fRessalva: F ? F.ressalva || '' : '', fSetRessalva: (e) => this.fSet({ ressalva: e.target.value }),
+      fRessalva: F ? F.ressalva || '' : '', fSetRessalva: (e) => this.fSet({ ressalva: limparTxt(e.target.value) }),
       // Pílulas de ressalva com 2 estados (PR #24): o 1º toque inclui a frase; com ela no campo, a pílula fica marcada e o 2º toque tira a frase.
       fRessalvas: RESSALVAS.map(pilRessalva),
       fRessMaisAberto: ressMais, fRessMaisExp: ressMais ? 'true' : 'false', fRessMaisToggle: () => this.fSet(f => ({ ressMais: !f.ressMais })),
@@ -2737,8 +2769,8 @@ class Component extends DCLogic {
       fTotal, fTotalTxt: BRL.format(fTotal),
       fPrazo: F ? F.prazo : '', fSetPrazo: (v) => this.fSet({ prazo: v }), fPrazoE: tent && fp === 2 && !F.prazo ? 'erro' : 'normal',
       fPrazoPilulas: PRAZOS_LIVRES.map(t => { const on = !!F && F.prazoLivre.trim() === t; return { t, on: on ? 'true' : 'false', borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)', acao: () => this.fSet({ prazoLivre: t }) }; }),
-      fLivre: !!F && F.prazo === 'Livre', fPrazoLivre: F ? F.prazoLivre : '', fSetPrazoLivre: (e) => this.fSet({ prazoLivre: e.target.value }), fLivreE: tent && fp === 2 && F.prazo === 'Livre' && !F.prazoLivre.trim() ? 'erro' : 'normal',
-      fCobre: F ? F.cobre : '', fSetCobre: (e) => this.fSet({ cobre: e.target.value }), fNaoCobre: F ? F.naoCobre : '', fSetNaoCobre: (e) => this.fSet({ naoCobre: e.target.value }),
+      fLivre: !!F && F.prazo === 'Livre', fPrazoLivre: F ? F.prazoLivre : '', fSetPrazoLivre: (e) => this.fSet({ prazoLivre: limparTxt(e.target.value) }), fLivreE: tent && fp === 2 && F.prazo === 'Livre' && !F.prazoLivre.trim() ? 'erro' : 'normal',
+      fCobre: F ? F.cobre : '', fSetCobre: (e) => this.fSet({ cobre: limparTxt(e.target.value) }), fNaoCobre: F ? F.naoCobre : '', fSetNaoCobre: (e) => this.fSet({ naoCobre: limparTxt(e.target.value) }),
       fCliLinha: F ? `Orçamento para ${F.cliNome || '—'}` : '', fItensRO: fi.map((x, i) => { const jc = jCli(x); return { n: i + 1, d: descQ(x), v: x.q > 1 && x.s !== null ? v2(x.s) : x.v, temJ: !!(jc.j || jc.faixa || jc.eco), j: jc.j, faixa: jc.faixa, temE: !!jc.eco, eco: jc.eco }; }), fGarLinha,
       fAssinE: tent && fp === 3 && !F.assin ? 'erro' : 'normal', fSetAssin: (u) => { if (F && F.assinUrl) URL.revokeObjectURL(F.assinUrl); this.fSet({ assin: u, assinUrl: u ? blobDe(u) : null }); },
       fPixChave: tit ? tit.pix : '', fPixNome: tit ? tit.nome : '', fPixCidade: tit ? tit.cidade : '', fTxid: 'ORC' + ((F && F.numero) || ''),
@@ -2752,8 +2784,8 @@ class Component extends DCLogic {
       // Novo aparelho deste mesmo cliente (PR #30): novo atendimento com nome, telefone, marca, BTU/h e fluido; o resto zera como no Concluir.
       fNovoMesmo: () => this.setState(x => ({ ...ATEND0(x.btu), sel: { ...x.sel }, fech: { ...FECH0(), cliNome: x.fech ? x.fech.cliNome : '', cliTel: x.fech ? x.fech.cliTel : '' } })),
       fNovoMesmoAria: `Novo aparelho deste mesmo cliente: começa outro atendimento com ${F && F.cliNome.trim() ? F.cliNome.trim() : 'o cliente'}, ${st.sel.marca}, ${st.sel.btu} BTU/h e ${st.sel.fluido}`,
-      fZapTxt: zapAtual(), fSetZapTxt: (e) => this.fSet({ zapTxt: e.target.value }),
-      fZap: () => { this.numero(); const tel = dig(F.cliTel).replace(/^55/, ''); window.open((tel ? 'https://wa.me/55' + tel : 'https://wa.me/') + '?text=' + encodeURIComponent(zapAtual()), '_blank', 'noopener'); this.fSet({ msg: ['sucesso', 'Mensagem aberta no WhatsApp', tel ? 'Confira e envie.' : 'Sem telefone: escolha o contato no WhatsApp.'] }); },
+      fZapTxt: zapAtual(), fSetZapTxt: (e) => this.fSet({ zapTxt: limparTxt(e.target.value) }),
+      fZap: () => { this.numero(); const tel = zapNum(F.cliTel); window.open(zapUrl(F.cliTel, zapAtual()), '_blank', 'noopener'); this.fSet({ msg: ['sucesso', 'Mensagem aberta no WhatsApp', tel ? 'Confira e envie.' : 'Sem telefone: escolha o contato no WhatsApp.'] }); },
       fTemMsg: !!(F && F.msg), fMsgTipo: F && F.msg ? F.msg[0] : 'info', fMsgT: F && F.msg ? F.msg[1] : '', fMsgX: F && F.msg ? F.msg[2] : '',
       // Verde comercial (PR #23): Continuar, Continuar e Aprovar avançam o dinheiro; Sair, Voltar e Concluir ficam nas cores de sempre.
       fKeys: fp === 1 ? [{ l: 'Sair', pri: false, aria: 'Sair e manter o rascunho', acao: fSair }, { l: 'Continuar', pri: true, verde: true, aria: 'Continuar para a garantia', acao: avancar }]
@@ -2990,7 +3022,7 @@ class Component extends DCLogic {
       // Nome igual a uma das 14 ou a uma pílula OEM vira a grafia oficial (com emblema nas 14).
       marcasOem: MARCAS_OEM.map(t => pilula(st.sel.marca === t, t, () => { if (performance.now() - (this._gavetaEm || 0) < GAVETA_TRAVA) return; usarMarca(t); })),
       marcaLivre: st.marcaLivre || '', marcaLivreVazia: !String(st.marcaLivre || '').trim(),
-      setMarcaLivre: (e) => this.setState({ marcaLivre: e.target.value }), marcaAplicar: () => usarMarca(st.marcaLivre), marcaEnter: (e) => { if (e.key === 'Enter') usarMarca(e.target.value); },
+      setMarcaLivre: (e) => this.setState({ marcaLivre: limparTxt(e.target.value) }), marcaAplicar: () => usarMarca(st.marcaLivre), marcaEnter: (e) => { if (e.key === 'Enter') usarMarca(e.target.value); },
       dSel, dNota: d === 'marca', dLista: d === 'fichas' && !st.fichaSel, dFicha: d === 'fichas' && !!st.fichaSel,
       opcoesSel: dSel ? OPTS[d].list.map(label => {
         const on = st.sel[d] === label;

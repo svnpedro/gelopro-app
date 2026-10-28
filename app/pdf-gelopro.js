@@ -21,7 +21,13 @@
   const SYM = { 0x2192: [0xAE, 987], 0x2190: [0xAC, 987], 0x21D2: [0xDE, 987], 0x2265: [0xB3, 549], 0x2264: [0xA3, 549], 0x2248: [0xBB, 549], 0x2260: [0xB9, 549], 0x0394: [0x44, 612], 0x2206: [0x44, 612], 0x03A9: [0x57, 768], 0x2126: [0x57, 768], 0x2212: [0x2D, 549] };
   // Espaços finos e não separáveis viram o espaço não separável do WinAnsi (0xA0): "R$ 1.234,00" não quebra no meio.
   const NBSP = new Set([0x2007, 0x2009, 0x200A, 0x202F, 0x2011]);
-  const COR = { tinta: '0.067 0.094 0.153', apoio: '0.290 0.333 0.408', faixa: '0.059 0.204 0.357', clara: '0.871 0.914 0.961', branco: '1 1 1', regua: '0.796 0.827 0.867', caixa: '0.953 0.961 0.973' };
+  const COR = { tinta: '0.067 0.094 0.153', apoio: '0.290 0.333 0.408', faixa: '0.059 0.204 0.357', clara: '0.871 0.914 0.961', branco: '1 1 1', regua: '0.796 0.827 0.867', caixa: '0.953 0.961 0.973',
+    // PR #40: "PRO" em azul-gelo claro (#9fd8ff), quadro do titular na faixa (#19416d, moldura #5b7fa6) e o filete verde da sub-caixa técnica (#16a34a).
+    gelo: '0.624 0.847 1', quadro: '0.098 0.255 0.427', quadroBorda: '0.357 0.498 0.651', verde: '0.086 0.639 0.290' };
+  // Marca oficial (marca-gelopro.js); sem o módulo carregado, as mesmas constantes.
+  const MARCA = () => window.GeloProMarca || { partes: ['Gelo', 'PRO'], slogan: 'INTELIGÊNCIA & DIAGNÓSTICO EM CLIMATIZAÇÃO', proporcao: 0.66, linhasSlogan: null };
+  // Pix copia e cola (BR Code EMV, começa em 000201): quebra por caractere exato, sem inserir nem perder nada (nem o espaço do nome do titular).
+  const EMV = /000201\S/;
 
   // Caractere → [fonte (0 texto, 1 Symbol), byte, largura Symbol] ou null (controle e espaço de largura zero somem).
   const cod = (ch) => {
@@ -43,6 +49,16 @@
     // "R$ 1.200" nunca parte entre o símbolo e o valor (o texto do catálogo vem com espaço comum).
     String(txt == null ? '' : txt).replace(/\r/g, '').replace(/R\$ (?=[\d-])/g, 'R$ ').split('\n').forEach(par => {
       if (!par.trim()) { out.push(''); return; }
+      const m = par.match(EMV);
+      if (m) {
+        // Texto antes do código quebra por palavra; o código segue na mesma linha e quebra por caractere, idêntico ao que o banco lê.
+        const p0 = par.slice(0, m.index).trimEnd(), pre = p0.trim() ? quebrar(p0, b, tam, max) : [];
+        let lin = pre.length ? pre.pop() + ' ' : '';
+        out.push(...pre);
+        for (const ch of Array.from(par.slice(m.index))) { if (lin.trim() && largura(lin + ch, b, tam) > max) { out.push(lin); lin = ''; } lin += ch; }
+        if (lin) out.push(lin);
+        return;
+      }
       let lin = '';
       for (let p of par.split(/ +/)) {
         if (!p) continue;
@@ -96,6 +112,23 @@
   }
 
   // ── Diagramação: cada peça é uma lista de linhas { h, draw(y) }; "junto" = a peça inteira cabe na página ou abre página nova. ──
+  // Linha da OS no cabeçalho por tipo de documento (o orçamento é a proposta técnica).
+  const OS_LINHA = { orc: 'PROPOSTA TÉCNICA', gar: 'TERMO DE GARANTIA', rec: 'RECIBO', reca: 'RECIBO', laudo: 'LAUDO TÉCNICO', pmoc: 'PMOC' };
+  // Slogan sob o nome (regra de equilíbrio do Pedro): o menor nº de linhas em que o slogan cabe em `alvo` (~66 % do nome) com corpo entre 6,5 e 7,5 pt.
+  // Nenhuma linha passa do alvo; o corpo nunca passa de 7,5 pt. INTELIGÊNCIA & / DIAGNÓSTICO EM / CLIMATIZAÇÃO, a ~7,1 pt, sob o GeloPRO de 22 pt.
+  function encaixar(M, alvo) {
+    const pal = String(M.slogan || '').split(/\s+/).filter(Boolean), w1 = (s) => largura(s, false, 1);
+    const div = (P, n) => n <= 1 ? [[P.join(' ')]] : P.slice(0, P.length - n + 1).flatMap((_, i) => div(P.slice(i + 1), n - 1).map(r => [P.slice(0, i + 1).join(' '), ...r]));
+    let ult = { linhas: pal, tam: 6.5 };
+    for (let n = 1; n <= pal.length; n++) {
+      const L = div(pal, n).map(x => ({ x, w: Math.max(...x.map(w1)) })).sort((p, q) => p.w - q.w)[0];
+      const tam = Math.min(7.5, Math.floor(alvo / L.w * 10) / 10);
+      ult = { linhas: L.x, tam };
+      if (tam >= 6.5) return ult;
+    }
+    return ult;
+  }
+
   function diagramar(d, img) {
     const pags = [];
     let ops = null, y = 0;
@@ -121,31 +154,51 @@
     };
 
     function cabecalho() {
-      // Faixa timbrada de ponta a ponta: tipo, número e emissão à esquerda; titular (nome, CPF/CNPJ, cidade e chave Pix) à direita.
-      const t = d.titular || {}, wE = LARG * 0.55, wD = LARG * 0.43, xD = MX + LARG - wD;
-      const E = [...quebrar(tipoTxt, true, 18, wE).map(s => [s, true, 18, 23, COR.branco]), ['', false, 4, 6, COR.branco],
-        ...quebrar(`Nº ${numero}`, true, 11, wE).map(s => [s, true, 11, 15, COR.branco]),
-        ...quebrar(`Emitido em ${d.data || ''}${d.via2 ? ` · ${d.via2}` : ''}`, false, 10, wE).map(s => [s, false, 10, 14, COR.clara])];
-      const D = [...quebrar(t.nome || '', true, 11, wD).map(s => [s, true, 11, 15, COR.branco]),
+      // Ordem de Serviço Executiva A4 (PR #40): faixa azul-marinho de ponta a ponta. À esquerda, a marca GeloPRO em destaque (Helvetica-Bold 22 pt,
+      // "Gelo" branco + "PRO" azul-gelo) com o slogan menor e centralizado embaixo do nome (no máximo ~66 % da largura dele, até 7,5 pt), a linha
+      // "ORDEM DE SERVIÇO / … · Nº", o tipo e a emissão. À direita, o quadro do Titular / Assistência Técnica (nome, CPF/CNPJ, cidade e chave Pix).
+      const t = d.titular || {}, M = MARCA(), wE = LARG * 0.55, wD = LARG * 0.40, xD = MX + LARG - wD, topo = 22, TN = 22;
+      const [pA, pB] = M.partes || ['Gelo', 'PRO'], wNome = largura(pA + pB, true, TN), alvo = wNome * (M.proporcao || 0.66);
+      const S = encaixar(M, alvo), os = OS_LINHA[d.tipo] || (/garantia/i.test(tipoTxt) ? 'TERMO DE GARANTIA' : /recibo/i.test(tipoTxt) ? 'RECIBO' : /laudo/i.test(tipoTxt) ? 'LAUDO TÉCNICO' : /pmoc/i.test(tipoTxt) ? 'PMOC' : 'PROPOSTA TÉCNICA');
+      // Linhas da coluna da marca: [texto, negrito, corpo, entrelinha, cor].
+      // A linha da OS fica inteira (o "Nº" nunca se separa do número): o corpo desce de 9,5 até 8 pt para caber antes do quadro do titular.
+      const osTxt = `ORDEM DE SERVIÇO / ${os} · Nº ${numero}`, wOS = xD - MX - 14; let tOS = 9.5; while (tOS > 8 && largura(osTxt, true, tOS) > wOS) tOS -= 0.25;
+      const E = [...quebrar(osTxt, true, tOS, wOS).map(s => [s, true, tOS, 13, COR.branco]),
+        ...quebrar(tipoTxt, true, 14, wE).map(s => [s, true, 14, 18, COR.branco]),
+        ...quebrar(`Emitido em ${d.data || ''}${d.via2 ? ` · ${d.via2}` : ''}`, false, 9.5, wE).map(s => [s, false, 9.5, 13, COR.clara])];
+      const hMarca = TN + S.linhas.length * S.tam * 1.25 + 8, hE = hMarca + E.reduce((a, l) => a + l[3], 0);
+      const D = [...(t.nome || t.doc || t.cidade || t.pix ? [['TITULAR / ASSISTÊNCIA TÉCNICA', true, 7.5, 12, COR.clara]] : []),
+        ...quebrar(t.nome || '', true, 11, wD - 24).map(s => [s, true, 11, 15, COR.branco]),
         ...[t.doc ? `${t.docTipo || 'CPF/CNPJ'}: ${t.doc}` : '', t.cidade ? `Cidade: ${t.cidade}` : '', t.pix ? `Chave Pix: ${t.pix}` : ''].filter(Boolean)
-          .flatMap(s => quebrar(s, false, 9.5, wD).map(l => [l, false, 9.5, 13, COR.clara]))];
-      const hE = E.reduce((a, l) => a + l[3], 0), hD = D.reduce((a, l) => a + l[3], 0), topo = 26, h = topo + Math.max(hE, hD) + 18;
+          .flatMap(s => quebrar(s, false, 9, wD - 24).map(l => [l, false, 9, 12.5, COR.clara]))];
+      const hD = D.length ? D.reduce((a, l) => a + l[3], 0) + 20 : 0, h = topo + Math.max(hE, hD) + 16;
       ops.push(retangulo(0, 0, PW, h, COR.faixa), retangulo(0, h, PW, 3, COR.clara));
-      let a = topo; E.forEach(([s, b, tam, lead, cor]) => { if (s) ops.push(texto(MX, a + tam * 0.95, s, b, tam, cor)); a += lead; });
-      a = topo; D.forEach(([s, b, tam, lead, cor]) => { if (s) ops.push(texto(xD + wD - largura(s, b, tam), a + tam * 0.95, s, b, tam, cor)); a += lead; });
-      y = h + 3 + 18;
+      // Marca: "Gelo" + "PRO" e, centralizado embaixo do nome, o slogan em linhas menores.
+      const base = topo + TN * 0.76, cx = MX + wNome / 2;
+      ops.push(texto(MX, base, pA, true, TN, COR.branco), texto(MX + largura(pA, true, TN), base, pB, true, TN, COR.gelo));
+      let a = topo + TN + 3;
+      S.linhas.forEach(l => { ops.push(texto(cx - largura(l, false, S.tam) / 2, a + S.tam * 0.95, l, false, S.tam, COR.clara)); a += S.tam * 1.25; });
+      a = topo + hMarca;
+      E.forEach(([s, b, tam, lead, cor]) => { if (s) ops.push(texto(MX, a + tam * 0.95, s, b, tam, cor)); a += lead; });
+      // Quadro do titular: caixa um tom acima da faixa, moldura sutil e texto alinhado à direita.
+      if (D.length) {
+        ops.push(retangulo(xD, topo - 4, wD, hD, COR.quadro), `q ${COR.quadroBorda} RG 0.8 w ${n2(xD)} ${n2(PH - (topo - 4) - hD)} ${n2(wD)} ${n2(hD)} re S Q`);
+        a = topo + 6; D.forEach(([s, b, tam, lead, cor]) => { if (s) ops.push(texto(xD + wD - 12 - largura(s, b, tam), a + tam * 0.95, s, b, tam, cor)); a += lead; });
+      }
+      y = h + 3 + 16;
     }
     const titulo = (s) => [...txtL(s, { b: true, tam: 12, lead: 17, cor: COR.faixa }), esp(3)];
 
     nova();
-    // Cliente e equipamento numa caixa clara.
-    const c = d.cliente || {};
-    const CL = [...txtL('CLIENTE', { b: true, tam: 8.5, lead: 13, cor: COR.apoio, x: MX + 12, w: LARG - 24 }),
-      ...txtL(c.nome || 'Cliente', { b: true, tam: 12, lead: 17, x: MX + 12, w: LARG - 24 }),
-      ...(c.tel ? txtL(`Telefone: ${c.tel}`, { tam: 10, lead: 14, x: MX + 12, w: LARG - 24 }) : []),
-      ...(c.equip ? txtL(/BTU\/h/.test(c.equip) ? `Equipamento: ${c.equip}` : c.equip, { tam: 10, lead: 14, x: MX + 12, w: LARG - 24 }) : [])];
-    const hCL = CL.reduce((t, l) => t + l.h, 0) + 20;
-    por([{ h: 10, draw: (yy) => ops.push(retangulo(MX, yy, LARG, hCL, COR.caixa)) }, ...CL, esp(10), esp(16)], true);
+    // Quadro Cliente & Equipamento em 2 colunas (PR #40): caixa clara com moldura sutil e um filete vertical entre o cliente e o aparelho aferido.
+    const c = d.cliente || {}, wC = LARG / 2 - 24, xC1 = MX + 12, xC2 = MX + LARG / 2 + 12;
+    const rot = (s, x) => txtL(s, { b: true, tam: 8, lead: 12, cor: COR.apoio, x, w: wC });
+    const CL = [...rot('CLIENTE', xC1), ...txtL(c.nome || 'Cliente', { b: true, tam: 12, lead: 16, x: xC1, w: wC }),
+      ...(c.tel ? txtL(`Telefone: ${c.tel}`, { tam: 9.5, lead: 13, x: xC1, w: wC }) : [])];
+    const EQ = [...rot('EQUIPAMENTO AFERIDO', xC2), ...txtL(c.equip ? (/BTU\/h/.test(c.equip) ? `Equipamento: ${c.equip}` : c.equip) : '—', { tam: 9.5, lead: 13, x: xC2, w: wC })];
+    const soma = (A) => A.reduce((t, l) => t + l.h, 0), hCol = Math.max(soma(CL), soma(EQ)), hCL = hCol + 20;
+    const colunas = { h: hCol, draw: (yy) => { let k = yy; CL.forEach(l => { l.draw(k); k += l.h; }); k = yy; EQ.forEach(l => { l.draw(k); k += l.h; }); } };
+    por([{ h: 10, draw: (yy) => ops.push(retangulo(MX, yy, LARG, hCL, COR.caixa), `q ${COR.regua} RG 0.8 w ${n2(MX)} ${n2(PH - yy - hCL)} ${n2(LARG)} ${n2(hCL)} re S Q`, `q ${COR.regua} RG 0.8 w ${n2(MX + LARG / 2)} ${n2(PH - yy - hCL + 8)} m ${n2(MX + LARG / 2)} ${n2(PH - yy - 8)} l S Q`) }, colunas, esp(10), esp(14)], true);
 
     // Itens: quantidade, descrição (com procedimento, faixa de tabela e economia preventiva quando o detalhamento está ligado) e valor à direita.
     const itens = d.itens || [];
@@ -155,9 +208,14 @@
       itens.forEach((it, i) => {
         const desc = quebrar(it.d || '—', true, 10.5, wD), extra = [it.j, it.faixa, it.eco].filter(Boolean);
         const L = desc.map((s, k) => ({ h: 15, draw: (yy) => { ops.push(texto(xD, yy + 11, s, true, 10.5)); if (!k) { ops.push(texto(xQ, yy + 11, `${it.q || 1}×`, false, 10.5)); const v = String(it.v || '—'); ops.push(texto(MX + LARG - largura(v, true, 10.5), yy + 11, v, true, 10.5)); } } }));
-        // Procedimento, faixa e economia usam a largura toda até a margem (o valor só ocupa a 1ª linha do item).
-        extra.forEach((s, k) => L.push(...txtL(s, { tam: 9, lead: 12.5, x: xD, w: LARG - 40, cor: k === 1 ? COR.tinta : COR.apoio, b: k === 1 })));
-        L.unshift(esp(5)); L.push({ h: 7, draw: (yy) => ops.push(linhaH(MX, MX + LARG, yy + 4)) });
+        // Sub-caixa técnica (PR #40): procedimento incluso, faixa de referência de tabela e economia preventiva numa caixa clara recuada, com o
+        // filete vertical verde de 3 pt à esquerda. Laudo executivo, não diário de texto corrido. O valor só ocupa a 1ª linha do item.
+        if (extra.length) {
+          const xT = xD + 3 + 8, wT = MX + LARG - xT - 8, T = extra.flatMap(s => txtL(s, { tam: 9, lead: 12, x: xT, w: wT, cor: s === it.faixa ? COR.tinta : COR.apoio, b: s === it.faixa }));
+          const hT = soma(T) + 10;
+          L.push({ h: 8, draw: (yy) => ops.push(retangulo(xD, yy + 3, MX + LARG - xD, hT, COR.caixa), retangulo(xD, yy + 3, 3, hT, COR.verde)) }, ...T, esp(5));
+        }
+        L.unshift(esp(4)); L.push({ h: 7, draw: (yy) => ops.push(linhaH(MX, MX + LARG, yy + 4)) });
         por(i ? L : [...cab, ...L], true);
       });
     }
