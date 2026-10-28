@@ -6,6 +6,8 @@
 //      GeloProPDF.nomeArquivo(tipo, num, cliente) → "Orcamento-AMOSTRA-0001-Clinica-Veterana.pdf";
 //      GeloProPDF.baixar(blob, nome) e GeloProPDF.compartilhar(blob, nome, resumo?) (Web Share de arquivo; sem suporte, baixa o arquivo);
 //      GeloProPDF.resumo(doc) → texto do documento para o WhatsApp e GeloProPDF.copiar(texto) → Promise<boolean> (PR #26).
+//      GeloProPDF.salvarMidia(num, { foto, assinatura, cliente }) e GeloProPDF.lerMidia(num) → cofre de mídia no IndexedDB do aparelho (PR #29):
+//      a 1ª via guarda a foto e a assinatura já em JPEG pelo nº do documento, e a 2ª via do Cofre as recupera. Nada de imagem vai para o localStorage.
 (function () {
   'use strict';
   const PW = 595.28, PH = 841.89, MX = 42, LARG = PW - 2 * MX, RODAPE = 52, FIM = PH - RODAPE - 6;
@@ -233,6 +235,36 @@
     return bytes;
   }
 
+  // ── Cofre de mídia (PR #29): foto e assinatura do atendimento em JPEG ({ bytes, w, h }) no IndexedDB, chave = nº do documento. ──
+  // O localStorage do Cofre continua só com texto (o pr17.js exige 0 data:image e < 20.000 caracteres). Sem IndexedDB (aba anônima antiga,
+  // WebView travada) tudo resolve null em silêncio e o PDF sai como antes, com a nota da assinatura da 1ª via.
+  const BANCO = 'gelopro.midia', LOJA = 'midia';
+  let banco = null;
+  const abrirBanco = () => banco || (banco = new Promise((ok) => {
+    let r; try { r = indexedDB.open(BANCO, 1); } catch (e) { return ok(null); }
+    r.onupgradeneeded = () => { try { r.result.createObjectStore(LOJA); } catch (e) { /* já existe */ } };
+    r.onsuccess = () => ok(r.result); r.onerror = () => ok(null); r.onblocked = () => ok(null);
+  }).then(db => { if (!db) banco = null; return db; }));
+  const pedido = (modo, faz) => abrirBanco().then(db => !db ? null : new Promise((ok) => {
+    try { const tx = db.transaction(LOJA, modo), rq = faz(tx.objectStore(LOJA)); let v = null; rq.onsuccess = () => { v = rq.result; }; tx.oncomplete = () => ok(v === undefined ? null : v); tx.onerror = tx.onabort = () => ok(null); }
+    catch (e) { ok(null); }
+  }));
+  const copia = (g) => g && g.bytes ? { bytes: new Uint8Array(g.bytes), w: g.w, h: g.h } : null;
+  // Junta com o que já está guardado: um documento sem foto não apaga a foto gravada antes para o mesmo nº.
+  async function salvarMidia(num, m) {
+    const k = String(num || '').trim(); if (!k || !m) return null;
+    const [foto, assinatura] = await Promise.all([jpeg(m.foto, 1600).catch(() => null), jpeg(m.assinatura, 1000).catch(() => null)]);
+    if (!foto && !assinatura) return null;
+    const ant = (await pedido('readonly', (st) => st.get(k))) || {};
+    const reg = { foto: copia(foto) || ant.foto || null, assinatura: copia(assinatura) || ant.assinatura || null, cliente: m.cliente || ant.cliente || '', em: Date.now() };
+    return (await pedido('readwrite', (st) => st.put(reg, k))) === null ? null : reg;
+  }
+  async function lerMidia(num) {
+    const k = String(num || '').trim(); if (!k) return null;
+    const reg = await pedido('readonly', (st) => st.get(k));
+    return reg && (reg.foto || reg.assinatura) ? reg : null;
+  }
+
   // ── API ──
   const TIPO_ARQ = { orc: 'Orcamento', gar: 'Garantia', rec: 'Recibo', reca: 'Recibo', laudo: 'Laudo', pmoc: 'PMOC' };
   const limpo = (s) => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -248,7 +280,16 @@
     d.blocos = [...(d.blocos || [])];
     // Termo de garantia sempre com a garantia legal do CDC (arts. 24 e 26), mesmo que o chamador esqueça o bloco.
     if (d.tipo === 'gar' && !d.blocos.some(b => /arts?\.?\s*24 e 26/.test(`${b.t} ${b.x}`))) d.blocos.push({ t: 'Garantia legal (CDC arts. 24 e 26)', x: 'Este termo é complementar à garantia legal do Código de Defesa do Consumidor (arts. 24 e 26), que não pode ser excluída.' });
+    // 2ª via do Cofre (orçamento e garantia): o atendimento já foi concluído e a foto e a assinatura não estão mais na memória → vêm do IndexedDB.
+    // Só com o mesmo cliente gravado na 1ª via: um nº reaproveitado (sequência zerada) nunca leva a imagem de outro atendimento.
+    const comImg = d.tipo === 'orc' || d.tipo === 'gar', cli = (d.cliente && d.cliente.nome) || '';
+    if (comImg && d.via2 && d.numero && (!d.foto || !d.assinatura)) {
+      const m = await lerMidia(d.numero).catch(() => null);
+      if (m && (!m.cliente || !cli || m.cliente === cli)) { if (!d.foto && m.foto) d.foto = m.foto; if (!d.assinatura && m.assinatura) d.assinatura = m.assinatura; }
+    }
     const [foto, assin] = await Promise.all([jpeg(d.foto, 1600).catch(() => null), jpeg(d.assinatura, 1000).catch(() => null)]);
+    // 1ª via com foto ou assinatura: guarda o JPEG já convertido pelo nº do documento, para a 2ª via sair completa depois de "Concluir".
+    if (comImg && !d.via2 && d.numero && (foto || assin)) await salvarMidia(d.numero, { foto, assinatura: assin, cliente: cli }).catch(() => null);
     const imgs = [];
     if (foto) imgs.push(Object.assign(foto, { nome: 'Im' + (imgs.length + 1) }));
     if (assin) imgs.push(Object.assign(assin, { nome: 'Im' + (imgs.length + 1) }));
@@ -311,5 +352,5 @@
     if (!embutido()) return pode ? 'falhou' : 'sem-suporte';
     return texto && await copiar(texto) ? 'embutido-resumo' : 'embutido';
   }
-  window.GeloProPDF = { gerar, nomeArquivo, baixar, compartilhar, copiar, resumo, embutido, jpeg, quebrar, largura, A4: [PW, PH] };
+  window.GeloProPDF = { gerar, nomeArquivo, baixar, compartilhar, copiar, resumo, embutido, salvarMidia, lerMidia, jpeg, quebrar, largura, A4: [PW, PH] };
 })();
