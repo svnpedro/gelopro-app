@@ -59,6 +59,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 /* Celular e tela vertical (até 767,98 px): o app ocupa 100vw × 100dvh e o fundo da página acompanha o chassi do tema ativo
    (#c1c0c1 no Titânio e no Claro, #ffffff no Sol), para não sobrar faixa branca no Android nem no iPhone. */
 @media (max-width:767.98px){html,body{background:#c1c0c1 !important;width:100%;min-height:100%;overscroll-behavior:none;}html:has([data-tema=sol]),html:has([data-tema=sol]) body{background:#ffffff !important;}[data-mesa]{display:block !important;min-height:0 !important;padding:0 !important;background:transparent !important;}[data-moldura]{width:100vw !important;height:100vh !important;height:100dvh !important;padding:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;}[data-lateral]{display:none !important;}[data-chassi]{border-radius:0 !important;box-shadow:none !important;}}
+/* Olho de Águia (PR #26), só em telas de até 340 px (320 px e zoom do sistema): o dock aproxima as 6 teclas (vão de 4 para 2 px) para cada
+   uma ter 48 px de toque e o rótulo "NTC/BTU" ficar em 14 px; a grade da Home mantém 48 px por cartão e rola por dentro quando a altura acaba. */
+@media (max-width:340px){[data-dock-barra]{padding-left:2px !important;padding-right:2px !important;}nav[aria-label="Módulos"]{gap:2px !important;}[data-grade-sintomas]{grid-auto-rows:minmax(48px,1fr) !important;overflow-y:auto;scrollbar-width:none;}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:1ms !important;}}
 @media print{@page{size:A4;margin:12mm}html,body{background:#fff !important}body *{visibility:hidden !important}[data-print],[data-print] *{visibility:visible !important}[data-print]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important}[data-print],[data-print] *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}[data-print] [data-doc-fechamento],[data-print] [data-doc-foto-bloco],[data-print] [data-doc-assinatura],[data-print] [data-doc-preventiva]{page-break-inside:avoid;break-inside:avoid}}
 </style>
@@ -112,7 +115,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <button type="button" aria-label="Voltar" onClick="{{ voltar }}" style="width:48px;height:48px;flex:none;border-radius:14px;border:1px solid var(--gp-sec-edge);background:var(--gp-sec-key);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 120ms ease-out;" style-hover="filter:brightness(1.04);" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="voltar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
             <div style="flex:1;min-width:0;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
               <span style="font:500 16px/20px 'Roboto',sans-serif;color:var(--gp-on-pill-label);text-wrap:balance;">{{ kicker }}</span>
-              <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ titulo }}</span>
+              <span data-titulo-cab="" style="font-weight:700;font-size:{{ tituloFs }};line-height:24px;font-family:'Roboto',sans-serif;color:var(--gp-on-pill);text-wrap:balance;overflow-wrap:break-word;">{{ titulo }}</span>
             </div>
             <sc-if value="{{ temSelo }}" hint-placeholder-val="{{ false }}"><dc-import name="Selo" texto="{{ seloTxt }}" tipo="info" vivo="{{ true }}" style="flex:none;" hint-size="104px,26px"></dc-import></sc-if>
             <sc-if value="{{ temLogoMod }}" hint-placeholder-val="{{ false }}"><span data-logo-modulo="{{ logoMod }}" style="flex:none;display:inline-flex;box-sizing:border-box;padding:4px;border-radius:14px;border:2px solid var(--gp-pill-edge);background:var(--gp-pill);box-shadow:var(--gp-pill-shadow);"><dc-import name="LogoMarca" marca="{{ logoMod }}" tamanho="{{ 44 }}" hint-size="44px,44px"></dc-import></span></sc-if>
@@ -139,7 +142,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <h2 style="{{ h2Estilo }}">O que o aparelho apresenta?</h2>
-                  <div style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:{{ gradeGap }};padding:0 2px;">
+                  <div data-grade-sintomas="" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:{{ gradeGap }};padding:0 2px;">
                     <sc-for list="{{ sintomas }}" as="s" hint-placeholder-count="9">
                       <dc-import name="PlacaSintoma" nome="{{ s.nome }}" icone="{{ s.icone }}" canto="{{ s.canto }}" acao="{{ s.onClick }}" style="display:block;min-width:0;min-height:0;" hint-size="100%,100%"></dc-import>
                     </sc-for>
@@ -351,6 +354,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ bTemRec }}" hint-placeholder-val="{{ false }}"><div data-recomendacao="" style="flex:none;"><dc-import name="Aviso" tipo="info" titulo="{{ bRecT }}" texto="{{ bRecX }}" fixo="{{ true }}" style="display:block;" hint-size="100%,48px"></dc-import></div></sc-if>
                   <sc-if value="{{ bTemVer }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ bVerTipo }}" titulo="{{ bVerT }}" texto="{{ bVerX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-if value="{{ bTemVer }}" hint-placeholder-val="{{ false }}"><dc-import name="AtalhoTecla" rotulo="Levar ao laudo de quarto quente" icone="documento" acao="{{ bLaudo }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import></sc-if>
+                  <sc-if value="{{ bTemRec }}" hint-placeholder-val="{{ false }}"><div data-zap-btu="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Enviar recomendação no WhatsApp" icone="mensagem" acao="{{ bZap }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
                   <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Fatores de amostra. Confirme antes de usar.</span>
                   <div style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
                     <dc-import name="CampoTexto" rotulo="BTU/h·m² sombra" valor="{{ bF1 }}" estado="{{ bE.f1 }}" erroMsg="{{ bM.f1 }}" aoDigitar="{{ bSetF1 }}" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
@@ -432,10 +436,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Conclusão" rows="3" value="{{ lConc }}" onInput="{{ lSetConc }}" placeholder="Por que o reparo não é viável" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <sc-if value="{{ lErro }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Faltam dados para o laudo" texto="Preencha cliente, constatações e conclusão." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="AtalhoTecla" rotulo="PDF do laudo de inviabilidade" icone="documento" acao="{{ lPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
+                  <div data-zap-laudo="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Enviar laudo no WhatsApp" icone="mensagem" acao="{{ lZap }}" style="display:block;" hint-size="100%,60px"></dc-import></div>
                   <sc-if value="{{ pdfLaudo }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
                       <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
-                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-copiar-resumo="" style="flex:none;"><button type="button" onClick="{{ pdfCopiarResumo }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;text-wrap:pretty;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="copiar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>Copiar resumo do documento</button></div></sc-if>
                       <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
                     </div></sc-if>
                 </div>
@@ -469,10 +474,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <span data-campo="1" style="flex:none;display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Recomendações em falha e emergência" rows="3" value="{{ pmEmerg }}" onInput="{{ pmSet.emerg }}" placeholder="Recomendações aos usuários" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <sc-if value="{{ pmErro }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Faltam dados para o PMOC" texto="Preencha o ambiente e o proprietário, locatário ou preposto." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="AtalhoTecla" rotulo="PDF do PMOC" icone="documento" acao="{{ pmPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
+                  <div data-zap-pmoc="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Enviar resumo PMOC no WhatsApp" icone="mensagem" acao="{{ pmZap }}" style="display:block;" hint-size="100%,60px"></dc-import></div>
                   <sc-if value="{{ pdfPmoc }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
                       <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
-                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-copiar-resumo="" style="flex:none;"><button type="button" onClick="{{ pdfCopiarResumo }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;text-wrap:pretty;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="copiar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>Copiar resumo do documento</button></div></sc-if>
                       <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
                     </div></sc-if>
                   <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ pmFonte }}</span>
@@ -498,10 +504,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><dc-import name="CampoTexto" rotulo="Valor (R$)" valor="{{ rcVal }}" aoDigitar="{{ rcSet.val }}" placeholder="0,00" modo="decimal" estado="{{ rcValE }}" erroMsg="{{ rcValM }}" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import><dc-import name="CampoTexto" rotulo="Referente a" valor="{{ rcRef }}" aoDigitar="{{ rcSet.ref }}" placeholder="Serviço" estado="{{ rcRefE }}" erroMsg="descreva" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import></div>
                   <dc-import name="SeletorPrazo" rotulo="Forma de pagamento" opcoes="{{ rcOps }}" valor="{{ rcForma }}" estado="{{ rcFormaE }}" erroMsg="escolha a forma" acao="{{ rcSetForma }}" style="display:block;flex:none;" hint-size="100%,104px"></dc-import>
                   <dc-import name="AtalhoTecla" rotulo="PDF do recibo" icone="documento" acao="{{ rcPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
+                  <div data-zap-reca="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Enviar recibo no WhatsApp" icone="mensagem" acao="{{ rcZap }}" style="display:block;" hint-size="100%,60px"></dc-import></div>
                   <sc-if value="{{ pdfReca }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
                       <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
-                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-copiar-resumo="" style="flex:none;"><button type="button" onClick="{{ pdfCopiarResumo }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;text-wrap:pretty;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="copiar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>Copiar resumo do documento</button></div></sc-if>
                       <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
                     </div></sc-if>
                 </div>
@@ -526,7 +533,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                           <sc-if value="{{ c.temPdf }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                               <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
                               <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
-                              <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                              <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-copiar-resumo="" style="flex:none;"><button type="button" onClick="{{ pdfCopiarResumo }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;text-wrap:pretty;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="copiar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>Copiar resumo do documento</button></div></sc-if>
                               <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
                             </div></sc-if>
                           <dc-import name="Selo" texto="{{ c.gSelo }}" tipo="{{ c.gTipo }}" hint-size="140px,26px"></dc-import>
@@ -565,7 +572,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
       </div>
     </div>
 
-    <div inert="{{ inerte }}" aria-hidden="{{ fundoOculto }}" style="position:relative;flex:none;z-index:20;box-sizing:border-box;padding:6px 8px max(14px, env(safe-area-inset-bottom));background:transparent;box-shadow:var(--gp-dock-bar-shadow);">
+    <div data-dock-barra="" inert="{{ inerte }}" aria-hidden="{{ fundoOculto }}" style="position:relative;flex:none;z-index:20;box-sizing:border-box;padding:6px 8px max(14px, env(safe-area-inset-bottom));background:transparent;box-shadow:var(--gp-dock-bar-shadow);">
       <nav aria-label="Módulos" style="box-sizing:border-box;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;">
         <sc-for list="{{ dock }}" as="k" hint-placeholder-count="6">
           <dc-import name="TeclaDock" rot="{{ k.rot }}" icone="{{ k.icone }}" ativo="{{ k.ativo }}" lock="{{ k.lock }}" aria="{{ k.aria }}" cur="{{ k.cur }}" acao="{{ k.onClick }}" style="display:block;min-width:0;" hint-size="100%,66px"></dc-import>
@@ -580,7 +587,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:12px;padding:0 4px;">
             <div style="flex:1;min-width:0;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ dKicker }}</span>
-              <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ dTitulo }}</span>
+              <span data-titulo-cab="" style="font-weight:700;font-size:{{ dTituloFs }};line-height:24px;font-family:'Roboto',sans-serif;color:var(--gp-on-pill);text-wrap:balance;overflow-wrap:break-word;">{{ dTitulo }}</span>
             </div>
             <button type="button" aria-label="Fechar" onClick="{{ fecharDrawer }}" style="width:48px;height:48px;flex:none;border-radius:14px;border:1px solid var(--gp-sec-edge);background:var(--gp-sec-key);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-hover="filter:brightness(1.04);" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
           </div>
@@ -688,10 +695,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
       <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:8px;padding:0 4px;">
         <button type="button" aria-label="Sair do fechamento" onClick="{{ fSair }}" style="width:48px;height:48px;flex:none;border:0;border-radius:14px;display:flex;align-items:center;justify-content:center;color:var(--gp-on-sec-accent);background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);cursor:pointer;" style-active="transform:translateY(2px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
         <div style="flex:1;min-width:0;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
-          <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-pill-label);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ fKicker }}</span>
-          <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ fTitulo }}</span>
+          <span data-fech-kicker="" style="display:flex;flex-wrap:wrap;align-items:center;column-gap:8px;row-gap:4px;"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ fKicker }}</span><dc-import name="Selo" texto="{{ fPassoTxt }}" tipo="info" vivo="{{ true }}" style="flex:none;" hint-size="96px,26px"></dc-import></span>
+          <span data-titulo-cab="" style="font-weight:700;font-size:{{ fTituloFs }};line-height:24px;font-family:'Roboto',sans-serif;color:var(--gp-on-pill);text-wrap:balance;overflow-wrap:break-word;">{{ fTitulo }}</span>
         </div>
-        <dc-import name="Selo" texto="{{ fPassoTxt }}" tipo="info" vivo="{{ true }}" style="flex:none;" hint-size="96px,26px"></dc-import>
       </div>
       <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:24px;background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
         <div data-vis="" style="height:100%;box-sizing:border-box;padding:16px;border-radius:21px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
@@ -828,7 +834,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <dc-import name="SeletorPrazo" rotulo="Garantia contratual" valor="{{ fPrazo }}" estado="{{ fPrazoE }}" erroMsg="escolha um prazo" acao="{{ fSetPrazo }}" style="display:block;" hint-size="100%,104px"></dc-import>
               <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><div data-prazo-rapido="" role="group" aria-label="Prazos rápidos" style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ fPrazoPilulas }}" as="pz" hint-placeholder-count="3"><button type="button" aria-pressed="{{ pz.on }}" onClick="{{ pz.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ pz.borda }};background:{{ pz.fundo }};color:{{ pz.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ pz.t }}</button></sc-for></div></sc-if>
               <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><dc-import name="CampoTexto" rotulo="Prazo e escopo (texto livre)" valor="{{ fPrazoLivre }}" aoDigitar="{{ fSetPrazoLivre }}" placeholder="Ex.: 20 dias para a limpeza" estado="{{ fLivreE }}" erroMsg="descreva o prazo" style="display:block;" hint-size="100%,74px"></dc-import></sc-if>
-              <dc-import name="CampoTexto" rotulo="O que a garantia cobre" valor="{{ fCobre }}" aoDigitar="{{ fSetCobre }}" placeholder="Os serviços listados no orçamento" style="display:block;" hint-size="100%,74px"></dc-import>
+              <dc-import name="CampoTexto" rotulo="O que a garantia cobre" valor="{{ fCobre }}" aoDigitar="{{ fSetCobre }}" placeholder="Os serviços do orçamento" style="display:block;" hint-size="100%,74px"></dc-import>
               <dc-import name="CampoTexto" rotulo="O que não cobre" valor="{{ fNaoCobre }}" aoDigitar="{{ fSetNaoCobre }}" placeholder="Ex.: mau uso, surto de energia" style="display:block;" hint-size="100%,74px"></dc-import>
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Ressalva / estado encontrado</span>
               <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Ressalva / estado encontrado" rows="2" value="{{ fRessalva }}" onInput="{{ fSetRessalva }}" placeholder="Ex.: carenagem trincada antes do serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
@@ -896,7 +902,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ pdfFech }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                   <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
                   <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
-                  <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                  <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-copiar-resumo="" style="flex:none;"><button type="button" onClick="{{ pdfCopiarResumo }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;text-wrap:pretty;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="copiar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>Copiar resumo do documento</button></div></sc-if>
                   <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
                 </div></sc-if>
               <div data-zap-editor="" style="display:flex;flex-direction:column;gap:8px;">
@@ -1516,7 +1522,9 @@ class Component extends DCLogic {
     if (!window.GeloProPDF) return this.setState({ pdfPronto: { ...onde, tipo, nome: dados.nome, gerando: false, erro: true, msg: ['aviso', 'O arquivo PDF não carregou neste aparelho. Use a impressão: Salvar como PDF.'] } });
     window.GeloProPDF.gerar(dados).then(r => {
       if (id !== this._pdfId) return;
-      this._pdf = window.__ultimoPdf = { nome: r.nome, bytes: r.bytes, blob: r.blob, tipo, paginas: r.paginas };
+      // Resumo em texto (PR #26) para colar no WhatsApp em 1 toque e servir de legenda no navegador embutido.
+      const resumo = window.GeloProPDF.resumo ? window.GeloProPDF.resumo({ ...dados, nome: r.nome }) : '';
+      this._pdf = window.__ultimoPdf = { nome: r.nome, bytes: r.bytes, blob: r.blob, tipo, paginas: r.paginas, resumo };
       this.setState({ pdfPronto: { ...onde, tipo, nome: r.nome, gerando: false, msg: null } }, () => { this.mostrarPdf(); if (depois) depois(); });
     }, () => { if (id === this._pdfId) this.setState({ pdfPronto: { ...onde, tipo, nome: dados.nome, gerando: false, erro: true, msg: ['aviso', 'Não deu para montar o arquivo PDF. Use a impressão: Salvar como PDF.'] } }); });
   }
@@ -1535,12 +1543,21 @@ class Component extends DCLogic {
     this.pdfMsg(['sucesso', `PDF baixado: ${P.nome}. Confira na pasta Downloads.`]);
   }
   // Plano C: Web Share com o arquivo (WhatsApp, e-mail, Drive); sem suporte a arquivo, baixa e avisa em 1 linha.
+  // Navegador embutido (Instagram, Facebook, WhatsApp, PR #26): baixa, copia o resumo (legenda) e orienta a colar ou abrir no navegador do celular.
   pdfCompartilhar() {
     const P = this._pdf; if (!P || !window.GeloProPDF) return;
     window.__ultimoPdf = P;
-    window.GeloProPDF.compartilhar(P.blob, P.nome).then(r => this.pdfMsg(r === 'compartilhado' ? ['sucesso', 'PDF enviado para o compartilhamento. Escolha o WhatsApp do cliente.']
+    window.GeloProPDF.compartilhar(P.blob, P.nome, P.resumo).then(r => this.pdfMsg(r === 'compartilhado' ? ['sucesso', 'PDF enviado para o compartilhamento. Escolha o WhatsApp do cliente.']
       : r === 'cancelado' ? ['info', 'Compartilhamento cancelado. Toque de novo quando quiser.']
+      : r === 'embutido-resumo' ? ['aviso', 'Navegador do Instagram, Facebook ou WhatsApp não anexa arquivo: o PDF foi baixado e o resumo do documento já está copiado. Cole na conversa do cliente, ou abra o app no Chrome ou no Safari para anexar o PDF.']
+      : r === 'embutido' ? ['aviso', 'Navegador do Instagram, Facebook ou WhatsApp não anexa arquivo: o PDF foi baixado. Toque em "Copiar resumo do documento" e cole na conversa do cliente, ou abra o app no Chrome ou no Safari para anexar o PDF.']
       : ['aviso', 'Este navegador não compartilha arquivo: o PDF foi baixado. Anexe pela pasta Downloads no WhatsApp.']));
+  }
+  // Resumo do documento (PR #26): o texto do PDF na área de transferência, para colar na conversa do cliente em 1 toque.
+  pdfCopiarResumo() {
+    const P = this._pdf; if (!P || !window.GeloProPDF) return;
+    window.GeloProPDF.copiar(P.resumo).then(ok => this.pdfMsg(ok ? ['sucesso', 'Resumo do documento copiado. Cole na conversa do cliente no WhatsApp.']
+      : ['aviso', 'Este navegador não deixou copiar. Use "Compartilhar PDF no WhatsApp / Celular".']));
   }
   // 2ª via do Cofre: reemite o documento gravado e baixa o .pdf em 1 toque. Com o atendimento ainda aberto, leva a foto e a assinatura.
   pdfCofre(reg) {
@@ -1876,7 +1893,7 @@ class Component extends DCLogic {
     const pdfVals = { pdfTipo: PP ? PP.tipo : '', pdfNome: PP ? PP.nome : '', pdfOk: !!PP && !PP.gerando && !PP.erro,
       pdfTitulo: !PP ? '' : PP.gerando ? 'Gerando o arquivo PDF…' : PP.erro ? 'Arquivo PDF indisponível' : PP.via2 ? '2ª via em PDF pronta' : 'Arquivo PDF pronto',
       pdfTemMsg: !!(PP && PP.msg), pdfMsgTipo: PP && PP.msg ? PP.msg[0] : '', pdfMsg: PP && PP.msg ? PP.msg[1] : '',
-      pdfBaixar: () => this.pdfBaixar(), pdfCompartilhar: () => this.pdfCompartilhar(),
+      pdfBaixar: () => this.pdfBaixar(), pdfCompartilhar: () => this.pdfCompartilhar(), pdfCopiarResumo: () => this.pdfCopiarResumo(),
       pdfFech: !!PP && PP.onde === 'fech' && !!F && fp === 4, pdfLaudo: !!PP && PP.onde === 'laudo' && st.tela === 'laudo', pdfPmoc: !!PP && PP.onde === 'pmoc' && st.tela === 'pmoc', pdfReca: !!PP && PP.onde === 'reca' && st.tela === 'scripts' };
     const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: st.sel.marca, btu: st.sel.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto, bonif: bonif ? bonifLinha : '', fluido: st.sel.fluido });
     const pd = st.printDoc;
@@ -1904,6 +1921,13 @@ class Component extends DCLogic {
     const cofreL = Object.entries(porNum).map(([n, ds]) => { const ult = ds[ds.length - 1], base = ds.find(d => !AVULSO.includes(d.tipo)) || ult, dias = diasGar(base.garantia); const venc = dias ? base.em + dias * DIA : null;
       const prevEm = AVULSO.includes(base.tipo) ? null : base.prevEm || maisMeses(base.em, 6); return { n, ds, ult, base, venc, prevEm }; }).sort((a, b) => b.ult.em - a.ult.em);
     const zap = (tel, msg) => window.open((dig(tel) ? 'https://wa.me/55' + dig(tel).replace(/^55/, '') : 'https://wa.me/') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    // Envio direto no WhatsApp (PR #26): Carga térmica, Laudo, PMOC e Recibo avulso, timbrados pelo titular e com a mesma validação do PDF.
+    // Número do cliente só quando é celular conhecido (o do atendimento com o mesmo nome, ou o do PMOC); sem número, o técnico escolhe a conversa.
+    const timbre = tit ? 'Titular: ' + [tit.nome, tit.docFmt ? `${tit.docTipo} ${tit.docFmt}` : '', tit.cidade].filter(Boolean).join(' · ') : false;
+    const celular = (t) => { const d = dig(t).replace(/^55(?=\d{11}$)/, ''); return /^\d\d9\d{8}$/.test(d) ? d : ''; };
+    const telDo = (nome) => F && F.cliTel && norm(F.cliNome.trim()) === norm(String(nome || '').trim()) ? F.cliTel : '';
+    // Linha false fica de fora; linha '' separa blocos (nunca duas seguidas).
+    const zapTxt = (linhas) => linhas.filter(l => typeof l === 'string').join('\n').replace(/\n{3,}/g, '\n\n').trim();
     const NOMES = { orc: 'Orçamento', gar: 'Garantia', rec: 'Recibo', laudo: 'Laudo', pmoc: 'PMOC', reca: 'Recibo avulso' };
     // Aparelho do atendimento (Marca + BTU/h): campos gravados desde o PR #21 ou, em documento antigo, o texto do equipamento ("Midea, 18.000 BTU/h, R32").
     const aparelhoDe = (b) => { const eq = String(b.equip || '').split(', '), temEq = /BTU\/h$/.test(eq[1] || ''), m = b.marca || (temEq ? eq[0] : ''), bt = b.btu || (temEq ? eq[1].replace(/\s*BTU\/h$/, '') : ''); return [m, bt ? `${bt} BTU/h` : ''].filter(Boolean).join(' '); };
@@ -2070,6 +2094,18 @@ class Component extends DCLogic {
           { t: 'Base legal', x: 'Lei 13.589/2018, art. 1º. Portaria MS 3.523/1998, arts. 5º e 6º e Anexo I. A Portaria também remete à NBR 13971.' },
         ] });
       },
+      pmZap: () => {
+        if (!pmOk) return this.setState(x => ({ pmoc: { ...x.pmoc, tentou: true } }));
+        const tr = (t) => String(t || '').trim(), ad = 'a definir';
+        zap(celular(PM.tel) || celular(PM.propCont), zapTxt(['Resumo do PMOC (Plano de Manutenção, Operação e Controle)', `Emitido em ${dataBR(Date.now())}`, timbre, '',
+          `Ambiente: ${[PM.amb, PM.end, PM.cid].map(tr).filter(Boolean).join(' · ')}`,
+          `Proprietário, locatário ou preposto: ${[PM.prop, PM.propDoc].map(tr).filter(Boolean).join(' · ')}`,
+          `Responsável técnico: ${tr(PM.rt) || ad}${tr(PM.reg) ? ' · Registro no conselho: ' + tr(PM.reg) : ''}${tr(PM.art) ? ' · ART: ' + tr(PM.art) : ''}`,
+          tr(PM.ambs) ? `Ambientes climatizados:\n${tr(PM.ambs)}` : false, '',
+          'Plano de manutenção e controle:', ...pmG.map(g => `• ${g.t}: ${tr(PM.per[g.t]) || 'periodicidade ' + ad}`), '',
+          tr(PM.emerg) ? `Falha do equipamento e emergência: ${tr(PM.emerg)}` : false, 'Base legal: Lei 13.589/2018 e Portaria MS 3.523/1998.', '',
+          'O PMOC completo segue em PDF. Agendo a primeira visita do plano: é só responder por aqui.']));
+      },
       pmFonte: `${fonteTxt('F22')}; ${fonteTxt('F23')}. A NBR 13971, citada pela Portaria, não foi conferida.`,
       scDados: F && F.cliNome.trim() ? `Preenchido com o atendimento de ${F.cliNome.trim()}${F.numero ? ', orçamento nº ' + F.numero : ''}. Complete os trechos entre colchetes no WhatsApp.` : 'Abra um orçamento para preencher cliente, número e valor. Complete os trechos entre colchetes no WhatsApp.',
       scripts: SCRIPTS.map(([t, fn]) => { const x = fn(SV); return { t, x, ariaC: `Copiar: ${t}`, ariaZ: `Enviar no WhatsApp: ${t}`,
@@ -2080,6 +2116,12 @@ class Component extends DCLogic {
       rcSetForma: (v) => this.setState(x => ({ reca: { ...x.reca, forma: v } })),
       rcCliE: RC.tentou && RC.cli.trim().length < 2 ? 'erro' : 'normal', rcValE: reaisErro(RC.val) || (RC.tentou && !(rcN > 0)) ? 'erro' : 'normal', rcValM: reaisErro(RC.val) || 'valor maior que zero', rcRefE: RC.tentou && !RC.ref.trim() ? 'erro' : 'normal', rcFormaE: RC.tentou && !RC.forma ? 'erro' : 'normal',
       rcPdf: () => { if (!rcOk) return this.setState(x => ({ reca: { ...x.reca, tentou: true } })); this.imprimir('reca', { cliente: RC.cli.trim(), equip: '', blocos: [{ t: 'Recebimento', x: `Recebi de ${RC.cli.trim()} o valor de ${BRL.format(rcN)}, pago em ${RC.forma.toLowerCase()}, referente a ${RC.ref.trim()}.` }, { t: 'Data', x: dataBR(Date.now()) }] }); },
+      rcZap: () => {
+        if (!rcOk) return this.setState(x => ({ reca: { ...x.reca, tentou: true } }));
+        zap(telDo(RC.cli), zapTxt(['RECIBO', `Data: ${dataBR(Date.now())}`, timbre, '',
+          `Recebi de ${RC.cli.trim()} o valor de ${BRL.format(rcN)}, pago em ${RC.forma.toLowerCase()}, referente a ${RC.ref.trim()}.`, '',
+          tit ? tit.nome : false, '', 'Obrigado pela confiança. Para a próxima manutenção, é só chamar por aqui.']));
+      },
       telaBTU: st.tela === 'btu', telaInv: st.tela === 'inv', telaDocs: st.tela === 'docs', telaLaudo: st.tela === 'laudo', telaCofre: st.tela === 'cofre',
       nbOps: ['Sensor NTC', 'Carga térmica'], nbTroca: (v) => this.setState({ tela: v === 'Carga térmica' ? 'btu' : 'ntc' }),
       bArea: B2.area, bPes: B2.pes, bW: B2.w, bSetArea: sB('area'), bSetPes: sB('pes'), bSetW: sB('w'), bF1: B2.f1, bF2: B2.f2, bF3: B2.f3, bSetF1: sB('f1'), bSetF2: sB('f2'), bSetF3: sB('f3'),
@@ -2093,6 +2135,14 @@ class Component extends DCLogic {
       bTemVer: bDif !== null, bVerTipo: bDif !== null && bDif < 0 ? 'aviso' : 'info',
       bVerT: bDif !== null && bDif < 0 ? 'Aparelho abaixo da estimativa' : 'Aparelho cobre a estimativa',
       bVerX: bDif !== null && bDif < 0 ? `Faltam cerca de ${fmtBTU(-bDif / 100 * bEst)}. Ambiente pode não chegar à temperatura pedida.` : 'Pela estimativa com os fatores informados.',
+      bZap: () => {
+        if (bEst === null) return;
+        zap(F ? F.cliTel : '', zapTxt(['Recomendação de capacidade do ar-condicionado (carga térmica)', timbre, F && F.cliNome.trim() ? `Cliente: ${F.cliNome.trim()}` : false, '',
+          `Área: ${String(B2.area).trim()} m²`, `Pessoas: ${bP}`, `Aparelhos: ${Math.round(bWv).toLocaleString('pt-BR')} W`, `Incidência solar: ${B2.sol}`, '',
+          `Carga estimada: ${fmtBTU(bEst)}`,
+          capRec ? `Capacidade comercial recomendada: ${fmtBTU(capRec)} (porte ${PORTE_ROT[porteDe(capRec)]})` : `Capacidade comercial recomendada: dividir a carga entre aparelhos (estimativa acima de ${fmtBTU(btuNum(OPTS.btu.list[OPTS.btu.list.length - 1]))})`, '',
+          capRec ? 'Monto o orçamento da instalação com essa capacidade. É só responder por aqui.' : 'Monto o orçamento com a divisão entre aparelhos. É só responder por aqui.', `Base Atualizada ${BASE_MES}`]));
+      },
       bLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cli: x.laudo.cli || (x.fech ? x.fech.cliNome : ''), cons: x.laudo.cons || `Ambiente de ${B2.area} m², ${B2.pes} pessoa(s), ${B2.w || 0} W de aparelhos, ${B2.sol.toLowerCase()}. Estimativa de ${bEst ? fmtBTU(bEst) : '—'} para aparelho de ${st.sel.btu} BTU/h.` } })),
       docsHub: [
         { tipo: 'Fechamento', t: 'Orçamento e garantia', s: 'Itens, garantia, assinatura, Pix e PDF', acao: () => this.abrirFech() },
@@ -2105,6 +2155,12 @@ class Component extends DCLogic {
       lConc: LD.conc, lSetConc: (e) => { const v = e.target.value; this.setState(x => ({ laudo: { ...x.laudo, conc: v } })); },
       lMed, lErro: LD.tentou && !lOk,
       lPdf: () => { if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } })); this.imprimir('laudo', { cliente: LD.cli, equip, medicoes: lMed, constatacoes: LD.cons, conclusao: LD.conc }); },
+      lZap: () => {
+        if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } }));
+        zap(telDo(LD.cli), zapTxt(['LAUDO TÉCNICO DE INVIABILIDADE', `Emitido em ${dataBR(Date.now())}`, timbre, `Cliente: ${LD.cli.trim()}`, `Equipamento: ${equip.split(', ').join(' · ')}`, '',
+          'Medições registradas:', lMed, '', 'Constatações:', LD.cons.trim(), '', 'Conclusão técnica:', LD.conc.trim(), '',
+          'Monto o orçamento de um aparelho novo com instalação. É só responder por aqui.']));
+      },
       cVazio: !cofreL.length,
       cofre: cofreF.map(c => { const aberto = st.cofreSel === c.n, b = c.base, nome = tit ? tit.nome : '';
         // Convite da preventiva para o aparelho daquele atendimento (Marca + BTU/h); documento antigo sem marca/btu tira os dois do texto do equipamento.
@@ -2433,6 +2489,13 @@ class Component extends DCLogic {
       voltarLista: () => this.setState({ fichaSel: null }),
     };
     out.vKeys.forEach(k => { if (k.l === 'Voltar') k.acao = () => { if (this.state.pMsg) this.setState({ pMsg: null }); out.voltar(); }; });
+    // Títulos de cabeçalho sem corte nem reticências (PR #26): 20 px que descem até 16 px para caber na pílula (fit); se nem assim couber
+    // (fonte grande do sistema, zoom), o título quebra limpo em 2 linhas. Largura útil medida nas pílulas: tela interna e Fechamento (botão de
+    // 48 px ao lado; nos módulos com marca, mais a logo de 64 px) e gaveta (Fechar). No Fechamento o selo "Passo N de 4" fica na linha de
+    // cima, ao lado de "Fechamento": ao lado do título ele deixava 68 px a 320 px e 138 px a 390 px, e "Pix e documentos" saía "Pix e docum…".
+    out.tituloFs = this.fit(out.titulo || '', 20, faceW - 112 - (out.temLogoMod ? 64 : 0) - (out.temSelo ? 112 : 0), 16) + 'px';
+    out.dTituloFs = this.fit(out.dTitulo || '', 20, faceW - 132, 16) + 'px';
+    out.fTituloFs = this.fit(out.fTitulo || '', 20, faceW - 112, 16) + 'px';
     return out;
   }
 }

@@ -68,7 +68,8 @@
         else if (fs < 16 && curto && fw < 600) falha('G-L1 tamanho', el, `rótulo ${fs}px peso ${fw} (mínimo 14 px peso 600)`);
         if (fs < 18 && fw < 500) falha('G-L2 peso', el, `peso ${fw} em ${fs}px (mínimo 500)`);
         let fg = pc(cs.color); if (ehInput && !el.value) fg = pc(getComputedStyle(el, '::placeholder').color) || fg;
-        const w = pior(fg, fundo(el)), min = fs > 24 ? 3 : 4.5;
+        // Verde CTA #00b100 com texto branco (PR #26, decisão de design comercial do Pedro): dentro de [data-verde="1"] o mínimo é 2,5:1.
+        const w = pior(fg, fundo(el)), min = el.closest('[data-verde="1"]') ? 2.5 : fs > 24 ? 3 : 4.5;
         if (w && w.r < min) falha('G-L3 contraste', el, `${w.r.toFixed(2)}:1 ${hx(w.f)} sobre ${hx(w.b)} (mínimo ${min}:1)`);
         // G-L5 (branco puro) retirada em 24/10/2026: texto do Bancada é #ffffff por decisão do Pedro.
         if (w && croma(w.f) < 0.05 && !el.closest('button,[data-selo],[data-visor],[role="dialog"] [data-print]')) { const te = el.closest('[data-tema]'); const k = (te ? [...document.querySelectorAll('[data-tema]')].indexOf(te) : 0) + (lum(w.b) < 0.18 ? ' escuro' : ' claro'); (cores[k] = cores[k] || []).push(w.f); }
@@ -78,9 +79,9 @@
         const alvo = el.closest('[data-campo]') || el, r = alvo.getBoundingClientRect(), inline = el.tagName === 'A' && cs.display === 'inline';
         if (!inline && Math.min(r.width, r.height) < 47.5) falha('G-L7 toque', el, `${Math.round(r.width)}×${Math.round(r.height)} px (mínimo 48)`);
         const bw = parseFloat(cs.borderTopWidth);
-        if (bw >= 1 && cs.borderTopStyle !== 'none') { const bcor = pc(cs.borderTopColor), ar = bcor && bcor[3] === 0 ? aresta(el) : null; const b = ar ? ar.map(c => pior(c, fundo(el.parentElement))).reduce((x, y) => (!x || y.r > x.r ? y : x), null) : pior(bcor, fundo(el.parentElement)); const bgEl = pc(cs.backgroundColor), enchs = bgEl && bgEl[3] === 1 ? [bgEl] : coresDe(cs.backgroundImage).filter(c => c[3] === 1); const ench = enchs.length ? enchs.map(c => pior(c, fundo(el.parentElement))).reduce((x, y) => (!x || y.r < x.r ? y : x), null) : null; if (b && b.r < 3 && !(ench && ench.r >= 3)) falha('G-L4 contorno', el, `${b.r.toFixed(2)}:1 ${hx(b.f)} sobre ${hx(b.b)} (mínimo 3:1 no contorno ou no preenchimento)`); }
+        if (bw >= 1 && cs.borderTopStyle !== 'none') { const bcor = pc(cs.borderTopColor), ar = bcor && bcor[3] === 0 ? aresta(el) : null; const b = ar ? ar.map(c => pior(c, fundo(el.parentElement))).reduce((x, y) => (!x || y.r > x.r ? y : x), null) : pior(bcor, fundo(el.parentElement)); const bgEl = pc(cs.backgroundColor), enchs = bgEl && bgEl[3] === 1 ? [bgEl] : coresDe(cs.backgroundImage).filter(c => c[3] === 1); const ench = enchs.length ? enchs.map(c => pior(c, fundo(el.parentElement))).reduce((x, y) => (!x || y.r < x.r ? y : x), null) : null; const mc = el.closest('[data-verde="1"]') ? 2.5 : 3; if (b && b.r < mc && !(ench && ench.r >= mc)) falha('G-L4 contorno', el, `${b.r.toFixed(2)}:1 ${hx(b.f)} sobre ${hx(b.b)} (mínimo ${mc}:1 no contorno ou no preenchimento)`); }
       }
-      if (el.tagName.toLowerCase() === 'svg' && el.closest('button') && !desligado && el.getAttribute('stroke') === 'currentColor') { const b = pior(pc(cs.color), fundo(el.parentElement)); if (b && b.r < 3) falha('G-L4 ícone', el.closest('button'), `ícone ${b.r.toFixed(2)}:1 (mínimo 3:1)`); }
+      if (el.tagName.toLowerCase() === 'svg' && el.closest('button') && !desligado && el.getAttribute('stroke') === 'currentColor') { const b = pior(pc(cs.color), fundo(el.parentElement)), mi = el.closest('[data-verde="1"]') ? 2.5 : 3; if (b && b.r < mi) falha('G-L4 ícone', el.closest('button'), `ícone ${b.r.toFixed(2)}:1 (mínimo ${mi}:1)`); }
       if (el.tagName === 'INPUT' && !desligado && !/^(checkbox|radio|hidden|range|color)$/.test(el.type)) {
         const tx = el.value || el.placeholder || '';
         if (tx) {

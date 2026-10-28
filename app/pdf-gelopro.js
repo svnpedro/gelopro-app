@@ -4,7 +4,8 @@
 // do cliente em JPEG embutido (XObject /DCTDecode) e rodapé em toda página: "Documento nº … · Emitido em … · Base Atualizada … · Página X de Y".
 // Uso: GeloProPDF.gerar(doc) → Promise<{ bytes: Uint8Array, blob: Blob application/pdf, paginas, nome }> (assíncrono só para decodificar as imagens);
 //      GeloProPDF.nomeArquivo(tipo, num, cliente) → "Orcamento-AMOSTRA-0001-Clinica-Veterana.pdf";
-//      GeloProPDF.baixar(blob, nome) e GeloProPDF.compartilhar(blob, nome) (Web Share de arquivo; sem suporte, baixa o arquivo).
+//      GeloProPDF.baixar(blob, nome) e GeloProPDF.compartilhar(blob, nome, resumo?) (Web Share de arquivo; sem suporte, baixa o arquivo);
+//      GeloProPDF.resumo(doc) → texto do documento para o WhatsApp e GeloProPDF.copiar(texto) → Promise<boolean> (PR #26).
 (function () {
   'use strict';
   const PW = 595.28, PH = 841.89, MX = 42, LARG = PW - 2 * MX, RODAPE = 52, FIM = PH - RODAPE - 6;
@@ -264,12 +265,51 @@
     setTimeout(() => URL.revokeObjectURL(u), 60000);
     return 'baixado';
   }
+  // Navegador embutido de app (Instagram, Facebook, WhatsApp): costuma não anexar arquivo gerado na página (PR #26).
+  const embutido = () => { try { return /Instagram|FBAN|FBAV|WhatsApp/i.test(navigator.userAgent || ''); } catch (e) { return false; } };
+  // Área de transferência: API moderna; sem ela (WebView antiga), textarea + execCommand('copy').
+  async function copiar(texto) {
+    const t = String(texto || ''); if (!t) return false;
+    try { if (navigator.clipboard && navigator.clipboard.writeText) { await navigator.clipboard.writeText(t); return true; } } catch (e) { /* tenta a reserva */ }
+    try {
+      const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+      document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); return !!ok;
+    } catch (e) { return false; }
+  }
+  // Resumo do documento em texto (PR #26): o mesmo conteúdo do PDF, sem imagem, para colar no WhatsApp em 1 toque ou servir de legenda quando o
+  // navegador não anexa o arquivo. As linhas de preenchimento à mão do PMOC ("Data ______  Executado por …") ficam de fora; "____" vira "a definir".
+  function resumo(d) {
+    const L = [], tt = d.titular || {}, cl = d.cliente || {}, f = d.fechamento;
+    L.push(`${d.titulo || 'Documento'}${d.numero ? ' nº ' + d.numero : ''}`);
+    L.push([d.data ? 'Emitido em ' + d.data : '', d.via2 || ''].filter(Boolean).join(' · '));
+    if (tt.nome) L.push('Titular: ' + [tt.nome, tt.doc ? `${tt.docTipo || 'CPF'} ${tt.doc}` : '', tt.cidade || ''].filter(Boolean).join(' · '));
+    L.push('Cliente: ' + [cl.nome || 'Cliente', cl.tel || ''].filter(Boolean).join(' · '));
+    if (cl.equip) L.push('Equipamento: ' + cl.equip);
+    if ((d.itens || []).length) { L.push('', `${d.itensTitulo || 'Itens'}:`); d.itens.forEach(i => L.push(`• ${i.q || 1}× ${i.d}: ${i.v}`)); }
+    if (f) {
+      L.push('');
+      if (f.bonif) L.push(f.bonif);
+      (f.linhas || []).forEach(([r, v]) => L.push(`${r}: ${v}`));
+      if (f.total) L.push(`${f.total[0]}: ${f.total[1]}`);
+      if (f.validade) L.push(f.validade);
+    }
+    (d.blocos || []).forEach(b => {
+      const x = String(b.x || '').split('\n').filter(l => !/Executado por/.test(l)).map(l => l.replace(/_{3,}/g, 'a definir').trim()).filter(Boolean).join('\n');
+      if (x) L.push('', `${String(b.t || '').replace(/_{3,}/g, 'a definir')}:`, x);
+    });
+    if (d.preventiva) L.push('', d.preventiva);
+    L.push('', 'Arquivo PDF: ' + (d.nome || nomeArquivo(d.tipo || d.titulo, d.numero, cl.nome)));
+    return L.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
   // Plano C: Web Share com o arquivo (WhatsApp, e-mail, Drive). Sem suporte a arquivo ou com falha, cai no download.
-  async function compartilhar(blob, nome) {
+  // Navegador embutido sem compartilhamento de arquivo: baixa e já deixa o resumo (legenda) na área de transferência para colar na conversa.
+  async function compartilhar(blob, nome, texto) {
     let arq = null; try { arq = new File([blob], nome, { type: 'application/pdf' }); } catch (e) { arq = null; }
     let pode = false; try { pode = !!(arq && navigator.share && navigator.canShare && navigator.canShare({ files: [arq] })); } catch (e) { pode = false; }
     if (pode) { try { await navigator.share({ files: [arq], title: nome }); return 'compartilhado'; } catch (e) { if (e && e.name === 'AbortError') return 'cancelado'; } }
-    baixar(blob, nome); return pode ? 'falhou' : 'sem-suporte';
+    baixar(blob, nome);
+    if (!embutido()) return pode ? 'falhou' : 'sem-suporte';
+    return texto && await copiar(texto) ? 'embutido-resumo' : 'embutido';
   }
-  window.GeloProPDF = { gerar, nomeArquivo, baixar, compartilhar, jpeg, quebrar, largura, A4: [PW, PH] };
+  window.GeloProPDF = { gerar, nomeArquivo, baixar, compartilhar, copiar, resumo, embutido, jpeg, quebrar, largura, A4: [PW, PH] };
 })();
