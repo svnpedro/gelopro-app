@@ -321,10 +321,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       </sc-for>
                     </div>
                   </div>
-                  <sc-if value="{{ temAtalhoVet }}" hint-placeholder-val="{{ false }}"><button type="button" data-atalho-veterano="" onClick="{{ atalhoVet }}" style="flex:none;width:100%;min-width:0;height:48px;box-sizing:border-box;margin:0;padding:2px 0;border:0;border-radius:14px;background:transparent;display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.94);">
-                    <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 10px;border-radius:14px;background:var(--gp-card-action);border:2px solid var(--gp-dock-ring);box-shadow:var(--gp-mold-shadow);color:var(--gp-on-surface);display:flex;align-items:center;justify-content:center;gap:8px;">
-                      <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="multimetro" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
-                      <span style="min-width:0;font:600 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;">Já conferi o básico → Ir direto para medição com instrumento</span>
+                  <sc-if value="{{ temAtalhoVet }}" hint-placeholder-val="{{ false }}"><button type="button" data-atalho-veterano="" data-amarelo="1" onClick="{{ atalhoVet }}" style="flex:none;width:100%;min-width:0;height:48px;box-sizing:border-box;margin:0;padding:2px 0;border:0;border-radius:14px;background:transparent;display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.94);">
+                    <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 10px;border-radius:14px;background:var(--gp-key-amarelo-cap, linear-gradient(180deg,#fbbf24 0%,#f59e0b 55%,#d97706 100%)) padding-box,var(--gp-key-amarelo-ring, linear-gradient(180deg,#fde68a 0%,#b45309 100%)) border-box;border:2px solid transparent;box-shadow:var(--gp-mold-shadow);color:#111827;text-shadow:0 1px 0 rgba(255,255,255,0.35);display:flex;align-items:center;justify-content:center;gap:8px;">
+                      <span aria-hidden="true" style="flex:none;display:inline-flex;color:#111827;"><dc-import name="IconeGP" nome="multimetro" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
+                      <span style="min-width:0;font:800 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;">Já conferi o básico → Ir direto para medição com instrumento</span>
                     </span>
                   </button></sc-if>
                 </div>
@@ -343,7 +343,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <ol style="flex:none;margin:0;padding:0;list-style:none;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);overflow:hidden;">
                       <sc-for list="{{ acoes }}" as="a" hint-placeholder-count="3">
                         <li style="display:flex;align-items:flex-start;gap:12px;min-height:40px;box-sizing:border-box;padding:10px 12px;border-top:{{ a.linha }};">
-                          <span style="flex:none;width:28px;height:28px;border-radius:14px;background:var(--gp-primary-container);display:flex;align-items:center;justify-content:center;font:700 16px/18px 'Roboto',sans-serif;color:var(--gp-primary);">{{ a.n }}</span>
+                          <span data-res-num="" style="flex:none;width:28px;height:28px;box-sizing:border-box;border-radius:14px;background:#f59e0b;border:1px solid #fde68a;display:flex;align-items:center;justify-content:center;font:800 16px/18px 'Roboto',sans-serif;color:#111827;">{{ a.n }}</span>
                           <span style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
                             <sc-if value="{{ a.temTags }}" hint-placeholder-val="{{ false }}"><span class="tags"><sc-for list="{{ a.tags }}" as="tg" hint-placeholder-count="1"><span class="{{ tg.c }}" data-selo="" data-rotulo="" data-cap-medido-ok="{{ tg.capOk }}">{{ tg.t }}</span></sc-for></span></sc-if>
                             <span class="{{ a.cls }}">{{ a.t }}</span>
@@ -364,7 +364,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </div>
                   <div data-res-teclas="" style="flex:none;display:grid;grid-template-columns:{{ resCols }};gap:8px;">
                     <sc-for list="{{ resKeys }}" as="o" hint-placeholder-count="2">
-                      <dc-import name="TeclaResposta" rotulo="{{ o.l }}" primaria="{{ o.pri }}" verde="{{ o.verde }}" aria="{{ o.aria }}" acao="{{ o.onClick }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
+                      <dc-import name="TeclaResposta" rotulo="{{ o.l }}" primaria="{{ o.pri }}" verde="{{ o.verde }}" amarelo="{{ o.amarelo }}" aria="{{ o.aria }}" acao="{{ o.onClick }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
                     </sc-for>
                   </div>
                 </div>
@@ -524,7 +524,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <sc-if value="{{ invTem }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <dc-import name="Aviso" tipo="aviso" titulo="{{ invAvisoT }}" texto="{{ invAvisoX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
-                  <sc-if value="{{ invAnotar }}" hint-placeholder-val="{{ false }}"><div data-inv-anotar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Anotar resultados para o laudo" icone="documento" acao="{{ invAnotarAcao }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                  <sc-if value="{{ invAnotar }}" hint-placeholder-val="{{ false }}"><div data-inv-anotar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Anotar resultados para o laudo" amarelo="{{ true }}" icone="documento" acao="{{ invAnotarAcao }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
                   <sc-for list="{{ invEtapas }}" as="e" hint-placeholder-count="3">
                     <div data-inv-etapa="{{ e.n }}" data-inv-id="{{ e.id }}" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <sc-if value="{{ e.temPre }}" hint-placeholder-val="{{ true }}"><div data-inv-pre="" class="tags"><sc-for list="{{ e.pre }}" as="tg" hint-placeholder-count="2"><span class="{{ tg.c }}" data-selo="" data-rotulo="">{{ tg.t }}</span></sc-for></div></sc-if>
@@ -1261,6 +1261,13 @@ const TESTE = (() => { try { return new URLSearchParams(location.search).get('te
 const K_LIC = 'gelopro.licenca', K_TIT = 'gelopro.titular', DIA = 864e5;
 const ler = (k) => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
 const gravar = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } };
+// Leitura blindada (PR #39, ataque destrutivo): licença, titular, Cofre, numeração e avisos corrompidos (JSON quebrado, tipo trocado, item nulo,
+// contador negativo ou infinito) viram vazio, nunca erro de tela. A numeração nunca fica abaixo do maior número já gravado no Cofre: um contador
+// estragado não repete número de documento emitido.
+const lerObj = (k) => { const v = ler(k); return v && typeof v === 'object' && !Array.isArray(v) ? v : null; };
+const lerDocs = (k) => { const v = ler(k); return Array.isArray(v) ? v.filter(x => x && typeof x === 'object' && !Array.isArray(x) && x.numero && x.tipo) : []; };
+const numDoc = (x, pre) => { const n = parseInt(String(x.numero).slice(pre.length), 10); return Number.isSafeInteger(n) && n > 0 && n < 1e6 ? n : 0; };
+const lerSeq = (A) => { const n = Number(ler(A.seq)); return Math.max(Number.isSafeInteger(n) && n > 0 && n < 1e6 ? n : 0, ...lerDocs(A.docs).map(x => numDoc(x, A.pre))); };
 const dig = (v) => String(v || '').replace(/\D/g, '');
 const cpfOk = (c) => { if (c.length !== 11 || /^(\d)\1+$/.test(c)) return false; const dv = (n) => { let t = 0; for (let i = 0; i < n; i++) t += +c[i] * (n + 1 - i); const r = (t * 10) % 11; return r === 10 ? 0 : r; }; return dv(9) === +c[9] && dv(10) === +c[10]; };
 const cnpjOk = (c) => { if (c.length !== 14 || /^(\d)\1+$/.test(c)) return false; const dv = (n) => { const w = n === 12 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; let t = 0; for (let i = 0; i < n; i++) t += +c[i] * w[i]; const r = t % 11; return r < 2 ? 0 : 11 - r; }; return dv(12) === +c[12] && dv(13) === +c[13]; };
@@ -1718,7 +1725,7 @@ const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], resp: {}, res: n
 const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, pdfPronto: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcNom: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, oemPlat: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
 
 class Component extends DCLogic {
-  state = { ...ATEND0(), lic: ler(K_LIC), tit: ler(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null, abaHome: 'sintomas', marcaLivre: '', cofreMsg: null };
+  state = { ...ATEND0(), lic: lerObj(K_LIC), tit: lerObj(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null, abaHome: 'sintomas', marcaLivre: '', cofreMsg: null };
 
   componentDidMount() {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
@@ -1832,13 +1839,13 @@ class Component extends DCLogic {
   fRef = React.createRef();
   fSet(patch) { this.setState(st => ({ fech: travaIsento({ ...st.fech, ...(typeof patch === 'function' ? patch(st.fech) : patch) }) })); }
   arq() { return this.state.amostra ? ARQ.amostra : ARQ.real; }
-  numero(avulso) { if (!avulso && this.state.fech && this.state.fech.numero) return this.state.fech.numero; const A = this.arq(), n = (Number(ler(A.seq)) || 0) + 1; gravar(A.seq, n); const num = A.pre + String(n).padStart(4, '0'); if (!avulso) this.fSet({ numero: num }); return num; }
+  numero(avulso) { if (!avulso && this.state.fech && this.state.fech.numero) return this.state.fech.numero; const A = this.arq(), n = lerSeq(A) + 1; gravar(A.seq, n); const num = A.pre + String(n).padStart(4, '0'); if (!avulso) this.fSet({ numero: num }); return num; }
   imprimir(tipo, doc) {
     const num = AVULSO.includes(tipo) ? this.numero(true) : this.numero();
     doc = { ...doc, numero: num };
     // Preventiva de 6 meses no Cofre (PR #21): a mesma data da etiqueta impressa no orçamento e na garantia vira o dia de chamar o cliente.
     const em = Date.now(), prev = AVULSO.includes(tipo) ? {} : { prevEm: maisMeses(em, 6), prevData: dataBR(maisMeses(em, 6)) };
-    const A = this.arq(), lista = ler(A.docs) || [], reg = { ...doc, tipo, numero: num, em, ...prev }; lista.push(reg); gravar(A.docs, lista);
+    const A = this.arq(), lista = lerDocs(A.docs), reg = { ...doc, tipo, numero: num, em, ...prev }; lista.push(reg); gravar(A.docs, lista);
     // Plano A (window.print + [data-print]) segue igual. O título da aba vira o nome do arquivo: o "Salvar como PDF" do navegador já sai com ele.
     const nome = pdfNome(tipo, num, doc.cliente);
     try { if (this._titulo0 === undefined) this._titulo0 = document.title; document.title = nome.replace(/\.pdf$/i, ''); } catch (e) {}
@@ -2289,7 +2296,7 @@ class Component extends DCLogic {
     const capRec = bEst ? OPTS.btu.list.map(btuNum).find(v => v >= bEst) || null : null;
     const LD = st.laudo, lMed = [ptOk ? `Sucção ${st.ptP.trim()} psig, tubo ${st.ptT.trim()} °C (${st.sel.fluido})` : '', ntcReg ? `Sensor NTC: ${st.ntcR.trim()} kΩ a ${ntcTReg ? st.ntcT.trim() : '—'} °C${rZero ? ' (zero: fora do cálculo)' : ''}` : '', bEst ? `Carga térmica estimada: ${fmtBTU(bEst)} para aparelho de ${st.sel.btu} BTU/h` : ''].filter(Boolean).join('\n') || 'Nenhuma medição registrada nesta sessão.';
     const lOk = LD.cli.trim().length >= 2 && LD.cons.trim() && LD.conc.trim();
-    const docs = (ler(this.arq().docs) || []);
+    const docs = lerDocs(this.arq().docs);
     const porNum = {}; docs.forEach(d => { const k = d.numero || '—'; (porNum[k] = porNum[k] || []).push(d); });
     // Preventiva de 6 meses (PR #21): prevEm gravado no documento; atendimento salvo antes disso usa a data de emissão + 6 meses (a mesma regra da etiqueta).
     const cofreL = Object.entries(porNum).map(([n, ds]) => { const ult = ds[ds.length - 1], base = ds.find(d => !AVULSO.includes(d.tipo)) || ult, dias = diasGar(base.garantia); const venc = dias ? base.em + dias * DIA : null;
@@ -2314,7 +2321,7 @@ class Component extends DCLogic {
     // Backup da carteira (PR #30): exporta os documentos do Cofre em gelopro-cofre-backup.json e importa mesclando sem duplicar
     // (mesmo tipo + número + emissão). A numeração sobe até o maior número restaurado: o próximo documento nunca repete um número do backup.
     const cofreExportar = () => {
-      const A = this.arq(), lista = ler(A.docs) || [], dados = { app: 'GeloPro', versao: 'v5.2', tipo: 'cofre-backup', formato: 1, exportadoEm: new Date().toISOString(), amostra: !!st.amostra, seq: Number(ler(A.seq)) || 0, docs: lista };
+      const A = this.arq(), lista = lerDocs(A.docs), dados = { app: 'GeloPro', versao: 'v5.2', tipo: 'cofre-backup', formato: 1, exportadoEm: new Date().toISOString(), amostra: !!st.amostra, seq: lerSeq(A), docs: lista };
       const u = URL.createObjectURL(new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' })), a = document.createElement('a');
       a.href = u; a.download = 'gelopro-cofre-backup.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 5000);
       this.setState({ cofreMsg: { ok: true, t: '✓ Backup exportado', x: `${lista.length} ${lista.length === 1 ? 'documento' : 'documentos'} em gelopro-cofre-backup.json` } });
@@ -2326,9 +2333,9 @@ class Component extends DCLogic {
         let d = null; try { d = JSON.parse(txt); } catch (er) { d = null; }
         const lista = Array.isArray(d) ? d : d && Array.isArray(d.docs) ? d.docs : null;
         if (!lista || lista.some(x => !x || typeof x !== 'object' || !x.numero || !x.tipo)) return this.setState({ cofreMsg: { ok: false, t: '✗ Arquivo de backup inválido', x: 'Use o gelopro-cofre-backup.json exportado pelo Cofre do GeloPro.' } });
-        const A = this.arq(), atual = ler(A.docs) || [], chave = (x) => `${x.tipo}|${x.numero}|${x.em}`, ja = new Set(atual.map(chave)), novos = lista.filter(x => !ja.has(chave(x)));
+        const A = this.arq(), atual = lerDocs(A.docs), chave = (x) => `${x.tipo}|${x.numero}|${x.em}`, ja = new Set(atual.map(chave)), novos = lista.filter(x => !ja.has(chave(x)));
         const todos = [...atual, ...novos].sort((a, b) => (a.em || 0) - (b.em || 0)); gravar(A.docs, todos);
-        const maior = Math.max(0, ...todos.map(x => parseInt(String(x.numero).slice(A.pre.length), 10)).filter(n => isFinite(n))); if (maior > (Number(ler(A.seq)) || 0)) gravar(A.seq, maior);
+        const maior = Math.max(0, ...todos.map(x => numDoc(x, A.pre))), sq = Number(ler(A.seq)); if (maior > (Number.isSafeInteger(sq) && sq > 0 ? sq : 0)) gravar(A.seq, maior);
         const rep = lista.length - novos.length;
         this.setState({ cofreMsg: { ok: true, t: '✓ Carteira restaurada', x: `${novos.length} ${novos.length === 1 ? 'documento novo' : 'documentos novos'}${rep ? ` · ${rep} já ${rep === 1 ? 'estava' : 'estavam'} no Cofre` : ''}` } });
       });
@@ -2361,14 +2368,14 @@ class Component extends DCLogic {
     Object.keys(A0).forEach(k => { if (!avisos.some(a => a.k === k)) delete A0[k]; });
     // Lido: fluido, preventivas e sistema ficam gravados no aparelho; os do atendimento ficam no estado (Concluir zera) e valem para aquela
     // ocorrência (data e hora): o aviso que some e volta, como o retorno depois de tirar a higienização, conta como novo de novo.
-    const lidosP = ler(this.arq().avisos) || {}, lidosA = st.avisosLidos || {}, naoLidos = avisos.filter(a => a.persist ? !lidosP[a.k] : lidosA[a.k] !== a.em);
+    const lidosP = lerObj(this.arq().avisos) || {}, lidosA = st.avisosLidos || {}, naoLidos = avisos.filter(a => a.persist ? !lidosP[a.k] : lidosA[a.k] !== a.em);
     const abrirAvisos = () => {
       gravar(this.arq().avisos, { ...lidosP, ...Object.fromEntries(avisos.filter(a => a.persist).map(a => [a.k, 1])) });
       this.setState(x => ({ drawer: 'avisos', avisoCat: 'todos', avisosNovos: naoLidos.map(a => a.k), avisosLidos: { ...x.avisosLidos, ...Object.fromEntries(avisos.filter(a => !a.persist).map(a => [a.k, a.em])) } }));
     };
     const avCat = AVISO_CATS.some(c => c[0] === st.avisoCat) ? st.avisoCat : 'todos';
     const avLista = avisos.filter(a => avCat === 'todos' || a.cat === avCat).sort((a, b) => b.em - a.em);
-    const bumps = (lic && lic.bumps) || [];
+    const bumps = lic && Array.isArray(lic.bumps) ? lic.bumps : [];
     const PASSOS = ['Orçamento', 'Garantia', 'Aprovação', 'Pix e documentos'];
     const IV = st.inv, invEt = B && B.inv ? B.inv.filter(r => marcaUni ? r.familia === 'universal' : r.marca_escopo.split('/').includes(marca)).sort((a, b) => num(a.ordem) - num(b.ordem)) : [];
     const invFams = B && B.inv ? [...new Map(B.inv.filter(r => r.familia !== 'universal').map(r => [r.familia, r.marca_escopo])).values()] : [];
@@ -2431,7 +2438,7 @@ class Component extends DCLogic {
       [...new Map((B.inv || []).map(r => [r.familia, r])).values()].forEach(r => { const b = brand(r.marca_escopo), n = B.inv.filter(x => x.familia === r.familia).length, fam = r.familia.split('_').map(w => w.replace(/^\w/, c => c.toUpperCase())).join(' ').replace('3d', '3D');
         catF.push({ cat: 'inv', logo: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel.marca : b, tipo: 'Inverter', ico: 'placa-ipm', t: `Checklist Inverter ${fam}`, sub: r.marca_escopo.split('/').includes(st.sel.marca) ? 'Placa e IPM, com cena de cada teste' : `Placa e IPM · abre com a marca ${b}`, chave: r.familia === 'universal' ? `${n} testes · ${r.marca_escopo.split('/').length} marcas sem família própria` : `${n} testes · ${r.marca_escopo.replace(/\//g, ', ')}`, abrir: lock ? upg('inv') : () => this.abrir('inv', { modK: 'inv', sel: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel : { ...st.sel, marca: b } }) });
       });
-      if ((B.pmoc || []).length) { const temP = ((lic && lic.bumps) || []).includes('pmoc'), ng = new Set(B.pmoc.map(r => r.grupo)).size;
+      if ((B.pmoc || []).length) { const temP = (lic && Array.isArray(lic.bumps) ? lic.bumps : []).includes('pmoc'), ng = new Set(B.pmoc.map(r => r.grupo)).size;
         catF.push({ cat: 'inv', tipo: 'PMOC', ico: 'calendario', t: 'Checklist PMOC simplificado', sub: temP ? 'Modelo editável com PDF' : 'Adicional de Docs · veja em Docs', chave: `${B.pmoc.length} atividades em ${ng} grupos`, abrir: () => temP ? this.abrir('pmoc', { modK: 'docs' }) : this.abrir('docs', { modK: 'docs' }) });
       }
     }
@@ -2956,7 +2963,7 @@ class Component extends DCLogic {
       // "Medir com instrumento" não cabe em meia tecla a 16 px: com ele, as duas teclas ficam empilhadas (Montar orçamento embaixo, perto do polegar).
       resCols: PC && PC.tecInicio && r && !r.tec ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))',
       resKeys: [
-        PC && PC.tecInicio && r && !r.tec ? { l: 'Medir com instrumento', aria: 'Medir com instrumento: abrir a checagem de técnico', pri: false, onClick: () => this.setState(x => ({ tela: 'etapa', etapa: PC.tecInicio, res: null, pk: null, dica: false })) }
+        PC && PC.tecInicio && r && !r.tec ? { l: 'Medir com instrumento', aria: 'Medir com instrumento: abrir a checagem de técnico', pri: false, amarelo: true, onClick: () => this.setState(x => ({ tela: 'etapa', etapa: PC.tecInicio, res: null, pk: null, dica: false })) }
           : { l: 'Refazer', aria: 'Refazer', pri: false, onClick: () => this.setState({ ...RESET }) },
         { l: 'Montar orçamento', aria: 'Montar orçamento com a peça ou serviço sugerido', pri: true, verde: true, onClick: () => this.abrirFech(rServ) },
       ],
