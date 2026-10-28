@@ -14,7 +14,7 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&amp;family=Figtree:wght@700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;800&amp;family=Figtree:wght@700;800&amp;family=Roboto+Mono:wght@600;700;800&amp;display=swap" rel="stylesheet">
 <link href="ref/acetinado-sedoso.css" rel="stylesheet">
 <style>
 html,body{margin:0;background:#e6eaef;}
@@ -64,7 +64,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 .tags{display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:0;}
 .tag{display:inline-flex;align-items:center;gap:6px;max-width:100%;min-height:28px;box-sizing:border-box;padding:3px 10px;border-radius:8px;border:1px solid transparent;font:800 14px/20px 'Roboto',sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;vertical-align:middle;text-align:left;}
 .tag.tag-l{font-size:16px;line-height:22px;white-space:normal;text-wrap:balance;}
-.tag-capacidade,.tag-medida,.tag-terminal,.tag-doc{font-family:ui-monospace,'Roboto Mono',Menlo,Consolas,monospace;}
+.tag-capacidade,.tag-medida,.tag-terminal,.tag-doc{font-family:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;}
 .tag-medida.tag-l{font-family:'Roboto',sans-serif;}
 .tag-marca{background:#ffffff;color:#0b1426;border-color:#cbd5e1;padding-left:4px;}
 .tag-capacidade{background:var(--gp-tg-cap-bg);color:var(--gp-tg-cap);}
@@ -119,6 +119,16 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 .faixa-foto.erro{background:#dc2626;}
 .faixa-foto.certo{background:#15803d;}
 .faixa-foto.l{font-size:16px;line-height:20px;}
+/* Campos lado a lado (PR #37, S3-1 a S3-4): na grade [data-campos-linha], a caixa ([data-campo]) de cada CampoTexto fica no mesmo top mesmo
+   quando um rótulo quebra em 2 linhas ou só um campo mostra a mensagem de erro: rótulo, caixa e mensagem ocupam 3 linhas compartilhadas
+   (subgrid) e o rótulo senta na própria caixa. O respiro de 6 px vira margem (sem gap: sem mensagem, nada sobra embaixo). Sem subgrid
+   (navegador antigo), vale o align-items:end da própria grade. */
+@supports (grid-template-rows:subgrid){
+[data-campos-linha]{row-gap:0 !important;}
+[data-campos-linha] > .sc-host,[data-campos-linha] > .sc-host > label{display:grid !important;grid-row:span 3;grid-template-rows:subgrid;grid-template-columns:minmax(0,1fr);row-gap:0 !important;}
+[data-campos-linha] > .sc-host > label > :first-child:not([data-campo]){align-self:end;}
+[data-campos-linha] > .sc-host > label > [data-campo],[data-campos-linha] > .sc-host > label > [data-campo] ~ *{margin-top:6px;}
+}
 /* Etiqueta dentro da linha de texto (cola do instrumento): sem altura mínima, para a cola ficar em 2 linhas de 19 px (≤ 40 px, pr24.js). */
 .tag.tag-inline{display:inline;min-height:0;padding:0;border:0;border-radius:3px;font-family:inherit;font-size:16px;font-weight:700;line-height:19px;vertical-align:baseline;}
 /* Sem respiro lateral (a cola cabe em 2 linhas desde 320 px): o fundo da etiqueta se estende pela sombra. */
@@ -369,7 +379,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-for list="{{ codLista }}" as="c" hint-placeholder-count="0">
                       <div role="listitem" style="flex:none;">
                         <button type="button" aria-expanded="{{ c.exp }}" onClick="{{ c.abrir }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 4px 8px 12px;border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-sec-raise);color:var(--gp-on-surface);display:grid;grid-template-columns:auto minmax(0,1fr) 32px;align-items:center;column-gap:12px;row-gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(1px);">
-                          <span data-cod="" style="font:800 22px/26px ui-monospace,'Roboto Mono',Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ c.codigo }}</span>
+                          <span data-cod="" style="font:800 22px/26px 'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ c.codigo }}</span>
                           <span style="grid-column:{{ c.descCol }};grid-row:{{ c.descRow }};font:700 16px/20px 'Roboto',sans-serif;text-wrap:pretty;">{{ c.descricao }}</span>
                           <span aria-hidden="true" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;transform:{{ c.seta }};"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
                           <sc-if value="{{ c.temLeds }}" hint-placeholder-val="{{ false }}"><span data-led-painel="" class="tags" style="grid-column:1 / -1;"><sc-for list="{{ c.leds }}" as="ld" hint-placeholder-count="2"><span class="tag tag-led" data-selo="" data-rotulo="" data-led-estado="{{ ld.k }}"><span class="led-rot">{{ ld.rot }}</span><span class="{{ ld.c }}"><span class="led-dot" role="img" aria-label="{{ ld.aria }}"></span>{{ ld.n }}</span></span></sc-for></span></sc-if>
@@ -420,7 +430,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </div>
       </div>
                   </sc-if>
-                  <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                  <div data-campos-linha="" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:end;">
                     <dc-import name="CampoTexto" rotulo="Sucção (psig)" valor="{{ ptP }}" estado="{{ ptPE }}" erroMsg="{{ ptPM }}" aoDigitar="{{ setPtP }}" placeholder="Ex.: 118" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="Tubo de sucção (°C)" valor="{{ ptT }}" estado="{{ ptTE }}" erroMsg="{{ ptTM }}" aoDigitar="{{ setPtT }}" placeholder="Ex.: 12" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                   </div>
@@ -436,6 +446,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ ptAlto }}" hint-placeholder-val="{{ false }}"><p data-ptsh-dica="" style="flex:none;margin:0;padding:0 4px;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">Antes de completar fluido: confirme filtros/serpentina limpos e elimine vazamentos nas flanges.</p></sc-if>
                   <sc-if value="{{ ptR410 }}" hint-placeholder-val="{{ false }}"><div data-lembrete-fluido="R410A" class="tags" style="flex:none;"><span class="tag tag-fluido" data-selo="" data-rotulo="">R410A</span><span class="tag tag-perigo" data-selo="" data-rotulo="">⚠ SÓ LÍQUIDO</span><span class="corpo apoio">carga com o cilindro invertido</span></div></sc-if>
                   <sc-if value="{{ ptTemPar }}" hint-placeholder-val="{{ false }}"><div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Termômetro no tubo de sucção: preso e isolado</span><div data-fotos-comparacao="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span data-foto="erro" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptParErro }};"></span><span data-faixa-legenda="erro" data-rotulo="" class="{{ ptFxErroC }}">{{ ptFxErro }}</span></span><span data-foto="certo" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptParCerto }};"></span><span data-faixa-legenda="certo" data-rotulo="" class="{{ ptFxCertoC }}">{{ ptFxCerto }}</span></span></div></div></sc-if>
+                  <sc-if value="{{ ptVacTemPar }}" hint-placeholder-val="{{ false }}"><div data-ptsh-vacuo="" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Antes da carga: flange vedada e vácuo abaixo de 500 µmHg</span><div data-fotos-comparacao="" data-ptsh-vacuo-fotos="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span data-foto="erro" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptVacParErro }};"></span><span data-faixa-legenda="erro" data-rotulo="" class="{{ ptVacFxErroC }}">{{ ptVacFxErro }}</span></span><span data-foto="certo" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptVacParCerto }};"></span><span data-faixa-legenda="certo" data-rotulo="" class="{{ ptVacFxCertoC }}">{{ ptVacFxCerto }}</span></span></div></div></sc-if>
                   <sc-if value="{{ ptFalta }}" hint-placeholder-val="{{ true }}"><dc-import name="Aviso" tipo="aviso" titulo="Medição insuficiente — informe pressão de sucção e temperatura do tubo" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-if value="{{ ptFora }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Pressão fora da tabela" texto="{{ ptForaX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="Aviso" tipo="info" titulo="{{ ptRefT }}" texto="{{ ptRefX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
@@ -479,7 +490,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaBTU }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <dc-import name="SeletorPrazo" rotulo="Ferramenta" opcoes="{{ nbOps }}" valor="Carga térmica" acao="{{ nbTroca }}" style="display:block;flex:none;" hint-size="100%,76px"></dc-import>
-                  <div style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+                  <div data-campos-linha="" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end;">
                     <dc-import name="CampoTexto" rotulo="Área (m²)" valor="{{ bArea }}" estado="{{ bE.area }}" erroMsg="{{ bM.area }}" aoDigitar="{{ bSetArea }}" placeholder="Ex.: 12" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="Pessoas" valor="{{ bPes }}" estado="{{ bE.pes }}" erroMsg="{{ bM.pes }}" aoDigitar="{{ bSetPes }}" placeholder="Ex.: 2" modo="numeric" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="Aparelhos (W)" valor="{{ bW }}" estado="{{ bE.w }}" erroMsg="{{ bM.w }}" aoDigitar="{{ bSetW }}" placeholder="300" modo="numeric" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
@@ -500,7 +511,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ bTemVer }}" hint-placeholder-val="{{ false }}"><dc-import name="AtalhoTecla" rotulo="Levar ao laudo de quarto quente" icone="documento" acao="{{ bLaudo }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import></sc-if>
                   <sc-if value="{{ bTemRec }}" hint-placeholder-val="{{ false }}"><div data-zap-btu="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Enviar recomendação no WhatsApp" icone="mensagem" acao="{{ bZap }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
                   <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Fatores de amostra. Confirme antes de usar.</span>
-                  <div style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
+                  <div data-campos-linha="" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end;">
                     <dc-import name="CampoTexto" rotulo="BTU/h·m² sombra" valor="{{ bF1 }}" estado="{{ bE.f1 }}" erroMsg="{{ bM.f1 }}" aoDigitar="{{ bSetF1 }}" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="BTU/h·m² tarde" valor="{{ bF2 }}" estado="{{ bE.f2 }}" erroMsg="{{ bM.f2 }}" aoDigitar="{{ bSetF2 }}" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="BTU/h por pessoa" valor="{{ bF3 }}" estado="{{ bE.f3 }}" erroMsg="{{ bM.f3 }}" aoDigitar="{{ bSetF3 }}" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
@@ -528,7 +539,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <div data-inv-meta="" style="box-sizing:border-box;padding:10px 12px;border-radius:16px;background:var(--gp-display);display:flex;flex-direction:column;gap:8px;">
                         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;"><span class="lbl" data-rotulo="">Meta</span><span class="{{ e.fonteTag.c }}" data-selo="" data-rotulo="" data-inv-fonte="">{{ e.fonteTag.t }}</span></div>
                         <sc-if value="{{ e.temAlvo }}" hint-placeholder-val="{{ false }}"><div class="tags" style="column-gap:10px;"><span data-inv-alvo="" class="num-chave">{{ e.alvo }}</span><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="">{{ e.cond.t }}</span></sc-if></div></sc-if>
-                        <sc-if value="{{ e.temComp }}" hint-placeholder-val="{{ false }}"><div data-inv-compressores="" style="display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;align-items:baseline;"><sc-for list="{{ e.comp }}" as="cp" hint-placeholder-count="3"><span data-rotulo="" style="font:600 14px/20px ui-monospace,'Roboto Mono',Menlo,Consolas,monospace;color:var(--gp-on-display);overflow-wrap:anywhere;">{{ cp.m }}</span><span style="font:800 18px/22px 'Roboto',sans-serif;color:var(--gp-tg-num);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cp.o }}</span></sc-for><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="" style="grid-column:1 / -1;justify-self:start;">{{ e.cond.t }}</span></sc-if></div></sc-if>
+                        <sc-if value="{{ e.temComp }}" hint-placeholder-val="{{ false }}"><div data-inv-compressores="" style="display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;align-items:baseline;"><sc-for list="{{ e.comp }}" as="cp" hint-placeholder-count="3"><span data-rotulo="" style="font:600 14px/20px 'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;color:var(--gp-on-display);overflow-wrap:anywhere;">{{ cp.m }}</span><span style="font:800 18px/22px 'Roboto',sans-serif;color:var(--gp-tg-num);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cp.o }}</span></sc-for><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="" style="grid-column:1 / -1;justify-self:start;">{{ e.cond.t }}</span></sc-if></div></sc-if>
                         <div class="tags"><sc-for list="{{ e.vereditos }}" as="vd" hint-placeholder-count="2"><span class="{{ vd.c }}" data-selo="" data-rotulo="">{{ vd.t }}</span></sc-for><sc-for list="{{ e.medidas }}" as="md" hint-placeholder-count="1"><span class="{{ md.c }}" data-selo="" data-rotulo="">{{ md.t }}</span></sc-for></div>
                         <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);text-wrap:pretty;">{{ e.ref }}</span>
                       </div>
@@ -609,7 +620,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><dc-import name="CampoTexto" rotulo="CPF ou CNPJ" valor="{{ pmPropDoc }}" aoDigitar="{{ pmSet.propDoc }}" modo="numeric" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import><dc-import name="CampoTexto" rotulo="Contato" valor="{{ pmPropCont }}" aoDigitar="{{ pmSet.propCont }}"  style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import></div>
                   <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">3. Responsável técnico</span>
                   <dc-import name="CampoTexto" rotulo="Nome" valor="{{ pmRt }}" aoDigitar="{{ pmSet.rt }}"  style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import>
-                  <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><dc-import name="CampoTexto" rotulo="Registro no conselho" valor="{{ pmReg }}" aoDigitar="{{ pmSet.reg }}"  style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import><dc-import name="CampoTexto" rotulo="ART" valor="{{ pmArt }}" aoDigitar="{{ pmSet.art }}"  style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import></div>
+                  <div data-campos-linha="" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:end;"><dc-import name="CampoTexto" rotulo="Registro no conselho" valor="{{ pmReg }}" aoDigitar="{{ pmSet.reg }}"  style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import><dc-import name="CampoTexto" rotulo="ART" valor="{{ pmArt }}" aoDigitar="{{ pmSet.art }}"  style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import></div>
                   <sc-if value="{{ pmSemRt }}" hint-placeholder-val="{{ true }}"><dc-import name="Aviso" tipo="aviso" titulo="Sem responsável técnico" texto="Obrigatório para sistemas acima de 60.000 BTU/h (Portaria 3.523, art. 6º). O PDF sai com o campo em branco." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">4. Ambientes climatizados</span>
                   <span data-campo="1" style="flex:none;display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Ambientes climatizados" rows="3" value="{{ pmAmbs }}" onInput="{{ pmSet.ambs }}" placeholder="Ambiente, equipamento e BTU/h, um por linha" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
@@ -909,9 +920,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="{{ it.e }}" campoErro="{{ it.ce }}" erroMsg="{{ it.em }}" aoDescricao="{{ it.setD }}" aoValor="{{ it.setV }}" aoRemover="{{ it.rem }}" style="display:block;" hint-size="100%,104px"></dc-import>
                   <div data-item-qtd="{{ it.q }}" role="group" aria-label="{{ it.qGrupo }}" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 4px;">
                     <span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Quantidade</span>
+                    <span data-qtd-trio="" style="flex:none;display:inline-flex;align-items:center;gap:4px;">
                     <button type="button" data-qtd-menos="" aria-label="{{ it.qMenosAria }}" disabled="{{ it.qMin }}" onClick="{{ it.qMenos }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:1px solid var(--gp-outline);background:var(--gp-card-action);color:{{ it.qMenosCor }};font:700 22px/24px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);">−</button>
                     <span data-campo="1" style="flex:none;width:64px;height:48px;box-sizing:border-box;padding:0 6px;border-radius:14px;border:1px solid transparent;background:var(--gp-well);box-shadow:var(--gp-well-shadow);display:flex;align-items:center;"><input aria-label="{{ it.qAria }}" inputMode="numeric" value="{{ it.qTxt }}" onInput="{{ it.setQTxt }}" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;text-align:center;font:700 18px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;"></span>
                     <button type="button" data-qtd-mais="" aria-label="{{ it.qMaisAria }}" disabled="{{ it.qMax }}" onClick="{{ it.qMais }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:1px solid var(--gp-outline);background:var(--gp-card-action);color:{{ it.qMaisCor }};font:700 22px/24px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);">+</button>
+                    </span>
                     <sc-if value="{{ it.temMult }}" hint-placeholder-val="{{ false }}"><span data-item-subtotal="" style="flex:1 1 100%;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">{{ it.multTxt }}</span></sc-if>
                   </div>
                   <sc-if value="{{ it.temTubo }}" hint-placeholder-val="{{ false }}"><span data-tubo-carga="" style="padding:0 4px;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ it.tuboTxt }}</span></sc-if>
@@ -1293,9 +1306,12 @@ const INV_SELO = { Conforme: 'sucesso', Fora: 'erro', 'Não medido': 'neutro' };
 // Faixa sólida na base das fotos de comparação (PR #27, achado 6): substitui a legenda gravada na arte (~7 px no celular, cortada do quadro).
 const FOTO_FAIXA = { seguranca: ['✗ CARREGADO: RISCO', '✓ SEM TENSÃO'], tensao_pn: ['✗ P–N FORA DA FAIXA', '✓ P–N NORMAL (CC)'], ipm: ['✗ IPM EM CURTO', '✓ IPM OK'],
   compressor: ['✗ ABERTA OU EM CURTO', '✓ 3 BOBINAS IGUAIS'], motor_dc: ['✗ MOTOR DESIGUAL', '✓ FASES IGUAIS'], sensores: ['✗ NTC FORA DA CURVA', '✓ NTC NA CURVA'],
-  fixacao_ipm: ['✗ DISSIPADOR FROUXO', '✓ DISSIPADOR FIRME'], sh_ponto: ['✗ SOLTO NO AR', '✓ PRESO E ISOLADO'] };
+  fixacao_ipm: ['✗ DISSIPADOR FROUXO', '✓ DISSIPADOR FIRME'], sh_ponto: ['✗ SOLTO NO AR', '✓ PRESO E ISOLADO'],
+  // PR #37: par do vácuo no PT/SH (med_vacuo_linha_erro/_certo). "< 500 µmHg" fica junto na mesma linha (espaço inseparável).
+  vacuo_linha: ['✗ SEM VÁCUO / AR NA LINHA', '✓ VÁCUO < 500 µmHg'] };
 // O ✗/✓ vai colado à 1ª palavra (espaço inseparável): a 320 px a faixa tem 108 px úteis e o símbolo não pode sobrar sozinho na linha.
-const faixaFoto = (k) => { const [e, c] = FOTO_FAIXA[k] || ['✗ ERRADO', '✓ CERTO'], cola = (t) => t.replace(/^([✗✓]) /, '$1\u00a0'); return { fxErro: cola(e), fxCerto: cola(c), fxErroC: 'faixa-foto erro' + (e.length > 20 ? ' l' : ''), fxCertoC: 'faixa-foto certo' + (c.length > 20 ? ' l' : '') }; };
+// Faixa com mais de 20 letras vai a 16 px (piso G-L1) e leva a do lado junto (PR #37): o par lado a lado fica no mesmo tamanho de letra.
+const faixaFoto = (k) => { const [e, c] = FOTO_FAIXA[k] || ['✗ ERRADO', '✓ CERTO'], cola = (t) => t.replace(/^([✗✓]) /, '$1\u00a0'), l = e.length > 20 || c.length > 20 ? ' l' : ''; return { fxErro: cola(e), fxCerto: cola(c), fxErroC: 'faixa-foto erro' + l, fxCertoC: 'faixa-foto certo' + l }; };
 // Inverter em linha visual (PR #27, Lei Zero-Leitura), lido da própria linha do checklist (inverter_checklist.csv), sem número inventado:
 // pré-condição (.tag-estado / ⚡ ENERGIZADO), escala do multímetro (.tag-modo), pontas de prova → borne, alvo com vereditos e a fonte no canto.
 const bornes = (t) => t.trim().replace(/\s+e\s+/g, ', ').split(/,\s*/).filter(Boolean).join(' · ');
@@ -1672,15 +1688,20 @@ const TUBO_G_M = { 1: 15, 2: 25 };
 const dataHora = (ms) => { const d = new Date(ms); return `${d.toLocaleDateString('pt-BR')} · ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`; };
 const visTxt = (t) => h('span', { 'aria-hidden': true, style: { font: "600 16px/22px 'Roboto',sans-serif", color: 'var(--gp-on-display)', textAlign: 'center', padding: '0 8px', overflowWrap: 'normal', textWrap: 'pretty' } }, t);
 const visGen = (sim) => h('svg', { width: 56, height: 56, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--gp-on-display)', strokeWidth: 1.75, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }, sim === 'inc' ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3' }), h('path', { key: 2, d: 'M12 17h.01' })] : sim ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm8 12.5 2.5 2.5 5-5.5' })] : [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm15 9-6 6' }), h('path', { key: 2, d: 'm9 9 6 6' })]);
-const CENAS = { gp04: 'ng04', gp05: 'ng05', ge03: 'ng05' };
+// Espelho de cena (PR #37): etapa sem arte própria mostra a cena da mesma pergunta em outro sintoma (a arte já está em imagens/cenas/).
+// Entra no lote do toque no sintoma (Gela pouco: ng04, ng05 e t_ng01 a t_ng04; Forma gelo: ng05; Pinga água: pi04); o lote de Desliga sozinho não muda.
+const CENA_ALIAS = { gp04: 'ng04', gp05: 'ng05', ge03: 'ng05', pi05: 'pi04', t_gp01: 't_ng01', t_gp02: 't_ng02', t_gp03: 't_ng03', t_gp04: 't_ng04' };
+// Espelho sob demanda (PR #37): t_de03 (tensão sob carga no Desliga sozinho) usa a cena de t_ng03 fora do lote do toque, que o pr20.js trava
+// em de03/de04 e t_de01/t_de02. A cena entra pela pré-carga da próxima pergunta (componentDidUpdate), quando a etapa anterior aparece.
+const CENA_ALIAS_DEMANDA = { t_de03: 't_ng03' };
 // Cor pela saúde (PR #23): o que o "Sim" de cada etapa mostra, o mesmo mapa SIM de processar-cenas-25d.py que escolheu a cena ✗ (defeito) e ✓ (normal).
 // A opção que aponta o defeito leva o tom de alerta e o ✗; a que confirma a condição normal, o verde e o ✓. "Não sei / não medido" fica neutra.
 // Etapa fora do mapa segue a regra antiga (Sim verde, Não vermelho). Mudou uma pergunta de sentido? Atualize aqui e no script.
 const SIM_DEFEITO = new Set('ba03 ba04 de02 de03 ge02 ge03 gp02 gp03 gp04 gp05 ld_lg02 ld_lg04 ng04 ng05 nl02 nl03 nl05 pi03 pi04 pi05 t_ba01 t_ba02 t_de01 t_de02 t_ge02 t_gp04 t_ng04 t_pi01'.split(' '));
 const SIM_NORMAL = new Set('ba02 de04 ng02 ng03 nl04 pi02 t_de03 t_ge01 t_ge03 t_gp01 t_gp02 t_gp03 t_ng01 t_ng02 t_ng03 t_nl01 t_nl02 t_pi02'.split(' '));
 const saudeDe = (eid, sim) => SIM_DEFEITO.has(eid) ? (sim ? 'defeito' : 'normal') : SIM_NORMAL.has(eid) ? (sim ? 'normal' : 'defeito') : null;
-// Nomes de cena das etapas: <etapa>_sim/_nao e, quando a etapa reaproveita outra, a cena compartilhada de CENAS.
-const cenasDe = (etapas) => etapas.flatMap(e => ['_sim', '_nao'].flatMap(s => [e + s, (CENAS[e] || e) + s]));
+// Nomes de cena das etapas: <etapa>_sim/_nao e, quando a etapa espelha outra, a cena de CENA_ALIAS (com demanda, também a de CENA_ALIAS_DEMANDA).
+const cenasDe = (etapas, demanda) => etapas.flatMap(e => { const cid = CENA_ALIAS[e] || (demanda && CENA_ALIAS_DEMANDA[e]) || e; return ['_sim', '_nao'].flatMap(s => [e + s, cid + s]); });
 const TEMA_NOME = { titanio: 'titanio', claro: 'claro', bancada: 'claro', sol: 'sol' };
 const TEMA_PROX = { titanio: 'claro', claro: 'sol', sol: 'titanio' };
 const TEMA_ROT = { titanio: 'Titânio', claro: 'Claro', sol: 'Sol' };
@@ -1790,7 +1811,7 @@ class Component extends DCLogic {
       });
     });
   }
-  // Lote do percurso (etapas rápidas e técnicas do sintoma, com as cenas compartilhadas de CENAS) ou do módulo (Inverter: inv_*; PT/SH: med_*).
+  // Lote do percurso (etapas rápidas e técnicas do sintoma, com as cenas espelhadas de CENA_ALIAS) ou do módulo (Inverter: inv_*; PT/SH: med_*).
   precarregarPercurso(id) { const pc = this.state.base && this.state.base.perc && this.state.base.perc[id]; if (pc) this.precarregarCenas(cenasDe(Object.keys(pc.etapas))); }
   precarregarModulo(tela) { const pre = { inv: 'inv_', ptsh: 'med_' }[tela]; if (pre) this.listaCenas().then(L => this.precarregarCenas([...L].filter(n => n.startsWith(pre)))); }
   // Montar orçamento: abre o fechamento já com a primeira peça/serviço sugerido pelo diagnóstico (valor típico editável); os demais
@@ -1899,6 +1920,14 @@ class Component extends DCLogic {
     // O motor (support.js) não passa o estado anterior: o último passo visto fica em this._fPasso.
     const pn = this.state.fOpen && this.state.fech ? this.state.fech.passo : null;
     if (pn !== this._fPasso) { const v = pn && this._fPasso && this.fRef.current && this.fRef.current.querySelector('[data-vis]'); if (v) v.scrollTop = 0; this._fPasso = pn; }
+    // Próxima pergunta (PR #37): com a Etapa na tela, a cena dela e a das perguntas seguintes entram já, inclusive o espelho sob demanda
+    // (CENA_ALIAS_DEMANDA). Só pede o que ainda não foi pedido: o lote do toque no sintoma (pr20.js) não muda. Última etapa vista em this._etapaVista.
+    const et = this.state.tela === 'etapa' ? this.state.etapa : null;
+    if (et !== this._etapaVista) {
+      this._etapaVista = et;
+      const pc = et && this.state.base && this.state.base.perc && this.state.base.perc[this.state.sint], e = pc && pc.etapas[et];
+      if (e) this.precarregarCenas(cenasDe([et, ...e.ops.map(o => o.next).filter(n => n && pc.etapas[n])], true));
+    }
     // Atalho de medição (PR #28): o módulo abre já rolado até a etapa ou linha pedida (state.foco = seletor); sai do estado quando acha.
     // Tenta a cada 100 ms (até 2,5 s) enquanto a lista ainda cresce: no 1º acesso ao módulo as etapas e as fotos entram depois, então só
     // encerra depois de 3 leituras seguidas com a linha no topo.
@@ -2615,6 +2644,8 @@ class Component extends DCLogic {
         const setQ = (q) => this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, q } : y) })), qRaw = F.itens[i] ? F.itens[i].q : undefined;
         return { n: i + 1, d: x.d, v: x.v, temRef: !!c && !discreto, ref: c ? bastDe(c, st.sel.btu) : '', refP: c ? bastTags(c, st.sel.btu) : [], e: err ? 'erro' : 'normal',
         // Quantidade (PR #21): − / campo / +; com 2 ou mais, a conta pronta "2 × R$ 220,00 = R$ 440,00" logo abaixo.
+        // PR #37 (S2-1 a S2-12): −, campo e + ficam num bloco só ([data-qtd-trio]), que nunca se separa; com vão de 4 px o rótulo e o trio
+        // cabem numa linha desde 320 px (258 de 262 px úteis).
         q: String(x.q), qTxt: qRaw === undefined || qRaw === null ? '1' : String(qRaw), qMin: x.q <= 1, qMax: x.q >= QTD_MAX, qAria: `Quantidade do item ${i + 1}`, qGrupo: `Quantidade e subtotal do item ${i + 1}`, qMenosAria: `Diminuir a quantidade do item ${i + 1}`, qMaisAria: `Aumentar a quantidade do item ${i + 1}`,
         qMenos: () => setQ(Math.max(1, x.q - 1)), qMais: () => setQ(Math.min(QTD_MAX, x.q + 1)), setQTxt: (e) => setQ(String(e.target.value || '').replace(/\D/g, '').replace(/^0+/, '').slice(0, 2)),
         qMenosCor: x.q <= 1 ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', qMaisCor: x.q >= QTD_MAX ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)',
@@ -2774,6 +2805,8 @@ class Component extends DCLogic {
       ptRefT: elg.length ? `Elgin ${elg[0].linha}: ${elg[0].valor}` : `Sem faixa oficial de SH para ${marca} na base`,
       ptRefX: elg.length ? `Vale só para essa linha (${elg[0].fonte_id}). ${elg.slice(1).map(c => c.valor).join('. ')}.` : 'O valor aparece sem veredito. A faixa da Elgin Eco Inverter não vale para outras marcas.',
       ...Object.fromEntries(Object.entries({ ...par('med_sh_ponto'), ...faixaFoto('sh_ponto') }).map(([k, v]) => ['pt' + k[0].toUpperCase() + k.slice(1), v])),
+      // Par do vácuo (PR #37): med_vacuo_linha_erro/_certo, que o módulo já baixa com o lote med_*, no mesmo quadro 64:55 do par do termômetro.
+      ...Object.fromEntries(Object.entries({ ...par('med_vacuo_linha'), ...faixaFoto('vacuo_linha') }).map(([k, v]) => ['ptVac' + k[0].toUpperCase() + k.slice(1), v])),
       ptFonte: `Tabela de vapor saturado, ${fonteTxt('F11')}. Sub-resfriamento precisa da saturação do líquido, que ainda não está na base.`,
       // "Orçar" direto da medição (PR #24): abre o Fechamento com o serviço lançado e marcado nos indicados, sem apagar o que o diagnóstico sugeriu.
       orcarPtsh: () => this.abrirFech(['carga_fluido'], true), orcarNtc: () => this.abrirFech(['sensor_ntc'], true),
@@ -2887,8 +2920,9 @@ class Component extends DCLogic {
       etapaId: E.id || '',
       opcoes: E.ops.map((o, i, arr) => {
         const n = arr.length, w = (pw - 8 * (n - 1)) / n;
-        // Cena própria da etapa (rápida ou técnica) em imagens/cenas/<etapa>_<sim|nao>.webp; sem ela, a cena compartilhada de CENAS.
-        const suf = '_' + (o.sim ? 'sim' : 'nao'), cn = !E.id ? '' : st.cenas[E.id + suf] ? E.id + suf : (CENAS[E.id] || E.id) + suf, temCena = !o.inc && !!st.cenas[cn];
+        // Cena própria da etapa (rápida ou técnica) em imagens/cenas/<etapa>_<sim|nao>.webp; sem ela, a cena espelhada (cid) de CENA_ALIAS.
+        // A arte própria sempre vence o espelho: basta gravar <etapa>_sim/_nao.webp e listar em cenas.json, sem mexer no código.
+        const suf = '_' + (o.sim ? 'sim' : 'nao'), cid = CENA_ALIAS[E.id] || CENA_ALIAS_DEMANDA[E.id] || E.id, cn = !E.id ? '' : st.cenas[E.id + suf] ? E.id + suf : cid + suf, temCena = !o.inc && !!st.cenas[cn];
         const sd = o.inc ? null : saudeDe(E.id, o.sim);
         const tom = sd === 'defeito' ? 'var(--gp-answer-no)' : sd === 'normal' ? 'var(--gp-answer-yes)' : o.inc || E.tec && !/^(sim|n[ãa]o)/i.test(o.l) ? 'var(--gp-key-navy-grad)' : (o.sim || /^sim/i.test(o.l)) ? 'var(--gp-answer-yes)' : 'var(--gp-answer-no)';
         const bgc = tom === 'var(--gp-answer-yes)' ? 'var(--gp-answer-yes-solid)' : tom === 'var(--gp-answer-no)' ? 'var(--gp-answer-no-solid)' : 'var(--gp-answer-neutral-solid)';
