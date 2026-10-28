@@ -93,8 +93,16 @@
         }
       }
       if (t && !desligado && parseFloat(cs.fontSize) < 18 && (parseFloat(cs.letterSpacing) || 0) < -0.25) falha('G-L1 tamanho', el, `letras apertadas (letter-spacing ${cs.letterSpacing})`);
-      const corta = (cs.textOverflow === 'ellipsis' || cs.webkitLineClamp !== 'none' && cs.webkitLineClamp) && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
-      if (corta && t) falha('G-L8 texto cortado', el, `${el.scrollWidth}×${el.scrollHeight} em ${el.clientWidth}×${el.clientHeight}`);
+      // G-L8 (PR #30): o texto pode vir da interpolação do framework ({{ }} vira span.sc-interp, que não tem caixa própria para medir). Reprova
+      // reticências, line-clamp e qualquer overflow hidden/clip que esconda conteúdo na largura ou na altura; rolagem (auto/scroll) não conta,
+      // nem o texto só para leitor de tela (clip de 1 px).
+      if (!desligado && !(cs.clip !== 'auto' && el.clientWidth <= 1)) {
+        const sobraX = el.scrollWidth > el.clientWidth + 1, sobraY = el.scrollHeight > el.clientHeight + 1, oculta = (v) => v === 'hidden' || v === 'clip';
+        const clamp = cs.textOverflow === 'ellipsis' || (cs.webkitLineClamp !== 'none' && !!cs.webkitLineClamp);
+        const tv = (t + ' ' + [...el.children].filter(k => k.classList.contains('sc-interp')).map(k => k.textContent).join('')).trim();
+        const corta = (clamp && (sobraX || sobraY)) || (oculta(cs.overflowX) && sobraX) || (oculta(cs.overflowY) && sobraY);
+        if (corta && (tv || el.textContent.trim())) falha('G-L8 texto cortado', el, `${el.scrollWidth}×${el.scrollHeight} em ${el.clientWidth}×${el.clientHeight} (overflow ${cs.overflowX}/${cs.overflowY})`);
+      }
     });
     if (document.querySelectorAll('[data-tema]').length <= 1) for (const [k, lst] of Object.entries(cores)) { const niveis = []; lst.forEach(c => { if (!niveis.some(n => dist(n, c) < 0.045)) niveis.push(c); }); if (niveis.length > 2) F.push({ g: 'G-L6 níveis de texto', txt: niveis.map(hx).join(' '), msg: `${niveis.length} cores neutras de texto em fundo ${k} (máximo 2)` }); }
     // G-C1 (paleta 2c): no máximo uma ação principal laranja visível por tela.
