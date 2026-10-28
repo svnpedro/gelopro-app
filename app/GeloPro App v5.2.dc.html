@@ -124,11 +124,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 /* Sem respiro lateral (a cola cabe em 2 linhas desde 320 px): o fundo da etiqueta se estende pela sombra. */
 .tag-ok.tag-inline{box-shadow:0 0 0 3px var(--gp-tg-ok-bg);}
 .tag-medida.tag-inline{box-shadow:0 0 0 3px var(--gp-tg-medida-bg);}
-/* Botões de 2º nível desligados (PR #30): Exportar backup com o Cofre vazio e Usar marca sem nome digitado. */
-[data-cofre-exportar]:disabled,[data-marca-aplicar]:disabled{opacity:.5;cursor:not-allowed;}
+/* Botões de 2º nível desligados (PR #30 e #35): Exportar backup com o Cofre vazio, Usar marca sem nome e Gerar justificativa sem valor. */
+[data-cofre-exportar]:disabled,[data-marca-aplicar]:disabled,[data-auto-justificar]:disabled{opacity:.5;cursor:not-allowed;}
 @keyframes gpSpin{to{transform:rotate(360deg)}}
 @keyframes gpFlow{to{background-position:48px 0}}
 @keyframes gpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* Alerta que entra deslizando (PR #35): a bandeja recorta com clip-path, não com overflow hidden, para o deslize não contar como texto cortado. */
 @keyframes gpBandeja{from{transform:translateY(calc(100% + 16px))}to{transform:translateY(0)}}
 @keyframes gpPulseResult{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @keyframes gpPulseResult2{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
@@ -360,11 +361,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaCodigo }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div data-codigo-tela="" style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <dc-import name="CampoTexto" aria="Código mostrado no display" valor="{{ codBusca }}" aoDigitar="{{ setCod }}" placeholder="Código ou parte da descrição" icone="busca" style="display:block;flex:none;" hint-size="100%,56px"></dc-import>
                   <span style="flex:none;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ codInfo }}</span>
                   <dc-import name="Aviso" tipo="aviso" titulo="Código aponta o circuito, não a peça" texto="Sozinho, não confirma a peça com defeito. Meça antes de trocar." style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
-                  <div role="list" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
+                  <div role="list" style="flex:1;min-height:136px;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
                     <sc-for list="{{ codLista }}" as="c" hint-placeholder-count="0">
                       <div role="listitem" style="flex:none;">
                         <button type="button" aria-expanded="{{ c.exp }}" onClick="{{ c.abrir }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 4px 8px 12px;border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-sec-raise);color:var(--gp-on-surface);display:grid;grid-template-columns:auto minmax(0,1fr) 32px;align-items:center;column-gap:12px;row-gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(1px);">
@@ -387,6 +388,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                           </sc-if>
                         </button>
                       </div>
+                      <sc-if value="{{ c.aberto }}" hint-placeholder-val="{{ false }}"><div data-orcar-codigo="{{ c.codigo }}" role="none" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="{{ c.orcarTxt }}" verde="{{ true }}" icone="garantia" acao="{{ c.orcar }}" style="display:block;" hint-size="100%,68px"></dc-import></div></sc-if>
                     </sc-for>
                     <sc-if value="{{ codVazio }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="aviso" titulo="{{ codVazioT }}" texto="{{ codVazioX }}" style="display:block;" hint-size="100%,48px"></dc-import></sc-if>
                     <sc-if value="{{ temOem }}" hint-placeholder-val="{{ false }}">
@@ -406,7 +408,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaPT }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <sc-if value="{{ ptTemAlerta }}" hint-placeholder-val="{{ false }}">
-                  <div data-bandeja="" style="flex:none;overflow:hidden;border-radius:16px;">
+                  <div data-bandeja="" style="flex:none;clip-path:inset(0 round 16px);border-radius:16px;">
         <div data-alerta-diamante="{{ ptAlerta.k }}" data-tom="{{ ptAlerta.tom }}" role="alert" style="box-sizing:border-box;padding:8px 8px 10px 16px;border-radius:16px;background:{{ ptAlerta.fundo }};box-shadow:inset 6px 0 0 {{ ptAlerta.viva }};display:flex;flex-direction:column;gap:8px;animation:gpBandeja 260ms ease-out;">
           <div style="display:flex;align-items:flex-start;gap:8px;">
             <span aria-hidden="true" style="flex:none;display:inline-flex;padding-top:13px;color:{{ ptAlerta.viva }};"><dc-import name="IconeGP" nome="{{ ptAlerta.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
@@ -431,6 +433,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </sc-for>
                   </div>
                   <sc-if value="{{ ptTemVer }}" hint-placeholder-val="{{ false }}"><div data-pt-veredito="{{ ptVer }}" class="tags" style="flex:none;"><span class="{{ ptVerTag.c }}" data-selo="" data-rotulo="">{{ ptVerTag.t }}</span></div></sc-if>
+                  <sc-if value="{{ ptAlto }}" hint-placeholder-val="{{ false }}"><p data-ptsh-dica="" style="flex:none;margin:0;padding:0 4px;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">Antes de completar fluido: confirme filtros/serpentina limpos e elimine vazamentos nas flanges.</p></sc-if>
                   <sc-if value="{{ ptR410 }}" hint-placeholder-val="{{ false }}"><div data-lembrete-fluido="R410A" class="tags" style="flex:none;"><span class="tag tag-fluido" data-selo="" data-rotulo="">R410A</span><span class="tag tag-perigo" data-selo="" data-rotulo="">⚠ SÓ LÍQUIDO</span><span class="corpo apoio">carga com o cilindro invertido</span></div></sc-if>
                   <sc-if value="{{ ptTemPar }}" hint-placeholder-val="{{ false }}"><div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Termômetro no tubo de sucção: preso e isolado</span><div data-fotos-comparacao="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span data-foto="erro" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptParErro }};"></span><span data-faixa-legenda="erro" data-rotulo="" class="{{ ptFxErroC }}">{{ ptFxErro }}</span></span><span data-foto="certo" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptParCerto }};"></span><span data-faixa-legenda="certo" data-rotulo="" class="{{ ptFxCertoC }}">{{ ptFxCerto }}</span></span></div></div></sc-if>
                   <sc-if value="{{ ptFalta }}" hint-placeholder-val="{{ true }}"><dc-import name="Aviso" tipo="aviso" titulo="Medição insuficiente — informe pressão de sucção e temperatura do tubo" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
@@ -536,6 +539,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </sc-for>
                   <dc-import name="Aviso" tipo="info" titulo="{{ invForaT }}" texto="Confirme a medição antes de condenar placa, IPM ou compressor." style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <dc-import name="AtalhoTecla" rotulo="Levar ao laudo" icone="documento" acao="{{ invLaudo }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
+                  <div data-orcar-inverter="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Orçar reparo / placa Inverter" verde="{{ true }}" icone="garantia" acao="{{ invOrcar }}" style="display:block;" hint-size="100%,68px"></dc-import></div>
                   <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ invFonte }}</span>
                 </div>
                 </sc-if>
@@ -583,6 +587,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ lErro }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Faltam dados para o laudo" texto="Preencha cliente, constatações e conclusão." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="AtalhoTecla" rotulo="PDF do laudo de inviabilidade" icone="documento" acao="{{ lPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
                   <div data-zap-laudo="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Enviar laudo no WhatsApp" icone="mensagem" acao="{{ lZap }}" style="display:block;" hint-size="100%,60px"></dc-import></div>
+                  <div data-orcar-substituicao="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Orçar desinstalação + instalação de aparelho novo" icone="garantia" acao="{{ lOrcar }}" style="display:block;" hint-size="100%,68px"></dc-import></div>
                   <sc-if value="{{ pdfLaudo }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
                       <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
@@ -788,7 +793,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
           <sc-if value="{{ dLista }}" hint-placeholder-val="{{ false }}">
             <div data-fichas="" style="display:flex;flex-direction:column;gap:12px;">
-              <dc-import name="CampoTexto" aria="Buscar ficha" valor="{{ busca }}" aoDigitar="{{ setBusca }}" placeholder="Sintoma, código, sensor ou marca" icone="busca" style="display:block;" hint-size="100%,56px"></dc-import>
+              <dc-import name="CampoTexto" aria="Buscar ficha" valor="{{ busca }}" aoDigitar="{{ setBusca }}" placeholder="Sintoma, código ou marca" icone="busca" style="display:block;" hint-size="100%,56px"></dc-import>
               <div role="group" aria-label="Filtrar fichas por categoria" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px;">
                 <sc-for list="{{ fichaFiltros }}" as="fc" hint-placeholder-count="5"><button type="button" aria-pressed="{{ fc.on }}" onClick="{{ fc.acao }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:999px;border:{{ fc.borda }};background:{{ fc.fundo }};color:{{ fc.cor }};font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ fc.l }}</button></sc-for>
               </div>
@@ -921,6 +926,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ it.temEco }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="padding:0 4px;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Economia preventiva:</strong> {{ it.eco }}</span></sc-if>
                   <button type="button" data-editar-item="" aria-expanded="{{ it.edExp }}" onClick="{{ it.edToggle }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ it.edTxt }}</button>
                   <sc-if value="{{ it.edAberto }}" hint-placeholder-val="{{ false }}"><div data-editor-item="" style="display:flex;flex-direction:column;gap:8px;padding:4px 0 8px;">
+                    <button type="button" data-auto-justificar="" disabled="{{ it.autoJOff }}" onClick="{{ it.autoJ }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-active="transform:translateY(1px);">Gerar justificativa e faixa de tabela p/ este valor</button>
                     <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Procedimento incluso</span>
                     <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaJ }}" rows="3" value="{{ it.jVal }}" onInput="{{ it.setJ }}" placeholder="O que está incluso neste serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                     <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Faixa de referência de tabela</span>
@@ -1103,7 +1109,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </div>
       </div>
       <sc-if value="{{ fTemAlerta }}" hint-placeholder-val="{{ false }}">
-      <div data-bandeja="" style="flex:none;overflow:hidden;border-radius:16px;">
+      <div data-bandeja="" style="flex:none;clip-path:inset(0 round 16px);border-radius:16px;">
         <div data-alerta-diamante="{{ fAlerta.k }}" data-tom="{{ fAlerta.tom }}" role="alert" style="box-sizing:border-box;padding:8px 8px 10px 16px;border-radius:16px;background:{{ fAlerta.fundo }};box-shadow:inset 6px 0 0 {{ fAlerta.viva }};display:flex;flex-direction:column;gap:8px;animation:gpBandeja 260ms ease-out;">
           <div style="display:flex;align-items:flex-start;gap:8px;">
             <span aria-hidden="true" style="flex:none;display:inline-flex;padding-top:13px;color:{{ fAlerta.viva }};"><dc-import name="IconeGP" nome="{{ fAlerta.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
@@ -1478,6 +1484,14 @@ const tipDe = (c, btu) => { const p = porteDe(btu); return p === 3 && c.tip36 !=
 // Faixa de tabela do porte: piso e teto acompanham o típico na mesma proporção, arredondados a R$ 10 (no porte 1, a tabela base).
 const faixaDe = (c, btu) => { const tip = tipDe(c, btu), k = c.tip && tip !== c.tip ? tip / c.tip : 1, r10 = (v) => v === null || k === 1 ? v : Math.round(v * k / 10) * 10; return { min: r10(c.min), max: r10(c.max), tip }; };
 const faixaPorte = (c, btu) => { const f = faixaDe(c, btu); return f.min !== null && f.max !== null ? `${BRL.format(f.min)} a ${BRL.format(f.max)}` : ''; };
+// Modo Esperto Comercial (PR #35): faixa que acompanha o valor cobrado (85 % a 125 %, em dezenas). R$ 380,00 → "R$ 320,00 a R$ 480,00".
+const faixaElastica = (v) => `${BRL.format(Math.round(v * 0.85 / 10) * 10)} a ${BRL.format(Math.round(v * 1.25 / 10) * 10)}`;
+const AUTO_J = 'Execução técnica especializada com ferramental de precisão, insumos de primeira linha e ensaio operacional em carga';
+const AUTO_ECO = 'Previne agravamento de falha elétrica/mecânica e preserva a vida útil do equipamento';
+// Trava anti-isento (PR #35): a visita só vira ISENTO com pelo menos 1 outro serviço ou peça no orçamento. Se o último sair com a chave ligada,
+// a chave desliga e a visita lançada volta ao orçamento: ele nunca fica vazio, em R$ 0,00, só com a visita isenta.
+const outroServico = (l) => (l || []).some(x => x.sid !== 'visita_diag' && (x.d.trim() || x.sid));
+const travaIsento = (f) => !f || !f.bonif || outroServico(f.itens) ? f : { ...f, bonif: false, bonifItem: null, itens: !f.bonifItem ? f.itens : f.itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [f.bonifItem] : [...f.itens, f.bonifItem] };
 // Bastidor do técnico: custo médio da peça e tabela praticada no porte. Nunca sai em documento, PDF ou WhatsApp.
 // Custo da peça por porte (PR #23): compressor, placa nova, reparo de placa e motor têm custo_peca_*_18000btu e custo_peca_*_36000btu
 // (proporcionais ao valor típico do porte, até a cotação real); sem essas colunas, vale o custo base. 12.000 BTU/h fica como sempre.
@@ -1610,6 +1624,18 @@ const FACA_REGRAS = [
   [/placa|display|jumper|interface|receptor|wi-?fi/i, 'Conferir conectores, jumper e oxidação da placa e do display; persistindo, orçar reparo da placa'],
 ];
 const facaDe = (c, normal) => (c.faca || '').trim() || (normal && FACA_NORMAL[c.codigo]) || (normal ? 'Explicar ao cliente que é operação normal e oferecer a higienização preventiva' : ((FACA_REGRAS.find(([re]) => re.test(c.descricao)) || [])[1] || 'Medir o circuito indicado com o multímetro antes de trocar a peça; registrar a leitura no laudo e orçar o reparo'));
+// Botão "Orçar" do cartão aberto de Código e LED (PR #35): os serviços do circuito que o código aponta. O 1º entra no orçamento e os demais
+// ficam em "Indicados" (reparo × placa nova são alternativas: o total do cliente não soma as duas). Operação normal vira preventiva.
+const servicosDoCodigo = (c, normal) => {
+  if (normal) return ['higienizacao', 'limpeza_simples'];
+  const t = norm(`${c.descricao || ''} ${c.causa || ''}`);
+  if (/sensor|termistor|ntc/.test(t)) return ['sensor_ntc'];
+  if (/comunica|borne|tens[aã]o|disjuntor|alimenta|fusivel/.test(t)) return ['fusivel_eletrica', 'reparo_placa'];
+  if (/ventilador|turbina|motor/.test(t)) return ['motor_vent'];
+  if (/vazamento|fluido|refrigerante|press[aã]o|\bgas\b/.test(t)) return ['carga_fluido'];
+  if (/compressor/.test(t)) return ['compressor_troca', 'reparo_placa'];
+  return ['reparo_placa', 'placa_nova'];
+};
 // CAUSA: a descrição sem o padrão de piscadas e sem a ressalva final ("não confirma…", "não autoriza…"), que vira a etiqueta âmbar.
 const causaDe = (c) => { const t = String(c.causa || c.descricao).split(/;\s*(?=n[ãa]o (?:confirma|autoriza)|investigar|exige|confirmar)/i)[0].trim(); return t.charAt(0).toUpperCase() + t.slice(1); };
 // Painel de LED: cada LED do padrão vira .tag-led (rótulo em cima; ● aceso, ◐ N× piscando, ○ apagado).
@@ -1631,6 +1657,9 @@ const COLA = {
   tensao: { rot: 'Referência ±10%:', l1a: 'Rede 220 V → ', l1b: '198 a 242 V', tg: 'medida', l2: 'Rede 127 V → 114 a 140 V', faixa: '220 V → 198–242 V' },
 };
 const CAP_ETAPAS = ['t_ng04', 't_gp04'];
+// Anti-cilada do capacitor (PR #35): em Inverter o compressor BLDC não tem capacitor de partida. A cola segue letra por letra (pr24.js) e a
+// grade não cresce em 375×667: o aviso vai na barra "Sem teste" (mesma linha), no aria-label dela e na dica (i) da etapa.
+const CAP_INV = 'Inverter: sem capacitor', CAP_INV_TXT = 'Inverter (compressor BLDC): o compressor não usa capacitor de partida; meça só o capacitor AC do ventilador, se houver, ou use Sem teste para seguir a Sensor NTC e Placa.';
 // Etiqueta .tag (PR #27, Lei Zero-Leitura). k = token (marca, medida, ok…); acima de 20 letras ganha .tag-l (16 px), pelo piso do portão G-L1.
 const TG = (k, t, x) => ({ ...(x || {}), c: `tag tag-${k}${x && x.cls ? ' ' + x.cls : ''}${String(t).length > 20 ? ' tag-l' : ''}`, t: String(t) });
 // Causa provável em 2 níveis: peça (18 px/800) e detalhe (16 px, cor de apoio). Corta na 1ª ligação (do, por, com, vírgula, parêntese…)
@@ -1767,18 +1796,20 @@ class Component extends DCLogic {
   // Montar orçamento: abre o fechamento já com a primeira peça/serviço sugerido pelo diagnóstico (valor típico editável); os demais
   // sugeridos ficam marcados no catálogo. Itens já lançados pelo técnico são mantidos.
   // somar (PR #24, "Orçar" do PT/SH e do NTC): o item entra nos indicados sem apagar os que o diagnóstico já sugeriu.
-  abrirFech(sug, somar) {
+  // lancar (PR #35): serviços que entram todos no orçamento, além do 1º da lista (laudo: desinstalação + instalação de aparelho novo).
+  abrirFech(sug, somar, lancar) {
     this.setState(st => {
       const F = st.fech || FECH0(), cat = (st.base && st.base.cat) || [], ids = (sug || []).filter(id => cat.some(c => c.id === id));
       const c = cat.find(x => x.id === ids[0]), novo = !!c && !F.itens.some(x => x.sid === c.id);
       let itens = F.itens;
       if (novo) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...itens, itemDe(c, st.sel.btu)];
+      (lancar || []).map(id => cat.find(x => x.id === id)).filter(x => x && !itens.some(y => y.sid === x.id)).forEach(x => { itens = itens.every(y => !y.d.trim() && !String(y.v).trim()) ? [itemDe(x, st.sel.btu)] : [...itens, itemDe(x, st.sel.btu)]; });
       const sugF = !ids.length ? F.sug || [] : somar ? [...new Set([...ids, ...(F.sug || [])])] : ids;
-      return { fech: { ...F, itens, sug: sugF, ...(novo ? higLimpa(F, c) : {}) }, fOpen: true, drawer: null };
+      return { fech: travaIsento({ ...F, itens, sug: sugF, ...(novo ? higLimpa(F, c) : {}) }), fOpen: true, drawer: null };
     });
   }
   fRef = React.createRef();
-  fSet(patch) { this.setState(st => ({ fech: { ...st.fech, ...(typeof patch === 'function' ? patch(st.fech) : patch) } })); }
+  fSet(patch) { this.setState(st => ({ fech: travaIsento({ ...st.fech, ...(typeof patch === 'function' ? patch(st.fech) : patch) }) })); }
   arq() { return this.state.amostra ? ARQ.amostra : ARQ.real; }
   numero(avulso) { if (!avulso && this.state.fech && this.state.fech.numero) return this.state.fech.numero; const A = this.arq(), n = (Number(ler(A.seq)) || 0) + 1; gravar(A.seq, n); const num = A.pre + String(n).padStart(4, '0'); if (!avulso) this.fSet({ numero: num }); return num; }
   imprimir(tipo, doc) {
@@ -2009,13 +2040,15 @@ class Component extends DCLogic {
     const fonteTxt = (ids) => (ids || '').split(';').filter(Boolean).map(id => { const f = B && B.fon[id]; return f ? `${id} · ${f.emissor}` : id; }).join('; ');
     // Fonte humana da curva (PR #27): o manual de serviço da lista ("Manual Midea Inverter"), ou a tabela do fabricante.
     const manualDe = (ids, m) => { const L = String(ids || '').split(';').filter(Boolean), id = L.find(i => B && B.fon[i] && /manual|service/i.test(B.fon[i].titulo)) || L[0], f = id && B ? B.fon[id] : null; return id ? `${id} · ${f && /manual|service/i.test(f.titulo) ? 'Manual' : 'Tabela'} ${m}${f && /inverter/i.test(f.titulo) ? ' Inverter' : ''}` : ''; };
-    // Etiqueta de fonte (.tag-fonte, canto): 1ª fonte e o emissor curto ("F05 · Midea"); nunca nome de arquivo .csv.
-    const fonteTag = (ids) => { const id = String(ids || '').split(';').filter(Boolean)[0] || '', f = B && B.fon[id]; return id ? `${id}${f ? ' · ' + String(f.emissor).split(/ via | \(|;|,/)[0].trim() : ''}` : ''; };
+    // Etiqueta de fonte (.tag-fonte, canto): 1ª fonte e o emissor curto ("F05 · Midea Brasil"); nunca nome de arquivo .csv.
+    // Passando de 20 letras (G-L1: rótulo de 14 px só até 20), fica a 1ª palavra do emissor: "D18 · GREE", "D21 · Britania".
+    const fonteTag = (ids) => { const id = String(ids || '').split(';').filter(Boolean)[0] || '', f = B && B.fon[id]; if (!id) return ''; if (!f) return id;
+      const em = String(f.emissor).split(/ via | \(|;|,/)[0].trim(), t = `${id} · ${em}`; return t.length <= 20 ? t : `${id} · ${em.split(/[ /]/)[0]}`; };
     const codMarcas = B ? [...new Set(B.cod.map(c => c.marca))] : [];
     const ePisc = st.sint === 'led' && B && B.pisc;
     // Piscadas (PR #23): o código vem do início da descrição ("E1:", "41:", "EC:"); sem código, a contagem do padrão ("1×") ou "LED".
     // Antes, a linha sem código mostrava o nome do LED na coluna do código ("Operação ligado e Timer; cores não…", cortado) e escondia o padrão.
-    const fonteCod = !B ? [] : ePisc ? B.pisc.map(p => { const m = p.descricao.match(/^([A-Z]{0,3}\d{1,3}[A-Z]?|[A-Z]\d|[A-Z]{2,3})\s*:\s*/), n = (p.padrao.match(/(\d+)\s*(?:vez|vezes|piscadas?)\b/i) || [])[1]; return { marca: p.marca, linha: p.linha, codigo: m ? m[1] : n ? n + '×' : 'LED', descricao: `${p.padrao}. ${m ? p.descricao.slice(m[0].length) : p.descricao}`, causa: m ? p.descricao.slice(m[0].length) : p.descricao, padrao: p.padrao, led: p.led, fonte_id: p.fonte_id, status: p.status }; }) : B.cod;
+    const fonteCod = !B ? [] : ePisc ? B.pisc.map(p => { const m = p.descricao.match(/^([A-Z]{0,3}\d{1,3}[A-Z]?|[A-Z]\d|[A-Z]{2,3})\s*:\s*/), n = (p.padrao.match(/(\d+)\s*(?:vez|vezes|piscadas?)\b/i) || [])[1]; return { marca: p.marca, linha: p.linha, codigo: m ? m[1] : n ? n + '×' : 'LED', descricao: `${p.padrao}. ${m ? p.descricao.slice(m[0].length) : p.descricao}`, causa: m ? p.descricao.slice(m[0].length) : p.descricao, padrao: p.padrao, led: p.led, fonte_id: p.fonte_id, status: p.status, faca: p.faca }; }) : B.cod;
     // Marca do topo: linhas da própria marca primeiro; Carrier também lê a plataforma Midea/Springer (PLATAFORMA).
     const mProp = fonteCod.filter(c => daMarca(c.marca, marca)), mPlat = fonteCod.filter(c => !daMarca(c.marca, marca) && (daPlataforma(c.marca, marca) || (marcaUni && !!st.oemPlat && marcasDe(c.marca).includes(st.oemPlat))));
     const mCod = [...mProp, ...mPlat];
@@ -2101,9 +2134,12 @@ class Component extends DCLogic {
     // Modo cliente ao lado (PR #20): 1 toque esconde custo, bastidor, custo interno, combos e lucro; ficam itens, valores e o termômetro.
     const discreto = !!F && !!F.discreto;
     const txtItem = (x, k, pad) => String(x[k] !== undefined && x[k] !== null ? x[k] : pad || '').trim();
+    // Faixa elástica (PR #35): sem faixa digitada pelo técnico, o valor cobrado acima do teto da tabela leva a faixa junto (nunca entrega ao
+    // cliente que o preço passou da tabela); dentro ou abaixo do teto, a faixa exata da tabela. Faixa digitada no item vale como está.
+    const faixaPad = (x) => { const c = catDe(x); if (!c) return ''; const f = faixaDe(c, st.sel.btu); return f.max !== null && x.n > f.max + 0.004 ? faixaElastica(x.n) : faixaPorte(c, st.sel.btu); };
     const jCli = (x) => {
       if (!justif) return { j: '', faixa: '', eco: '' };
-      const c = catDe(x), j = txtItem(x, 'j', c && c.j), fx = txtItem(x, 'faixa', c && faixaPorte(c, st.sel.btu)), e = txtItem(x, 'eco', c && c.eco);
+      const c = catDe(x), j = txtItem(x, 'j', c && c.j), fx = txtItem(x, 'faixa', faixaPad(x)), e = txtItem(x, 'eco', c && c.eco);
       return { j: j ? `Procedimento incluso: ${ponto(j)}` : '', faixa: fx ? `Faixa de referência de tabela (peça + mão de obra + garantia): ${fx}` : '', eco: e ? `Economia preventiva: ${ponto(e)}` : '' };
     };
     // Painel de Lucro Líquido (bastidor): lucro = total − custo das peças (estoque R$ 0 ou compra pelo custo médio) − custo interno.
@@ -2139,7 +2175,7 @@ class Component extends DCLogic {
     // Visita bonificada (PR #20): com ao menos 1 serviço além da visita, a taxa de diagnóstico vira ISENTO se o cliente aprovar hoje.
     // Ligar a chave tira do orçamento o item da visita que estiver lançado (o valor vai para a linha de ancoragem); desligar devolve o item.
     const cVisita = CAT.find(c => c.id === 'visita_diag');
-    const podeBonif = fi.some(x => (x.d.trim() || x.sid) && x.sid !== 'visita_diag');
+    const podeBonif = outroServico(fi);
     // Valor da visita livre (PR #21): cliente fiel, bairro popular (R$ 60 ou R$ 80) ou comércio (R$ 150). bonifVal null = valor do item lançado ou da tabela.
     const bonifPadrao = F && F.bonifItem ? reais(F.bonifItem.v) || 0 : cVisita && cVisita.tip !== null ? cVisita.tip : 120;
     const bonifTxt = F && F.bonifVal !== null && F.bonifVal !== undefined ? String(F.bonifVal) : '', bonifDig = bonifTxt.trim() ? reais(bonifTxt) : null;
@@ -2438,6 +2474,8 @@ class Component extends DCLogic {
       invOps: INV_OPS,
       invEtapas: invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return { n: i + 1, id: e.etapa_id, t: e.titulo, como: e.como_verificar, ref: e.referencia, r: r.r || '', v: r.v || '', setR: invSet(e.etapa_id, 'r'), setV: invSet(e.etapa_id, 'v'), ph: INV_PH[e.etapa_id] || '', selo: r.r || 'Pendente', seloTipo: INV_SELO[r.r] || 'neutro', ntc: e.etapa_id === 'sensores', reg: invReg, ...par('inv_' + e.etapa_id), ...invVisual(e) }; }),
       invNtc: () => this.abrir('ntc', { modK: 'ntc' }),
+      // Orçar direto do checklist (PR #35): reparo da placa no orçamento e placa nova em "Indicados"; compressor marcado "Fora" entra junto.
+      invOrcar: () => { const cFora = (IV.compressor || {}).r === 'Fora'; this.abrirFech(['reparo_placa', 'placa_nova', ...(cFora ? ['compressor_troca'] : [])], true, cFora ? ['compressor_troca'] : null); },
       invLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cons: invTxt ? (x.laudo.cons ? x.laudo.cons + '\n' : '') + (invUni ? `Checklist Inverter (procedimento universal, ${marca}):\n` : 'Checklist Inverter (manual Midea Mission2 3D):\n') + invTxt : x.laudo.cons } })),
       invFonte: invUni ? 'Procedimento universal de bancada (Base Técnica GeloPro): valores físicos da retificação de 220 V CA, do teste de diodo e do equilíbrio entre as fases.' : `${fonteTxt('F20')}; ${fonteTxt('F21')}. Status: oficial de outro país.`,
       ntcTolTipo: rZero ? 'aviso' : tolR && dentro !== null ? (dentro ? 'sucesso' : 'aviso') : 'info',
@@ -2523,6 +2561,8 @@ class Component extends DCLogic {
       lConst: LD.cons, lSetConst: (e) => { const v = e.target.value; this.setState(x => ({ laudo: { ...x.laudo, cons: v } })); },
       lConc: LD.conc, lSetConc: (e) => { const v = e.target.value; this.setState(x => ({ laudo: { ...x.laudo, conc: v } })); },
       lMed, lErro: LD.tentou && !lOk,
+      // Laudo de inviabilidade (PR #35): a troca do aparelho vira orçamento na hora, com desinstalação e instalação no porte do topo.
+      lOrcar: () => this.abrirFech(['desinstalacao', 'instalacao_split'], true, ['desinstalacao', 'instalacao_split']),
       lPdf: () => { if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } })); this.imprimir('laudo', { cliente: LD.cli, equip, medicoes: lMed, constatacoes: LD.cons, conclusao: LD.conc }); },
       lZap: () => {
         if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } }));
@@ -2586,7 +2626,10 @@ class Component extends DCLogic {
         estBorda: tE.borda, estFundo: tE.fundo, estCor: tE.cor, compBorda: tC.borda, compFundo: tC.fundo, compCor: tC.cor,
         temDica: !!(c && c.dica), dica: c ? ponto(c.dica) : '', temEco: !!ecoV, eco: ponto(ecoV), evita: discreto ? [] : evitaDe(ecoV), temEvita: !discreto && evitaDe(ecoV).length > 0,
         edExp: ed ? 'true' : 'false', edAberto: ed, edTxt: ed ? 'Fechar a edição deste item' : 'Editar textos e faixa deste item', edToggle: () => this.fSet(f => ({ itemEd: f.itemEd === i ? null : i })),
-        jVal: txtItem(x, 'j', c && c.j), fVal: txtItem(x, 'faixa', c && faixaPorte(c, st.sel.btu)), eVal: ecoV, setJ: setX('j'), setF: setX('faixa'), setE: setX('eco'),
+        jVal: txtItem(x, 'j', c && c.j), fVal: txtItem(x, 'faixa', faixaPad(x)), eVal: ecoV, setJ: setX('j'), setF: setX('faixa'), setE: setX('eco'),
+        // Auto-justificador (PR #35): em qualquer item (do catálogo ou do "+ Adicionar item"), 1 toque preenche procedimento e economia que
+        // estiverem vazios e a faixa compatível com o valor digitado. Sem valor válido, o botão fica desligado.
+        autoJOff: !(x.n > 0), autoJ: () => { if (!(x.n > 0)) return; this.fSet(f => ({ itens: f.itens.map((y, j) => j !== i ? y : { ...y, j: txtItem(y, 'j', c && c.j) ? y.j : AUTO_J, faixa: faixaElastica(x.n), eco: txtItem(y, 'eco', c && c.eco) ? y.eco : AUTO_ECO }) })); },
         edAjuda: discreto ? 'Campo de texto vazio não sai no documento nem no WhatsApp.' : 'Campo de texto vazio não sai no documento nem no WhatsApp. O custo da peça é só seu e entra no lucro líquido.',
         custoRot: `Custo real da peça do item ${i + 1} (só para você)`, custoVal: x.custo === undefined || x.custo === null ? '' : typeof x.custo === 'number' ? v2(x.custo) : x.custo, setCustoTxt: setX('custo'), custoE: reaisErro(x.custo) ? 'erro' : 'normal',
         ariaJ: `Procedimento incluso do item ${i + 1}`, ariaF: `Faixa de referência de tabela do item ${i + 1}`, ariaE: `Economia preventiva do item ${i + 1}`, ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itemEd: null, itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
@@ -2713,7 +2756,8 @@ class Component extends DCLogic {
           // Código largo ("F1/F2/F4", "EH00/EH0A"): o resumo desce para a linha inteira; ao lado do código, a coluna de 320 px partia a palavra.
           descCol: c.codigo.length > 5 ? '1 / -1' : 'auto', descRow: c.codigo.length > 5 ? '2' : 'auto',
           meta: `${c.led ? 'LED: ' + c.led + '. ' : ''}${c.linha}`, fonte: fonteTag(c.fonte_id), selo: (ST_COD[c.status] || [c.status])[0], seloTipo: (ST_COD[c.status] || [0, 'neutro'])[1],
-          temNormal: normal, naoTrocar: !normal, causa: causaDe(c), faca: facaDe(c, normal), leds, temLeds: leds.length > 0 }; }),
+          temNormal: normal, naoTrocar: !normal, causa: causaDe(c), faca: facaDe(c, normal), leds, temLeds: leds.length > 0,
+          orcarTxt: normal ? 'Orçar preventiva / higienização' : 'Orçar reparo / peça deste código', orcar: () => this.abrirFech(servicosDoCodigo(c, normal), true) }; }),
       // Marca universal sem registro próprio e sem plataforma escolhida: no lugar do "sem tabela", o aviso do Modo Universal com os 3 botões OEM.
       codVazio: !!B && (!mCod.length || !codL.length) && !(marcaUni && !mCod.length),
       temOem: marcaUni, oemSemCod: marcaUni && !mCod.length, oemPlatK: st.oemPlat || '',
@@ -2723,7 +2767,8 @@ class Component extends DCLogic {
       codVazioX: !mCod.length ? `Marcas na base: ${codMarcas.join(', ')}. Troque em Marca.` : 'Confira o que o display mostra e a linha do aparelho.',
       ptP: st.ptP, ptT: st.ptT, ptPM: medErro(st.ptP), ptTM: ptTErro, ptPE: medErro(st.ptP) ? 'erro' : 'normal', ptTE: ptTErro ? 'erro' : 'normal', setPtP: (e) => this.setState({ ptP: e.target.value }), setPtT: (e) => this.setState({ ptT: e.target.value }),
       ptSatRot: `Saturação ${st.sel.fluido}`, ptOut: [{ rot: `Saturação ${st.sel.fluido}`, ...this.mostrador('pt-sat', tsat === null ? '—' : f1(tsat) + ' °C', st.tela === 'ptsh') }, { rot: 'Superaquecimento', ...this.mostrador('pt-sh', sh === null ? '—' : f1(sh) + ' °C', st.tela === 'ptsh') }],
-      ptTemVer: !!shTag, ptVer: shVer || '', ptVerTag: shTag || TG('sem-ref', ''), ptR410: st.sel.fluido === 'R410A',
+      // Anti-cilada (PR #35): SH alto pede fluido, mas filtro sujo e vazamento na flange também sobem o SH. Lembrete antes de completar a carga.
+      ptAlto: shVer === 'alto', ptTemVer: !!shTag, ptVer: shVer || '', ptVerTag: shTag || TG('sem-ref', ''), ptR410: st.sel.fluido === 'R410A',
       ptFalta: P === null || Tt === null, ptFora: P !== null && ptRows.length > 0 && tsat === null,
       ptForaX: ptRows.length ? `A tabela de ${st.sel.fluido} vai de ${f1(ptRows[0][0])} a ${f1(ptRows[ptRows.length - 1][0])} psig.` : '',
       ptRefT: elg.length ? `Elgin ${elg[0].linha}: ${elg[0].valor}` : `Sem faixa oficial de SH para ${marca} na base`,
@@ -2826,7 +2871,7 @@ class Component extends DCLogic {
         nome: x.nome, canto: 'nenhum', icone: x.i,
         onClick: () => iniciar(x.id),
       })),
-      pergunta: E.q, dica: E.d.replace('{F}', st.sel.fluido), temaAttr: tema,
+      pergunta: E.q, dica: E.d.replace('{F}', st.sel.fluido) + (CAP_ETAPAS.includes(E.id) ? ' ' + CAP_INV_TXT : ''), temaAttr: tema,
       // Cola de instrumento (PR #24) nas etapas de capacímetro e de tensão sob carga; nas outras etapas não ocupa altura.
       temCola: st.tela === 'etapa' && !!COLA_ETAPA[E.id], colaK: COLA_ETAPA[E.id] || '', colaRot: cola ? cola.rot : '', colaL1a: cola ? cola.l1a : '', colaL1b: cola ? cola.l1b : '', colaL1c: cola ? `tag tag-${cola.tg} tag-inline` : '', colaL2: cola ? cola.l2 : '',
       // Atalho do veterano (PR #21): na 1ª pergunta da checagem rápida (decisão do Pedro, 27/10), pula direto para a medição com instrumento.
@@ -2847,11 +2892,11 @@ class Component extends DCLogic {
         const sd = o.inc ? null : saudeDe(E.id, o.sim);
         const tom = sd === 'defeito' ? 'var(--gp-answer-no)' : sd === 'normal' ? 'var(--gp-answer-yes)' : o.inc || E.tec && !/^(sim|n[ãa]o)/i.test(o.l) ? 'var(--gp-key-navy-grad)' : (o.sim || /^sim/i.test(o.l)) ? 'var(--gp-answer-yes)' : 'var(--gp-answer-no)';
         const bgc = tom === 'var(--gp-answer-yes)' ? 'var(--gp-answer-yes-solid)' : tom === 'var(--gp-answer-no)' ? 'var(--gp-answer-no-solid)' : 'var(--gp-answer-neutral-solid)';
-        const sozinho = n > 2 && i === n - 1;
-        return { bgc, saude: sd || undefined, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, cont: temCena ? 'size' : 'normal', semCena: !temCena, temLeg: !!(E.tec && !temCena ? '' : o.c), bg: tom,
+        const sozinho = n > 2 && i === n - 1, capInv = o.inc && CAP_ETAPAS.includes(E.id), leg = capInv ? CAP_INV : E.tec && !temCena ? '' : o.c;
+        return { bgc, saude: sd || undefined, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, cont: temCena ? 'size' : 'normal', semCena: !temCena, temLeg: !!leg, bg: tom,
           // Com quadro: imagem à esquerda e coluna de resposta à direita, em camadas (ícone e rótulo; legenda). Sem quadro ("Não sei"): barra cheia de 56 px.
           cartaoDir: sozinho ? 'column' : 'row', barDir: sozinho ? 'row' : 'column', barFlex: sozinho ? 'none' : `0 0 ${COL_RESPOSTA}px`, barW: sozinho ? '100%' : COL_RESPOSTA + 'px',
-          barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: E.tec && !temCena ? '' : o.c, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}` };
+          barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: leg, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}${capInv ? '. ' + CAP_INV_TXT : ''}` };
       }),
       resTitulo: r ? (r.banc ? 'Causas prováveis para medição e orçamento' : r.t) : '',
       // Sem código interno (PED01, T02, D11) nem nome de outro fabricante na tela (PR #22): a fonte vira o rótulo do aparelho do topo.
