@@ -175,6 +175,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;animation:gpIn 180ms ease-out;">
                   <sc-if value="{{ dicaVis }}" hint-placeholder-val="{{ false }}"><p style="flex:none;margin:0;padding:2px 4px 0;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ dica }}</p></sc-if>
+                  <sc-if value="{{ temCola }}" hint-placeholder-val="{{ false }}"><div data-cola-instrumento="{{ colaK }}" style="flex:none;box-sizing:border-box;padding:0 6px 0 10px;border-radius:10px;background:var(--gp-card-info);box-shadow:inset 3px 0 0 var(--gp-dock-ring);display:flex;flex-direction:column;justify-content:center;font:600 16px/19px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">
+                    <span><strong style="font-weight:700;">{{ colaRot }}</strong> {{ colaL1 }}</span>
+                    <span>{{ colaL2 }}</span>
+                  </div></sc-if>
                   <div style="flex:1;min-height:0;">
                     <div data-opcoes="" data-etapa="{{ etapaId }}" style="height:100%;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:{{ linhas }};gap:6px;">
                       <sc-for list="{{ opcoes }}" as="o" hint-placeholder-count="2">
@@ -289,6 +293,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ ptFalta }}" hint-placeholder-val="{{ true }}"><dc-import name="Aviso" tipo="aviso" titulo="Medição insuficiente — informe pressão de sucção e temperatura do tubo" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-if value="{{ ptFora }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Pressão fora da tabela" texto="{{ ptForaX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="Aviso" tipo="info" titulo="{{ ptRefT }}" texto="{{ ptRefX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
+                  <div data-orcar-ptsh="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Orçar carga de fluido e vácuo" verde="{{ true }}" icone="garantia" acao="{{ orcarPtsh }}" style="display:block;" hint-size="100%,60px"></dc-import></div>
                   <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ ptFonte }}</span>
                 </div>
               </sc-if>
@@ -317,6 +322,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </div>
                     <sc-if value="{{ ntcGlobal }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="aviso" titulo="Curva global do fabricante" texto="Linha brasileira ainda não confirmada. Use como referência escolhida por você." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                     <dc-import name="Aviso" tipo="{{ ntcTolTipo }}" titulo="{{ ntcTolT }}" texto="{{ ntcTolX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
+                    <div data-orcar-ntc="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Orçar substituição de sensor NTC" verde="{{ true }}" icone="garantia" acao="{{ orcarNtc }}" style="display:block;" hint-size="100%,60px"></dc-import></div>
                     <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ ntcFonte }}</span>
                   </sc-if>
                 </div>
@@ -578,6 +584,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <sc-for list="{{ fichaFiltros }}" as="fc" hint-placeholder-count="5"><button type="button" aria-pressed="{{ fc.on }}" onClick="{{ fc.acao }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:999px;border:{{ fc.borda }};background:{{ fc.fundo }};color:{{ fc.cor }};font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ fc.l }}</button></sc-for>
               </div>
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fichasInfo }}</span>
+              <span data-selo-atualizacao="{{ seloMes }}" style="align-self:flex-start;max-width:100%;box-sizing:border-box;padding:4px 12px 4px 8px;border-radius:999px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:inline-flex;align-items:center;gap:6px;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
               <div data-formato="C" style="display:flex;flex-direction:column;gap:8px;">
                 <sc-for list="{{ fichaSecoes }}" as="sc" hint-placeholder-count="4">
                   <div style="border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-mold-shadow);overflow:hidden;">
@@ -625,6 +632,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
           <sc-if value="{{ dAvisos }}" hint-placeholder-val="{{ false }}">
             <div data-central-avisos="{{ avisoCatK }}" style="display:flex;flex-direction:column;gap:12px;">
+              <span data-selo-atualizacao="{{ seloMes }}" style="align-self:flex-start;max-width:100%;box-sizing:border-box;padding:4px 12px 4px 8px;border-radius:999px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:inline-flex;align-items:center;gap:6px;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
               <div data-avisos-categorias="" role="group" aria-label="Categorias de avisos" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                 <sc-for list="{{ avisoCats }}" as="ac" hint-placeholder-count="4"><button type="button" data-aviso-categoria="{{ ac.k }}" aria-pressed="{{ ac.on }}" onClick="{{ ac.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ ac.borda }};background:{{ ac.fundo }};color:{{ ac.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ ac.t }}</button></sc-for>
               </div>
@@ -687,6 +695,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <button type="button" data-qtd-mais="" aria-label="{{ it.qMaisAria }}" disabled="{{ it.qMax }}" onClick="{{ it.qMais }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:1px solid var(--gp-outline);background:var(--gp-card-action);color:{{ it.qMaisCor }};font:700 22px/24px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);">+</button>
                     <sc-if value="{{ it.temMult }}" hint-placeholder-val="{{ false }}"><span data-item-subtotal="" style="flex:1 1 100%;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">{{ it.multTxt }}</span></sc-if>
                   </div>
+                  <sc-if value="{{ it.temTubo }}" hint-placeholder-val="{{ false }}"><span data-tubo-carga="" style="padding:0 4px;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ it.tuboTxt }}</span></sc-if>
                   <sc-if value="{{ it.temRef }}" hint-placeholder-val="{{ false }}"><span data-bastidor="" style="padding:0 4px;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ it.ref }}</span></sc-if>
                   <sc-if value="{{ it.temCusto }}" hint-placeholder-val="{{ false }}"><div data-custo-peca="" role="group" aria-label="{{ it.custoAria }}" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                     <button type="button" aria-pressed="{{ it.estOn }}" onClick="{{ it.setEst }}" style="min-width:0;min-height:56px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ it.estBorda }};background:{{ it.estFundo }};color:{{ it.estCor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Já tenho em estoque (Custo R$ 0)</button>
@@ -715,6 +724,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <div data-catalogo="" role="group" aria-label="Tabela de peças e serviços" style="display:flex;flex-direction:column;gap:8px;">
                   <div data-catalogo-abas="{{ fCatAba }}" role="group" aria-label="Categorias da tabela de peças e serviços" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><sc-for list="{{ fCatAbas }}" as="ca" hint-placeholder-count="5"><button type="button" data-catalogo-aba="{{ ca.k }}" aria-pressed="{{ ca.on }}" onClick="{{ ca.acao }}" style="grid-column:{{ ca.col }};min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ ca.borda }};background:{{ ca.fundo }};color:{{ ca.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ ca.t }}</button></sc-for></div>
                   <span data-porte="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fCatPorte }}</span>
+                  <span data-selo-atualizacao="{{ seloMes }}" style="align-self:flex-start;max-width:100%;box-sizing:border-box;padding:4px 12px 4px 8px;border-radius:999px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:inline-flex;align-items:center;gap:6px;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
                   <sc-if value="{{ fCatAbaVazia }}" hint-placeholder-val="{{ false }}"><span data-catalogo-vazio="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fCatAbaVaziaTxt }}</span></sc-if>
                   <sc-for list="{{ fCat }}" as="c" hint-placeholder-count="3">
                     <div data-cat-item="{{ c.id }}" style="box-sizing:border-box;border-radius:16px;border:{{ c.borda }};background:var(--gp-card-action);display:flex;flex-direction:column;overflow:hidden;">
@@ -796,12 +806,18 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <dc-import name="CampoTexto" rotulo="O que não cobre" valor="{{ fNaoCobre }}" aoDigitar="{{ fSetNaoCobre }}" placeholder="Ex.: mau uso, surto de energia" style="display:block;" hint-size="100%,74px"></dc-import>
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Ressalva / estado encontrado</span>
               <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Ressalva / estado encontrado" rows="2" value="{{ fRessalva }}" onInput="{{ fSetRessalva }}" placeholder="Ex.: carenagem trincada antes do serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
-              <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Opcional. Toque numa sugestão para incluir. Sai no orçamento e no termo de garantia.</span>
+              <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Opcional. Toque numa sugestão para incluir; toque de novo para tirar. Sai no orçamento e no termo de garantia.</span>
               <div data-ressalvas="" style="display:flex;flex-direction:column;gap:8px;">
                 <sc-for list="{{ fRessalvas }}" as="q" hint-placeholder-count="2">
-                  <button type="button" aria-pressed="{{ q.on }}" aria-label="{{ q.aria }}" onClick="{{ q.acao }}" style="min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ q.borda }};background:var(--gp-card-action);color:var(--gp-on-surface);font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ q.t }}</button>
+                  <button type="button" aria-pressed="{{ q.on }}" aria-label="{{ q.aria }}" onClick="{{ q.acao }}" style="min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ q.borda }};background:{{ q.fundo }};color:{{ q.cor }};font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ q.t }}</button>
                 </sc-for>
               </div>
+              <button type="button" data-mais-ressalvas="" aria-expanded="{{ fRessMaisExp }}" onClick="{{ fRessMaisToggle }}" style="min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px dashed var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ fRessMaisTxt }}</button>
+              <sc-if value="{{ fRessMaisAberto }}" hint-placeholder-val="{{ false }}"><div data-ressalvas-mais="" role="group" aria-label="Ressalvas de blindagem: infra embutida, placa e dreno" style="display:flex;flex-direction:column;gap:8px;">
+                <sc-for list="{{ fRessalvasMais }}" as="q" hint-placeholder-count="3">
+                  <button type="button" aria-pressed="{{ q.on }}" aria-label="{{ q.aria }}" onClick="{{ q.acao }}" style="min-height:48px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ q.borda }};background:{{ q.fundo }};color:{{ q.cor }};font:600 16px/22px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ q.t }}</button>
+                </sc-for>
+              </div></sc-if>
               <div data-foto="" style="display:flex;flex-direction:column;gap:8px;">
                 <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Foto de evidência do aparelho ou da medição</span>
                 <label style="position:relative;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px dashed var(--gp-outline);color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;overflow:hidden;"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>{{ fFotoTxt }}</span><input type="file" accept="image/*" aria-label="Foto de evidência do aparelho ou da medição" onChange="{{ fFoto }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;"></label>
@@ -1215,6 +1231,17 @@ const RESSALVAS = ['Garantia restrita exclusivamente à peça substituída', 'Ap
 // Bandeja de alertas anti-prejuízo (PR #20). Peça elétrica/eletrônica nova sem higienização nem ressalva volta na garantia.
 const PECA_RETORNO = ['cap_partida', 'reparo_placa', 'placa_nova', 'compressor_troca'];
 const RESSALVA_BLINDAR = 'Cliente ciente da necessidade de higienização térmica; garantia restrita à peça substituída';
+// Salvaguardas de rua (PR #24): infra embutida de terceiros, sobretensão/raio e dreno dentro da parede. Abrem em "Mais ressalvas de blindagem",
+// fora de [data-ressalvas]: RESSALVAS segue com as 4 de sempre (pr21.js confere a constante e os 4 botões, na ordem).
+const RESSALVAS_MAIS = ['Tubulação embutida pré-existente (infra de terceiros): garantia não cobre microvazamentos internos na alvenaria', 'Garantia eletrônica não cobre queima por sobretensão da rede, raios, falta de aterramento ou disjuntor fora de norma', 'Desobstrução até o ponto de espera; não inclui rede pluvial interna na parede/gesso'];
+// Com a higienização no orçamento, "higienização pendente" vira contradição no documento: as duas frases saem do campo quando ela entra (PR #24).
+const RESSALVA_HIG = [RESSALVA_BLINDAR, 'Aparelho necessita higienização futura; cliente ciente'];
+// As ressalvas têm ";" no meio: incluir e tirar trabalham com a frase inteira, sem partir o campo por ";" ("A; B; C" sem B = "A; C").
+const comRessalva = (txt, t) => { const at = String(txt || '').trim(); return at.includes(t) ? at : at ? `${at.replace(/[.;]?$/, ';')} ${t}` : t; };
+const semRessalva = (txt, t) => { let s = String(txt || '').trim(); for (let i = s.indexOf(t); i >= 0; i = s.indexOf(t)) { const a = s.slice(0, i).replace(/[\s;.,]+$/, ''), d = s.slice(i + t.length).replace(/^[\s;.,]+/, ''); s = a && d ? `${a}; ${d}` : a || d; } return s; };
+const ressalvaSemHig = (txt) => RESSALVA_HIG.reduce(semRessalva, txt);
+// Lançar a higienização (catálogo, combo, bandeja, Sininho ou orçamento sugerido) limpa a ressalva de higienização pendente.
+const higLimpa = (f, c) => c && c.id === 'higienizacao' && f && f.ressalva ? { ressalva: ressalvaSemHig(f.ressalva) } : {};
 const FLUIDO_ALERTA = {
   R410A: { tom: 'neutro', ico: 'cilindro-fluido', t: 'Lembrete R410A (Blend): carregar exclusivamente na fase líquida (cilindro invertido/sifão) para não fracionar a mistura.' },
   R32: { tom: 'ambar', ico: 'cilindro-fluido', t: 'Lembrete R32 (Classe A2L): exigir vácuo profundo e jamais pressurizar com ar comprimido ou oxigênio.' },
@@ -1243,6 +1270,17 @@ const ATUALIZACOES = [
   { k: 'sis-pr22', em: new Date(2026, 9, 27, 17, 30).getTime(), t: 'v5.2 Lapidação — Sininho de avisos com data e hora, catálogo e Cofre por categoria e peças pesadas em 3 portes', ir: 'cofre', l: 'Ir para o Cofre' },
   { k: 'sis-diamante', em: new Date(2026, 9, 27, 16, 45).getTime(), t: 'v5.2 Diamante — Multiplicador comercial, 16 serviços em 3 portes e Cofre de 6 meses ativos', ir: 'tabela', l: 'Abrir a tabela de serviços' },
 ];
+// Selo da base (PR #24): mês da última atualização da base técnica e da tabela de preços. Atualize junto com a base.
+const BASE_MES = 'Outubro/2026', SELO_BASE = `Base Atualizada · ${BASE_MES}`;
+// Cola de instrumento (PR #24): referência pronta nas etapas de capacímetro (−5%) e de tensão sob carga (±10%), sem conta de cabeça no sol.
+// Duas linhas de 19 px (38 px): em 375×667 sobram 40 px antes de a grade das opções rolar (medido em t_ng03 e t_nl01); as checagens rápidas não mudam.
+const COLA = {
+  capacitor: { rot: 'Referência −5%:', l1: '35 µF → mín. 33,2 µF', l2: '30 → 28,5 · 25 → 23,7 · 1,5 (vent.) → 1,42 µF' },
+  tensao: { rot: 'Referência ±10%:', l1: 'Rede 220 V → 198 a 242 V', l2: 'Rede 127 V → 114 a 140 V' },
+};
+const COLA_ETAPA = { t_ng04: 'capacitor', t_gp04: 'capacitor', t_ng03: 'tensao', t_gp03: 'tensao', t_de03: 'tensao', t_nl01: 'tensao' };
+// Carga adicional pela linha excedente (PR #24): gramas por metro no porte 1 e do porte 2 em diante; o técnico confere na balança.
+const TUBO_G_M = { 1: 15, 2: 25 };
 const dataHora = (ms) => { const d = new Date(ms); return `${d.toLocaleDateString('pt-BR')} · ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`; };
 const visTxt = (t) => h('span', { 'aria-hidden': true, style: { font: "600 16px/22px 'Roboto',sans-serif", color: 'var(--gp-on-display)', textAlign: 'center', padding: '0 8px', overflowWrap: 'normal', textWrap: 'pretty' } }, t);
 const visGen = (sim) => h('svg', { width: 56, height: 56, viewBox: '0 0 24 24', fill: 'none', stroke: 'var(--gp-on-display)', strokeWidth: 1.75, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': true }, sim === 'inc' ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3' }), h('path', { key: 2, d: 'M12 17h.01' })] : sim ? [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm8 12.5 2.5 2.5 5-5.5' })] : [h('circle', { key: 0, cx: 12, cy: 12, r: 9 }), h('path', { key: 1, d: 'm15 9-6 6' }), h('path', { key: 2, d: 'm9 9 6 6' })]);
@@ -1367,13 +1405,15 @@ class Component extends DCLogic {
   precarregarModulo(tela) { const pre = { inv: 'inv_', ptsh: 'med_' }[tela]; if (pre) this.listaCenas().then(L => this.precarregarCenas([...L].filter(n => n.startsWith(pre)))); }
   // Montar orçamento: abre o fechamento já com a primeira peça/serviço sugerido pelo diagnóstico (valor típico editável); os demais
   // sugeridos ficam marcados no catálogo. Itens já lançados pelo técnico são mantidos.
-  abrirFech(sug) {
+  // somar (PR #24, "Orçar" do PT/SH e do NTC): o item entra nos indicados sem apagar os que o diagnóstico já sugeriu.
+  abrirFech(sug, somar) {
     this.setState(st => {
       const F = st.fech || FECH0(), cat = (st.base && st.base.cat) || [], ids = (sug || []).filter(id => cat.some(c => c.id === id));
-      const c = cat.find(x => x.id === ids[0]);
+      const c = cat.find(x => x.id === ids[0]), novo = !!c && !F.itens.some(x => x.sid === c.id);
       let itens = F.itens;
-      if (c && !itens.some(x => x.sid === c.id)) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...itens, itemDe(c, st.sel.btu)];
-      return { fech: { ...F, itens, sug: ids.length ? ids : F.sug || [] }, fOpen: true, drawer: null };
+      if (novo) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...itens, itemDe(c, st.sel.btu)];
+      const sugF = !ids.length ? F.sug || [] : somar ? [...new Set([...ids, ...(F.sug || [])])] : ids;
+      return { fech: { ...F, itens, sug: sugF, ...(novo ? higLimpa(F, c) : {}) }, fOpen: true, drawer: null };
     });
   }
   fRef = React.createRef();
@@ -1498,6 +1538,7 @@ class Component extends DCLogic {
     const s = SINTOMAS.find(x => x.id === st.sint);
     const PC = st.base && st.base.perc ? st.base.perc[st.sint] : null;
     const E = (PC && PC.etapas[st.etapa]) || { q: '', d: '', ops: [] };
+    const cola = COLA[COLA_ETAPA[E.id]] || null;
     const go = (o) => () => this.setState(x => o.res ? { tela: 'resultado', res: o.res, hist: [...x.hist, x.etapa], pk: null, dica: false } : { etapa: o.next, hist: [...x.hist, x.etapa], pk: null, dica: false });
     const r = st.res && PC ? PC.res[st.res] || null : null;
     const CAT = (st.base && st.base.cat) || [], resServ = r ? CAT.find(c => c.id === r.serv[0]) || null : null;
@@ -1650,7 +1691,7 @@ class Component extends DCLogic {
     // Catálogo em abas (PR #22): filtro da aba escolhida; Todos mostra os 16.
     const catAba = F && ['todos', 'indicados', ...CAT_ABAS.map(a => a[0])].includes(F.catAba) ? F.catAba : 'todos', sugIds = (F && F.sug) || [];
     const catVis = CAT.filter(c => catAba === 'todos' || (catAba === 'indicados' ? sugIds.includes(c.id) : ((CAT_ABAS.find(a => a[0] === catAba) || [])[2] || []).includes(c.id)));
-    const addCat = (c) => this.fSet(f => ({ catAberto: false, catDet: null, itens: f.itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...f.itens, itemDe(c, st.sel.btu)] }));
+    const addCat = (c) => this.fSet(f => ({ catAberto: false, catDet: null, itens: f.itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...f.itens, itemDe(c, st.sel.btu)], ...higLimpa(f, c) }));
     // Visita bonificada (PR #20): com ao menos 1 serviço além da visita, a taxa de diagnóstico vira ISENTO se o cliente aprovar hoje.
     // Ligar a chave tira do orçamento o item da visita que estiver lançado (o valor vai para a linha de ancoragem); desligar devolve o item.
     const cVisita = CAT.find(c => c.id === 'visita_diag');
@@ -1684,6 +1725,9 @@ class Component extends DCLogic {
     };
     const zapAtual = () => F && fp === 4 ? (F.zapTxt !== null && F.zapTxt !== undefined ? F.zapTxt : zapModelo(F.zapModelo || 1)) : '';
     const ressalva = F ? (F.ressalva || '').trim() : '';
+    const ressMais = !!F && !!F.ressMais;
+    const pilRessalva = (t) => { const tem = ressalva.includes(t), pl = pilula(tem, t, () => this.fSet(f => ({ ressalva: (f.ressalva || '').includes(t) ? semRessalva(f.ressalva, t) : comRessalva(f.ressalva, t) })));
+      return { ...pl, aria: `${tem ? 'Já incluída (toque para tirar)' : 'Incluir'}: ${t}`, borda: tem ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)' }; };
     // Bandeja de alertas anti-prejuízo (PR #20): no máximo 1 por vez, na ordem retorno > porte > fluido; o × dispensa até o gatilho mudar.
     // Porte não aparece no modo cliente ao lado (fala de preço); retorno e fluido são argumento técnico e continuam.
     const aOff = st.alertaOff || {}, dispensar = (k) => () => this.setState(x => ({ alertaOff: { ...x.alertaOff, [k]: true } }));
@@ -1970,6 +2014,8 @@ class Component extends DCLogic {
         qMenos: () => setQ(Math.max(1, x.q - 1)), qMais: () => setQ(Math.min(QTD_MAX, x.q + 1)), setQTxt: (e) => setQ(String(e.target.value || '').replace(/\D/g, '').replace(/^0+/, '').slice(0, 2)),
         qMenosCor: x.q <= 1 ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', qMaisCor: x.q >= QTD_MAX ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)',
         temMult: x.q > 1 && x.n > 0, multTxt: x.q > 1 && x.n > 0 ? `${x.q} × ${BRL.format(x.n)} = ${BRL.format(x.s)}` : '',
+        // Linha excedente (PR #24): com o metro adicional de tubulação, a conta pronta do fluido a mais por metro, no fluido do topo.
+        temTubo: x.sid === 'tubo_metro' && x.q >= 1, tuboTxt: `Adicional de fluido p/ ${x.q} m excedente(s): ~${x.q * TUBO_G_M[porteDe(st.sel.btu) >= 2 ? 2 : 1]} g (${st.sel.fluido} em balança)`,
         temCusto: !!c && cm > 0 && !discreto, semPeca: !!c && !cm && !discreto, verCusto: !discreto, custoAria: `Custo da peça do item ${i + 1}`, estOn: est ? 'true' : 'false', compOn: comp ? 'true' : 'false',
         setEst: setCusto(0), setComp: setCusto(cm), compTxt: c ? `${INSUMO.includes(c.id) ? 'Comprar insumo' : 'Comprar peça'} (~${R0(cm).replace(' ', '\u00a0')})` : '',
         estBorda: tE.borda, estFundo: tE.fundo, estCor: tE.cor, compBorda: tC.borda, compFundo: tC.fundo, compCor: tC.cor,
@@ -2015,7 +2061,11 @@ class Component extends DCLogic {
       fJustifIco: justif ? 'sucesso' : 'neutro', fJustifBorda: justif ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fJustifFundo: justif ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', fJustifCor: justif ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)',
       // Ressalva / estado encontrado e foto de evidência (opcionais): saem no orçamento, na aprovação e no termo de garantia.
       fRessalva: F ? F.ressalva || '' : '', fSetRessalva: (e) => this.fSet({ ressalva: e.target.value }),
-      fRessalvas: RESSALVAS.map(t => { const tem = !!F && (F.ressalva || '').includes(t); return { t, aria: `${tem ? 'Já incluída' : 'Incluir'}: ${t}`, on: tem ? 'true' : 'false', borda: tem ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)', acao: () => this.fSet(f => { const at = (f.ressalva || '').trim(); return at.includes(t) ? {} : { ressalva: at ? `${at.replace(/[.;]?$/, ';')} ${t}` : t }; }) }; }),
+      // Pílulas de ressalva com 2 estados (PR #24): o 1º toque inclui a frase; com ela no campo, a pílula fica marcada e o 2º toque tira a frase.
+      fRessalvas: RESSALVAS.map(pilRessalva),
+      fRessMaisAberto: ressMais, fRessMaisExp: ressMais ? 'true' : 'false', fRessMaisToggle: () => this.fSet(f => ({ ressMais: !f.ressMais })),
+      fRessMaisTxt: ressMais ? 'Fechar as ressalvas de blindagem (infra embutida / placa / dreno)' : 'Mais ressalvas de blindagem (infra embutida / placa / dreno)',
+      fRessalvasMais: RESSALVAS_MAIS.map(pilRessalva),
       fFoto: (e) => { const file = e.target.files && e.target.files[0]; try { e.target.value = ''; } catch (er) {} if (!file) return; reduzirFoto(file).then(d => this.fSet(f => { if (!d) return { fotoErro: 'Não deu para ler esta imagem. Tente outra foto.' }; if (f.fotoUrl) URL.revokeObjectURL(f.fotoUrl); return { foto: d, fotoUrl: blobDe(d), fotoErro: '' }; })); },
       fTemFoto: !!(F && F.foto), fFotoBg: F && F.fotoUrl ? `url("${F.fotoUrl}")` : 'none', fFotoErro: F ? F.fotoErro || '' : '', fTemFotoErro: !!(F && F.fotoErro),
       fFotoTxt: F && F.foto ? 'Trocar a foto de evidência' : 'Anexar foto de evidência (opcional)',
@@ -2098,6 +2148,8 @@ class Component extends DCLogic {
       ptRefX: elg.length ? `Vale só para essa linha (${elg[0].fonte_id}). ${elg.slice(1).map(c => c.valor).join('. ')}.` : 'O valor aparece sem veredito. A faixa da Elgin Eco Inverter não vale para outras marcas.',
       ...Object.fromEntries(Object.entries(par('med_sh_ponto')).map(([k, v]) => ['pt' + k[0].toUpperCase() + k.slice(1), v])),
       ptFonte: `Tabela de vapor saturado, ${fonteTxt('F11')}. Sub-resfriamento precisa da saturação do líquido, que ainda não está na base.`,
+      // "Orçar" direto da medição (PR #24): abre o Fechamento com o serviço lançado e marcado nos indicados, sem apagar o que o diagnóstico sugeriu.
+      orcarPtsh: () => this.abrirFech(['carga_fluido'], true), orcarNtc: () => this.abrirFech(['sensor_ntc'], true),
       ntcTem: sensP.length > 0 || ntcUni, ntcUni,
       ntcSensRot: ntcUni ? `Resistência nominal do sensor (25 °C) · ${marca}` : 'Sensor',
       ntcSens: ntcUni ? NTC_UNI.map(r => ({ r: r + 'K', sel: uniR === r, acao: () => this.setState({ ntcNom: { marca, r }, ntcS: null }) })) : sens.map(r => ({ r: r.r25_kohm + 'K', sel: r === sn, acao: () => this.setState({ ntcS: r.sensor }) })),
@@ -2150,6 +2202,8 @@ class Component extends DCLogic {
       kicker: st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? 'Checagem de técnico' : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.banc ? 'Hipótese técnica de bancada' : 'Hipótese pelas respostas') : m ? m.k : '',
       titulo: st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
       temSelo: st.tela === 'etapa', seloTxt: `Pergunta ${st.hist.length + 1}`,
+      // Selo da base (PR #24) na gaveta Consultar fichas, no topo do catálogo de peças e serviços e na Central de Avisos.
+      seloBase: SELO_BASE, seloMes: BASE_MES,
       voltar: () => this.setState(x => {
         if (['pmoc', 'scripts'].includes(x.tela)) return { tela: 'docs', modK: 'docs' };
         if (MOD.includes(x.tela)) return x.prev && x.prev.tela !== 'inicio' ? { ...x.prev, modo: null, modK: null, prev: null } : { ...RESET };
@@ -2163,6 +2217,8 @@ class Component extends DCLogic {
         onClick: () => iniciar(x.id),
       })),
       pergunta: E.q, dica: E.d.replace('{F}', st.sel.fluido), temaAttr: tema,
+      // Cola de instrumento (PR #24) nas etapas de capacímetro e de tensão sob carga; nas outras etapas não ocupa altura.
+      temCola: st.tela === 'etapa' && !!COLA_ETAPA[E.id], colaK: COLA_ETAPA[E.id] || '', colaRot: cola ? cola.rot : '', colaL1: cola ? cola.l1 : '', colaL2: cola ? cola.l2 : '',
       // Atalho do veterano (PR #21): na 1ª pergunta da checagem rápida (decisão do Pedro, 27/10), pula direto para a medição com instrumento.
       // Da 2ª pergunta em diante as cenas ficam com a altura toda. A pergunta atual fica no histórico: o Voltar do cabeçalho devolve o técnico a ela.
       temAtalhoVet: st.tela === 'etapa' && !E.tec && !st.hist.length && !!(PC && PC.tecInicio && PC.etapas[PC.tecInicio]),
@@ -2227,7 +2283,7 @@ class Component extends DCLogic {
       opcoesSel: dSel ? OPTS[d].list.map(label => {
         const on = st.sel[d] === label;
         // Gaveta Marca: emblema da marca na pastilha à esquerda (LogoMarca); BTU/h e Fluido só com texto.
-        return { label, on, logo: d === 'marca' ? label : '', sel: on ? 'true' : 'false', borda: on ? '1.5px solid var(--gp-primary)' : '1px solid var(--gp-outline-variant)', onClick: () => { if (performance.now() - (this._gavetaEm || 0) < GAVETA_TRAVA) return; this.setState(x => ({ sel: { ...x.sel, [d]: label }, drawer: null })); } };
+        return { label, on, logo: d === 'marca' ? label : '', sel: on ? 'true' : 'false', borda: on ? '1.5px solid var(--gp-primary)' : '1px solid var(--gp-outline-variant)', onClick: () => { if (performance.now() - (this._gavetaEm || 0) < GAVETA_TRAVA) return; this.setState(x => ({ sel: { ...x.sel, [d]: label }, drawer: null, ...(d === 'marca' && label !== x.sel.marca ? { ntcS: null } : {}) })); } };
       }) : [],
       busca: st.busca, setBusca: (e) => this.setState({ busca: e.target.value }),
       fichasInfo: catF.length ? `${fichasF.length === catF.length ? catF.length : fichasF.length + ' de ' + catF.length} fichas. Cada uma abre o percurso, a tabela ou a ferramenta real.` : 'A base técnica ainda está carregando.',
