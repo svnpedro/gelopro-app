@@ -124,6 +124,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 /* Sem respiro lateral (a cola cabe em 2 linhas desde 320 px): o fundo da etiqueta se estende pela sombra. */
 .tag-ok.tag-inline{box-shadow:0 0 0 3px var(--gp-tg-ok-bg);}
 .tag-medida.tag-inline{box-shadow:0 0 0 3px var(--gp-tg-medida-bg);}
+/* Aba Medições e Testes (PR #28): pílula .tag-medida escura na base do cartão (2 linhas no máximo, sem palavra partida),
+   etiqueta .tag-modo baixa na gaveta e cola viva dos poços de Leituras (referência da marca e do fluido, por ::after: o innerText segue "— PSI"). */
+.tag.tag-escura{background:var(--gp-tg-escura-bg);color:var(--gp-tg-escura);border-color:var(--gp-tg-escura-borda);}
+.tag.tag-cartao{flex:none;min-height:24px;padding:2px 6px;font-family:'Roboto',sans-serif;font-size:14px;font-weight:700;line-height:18px;white-space:normal;text-align:center;justify-content:center;text-wrap:balance;overflow:hidden;}
+.tag.tag-gaveta{min-height:24px;padding:1px 8px;line-height:20px;}
+[data-cola-viva]::after{content:attr(data-cola-viva);flex:0 0 100%;margin-top:1px;font:700 14px/16px 'Roboto',sans-serif;color:var(--gp-tg-medida);text-align:center;white-space:nowrap;overflow:hidden;}
 @keyframes gpSpin{to{transform:rotate(360deg)}}
 @keyframes gpFlow{to{background-position:48px 0}}
 @keyframes gpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -216,22 +222,58 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:16px;">
               <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
-                  <h2 style="{{ h2Estilo }}">O que o aparelho apresenta?</h2>
-                  <div data-grade-sintomas="" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:{{ gradeGap }};padding:0 2px;">
-                    <sc-for list="{{ sintomas }}" as="s" hint-placeholder-count="9">
-                      <dc-import name="PlacaSintoma" nome="{{ s.nome }}" icone="{{ s.icone }}" canto="{{ s.canto }}" acao="{{ s.onClick }}" style="display:block;min-width:0;min-height:0;" hint-size="100%,100%"></dc-import>
+                  <h2 style="{{ h2Estilo }}">{{ homeTitulo }}</h2>
+                  <div data-home-modo="" role="tablist" aria-label="Tela inicial" style="flex:none;height:{{ abaH }};margin-bottom:-2px;padding:0 2px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
+                    <sc-for list="{{ abasHome }}" as="a" hint-placeholder-count="2">
+                      <button type="button" role="tab" data-aba-home="{{ a.k }}" aria-selected="{{ a.on }}" onClick="{{ a.acao }}" style="min-width:0;height:48px;margin:{{ abaM }} 0;box-sizing:border-box;padding:0;border:0;border-radius:999px;background:transparent;display:flex;align-items:center;cursor:pointer;" style-active="transform:translateY(1px);">
+                        <span style="flex:1;min-width:0;height:{{ abaH }};box-sizing:border-box;padding:0 6px;border-radius:999px;border:{{ a.borda }};background:{{ a.fundo }};color:{{ a.cor }};display:flex;align-items:center;justify-content:center;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ a.fs }};line-height:18px;white-space:nowrap;">{{ a.t }}</span>
+                      </button>
                     </sc-for>
                   </div>
+                  <sc-if value="{{ abaSintomas }}" hint-placeholder-val="{{ true }}">
+                  <div data-grade-sintomas="" role="tabpanel" aria-label="Sintomas" style="flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:{{ gradeGap }};padding:0 2px;">
+                    <sc-for list="{{ sintomas }}" as="s" hint-placeholder-count="9">
+                      <dc-import name="PlacaSintoma" nome="{{ s.nome }}" icone="{{ s.icone }}" canto="{{ s.canto }}" acao="{{ s.onClick }}" style="display:block;min-width:0;min-height:0;height:round(down, 100%, 1px);" hint-size="100%,100%"></dc-import>
+                    </sc-for>
+                  </div>
+                  </sc-if>
+                  <sc-if value="{{ abaMedicoes }}" hint-placeholder-val="{{ false }}">
+                  <div data-home-medicoes="" role="tabpanel" aria-label="Medições e Testes" style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;margin:0 -8px;padding:0 10px 6px;display:flex;flex-direction:column;gap:8px;">
+                    <div data-gavetas-medicao="" style="flex:none;display:flex;flex-direction:column;gap:8px;">
+                      <sc-for list="{{ gavetasMed }}" as="g" hint-placeholder-count="2">
+                        <button type="button" data-atalho-medicao="{{ g.k }}" aria-label="{{ g.aria }}" onClick="{{ g.acao }}" style="flex:none;width:100%;height:{{ gavH }};box-sizing:border-box;padding:0 8px 0 6px;border-radius:16px;border:var(--gp-tile-border);background:var(--gp-tile);box-shadow:var(--gp-tile-relief);display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(2px);">
+                          <span aria-hidden="true" style="flex:none;width:36px;height:36px;border-radius:50%;background:var(--gp-medalhao);display:flex;align-items:center;justify-content:center;color:var(--gp-on-tile-icon);"><dc-import name="IconeGP" nome="{{ g.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
+                          <span style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:2px;">
+                            <span data-med-titulo="" style="font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ g.fs }};line-height:18px;color:var(--gp-on-tile);text-shadow:var(--gp-on-tile-shadow);white-space:nowrap;">{{ g.t }}</span>
+                            <span style="display:flex;align-items:center;gap:6px;min-width:0;"><span data-med-sub="" style="flex:1;min-width:0;font-family:'Roboto',sans-serif;font-weight:600;font-size:{{ g.subFs }};line-height:18px;color:var(--gp-on-tile);white-space:nowrap;">{{ g.sub }}</span><span class="tag tag-modo tag-gaveta" data-selo="" data-rotulo="">{{ g.modo }}</span></span>
+                          </span>
+                          <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-tile-icon);"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
+                        </button>
+                      </sc-for>
+                    </div>
+                    <div data-grade-medicoes="" style="flex:1 0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(min-content,1fr));gap:8px;">
+                      <sc-for list="{{ cartoesMed }}" as="c" hint-placeholder-count="6">
+                        <button type="button" data-atalho-medicao="{{ c.k }}" aria-label="{{ c.aria }}" onClick="{{ c.acao }}" style="min-width:0;height:100%;max-height:{{ cartaoMax }};align-self:center;box-sizing:border-box;padding:6px 2px;border-radius:18px;border:var(--gp-tile-border);background:var(--gp-tile);box-shadow:var(--gp-tile-relief);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;" style-active="transform:translateY(2px);">
+                          <sc-if value="{{ cartIco }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-tile-icon);"><dc-import name="IconeGP" nome="{{ c.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span></sc-if>
+                          <span data-med-titulo="" style="flex:none;max-width:100%;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ c.fs }};line-height:18px;color:var(--gp-on-tile);text-shadow:var(--gp-on-tile-shadow);text-align:center;text-wrap:balance;">{{ c.t }}</span>
+                          <span data-med-pilula="" class="tag tag-medida tag-escura tag-cartao" data-selo="" data-rotulo="">{{ c.pil }}</span>
+                        </button>
+                      </sc-for>
+                    </div>
+                  </div>
+                  </sc-if>
+                  <sc-if value="{{ temPocos }}" hint-placeholder-val="{{ true }}">
                   <div role="group" aria-label="Leituras" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 2px;margin:-2px 0;">
                     <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
                       <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:999px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
-                        <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 6px;border-radius:999px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow);display:flex;align-items:center;justify-content:center;gap:5px;animation:{{ r.anim }};">
+                        <span data-cola-viva="{{ r.cola }}" style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 6px;border-radius:999px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;column-gap:5px;animation:{{ r.anim }};">
                           <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
                           <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
                         </span>
                       </button>
                     </sc-for>
                   </div>
+                  </sc-if>
                   <sc-if value="{{ temDiag }}" hint-placeholder-val="{{ false }}">
                     <div role="group" aria-label="Diagnóstico das medições" style="flex:none;display:grid;grid-template-columns:{{ dgCols }};gap:6px;padding:0 2px;margin:-4px 0 -2px;">
                       <sc-for list="{{ diags }}" as="dg" hint-placeholder-count="1">
@@ -240,7 +282,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                             <sc-if value="{{ dgLinha }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-reading-unit);"><dc-import name="IconeGP" nome="{{ dg.ico }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></sc-if>
                             <span style="flex:1;min-width:0;display:flex;flex-direction:{{ dgDir }};align-items:{{ dgAlinha }};column-gap:6px;overflow:hidden;text-align:left;">
                               <span style="flex:none;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:700 16px/18px 'Roboto',sans-serif;color:var(--gp-on-reading-val);font-variant-numeric:tabular-nums;">{{ dg.val }}</span>
-                              <span data-diag-veredito="" style="flex:0 1 auto;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:700 16px/18px 'Roboto',sans-serif;color:{{ dg.verCor }};">{{ dg.verTxt }}</span>
+                              <span data-diag-veredito="" style="flex:0 1 auto;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ dg.verFs }};line-height:18px;color:{{ dg.verCor }};">{{ dg.verTxt }}</span>
                             </span>
                             <sc-if value="{{ dgLinha }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-reading-unit);"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span></sc-if>
                           </span>
@@ -466,7 +508,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <dc-import name="Aviso" tipo="aviso" titulo="{{ invAvisoT }}" texto="{{ invAvisoX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <sc-if value="{{ invAnotar }}" hint-placeholder-val="{{ false }}"><div data-inv-anotar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Anotar resultados para o laudo" icone="documento" acao="{{ invAnotarAcao }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
                   <sc-for list="{{ invEtapas }}" as="e" hint-placeholder-count="3">
-                    <div data-inv-etapa="{{ e.n }}" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                    <div data-inv-etapa="{{ e.n }}" data-inv-id="{{ e.id }}" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
                       <sc-if value="{{ e.temPre }}" hint-placeholder-val="{{ true }}"><div data-inv-pre="" class="tags"><sc-for list="{{ e.pre }}" as="tg" hint-placeholder-count="2"><span class="{{ tg.c }}" data-selo="" data-rotulo="">{{ tg.t }}</span></sc-for></div></sc-if>
                       <div style="display:flex;align-items:flex-start;gap:8px;">
                         <span style="flex:none;font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);font-variant-numeric:tabular-nums;">{{ e.n }}</span>
@@ -1564,6 +1606,9 @@ const TG = (k, t, x) => ({ ...(x || {}), c: `tag tag-${k}${x && x.cls ? ' ' + x.
 // que deixe ao menos 2 palavras na peça: "Capacitor de partida" | "do compressor ou ventilador com capacitância baixa (µF)".
 const LIGA = /\s(?:do|da|dos|das|por|com|na|no|nas|nos|sem|fora|abrindo|elevando|vibrando|encostando|obstruída|bloqueando|descalibrado|danificado|aberto)\s|,\s|\s\(/g;
 const pecaDe = (t) => { for (const m of String(t).matchAll(LIGA)) { const p = t.slice(0, m.index).trim(); if (p.split(/\s+/).length >= 2) return [p, t.slice(m.index).replace(/^,\s*/, '').trim()]; } return [String(t), '']; };
+// Sucção de referência por fluido na cola viva da inicial (PR #28, faixas do Pedro). Conferência pela tabela PT da base (pt_r410a_r32_r22.csv):
+// R410A 118 psig = 4,4 °C e 130 psig = 7,2 °C; R32 121 psig = 4,4 °C; R22 68,5 psig = 4,4 °C.
+const PSUC = { R410A: '118–135', R32: '120–140', R22: '60–75' };
 const COLA_ETAPA = { t_ng04: 'capacitor', t_gp04: 'capacitor', t_ng03: 'tensao', t_gp03: 'tensao', t_de03: 'tensao', t_nl01: 'tensao' };
 // Carga adicional pela linha excedente (PR #24): gramas por metro no porte 1 e do porte 2 em diante; o técnico confere na balança.
 const TUBO_G_M = { 1: 15, 2: 25 };
@@ -1589,13 +1634,13 @@ const CENAS_V = '?v=4';
 // Reserva se cenas.json não carregar: as etapas da checagem rápida do lote 1 de 26/10 (sem ba02 e pi05, que não vieram no lote).
 const CENAS_OK = new Set('ba03 ba04 de02 de03 de04 ge02 gp02 gp03 ng02 ng03 ng04 ng05 nl02 nl03 nl04 nl05 pi03 pi04'.split(' ').flatMap(k => [k + '_sim', k + '_nao']));
 const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDocumento', 'IconeGP', 'LinhaFicha', 'LinhaOrcamento', 'LogoMarca', 'OpcaoLista', 'PlacaSintoma', 'QRPix', 'SeletorPrazo', 'Selo', 'TeclaDock', 'TeclaResposta', 'TemaGeloPro'];
-const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], resp: {}, res: null, modo: null, modK: null, prev: null };
+const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], resp: {}, res: null, modo: null, modK: null, prev: null, foco: null };
 // Dados do atendimento (cliente, aparelho, medições, hipóteses, carga, laudo, orçamento, garantia, assinatura). Concluir volta a isto.
 // Ficam fora: titular, licença, tema e documentos emitidos (localStorage), e os fatores da carga térmica, que são ajuste do técnico.
 const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, pdfPronto: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcNom: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
 
 class Component extends DCLogic {
-  state = { ...ATEND0(), lic: ler(K_LIC), tit: ler(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null };
+  state = { ...ATEND0(), lic: ler(K_LIC), tit: ler(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null, abaHome: 'sintomas' };
 
   componentDidMount() {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
@@ -1774,9 +1819,9 @@ class Component extends DCLogic {
   }
   abrir(tela, extra) {
     this.precarregarModulo(tela);
-    this.setState(st => ({ prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, ...extra }));
+    this.setState(st => ({ prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, foco: null, ...extra }));
   }
-  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
+  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._focoT); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
   pRef = React.createRef();
   focarPortao() {
     const fe = this.fRef.current;
@@ -1795,6 +1840,18 @@ class Component extends DCLogic {
     // O motor (support.js) não passa o estado anterior: o último passo visto fica em this._fPasso.
     const pn = this.state.fOpen && this.state.fech ? this.state.fech.passo : null;
     if (pn !== this._fPasso) { const v = pn && this._fPasso && this.fRef.current && this.fRef.current.querySelector('[data-vis]'); if (v) v.scrollTop = 0; this._fPasso = pn; }
+    // Atalho de medição (PR #28): o módulo abre já rolado até a etapa ou linha pedida (state.foco = seletor); sai do estado quando acha.
+    // Tenta a cada 100 ms (até 1,2 s) enquanto a lista ainda cresce: no 1º acesso ao módulo as etapas e as fotos entram depois.
+    if (this.state.foco && this._focoSel !== this.state.foco) {
+      const sel = this._focoSel = this.state.foco; let n = 0;
+      const tenta = () => {
+        const el = document.querySelector(sel); let c = el && el.parentElement; while (c && !/(auto|scroll)/.test(getComputedStyle(c).overflowY)) c = c.parentElement;
+        const d = el && c ? el.getBoundingClientRect().top - c.getBoundingClientRect().top - 4 : null; if (d !== null) c.scrollTop += d;
+        if ((d !== null && Math.abs(d) < 2) || ++n >= 12) { this._focoSel = null; return this.setState({ foco: null }); }
+        this._focoT = setTimeout(tenta, 100);
+      };
+      tenta();
+    }
     this.focarPortao(); return;
     const el = this.pRef.current;
     if (el && el !== this._pFoco) { this._pFoco = el; requestAnimationFrame(() => { const alvo = el.querySelector('input:not([disabled]),button:not([disabled])'); (alvo || el).focus({ preventScroll: true }); }); }
@@ -2297,7 +2354,45 @@ class Component extends DCLogic {
     const nomeTopo = tit && String(tit.nome || '').trim() ? String(tit.nome).trim() : 'SUA ASSISTÊNCIA', topoCheio = 'GELOPRO · ' + nomeTopo;
     const topoW = faceW - 24 - 10 - 48 - 4 - 48;
     const larguraTopo = (txt) => { if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d'); this._ctx.font = "700 16px 'Figtree', sans-serif"; return this._ctx.measureText(txt.toUpperCase()).width + 0.16 * txt.length; };
-    const H = cheio ? innerHeight : DEV[dev], telaBaixa = H < 760, diagLado = telaBaixa && diags.length > 1, semTitulo = (diags.length && telaBaixa) || H < 640;
+    const H = cheio ? innerHeight : DEV[dev], telaBaixa = H < 760, diagLado = telaBaixa && diags.length > 1;
+    // Home 3C (PR #28): a chave Sintomas | Medições e Testes ocupa o lugar do título do visor (que segue para leitor de tela). Em tela apertada
+    // (diagnóstico abaixo de 700 px de altura, ou qualquer tela abaixo de 640 px) a faixa de diagnóstico fica no lugar dos poços de Leituras
+    // (ela já traz os mesmos números com o veredito) e as placas 3×3 seguem com 46 px ou mais: 2 linhas de nome + 6 px de folga.
+    const abaMed = st.abaHome === 'medicoes', temPocos = !(H < 640 || (diags.length && H < 700)), cw = faceW - 38;
+    const larg = (t, fs, peso) => { if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d'); this._ctx.font = `${peso || 700} ${fs}px Roboto`; return this._ctx.measureText(t).width; };
+    // Texto que cabe: a primeira variante que entra na largura (cabe1: 1 linha; cabe2: até 2 linhas, palavra inteira). A última é o piso.
+    const cabe1 = (vs, w, fs, peso) => vs.find(v => larg(v, fs, peso) <= w) || vs[vs.length - 1];
+    // Quebra simulada palavra a palavra (o espaço de largura zero depois da "/" também é ponto de quebra): quantas linhas o texto ocupa em w.
+    const linhas = (v, w, fs, peso) => { let n = 1, at = 0; const sp = larg(' ', fs, peso); v.split(' ').forEach(x => x.split('\u200b').forEach((y, i) => { const lw = larg(y, fs, peso), sep = !at || i ? 0 : sp; if (at && at + sep + lw > w) { n++; at = lw; } else at += sep + lw; })); return n; };
+    const cabe2 = (vs, w, fs, peso) => vs.find(v => Math.max(...v.split(/[ \u200b]/).map(x => larg(x, fs, peso))) <= w && linhas(v, w, fs, peso) <= 2) || vs[vs.length - 1];
+    // Referências vivas da marca e do fluido do topo: nominais NTC das curvas da base (até 50K; sem curva, a faixa universal 5K–50K),
+    // faixa de SH da base (oficial só Elgin R410A, F14: "Alvo"; nas outras marcas, "Ref.") e a sucção de referência do fluido.
+    const nomsL = B ? [...new Set(B.ntc.filter(r => daMarca(r.marca, marca) && r.arquivo_curva).map(r => num(r.r25_kohm)).filter(n => n && n <= 50))].sort((a, b) => a - b) : [];
+    const noms = !B ? '' : nomsL.length ? nomsL.map(n => n + 'K').join('/') : `${NTC_UNI[0]}K–${NTC_UNI[NTC_UNI.length - 1]}K`, nomsCurto = nomsL.length > 2 ? `${nomsL[0]}K–${nomsL[nomsL.length - 1]}K` : noms;
+    const shRef = B ? B.crit.find(c => /^Superaquecimento correto/.test(c.criterio)) : null, shF = shRef ? shRef.valor.replace(/(\d+) a (\d+)/, '$1–$2') : '', shPre = elg.length ? 'Alvo' : 'Ref.';
+    const fluH = st.sel.fluido, psuc = PSUC[fluH], ate20 = (vs) => vs.filter(v => v.length <= 20);
+    const pocoW = (cw - 4 - 20) / 3 - 18;
+    const colaPoco = {
+      PSI: psuc ? cabe1(ate20([`${fluH}: ${psuc} psi`, `${psuc} psi`, psuc]), pocoW, 14) : undefined,
+      'kΩ': noms ? cabe1(ate20([`${marca}: ${noms} @25°C`, `${noms} @25°C`, noms, nomsCurto]), pocoW, 14) : undefined,
+      '°C': shF ? cabe1(ate20([`${shPre} SH: ${shF}`, `SH ${shF}`, `SH ${shF.replace(' °C', '')}`]), pocoW, 14) : undefined,
+    };
+    // Atalhos: módulo bônus com cadeado no plano de 90 dias abre o convite de upgrade, como no dock.
+    const atalhoMod = (k, tela, foco) => () => lock ? this.vazio('upg', { modK: k }) : this.abrir(tela, { modK: k, foco: foco || null });
+    const temCom = !!B && B.cod.some(c => daMarca(c.marca, marca) && /comunica/.test(norm(c.descricao || '')));
+    // Gaveta: título numa linha (16 → 14 px); embaixo, o subtítulo que couber e a etiqueta .tag-modo à direita. Texto com mais de 20 letras vai em 16 px (G-L1).
+    const gavTxt = cw - 4 - 86 - 4, tagW = (t) => larg(t, 14, 800) + 18, fsSub = (v) => v.length > 20 ? 16 : 14;
+    const gaveta = (k, ico, ts, subs, modo, aria, acao) => {
+      const t = ts.find(v => larg(v, fsSub(v)) <= gavTxt) || ts[ts.length - 1], subW = gavTxt - tagW(modo) - 6, sub = subs.find(v => larg(v, fsSub(v), 600) <= subW) || subs[subs.length - 1];
+      return { k, ico, t, fs: (t.length > 20 ? 16 : this.fit(t, 16, gavTxt, 14)) + 'px', sub, subFs: fsSub(sub) + 'px', modo, aria, acao };
+    };
+    // Cartão da grade 3×2: ícone, título (palavra inteira, 16 → 14 px) e pílula escura (até 2 linhas). Altura até 1,25 × a largura;
+    // abaixo de 100 px de largura (telas de 320 px) o ícone sai para o nome e a pílula caberem nessa altura.
+    const cartW = (cw - 4 - 16) / 3, cartIn = cartW - 8, pilW = cartIn - 14, cartIco = cartW >= 100;
+    const cartao = (k, ico, ts, pils, aria, acao) => {
+      const t = ts.find(v => Math.max(...v.split(' ').map(x => larg(x, 14))) <= cartIn) || ts[ts.length - 1], maior = Math.max(...t.split(' ').map(x => larg(x, 16)));
+      return { k, ico, t, fs: (maior <= cartIn ? 16 : Math.max(14, Math.floor(16 * cartIn / maior * 2) / 2)) + 'px', pil: cabe2(pils, pilW, 14), aria, acao };
+    };
     const out = {
       invTem: invEt.length > 0, invSem: !invEt.length,
       invSemT: `Nenhuma família de ${marca} conferida na base`,
@@ -2305,7 +2400,7 @@ class Component extends DCLogic {
       invAvisoT: invUni ? `Checklist universal · ${marca}` : 'Manual Midea dos EUA', invAvisoX: invUni ? `Para ${invEt[0].modelos.replace(/^Placas/, 'placas')}. Valores de referência físicos; com o manual da linha em mãos, ele prevalece.` : invEt.length ? `Vale para ${invEt[0].modelos}. Em outra placa, os valores podem mudar.` : '',
       invAnotar: invUni && !invReg, invAnotarAcao: () => this.setState(x => ({ inv: { ...x.inv, _reg: true } })), invForaT: invUni ? 'Fora do esperado aponta o que investigar' : 'Fora do manual aponta o que investigar',
       invOps: INV_OPS,
-      invEtapas: invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return { n: i + 1, t: e.titulo, como: e.como_verificar, ref: e.referencia, r: r.r || '', v: r.v || '', setR: invSet(e.etapa_id, 'r'), setV: invSet(e.etapa_id, 'v'), ph: INV_PH[e.etapa_id] || '', selo: r.r || 'Pendente', seloTipo: INV_SELO[r.r] || 'neutro', ntc: e.etapa_id === 'sensores', reg: invReg, ...par('inv_' + e.etapa_id), ...invVisual(e) }; }),
+      invEtapas: invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return { n: i + 1, id: e.etapa_id, t: e.titulo, como: e.como_verificar, ref: e.referencia, r: r.r || '', v: r.v || '', setR: invSet(e.etapa_id, 'r'), setV: invSet(e.etapa_id, 'v'), ph: INV_PH[e.etapa_id] || '', selo: r.r || 'Pendente', seloTipo: INV_SELO[r.r] || 'neutro', ntc: e.etapa_id === 'sensores', reg: invReg, ...par('inv_' + e.etapa_id), ...invVisual(e) }; }),
       invNtc: () => this.abrir('ntc', { modK: 'ntc' }),
       invLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cons: invTxt ? (x.laudo.cons ? x.laudo.cons + '\n' : '') + (invUni ? `Checklist Inverter (procedimento universal, ${marca}):\n` : 'Checklist Inverter (manual Midea Mission2 3D):\n') + invTxt : x.laudo.cons } })),
       invFonte: invUni ? 'Procedimento universal de bancada (Base Técnica GeloPro): valores físicos da retificação de 220 V CA, do teste de diodo e do equilíbrio entre as fases.' : `${fonteTxt('F20')}; ${fonteTxt('F21')}. Status: oficial de outro país.`,
@@ -2623,11 +2718,32 @@ class Component extends DCLogic {
       irLeitura: () => this.vazio('leit'),
       irOrcamento: () => this.abrirFech(),
       // Uma faixa por medição. Em tela baixa (ou com as duas medições em tela baixa) ficam lado a lado, cada uma em 2 linhas (valor; veredito).
-      diags: diags.map(d => ({ ...d, verTxt: diagLado ? d.verCurto : '· ' + d.ver, verCor: d.cor || 'var(--gp-on-reading-unit)' })), temDiag: diags.length > 0,
+      // Faixas lado a lado (PR #28): o veredito curto cabe inteiro na faixa (16 → 14 px; sem caber, perde o fim: "pela curva", "oficial").
+      diags: diags.map(d => { const dgW = (cw - 4 - 6 * (diags.length - 1)) / diags.length - 26, vs = [d.verCurto, d.verCurto.replace(/ (pela curva|oficial)$/, '')], curto = vs.find(v => larg(v, 14) <= dgW) || vs[1];
+        return { ...d, verTxt: diagLado ? curto : '· ' + d.ver, verFs: diagLado ? this.fit(curto, 16, dgW, 14) + 'px' : '16px', verCor: d.cor || 'var(--gp-on-reading-unit)' }; }), temDiag: diags.length > 0,
       dgCols: diagLado ? `repeat(${diags.length},minmax(0,1fr))` : 'minmax(0,1fr)', dgDir: diagLado ? 'column' : 'row', dgAlinha: diagLado ? 'flex-start' : 'baseline', dgLinha: !diagLado, dgPadD: diagLado ? '10px' : '6px',
       // Tela baixa com diagnóstico: o título do visor sai da vista (continua para leitor de tela) e a altura vai para as placas.
       gradeGap: (diags.length && H < 700) || H < 640 ? '6px' : '10px',
-      h2Estilo: semTitulo ? 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;' : 'flex:none;margin:0;font:700 19px/24px \'Roboto\',sans-serif;color:var(--gp-on-surface);text-align:center;',
+      h2Estilo: 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;',
+      homeTitulo: abaMed ? 'Medições e Testes' : 'O que o aparelho apresenta?',
+      abaH: H < 640 ? '30px' : '34px', abaM: H < 640 ? '-9px' : '-7px', abaSintomas: !abaMed, abaMedicoes: abaMed, temPocos,
+      abasHome: [['sintomas', 'Sintomas'], ['medicoes', 'Medições e Testes']].map(([k, t]) => { const pl = pilula((st.abaHome || 'sintomas') === k, t, () => this.setState({ abaHome: k })); return { ...pl, k, fs: this.fit(t, 16, (cw - 4 - 6) / 2 - 16, 14) + 'px' }; }),
+      gavH: '50px', cartaoMax: Math.floor(cartW * 1.25) + 'px', cartIco,
+      gavetasMed: [
+        gaveta('ipm', 'placa-ipm', ['Placa Inverter e Módulo IPM', 'Placa Inverter e IPM'], ['~310 V CC · Bornes P / N / U / V / W', '~310 V CC · P/N/U/V/W', '~310 V · P/N/U/V/W', '~310 V CC'], 'DIODO · V CC',
+          'Placa Inverter e Módulo IPM: cerca de 310 V CC no barramento, bornes P, N, U, V e W, em diodo e V CC. Abre o Inverter no barramento', atalhoMod('inv', 'inv', '[data-inv-id="tensao_pn"]')),
+        gaveta('comunicacao', 'condensadora', ['Comunicação entre Unidades', 'Comunicação'], ['Sinal DC no Borne S · 198 a 242 V CA', 'Borne S · 198 a 242 V CA', 'Borne S 198–242 V CA', '198 a 242 V CA'], 'SINAL DC',
+          'Comunicação entre unidades: sinal DC no borne S e rede de 198 a 242 V CA. Abre o Código no display em comunicação', () => this.abrir('codigo', { sint: 'codigo', cod: temCom ? 'comunicação' : '' })),
+      ],
+      cartoesMed: [
+        cartao('ntc', 'sensor-ntc', ['Sensores NTC'], noms ? [`${marca}: ${noms}`, noms, nomsCurto].map(v => v.replace(/\//g, '/\u200b')) : ['Curva NTC'], `Sensores NTC: ${marca}${noms ? ' ' + noms : ''} a 25 °C. Abre o Sensor NTC`, atalhoMod('ntc', 'ntc')),
+        cartao('compressor', 'compressor', ['Compressor UVW'], ['0,7–2,5 Ω'], 'Compressor UVW: enrolamentos de 0,7 a 2,5 Ω, iguais entre si. Abre o Inverter nos enrolamentos', atalhoMod('inv', 'inv', '[data-inv-id="compressor"]')),
+        cartao('capacitor', 'capacitor', ['Capacitor e Motor'], ['35µF ≥ 33,2'], 'Capacitor e motor: 35 µF aceita até 33,2 µF. Abre a checagem técnica do capacitor', () => iniciar('naogela', 't_ng04')),
+        // "Superaquecimento" mede 119 px em 14 px/700 e o cartão tem 77 a 114 px úteis nos celulares: sem hífen, o título vira "SH" (nome completo no aria-label).
+        cartao('sh', 'pt-sh', ['Superaquecimento', 'SH'], shF ? [`${shPre} ${shF}`] : ['PT/SH'], `Superaquecimento (SH): ${shPre === 'Alvo' ? 'alvo' : 'referência'} ${shF.replace('–', ' a ')}. Abre o PT/SH`, atalhoMod('ptsh', 'ptsh')),
+        cartao('vacuo', 'bomba-vacuo', ['Vácuo e Carga'], ['< 500 µmHg · g/m', '< 500 µmHg'], 'Vácuo e carga: abaixo de 500 µmHg e carga adicional por metro de linha. Abre o PT/SH no orçamento de carga e vácuo', atalhoMod('ptsh', 'ptsh', '[data-orcar-ptsh]')),
+        cartao('btu', 'carga-termica', ['Carga Térmica'], ['Cálculo BTU/h'], 'Carga térmica: cálculo de BTU/h. Abre a Carga térmica', atalhoMod('ntc', 'btu')),
+      ],
       abrirFichas: () => this.setState({ drawer: 'fichas', fichaSel: null, busca: '', fichaCat: 'todos', fichaSec: null }),
       up: () => { if (this.state.pk) this.setState({ pk: null }); },
       chips: [['marca', 'Marca'], ['btu', 'BTU/h'], ['fluido', 'Fluido']].map(([k, rot]) => ({
@@ -2670,7 +2786,7 @@ class Component extends DCLogic {
         { un: 'PSI', v: tsat !== null ? st.ptP.trim() : '—', o: tsat !== null ? 'Informada' : st.ptP.trim() ? 'Valor inválido' : 'Sem medição', faixa: `Sucção, ${st.sel.fluido}`, aria: tsat !== null ? `Pressão de sucção ${st.ptP.trim()} psig, ${st.sel.fluido}. Toque para abrir o PT/SH` : `Pressão, ${st.sel.fluido}: sem medição válida. Toque para lançar`, onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
         { un: '°C', v: Tt !== null && !ptTErro ? st.ptT.trim() : '—', o: Tt !== null && !ptTErro ? 'Informada' : st.ptT.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Tubo de sucção', aria: Tt !== null && !ptTErro ? `Temperatura do tubo ${st.ptT.trim()} °C. Toque para abrir o PT/SH` : 'Temperatura: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
-      ].map(r => ({ ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio') })),
+      ].map(r => ({ ...r, cola: r.v === '—' ? colaPoco[r.un] : undefined, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio') })),
       linhas: E.ops.map((o, i, a) => a.length > 2 && i === a.length - 1 ? 'auto' : 'minmax(min-content,1fr)').join(' '),
       etapaId: E.id || '',
       opcoes: E.ops.map((o, i, arr) => {
