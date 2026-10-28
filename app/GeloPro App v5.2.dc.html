@@ -60,9 +60,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
    (#c1c0c1 no Titânio e no Claro, #ffffff no Sol), para não sobrar faixa branca no Android nem no iPhone. */
 @media (max-width:767.98px){html,body{background:#c1c0c1 !important;width:100%;min-height:100%;overscroll-behavior:none;}html:has([data-tema=sol]),html:has([data-tema=sol]) body{background:#ffffff !important;}[data-mesa]{display:block !important;min-height:0 !important;padding:0 !important;background:transparent !important;}[data-moldura]{width:100vw !important;height:100vh !important;height:100dvh !important;padding:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;}[data-lateral]{display:none !important;}[data-chassi]{border-radius:0 !important;box-shadow:none !important;}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:1ms !important;}}
-@media print{@page{size:A4;margin:12mm}html,body{background:#fff !important}body *{visibility:hidden !important}[data-print],[data-print] *{visibility:visible !important}[data-print]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important}}
+@media print{@page{size:A4;margin:12mm}html,body{background:#fff !important}body *{visibility:hidden !important}[data-print],[data-print] *{visibility:visible !important}[data-print]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important}[data-print],[data-print] *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}[data-print] [data-doc-fechamento],[data-print] [data-doc-foto-bloco],[data-print] [data-doc-assinatura],[data-print] [data-doc-preventiva]{page-break-inside:avoid;break-inside:avoid}}
 </style>
 <script src="portao-gelopro.js"></script>
+<script src="pdf-gelopro.js"></script>
 </helmet>
 <dc-import name="TemaGeloPro" tema="{{ temaAttr }}" extra="{{ vars }}" hint-size="100%,100vh">
 <div data-mesa="" style="min-height:100vh;box-sizing:border-box;padding:24px 12px;display:flex;justify-content:center;align-items:flex-start;background:var(--gp-desk);font-family:'Roboto',sans-serif;">
@@ -431,6 +432,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Conclusão" rows="3" value="{{ lConc }}" onInput="{{ lSetConc }}" placeholder="Por que o reparo não é viável" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <sc-if value="{{ lErro }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Faltam dados para o laudo" texto="Preencha cliente, constatações e conclusão." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="AtalhoTecla" rotulo="PDF do laudo de inviabilidade" icone="documento" acao="{{ lPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
+                  <sc-if value="{{ pdfLaudo }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                      <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
+                      <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
+                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                      <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
+                    </div></sc-if>
                 </div>
               </sc-if>
 
@@ -462,6 +469,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <span data-campo="1" style="flex:none;display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Recomendações em falha e emergência" rows="3" value="{{ pmEmerg }}" onInput="{{ pmSet.emerg }}" placeholder="Recomendações aos usuários" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <sc-if value="{{ pmErro }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="erro" titulo="Faltam dados para o PMOC" texto="Preencha o ambiente e o proprietário, locatário ou preposto." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <dc-import name="AtalhoTecla" rotulo="PDF do PMOC" icone="documento" acao="{{ pmPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
+                  <sc-if value="{{ pdfPmoc }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                      <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
+                      <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
+                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                      <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
+                    </div></sc-if>
                   <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ pmFonte }}</span>
                 </div>
               </sc-if>
@@ -485,6 +498,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><dc-import name="CampoTexto" rotulo="Valor (R$)" valor="{{ rcVal }}" aoDigitar="{{ rcSet.val }}" placeholder="0,00" modo="decimal" estado="{{ rcValE }}" erroMsg="{{ rcValM }}" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import><dc-import name="CampoTexto" rotulo="Referente a" valor="{{ rcRef }}" aoDigitar="{{ rcSet.ref }}" placeholder="Serviço" estado="{{ rcRefE }}" erroMsg="descreva" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import></div>
                   <dc-import name="SeletorPrazo" rotulo="Forma de pagamento" opcoes="{{ rcOps }}" valor="{{ rcForma }}" estado="{{ rcFormaE }}" erroMsg="escolha a forma" acao="{{ rcSetForma }}" style="display:block;flex:none;" hint-size="100%,104px"></dc-import>
                   <dc-import name="AtalhoTecla" rotulo="PDF do recibo" icone="documento" acao="{{ rcPdf }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import>
+                  <sc-if value="{{ pdfReca }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                      <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
+                      <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
+                      <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                      <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
+                    </div></sc-if>
                 </div>
               </sc-if>
 
@@ -503,6 +522,13 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <sc-if value="{{ c.aberto }}" hint-placeholder-val="{{ false }}">
                         <div style="display:flex;flex-direction:column;gap:8px;padding:0 0 8px 12px;">
                           <span data-cofre-docs="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ c.docsTxt }}</span>
+                          <div data-cofre-pdfs="" role="group" aria-label="2ª via em PDF" style="display:flex;flex-direction:column;gap:8px;"><sc-for list="{{ c.pdfs }}" as="pf" hint-placeholder-count="2"><div data-cofre-pdf="{{ pf.k }}" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="{{ pf.l }}" icone="documento" acao="{{ pf.acao }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-for></div>
+                          <sc-if value="{{ c.temPdf }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                              <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
+                              <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
+                              <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                              <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
+                            </div></sc-if>
                           <dc-import name="Selo" texto="{{ c.gSelo }}" tipo="{{ c.gTipo }}" hint-size="140px,26px"></dc-import>
                           <sc-for list="{{ c.msgs }}" as="m" hint-placeholder-count="3"><dc-import name="AtalhoTecla" rotulo="{{ m.l }}" icone="mensagem" acao="{{ m.acao }}" style="display:block;" hint-size="100%,60px"></dc-import></sc-for>
                         </div>
@@ -867,6 +893,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <dc-import name="AtalhoTecla" rotulo="PDF do orçamento" icone="documento" acao="{{ fPdfOrc }}" style="display:block;" hint-size="100%,60px"></dc-import>
               <dc-import name="AtalhoTecla" rotulo="PDF do termo de garantia" icone="garantia" acao="{{ fPdfGar }}" style="display:block;" hint-size="100%,60px"></dc-import>
               <dc-import name="AtalhoTecla" rotulo="PDF do recibo Pix" icone="documento" estado="{{ fRecE }}" acao="{{ fPdfRec }}" style="display:block;" hint-size="100%,60px"></dc-import>
+              <sc-if value="{{ pdfFech }}" hint-placeholder-val="{{ false }}"><div data-pdf-pronto="{{ pdfTipo }}" role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
+                  <span style="display:flex;align-items:center;gap:8px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span style="flex:1;min-width:0;">{{ pdfTitulo }}</span></span>
+                  <span data-pdf-arquivo="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ pdfNome }}</span>
+                  <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
+                  <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
+                </div></sc-if>
               <div data-zap-editor="" style="display:flex;flex-direction:column;gap:8px;">
                 <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Mensagem do WhatsApp</span>
                 <div role="group" aria-label="Modelos de mensagem" style="display:flex;flex-direction:column;gap:8px;"><sc-for list="{{ fZapModelos }}" as="zm" hint-placeholder-count="3"><button type="button" aria-pressed="{{ zm.on }}" onClick="{{ zm.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:{{ zm.borda }};background:{{ zm.fundo }};color:{{ zm.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ zm.t }}</button></sc-for></div>
@@ -940,15 +972,15 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         <span style="font:700 16px/24px 'Roboto',sans-serif;padding-bottom:4px;">{{ dItensTit }}</span>
         <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-doc-economia="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.eco }}</span></sc-if></sc-if></div></sc-for>
         <sc-if value="{{ dTemBonif }}" hint-placeholder-val="{{ false }}"><div data-doc-bonificacao="" style="padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);font:600 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dBonifLinha }}</div></sc-if>
-        <sc-if value="{{ dTemDesc }}" hint-placeholder-val="{{ false }}"><div data-doc-desconto="" style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);font:600 16px/24px 'Roboto',sans-serif;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;"><span>{{ dSubtotalLinha }}</span><span>{{ dDescLinha }}</span></div></sc-if>
+        <div data-doc-fechamento="" style="display:flex;flex-direction:column;"><sc-if value="{{ dTemDesc }}" hint-placeholder-val="{{ false }}"><div data-doc-desconto="" style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);font:600 16px/24px 'Roboto',sans-serif;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;"><span>{{ dSubtotalLinha }}</span><span>{{ dDescLinha }}</span></div></sc-if>
         <div style="display:flex;justify-content:space-between;gap:16px;padding-top:12px;font-weight:700;"><span>{{ dTotalRot }}</span><span style="font-variant-numeric:tabular-nums;">{{ dTotal }}</span></div>
-        <sc-if value="{{ dTemValidade }}" hint-placeholder-val="{{ false }}"><div data-doc-validade="" style="padding-top:8px;font:600 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dValidadeLinha }}</div></sc-if>
+        <sc-if value="{{ dTemValidade }}" hint-placeholder-val="{{ false }}"><div data-doc-validade="" style="padding-top:8px;font:600 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dValidadeLinha }}</div></sc-if></div>
       </div>
     </sc-if>
     <sc-for list="{{ dBlocos }}" as="b" hint-placeholder-count="2"><div style="display:flex;flex-direction:column;gap:4px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">{{ b.t }}</span><span style="font:500 16px/24px 'Roboto',sans-serif;white-space:pre-line;overflow-wrap:anywhere;">{{ b.x }}</span></div></sc-for>
     <sc-if value="{{ dTemPrev }}" hint-placeholder-val="{{ false }}"><div data-doc-preventiva="" style="display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:2px dashed var(--gp-on-paper);border-radius:8px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">Etiqueta de próxima preventiva</span><span style="font:500 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dPrevLinha }}</span></div></sc-if>
-    <sc-if value="{{ dTemFoto }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">Foto de evidência</span><span data-doc-foto="" role="img" aria-label="Foto de evidência do aparelho ou da medição" style="display:block;width:100%;height:300px;background-repeat:no-repeat;background-position:left center;background-size:contain;background-image:{{ dFotoBg }};-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span></div></sc-if>
-    <sc-if value="{{ dTemAssin }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;width:320px;max-width:100%;"><span role="img" aria-label="Assinatura do cliente" style="display:block;width:100%;height:110px;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:{{ dAssinBg }};-webkit-print-color-adjust:exact;print-color-adjust:exact;border-bottom:1px solid var(--gp-on-paper);"></span><span style="color:var(--gp-on-paper-variant);">{{ dAssinLeg }}</span></div></sc-if>
+    <sc-if value="{{ dTemFoto }}" hint-placeholder-val="{{ false }}"><div data-doc-foto-bloco="" style="display:flex;flex-direction:column;gap:4px;"><span style="font:700 16px/24px 'Roboto',sans-serif;">Foto de evidência</span><span data-doc-foto="" role="img" aria-label="Foto de evidência do aparelho ou da medição" style="display:block;width:100%;height:300px;background-repeat:no-repeat;background-position:left center;background-size:contain;background-image:{{ dFotoBg }};-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span></div></sc-if>
+    <sc-if value="{{ dTemAssin }}" hint-placeholder-val="{{ false }}"><div data-doc-assinatura="" style="display:flex;flex-direction:column;gap:4px;width:320px;max-width:100%;"><span role="img" aria-label="Assinatura do cliente" style="display:block;width:100%;height:110px;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:{{ dAssinBg }};-webkit-print-color-adjust:exact;print-color-adjust:exact;border-bottom:1px solid var(--gp-on-paper);"></span><span style="color:var(--gp-on-paper-variant);">{{ dAssinLeg }}</span></div></sc-if>
   </dc-import>
 </div>
 </sc-if>
@@ -1272,6 +1304,47 @@ const ATUALIZACOES = [
 ];
 // Selo da base (PR #24): mês da última atualização da base técnica e da tabela de preços. Atualize junto com a base.
 const BASE_MES = 'Outubro/2026', SELO_BASE = `Base Atualizada · ${BASE_MES}`;
+// Textos do documento (PR #25): uma fonte só para o [data-print] (Plano A, window.print) e para o arquivo .pdf real (GeloProPDF, 1ª e 2ª via).
+const pontoDoc = (s) => /[.!?]$/.test(s) ? s : s + '.';
+const garCobreDe = (t) => pontoDoc(String(t || '').trim() || 'Os serviços listados acima');
+const garNaoDe = (t) => pontoDoc(String(t || '').trim() || 'Mau uso, oscilação de energia e peças não trocadas neste atendimento');
+const garLinhaDe = (garTxt, cobre, nao) => !garTxt ? '' : semGarantia(garTxt) ? `Sem garantia contratual neste atendimento (aparelho no estado). A garantia legal do Código de Defesa do Consumidor continua valendo.` : `Garantia contratual: ${garTxt}. Cobre: ${cobre} Não cobre: ${nao} A garantia legal do Código de Defesa do Consumidor continua valendo.`;
+const GAR_LEGAL = 'Este termo é complementar à garantia legal do Código de Defesa do Consumidor (arts. 24 e 26), que não pode ser excluída.';
+const garBlocosDe = (garTxt, cobre, nao, ressalva, ms) => [{ t: 'Prazo contratual', x: semGarantia(garTxt) ? 'Sem garantia contratual neste atendimento (aparelho no estado).' : `${garTxt}, a partir de ${dataBR(ms)}.` }, { t: 'Cobre', x: cobre }, { t: 'Não cobre', x: nao }, ...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: pontoDoc(ressalva) }] : []), { t: 'Garantia legal', x: GAR_LEGAL }];
+const validadeLinhaDe = (v) => `Validade desta proposta: ${(VALIDADES.includes(v) ? v : VALIDADES[0]).replace(/^Somente/, 'somente')} (garantia de preço e reserva de componentes).`;
+const prevLinhaDe = (ms) => `Próxima manutenção preventiva recomendada: ${dataBR(ms)} (6 meses) para preservar o rendimento e a economia de energia.`;
+const pixDe = (tit, total, num) => { try { return window.GeloProPix && tit ? window.GeloProPix.payload({ chave: tit.pix, nome: tit.nome, cidade: tit.cidade, valor: total, txid: 'ORC' + (num || '') }) : ''; } catch (e) { return ''; } };
+const pixBlocoDe = (tit, total, num) => `Chave ${tit ? tit.pix : ''} (${tit ? tit.pixTipo : ''}).\nCopia e cola: ${pixDe(tit, total, num)}\nPix gerado não comprova pagamento.`;
+const recebimentoDe = (cli, total, num, ms) => `Recebi de ${cli} o valor de ${BRL.format(total)} por Pix, referente ao orçamento nº ${num}. Recebimento conferido pelo titular no extrato bancário em ${dataBR(ms)}.`;
+const laudoBlocosDe = (d) => [{ t: 'Medições registradas', x: d.medicoes }, { t: 'Constatações', x: d.constatacoes }, { t: 'Conclusão', x: d.conclusao }, { t: 'Observação', x: 'Laudo emitido pelo técnico titular com base nas verificações acima. Não substitui laudo de engenheiro quando exigido.' }];
+// Motor de PDF offline (PR #25): registro do Cofre → dados do GeloProPDF. A 1ª via (imprimir) e a 2ª via do Cofre saem da mesma montagem; foto e
+// assinatura entram quando ainda estão na memória do atendimento (o Cofre não guarda imagem). Equipamento no formato "Marca · BTU/h · Fluido".
+const titularDe = (st, sim) => sim === 'real' ? (st.amostra ? AMOSTRA_T : st.tit) : sim === 'cadastro' ? st.titSim : (st.tit || AMOSTRA_T);
+const PDF_TITULO = { orc: 'Orçamento', gar: 'Termo de garantia', rec: 'Recibo Pix', laudo: 'Laudo de inviabilidade', pmoc: 'Plano de Manutenção, Operação e Controle (PMOC)', reca: 'Recibo' };
+// Telefone no PDF: (11) 98765-4321 ou (11) 3456-7890; outro formato sai como foi digitado.
+const foneBR = (t) => { const d = dig(t).replace(/^55(?=\d{10,11}$)/, ''); return d.length === 11 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : d.length === 10 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}` : String(t || '').trim(); };
+const pdfNome = (tipo, num, cli) => window.GeloProPDF ? window.GeloProPDF.nomeArquivo(tipo, num, cli) : `${tipo}-${num}.pdf`;
+const docPdf = (tipo, d, tit, x = {}) => {
+  const em = d.em || Date.now(), avulso = AVULSO.includes(tipo), fech = tipo === 'orc' || tipo === 'gar', ressalva = String(d.ressalva || '').trim();
+  const itens = d.itens || [], subtotal = d.subtotal !== undefined ? Number(d.subtotal) || 0 : itens.reduce((t, i) => t + (i.s ?? i.v ?? 0), 0);
+  const total = d.total !== undefined ? Number(d.total) || 0 : subtotal, desc = Number(d.desconto) || 0, temDesc = desc > 0 && tipo !== 'rec';
+  const garTxt = d.garantia || '', cobre = garCobreDe(d.cobre), nao = garNaoDe(d.naoCobre);
+  const blocos = tipo === 'laudo' ? laudoBlocosDe(d) : avulso ? d.blocos || [] : tipo === 'gar' ? garBlocosDe(garTxt, cobre, nao, ressalva, em)
+    : tipo === 'rec' ? [{ t: 'Recebimento', x: recebimentoDe(d.cliente, total, d.numero, em) }]
+    : [...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: pontoDoc(ressalva) }] : []), ...(garTxt ? [{ t: 'Garantia contratual', x: garLinhaDe(garTxt, cobre, nao) }] : []), { t: 'Pagamento por Pix', x: pixBlocoDe(tit, total, d.numero) }];
+  return {
+    tipo, titulo: PDF_TITULO[tipo] || 'Documento', numero: d.numero || '', data: dataBR(em), base: BASE_MES, via2: x.via2 ? `2ª via em ${dataBR(Date.now())}` : '',
+    titular: tit ? { nome: tit.nome, doc: tit.docFmt, docTipo: tit.docTipo, cidade: tit.cidade, pix: tit.pix } : {},
+    cliente: { nome: d.cliente || 'Cliente', tel: foneBR(d.tel), equip: /BTU\/h/.test(d.equip || '') ? String(d.equip).split(', ').join(' · ') : d.equip || '' },
+    itensTitulo: tipo === 'gar' ? 'Serviços cobertos' : 'Itens',
+    itens: fech ? itens.map(i => ({ q: i.q || 1, d: i.q > 1 ? `${i.d} (${BRL.format(i.v || 0)} cada)` : i.d, v: i.q > 1 && i.s != null ? BRL.format(i.s) : i.v != null ? BRL.format(i.v) : '—', j: i.j || '', faixa: i.faixa || '', eco: i.eco || '' })) : [],
+    fechamento: !fech ? null : { bonif: tipo === 'orc' ? d.bonif || '' : '', linhas: temDesc ? [['Subtotal dos serviços', BRL.format(subtotal)], [DESC_ROT, `-${BRL.format(desc)}`]] : [], total: [temDesc ? 'Total final' : 'Total', BRL.format(total)], validade: tipo === 'orc' ? validadeLinhaDe(d.validade) : '' },
+    blocos, preventiva: fech ? prevLinhaDe(d.prevEm || maisMeses(em, 6)) : '',
+    foto: fech ? x.foto || null : null, assinatura: fech ? x.assin || null : null, assinaturaLegenda: `Assinatura do cliente: ${d.cliente || ''}`,
+    assinaturaNota: fech && !x.assin ? `Assinatura do cliente colhida na aprovação do orçamento em ${dataBR(em)} (1ª via).` : '',
+    nome: pdfNome(tipo, d.numero, d.cliente),
+  };
+};
 // Cola de instrumento (PR #24): referência pronta nas etapas de capacímetro (−5%) e de tensão sob carga (±10%), sem conta de cabeça no sol.
 // Duas linhas de 19 px (38 px): em 375×667 sobram 40 px antes de a grade das opções rolar (medido em t_ng03 e t_nl01); as checagens rápidas não mudam.
 const COLA = {
@@ -1306,7 +1379,7 @@ const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDoc
 const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], res: null, modo: null, modK: null, prev: null };
 // Dados do atendimento (cliente, aparelho, medições, hipóteses, carga, laudo, orçamento, garantia, assinatura). Concluir volta a isto.
 // Ficam fora: titular, licença, tema e documentos emitidos (localStorage), e os fatores da carga térmica, que são ajuste do técnico.
-const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcNom: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
+const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, pdfPronto: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcNom: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
 
 class Component extends DCLogic {
   state = { ...ATEND0(), lic: ler(K_LIC), tit: ler(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null };
@@ -1316,6 +1389,7 @@ class Component extends DCLogic {
     this._esc = (e) => { if (e.key === 'Escape' && this.state.drawer) this.setState({ drawer: null }); };
     window.addEventListener('keydown', this._esc);
     this._rs = () => this.forceUpdate(); window.addEventListener('resize', this._rs);
+    this._aposImpressao = () => { if (this._titulo0 !== undefined) document.title = this._titulo0; }; window.addEventListener('afterprint', this._aposImpressao);
     this.carregar();
     this.precarregarPecas();
     this.listaCenas();
@@ -1425,14 +1499,59 @@ class Component extends DCLogic {
     doc = { ...doc, numero: num };
     // Preventiva de 6 meses no Cofre (PR #21): a mesma data da etiqueta impressa no orçamento e na garantia vira o dia de chamar o cliente.
     const em = Date.now(), prev = AVULSO.includes(tipo) ? {} : { prevEm: maisMeses(em, 6), prevData: dataBR(maisMeses(em, 6)) };
-    const A = this.arq(), lista = ler(A.docs) || []; lista.push({ ...doc, tipo, numero: num, em, ...prev }); gravar(A.docs, lista);
+    const A = this.arq(), lista = ler(A.docs) || [], reg = { ...doc, tipo, numero: num, em, ...prev }; lista.push(reg); gravar(A.docs, lista);
+    // Plano A (window.print + [data-print]) segue igual. O título da aba vira o nome do arquivo: o "Salvar como PDF" do navegador já sai com ele.
+    const nome = pdfNome(tipo, num, doc.cliente);
+    try { if (this._titulo0 === undefined) this._titulo0 = document.title; document.title = nome.replace(/\.pdf$/i, ''); } catch (e) {}
     this.setState({ printDoc: tipo, printDados: doc }, () => setTimeout(() => { try { window.print(); } catch (e) {} }, 700));
+    // Planos B e C: o arquivo .pdf real, gerado no aparelho, com foto e assinatura do atendimento (orçamento e garantia).
+    const F = this.state.fech, comImg = (tipo === 'orc' || tipo === 'gar') && F;
+    this.gerarPdf(reg, { onde: { laudo: 'laudo', pmoc: 'pmoc', reca: 'reca' }[tipo] || 'fech', num }, { foto: comImg ? F.foto : null, assin: comImg ? F.assin : null });
+  }
+  // Gera o PDF real (GeloProPDF, offline) e mostra a caixa [data-pdf-pronto] onde o técnico está. O último arquivo fica em window.__ultimoPdf.
+  gerarPdf(reg, onde, img, depois) {
+    const tipo = reg.tipo, dados = docPdf(tipo, reg, titularDe(this.state, this.props.simular || 'real'), img || {}), id = (this._pdfId = (this._pdfId || 0) + 1);
+    this._pdf = null;
+    this.setState({ pdfPronto: { ...onde, tipo, nome: dados.nome, gerando: true, msg: null } });
+    if (!window.GeloProPDF) return this.setState({ pdfPronto: { ...onde, tipo, nome: dados.nome, gerando: false, erro: true, msg: ['aviso', 'O arquivo PDF não carregou neste aparelho. Use a impressão: Salvar como PDF.'] } });
+    window.GeloProPDF.gerar(dados).then(r => {
+      if (id !== this._pdfId) return;
+      this._pdf = window.__ultimoPdf = { nome: r.nome, bytes: r.bytes, blob: r.blob, tipo, paginas: r.paginas };
+      this.setState({ pdfPronto: { ...onde, tipo, nome: r.nome, gerando: false, msg: null } }, () => { this.mostrarPdf(); if (depois) depois(); });
+    }, () => { if (id === this._pdfId) this.setState({ pdfPronto: { ...onde, tipo, nome: dados.nome, gerando: false, erro: true, msg: ['aviso', 'Não deu para montar o arquivo PDF. Use a impressão: Salvar como PDF.'] } }); });
+  }
+  mostrarPdf() {
+    const bx = document.querySelector('[data-pdf-pronto]'); if (!bx) return;
+    let sc = bx.parentElement; while (sc && sc !== document.body && !(/(auto|scroll)/.test(getComputedStyle(sc).overflowY) && sc.scrollHeight > sc.clientHeight)) sc = sc.parentElement;
+    if (!sc || sc === document.body) return;
+    const a = sc.getBoundingClientRect(), r = bx.getBoundingClientRect();
+    if (r.bottom > a.bottom) sc.scrollTop += Math.max(0, Math.min(r.bottom - a.bottom + 8, r.top - a.top - 8));
+  }
+  pdfMsg(msg) { this.setState(x => x.pdfPronto ? { pdfPronto: { ...x.pdfPronto, msg } } : null); }
+  // Plano B: download direto do Blob application/pdf com o nome padronizado.
+  pdfBaixar() {
+    const P = this._pdf; if (!P || !window.GeloProPDF) return;
+    window.__ultimoPdf = P; window.GeloProPDF.baixar(P.blob, P.nome);
+    this.pdfMsg(['sucesso', `PDF baixado: ${P.nome}. Confira na pasta Downloads.`]);
+  }
+  // Plano C: Web Share com o arquivo (WhatsApp, e-mail, Drive); sem suporte a arquivo, baixa e avisa em 1 linha.
+  pdfCompartilhar() {
+    const P = this._pdf; if (!P || !window.GeloProPDF) return;
+    window.__ultimoPdf = P;
+    window.GeloProPDF.compartilhar(P.blob, P.nome).then(r => this.pdfMsg(r === 'compartilhado' ? ['sucesso', 'PDF enviado para o compartilhamento. Escolha o WhatsApp do cliente.']
+      : r === 'cancelado' ? ['info', 'Compartilhamento cancelado. Toque de novo quando quiser.']
+      : ['aviso', 'Este navegador não compartilha arquivo: o PDF foi baixado. Anexe pela pasta Downloads no WhatsApp.']));
+  }
+  // 2ª via do Cofre: reemite o documento gravado e baixa o .pdf em 1 toque. Com o atendimento ainda aberto, leva a foto e a assinatura.
+  pdfCofre(reg) {
+    const F = this.state.fech, mesmo = F && F.numero && F.numero === reg.numero && (reg.tipo === 'orc' || reg.tipo === 'gar');
+    this.gerarPdf(reg, { onde: 'cofre', num: reg.numero, via2: true }, { via2: true, foto: mesmo ? F.foto : null, assin: mesmo ? F.assin : null }, () => this.pdfBaixar());
   }
   abrir(tela, extra) {
     this.precarregarModulo(tela);
     this.setState(st => ({ prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, ...extra }));
   }
-  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); clearInterval(this._fp); clearTimeout(this._pecas); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
+  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
   pRef = React.createRef();
   focarPortao() {
     const fe = this.fRef.current;
@@ -1498,7 +1617,7 @@ class Component extends DCLogic {
     const cheio = innerWidth < 768, W = cheio ? Math.round(innerWidth) : Number(dev), faceW = cheio ? W : W - 16, pw = faceW - 61;
     const sim = this.props.simular || 'real';
     const lic = sim === 'real' ? (st.amostra ? st.licAm : st.lic) : sim === 'sem licença' ? null : sim === 'plano 90 dias' ? { plano: 'BASE_90', ativadoEm: Date.now() - 10 * DIA } : sim === 'plano 90 vencido' ? { plano: 'BASE_90', ativadoEm: Date.now() - 95 * DIA } : { plano: 'LIFETIME_6', ativadoEm: Date.now() - 30 * DIA, bumps: ['tabela', 'pmoc', 'scripts'] };
-    const tit = sim === 'real' ? (st.amostra ? AMOSTRA_T : st.tit) : sim === 'cadastro' ? st.titSim : (st.tit || AMOSTRA_T);
+    const tit = titularDe(st, sim);
     // Lote 3: par errado/certo de procedimento (imagens/cenas/<nome>_erro|_certo.webp), mostrado só quando as duas carregaram.
     const par = (n) => { const e = st.cenas[n + '_erro'], c = st.cenas[n + '_certo']; return { temPar: !!(e && c), parErro: e && c ? `url('${e}')` : 'none', parCerto: e && c ? `url('${c}')` : 'none' }; };
     const plano = lic ? lic.plano : null;
@@ -1629,7 +1748,7 @@ class Component extends DCLogic {
     const descQ = (x) => x.q > 1 ? `${x.q}× ${x.d} (${BRL.format(x.n || 0)} cada)` : x.d;
     const linhaZap = (x, sep) => x.q > 1 ? `${descQ(x)} — ${BRL.format(x.s || 0)}` : sep === ':' ? `${x.d}: ${BRL.format(x.n || 0)}` : `${x.d} (${BRL.format(x.n || 0)})`;
     const validade = F && VALIDADES.includes(F.validade) ? F.validade : VALIDADES[0];
-    const validadeLinha = `Validade desta proposta: ${validade.replace(/^Somente/, 'somente')} (garantia de preço e reserva de componentes).`;
+    const validadeLinha = validadeLinhaDe(validade);
     const descLinhas = temDesc ? [`Subtotal dos serviços: ${BRL.format(subtotal)}`, `${DESC_ROT}: -${BRL.format(descVal)}`, `Total final: ${BRL.format(fTotal)}`] : [];
     // Pílula de 1 toque do fechamento (mesmo desenho dos prazos rápidos da garantia).
     const pilula = (on, t, acao) => ({ t, on: on ? 'true' : 'false', borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)', acao });
@@ -1640,15 +1759,16 @@ class Component extends DCLogic {
     const garTxt = F ? (F.prazo === 'Livre' ? F.prazoLivre.trim() : F.prazo) : '';
     // Cobertura e exclusões: o mesmo texto na tela de assinatura, no orçamento e no termo de garantia.
     const ponto = (s) => /[.!?]$/.test(s) ? s : s + '.';
-    const garCobre = F ? ponto(F.cobre.trim() || 'Os serviços listados acima') : '', garNao = F ? ponto(F.naoCobre.trim() || 'Mau uso, oscilação de energia e peças não trocadas neste atendimento') : '';
+    const garCobre = F ? garCobreDe(F.cobre) : '', garNao = F ? garNaoDe(F.naoCobre) : '';
     const semGar = semGarantia(garTxt);
-    const fGarLinha = !garTxt ? '' : semGar ? `Sem garantia contratual neste atendimento (aparelho no estado). A garantia legal do Código de Defesa do Consumidor continua valendo.` : `Garantia contratual: ${garTxt}. Cobre: ${garCobre} Não cobre: ${garNao} A garantia legal do Código de Defesa do Consumidor continua valendo.`;
+    const fGarLinha = garLinhaDe(garTxt, garCobre, garNao);
     const equip = `${st.sel.marca}, ${st.sel.btu} BTU/h, ${st.sel.fluido}`;
-    const payload = () => { try { return window.GeloProPix && tit ? window.GeloProPix.payload({ chave: tit.pix, nome: tit.nome, cidade: tit.cidade, valor: fTotal, txid: 'ORC' + ((F && F.numero) || '') }) : ''; } catch (e) { return ''; } };
+    const payload = () => pixDe(tit, fTotal, F && F.numero);
     const fItem = (i, k) => (e) => { const v = e.target.value; this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
     const avancar = () => { const ok = fp === 1 ? ok1 : fp === 2 ? ok2 : fp === 3 ? ok3 : true; if (!ok) return this.fSet({ tentou: fp }); if (fp === 3) this.numero(); this.fSet({ passo: Math.min(4, fp + 1), tentou: 0, msg: null }); };
     // Voltar de Aprovação ou Pix apaga a assinatura: o quadro reaparece em branco e o cliente assina de novo o que estiver na tela.
-    const voltarF = () => this.fSet({ passo: Math.max(1, fp - 1), tentou: 0, msg: null, zapTxt: null, ...(fp >= 3 ? { assin: null, assinUrl: null } : {}) });
+    // A caixa do PDF do passo 4 sai junto: voltar e aprovar de novo pede um arquivo novo.
+    const voltarF = () => { this.fSet({ passo: Math.max(1, fp - 1), tentou: 0, msg: null, zapTxt: null, ...(fp >= 3 ? { assin: null, assinUrl: null } : {}) }); if (st.pdfPronto && st.pdfPronto.onde === 'fech') this.setState({ pdfPronto: null }); };
     const fSair = () => this.setState({ fOpen: false });
     // Detalhamento técnico no documento (ligado por padrão): procedimento incluso, faixa de tabela e economia preventiva do catálogo,
     // ou o texto que o técnico editou no item (campo vazio some do documento). O custo da peça nunca sai daqui.
@@ -1710,7 +1830,7 @@ class Component extends DCLogic {
       return { bonif: true, bonifItem: i >= 0 ? f.itens[i] : null, bonifVal: i >= 0 ? null : f.bonifVal, itens: i < 0 ? f.itens : f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }], itemEd: null };
     });
     // Etiqueta de próxima preventiva (PR #20): 6 meses a partir de hoje, no PDF do orçamento, no termo de garantia e no WhatsApp.
-    const prevLinha = `Próxima manutenção preventiva recomendada: ${dataBR(maisMeses(Date.now(), 6))} (6 meses) para preservar o rendimento e a economia de energia.`;
+    const prevLinha = prevLinhaDe(maisMeses(Date.now(), 6));
     // WhatsApp (passo 4): 3 modelos prontos; o técnico edita qualquer palavra antes de enviar. Custo de peça nunca entra.
     const zapModelo = (k) => {
       if (!F) return '';
@@ -1751,7 +1871,14 @@ class Component extends DCLogic {
     const vistaAlerta = (a, n = 1) => a ? { ...a, fundo: ALERTA_TOM[a.tom][0], viva: ALERTA_TOM[a.tom][1], temAcoes: a.acoes.length > 0, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
       n: String(n), temCont: n > 1, cont: `1 de ${n}`, contAria: `Alerta 1 de ${n}: ver todos na Central de Avisos`, abrirTodos: () => abrirAvisos() }
       : { k: '', tom: '', ico: 'info', t: '', fundo: 'none', viva: 'none', temAcoes: false, cols: 'none', acoes: [], fechar: null, n: '0', temCont: false, cont: '', contAria: '', abrirTodos: null };
-    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: st.sel.marca, btu: st.sel.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto });
+    // Caixa de entrega do PDF (PR #25): aparece onde o documento foi emitido (passo 4, laudo, PMOC, recibo avulso ou atendimento aberto no Cofre).
+    const PP = st.pdfPronto;
+    const pdfVals = { pdfTipo: PP ? PP.tipo : '', pdfNome: PP ? PP.nome : '', pdfOk: !!PP && !PP.gerando && !PP.erro,
+      pdfTitulo: !PP ? '' : PP.gerando ? 'Gerando o arquivo PDF…' : PP.erro ? 'Arquivo PDF indisponível' : PP.via2 ? '2ª via em PDF pronta' : 'Arquivo PDF pronto',
+      pdfTemMsg: !!(PP && PP.msg), pdfMsgTipo: PP && PP.msg ? PP.msg[0] : '', pdfMsg: PP && PP.msg ? PP.msg[1] : '',
+      pdfBaixar: () => this.pdfBaixar(), pdfCompartilhar: () => this.pdfCompartilhar(),
+      pdfFech: !!PP && PP.onde === 'fech' && !!F && fp === 4, pdfLaudo: !!PP && PP.onde === 'laudo' && st.tela === 'laudo', pdfPmoc: !!PP && PP.onde === 'pmoc' && st.tela === 'pmoc', pdfReca: !!PP && PP.onde === 'reca' && st.tela === 'scripts' };
+    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: st.sel.marca, btu: st.sel.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto, bonif: bonif ? bonifLinha : '', fluido: st.sel.fluido });
     const pd = st.printDoc;
     const B2 = st.btu, sB = (k) => (e) => { const v = e.target.value; this.setState(x => ({ btu: { ...x.btu, [k]: v } })); };
     const bA = med(B2.area), bP = String(B2.pes).trim() ? med(B2.pes) : 1, bWv = String(B2.w).trim() ? med(B2.w) : 0, bf = med(B2.sol === 'Sol da tarde' ? B2.f2 : B2.f1), bfp = String(B2.f3).trim() ? med(B2.f3) : 0;
@@ -1990,6 +2117,9 @@ class Component extends DCLogic {
         // Selo curto (Nº do atendimento): os tipos de documento ficam na área aberta, sem corte no selo de 14 px (PR #21).
         return { tipo: `Nº ${c.n}`, aparelho, docsTxt: `Documentos: ${[...new Set(c.ds.map(d => NOMES[d.tipo]))].join(', ')}`, t: b.cliente || 'Cliente', s: [b.total ? BRL.format(b.total) : '', dataBR(c.ult.em), c.venc ? 'garantia até ' + dataBR(c.venc) : ''].filter(Boolean).join(', '),
           acao: () => this.setState(x => ({ cofreSel: x.cofreSel === c.n ? null : c.n })), aberto,
+          // 2ª via em PDF (PR #25): o último documento de cada tipo do atendimento, reemitido e baixado em 1 toque.
+          pdfs: [...new Map(c.ds.map(d => [d.tipo, d])).values()].map(d => ({ k: d.tipo, l: `Baixar PDF: ${NOMES[d.tipo] || 'Documento'}`, acao: () => this.pdfCofre(d) })),
+          temPdf: aberto && !!PP && PP.onde === 'cofre' && PP.num === c.n,
           gSelo: c.venc ? (Date.now() > c.venc ? 'Garantia vencida' : 'Garantia vigente') : 'Sem garantia', gTipo: c.venc ? (Date.now() > c.venc ? 'aviso' : 'sucesso') : 'neutro', msgs,
           temPrev: !!c.prevEm, prevTxt: `Próxima preventiva: ${prevData}`, prevAria: `Chamar ${b.cliente || 'o cliente'} para a preventiva no WhatsApp`, prevZap: () => zap(b.tel, prevMsg) };
       }),
@@ -2097,6 +2227,7 @@ class Component extends DCLogic {
       fRecTxt: F && F.recebido ? 'true' : 'false', fToggleRec: () => this.fSet(f => ({ recebido: !f.recebido })), fRecIco: F && F.recebido ? 'sucesso' : 'neutro',
       fRecBorda: F && F.recebido ? '2px solid var(--gp-success)' : '1px solid var(--gp-outline)', fRecFundo: F && F.recebido ? 'var(--gp-success-container)' : 'var(--gp-card-action)', fRecCor: F && F.recebido ? 'var(--gp-on-success-container)' : 'var(--gp-on-surface)',
       fRecE: F && F.recebido ? 'normal' : 'desabilitado',
+      ...pdfVals,
       fPdfOrc: () => this.imprimir('orc', docBase()), fPdfGar: () => this.imprimir('gar', docBase()), fPdfRec: () => F && F.recebido && this.imprimir('rec', docBase()),
       fZapModelos: ZAP_MODELOS.map((t, k) => { const on = !!F && (F.zapModelo || 1) === k + 1; return { t, on: on ? 'true' : 'false', borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)', acao: () => this.fSet({ zapModelo: k + 1, zapTxt: null }) }; }),
       fZapTxt: zapAtual(), fSetZapTxt: (e) => this.fSet({ zapTxt: e.target.value }),
@@ -2106,7 +2237,7 @@ class Component extends DCLogic {
       fKeys: fp === 1 ? [{ l: 'Sair', pri: false, aria: 'Sair e manter o rascunho', acao: fSair }, { l: 'Continuar', pri: true, verde: true, aria: 'Continuar para a garantia', acao: avancar }]
         : fp === 4 ? [{ l: 'Voltar', pri: false, aria: 'Voltar', acao: voltarF }, { l: 'Concluir', pri: true, aria: 'Concluir e começar outro atendimento', acao: () => this.setState(x => ATEND0(x.btu)) }]
         : [{ l: 'Voltar', pri: false, aria: 'Voltar', acao: voltarF }, { l: fp === 3 ? 'Aprovar' : 'Continuar', pri: true, verde: true, aria: fp === 3 ? 'Aprovar o orçamento' : 'Continuar', acao: avancar }],
-      temPrint: !!pd && (AVULSO.includes(pd) ? !!st.printDados : !!F), dTipo: pd === 'pmoc' ? 'Plano de Manutenção, Operação e Controle (PMOC)' : pd === 'reca' ? 'Recibo' : pd === 'laudo' ? 'Laudo de inviabilidade' : pd === 'gar' ? 'Termo de garantia' : pd === 'rec' ? 'Recibo Pix' : 'Orçamento', dNum: AVULSO.includes(pd) && st.printDados ? st.printDados.numero : F ? F.numero : '', dData: dataBR(Date.now()),
+      temPrint: !!pd && (AVULSO.includes(pd) ? !!st.printDados : !!F), dTipo: PDF_TITULO[pd] || 'Orçamento', dNum: AVULSO.includes(pd) && st.printDados ? st.printDados.numero : F ? F.numero : '', dData: dataBR(Date.now()),
       dTit: tit ? { nome: tit.nome, doc: tit.docFmt, pix: tit.pix, cidade: tit.cidade } : {},
       dCli: AVULSO.includes(pd) && st.printDados ? st.printDados.cliente : F ? F.cliNome + (F.cliTel ? ' · ' + F.cliTel : '') : '', dEquip: AVULSO.includes(pd) && st.printDados && st.printDados.equip !== undefined ? st.printDados.equip : equip, dItensVis: pd !== 'rec' && !AVULSO.includes(pd), dItensTit: pd === 'gar' ? 'Serviços cobertos' : 'Itens',
       dItens: fi.map(x => { const jc = jCli(x); return { d: descQ(x), vf: x.q > 1 && x.s !== null ? BRL.format(x.s) : x.n != null ? BRL.format(x.n) : '—', temJ: !!(jc.j || jc.faixa || jc.eco), j: jc.j, faixa: jc.faixa, temE: !!jc.eco, eco: jc.eco }; }), dTotal: BRL.format(fTotal),
@@ -2114,9 +2245,9 @@ class Component extends DCLogic {
       // Desconto (orçamento, garantia e recibo mostram o mesmo total líquido) e validade da proposta só no PDF do orçamento (PR #21).
       dTemDesc: temDesc && pd !== 'rec', dDescLinha: `${DESC_ROT}: -${BRL.format(descVal)}`, dSubtotalLinha: `Subtotal dos serviços: ${BRL.format(subtotal)}`, dTotalRot: temDesc && pd !== 'rec' ? 'Total final' : 'Total',
       dTemValidade: !!F && pd === 'orc', dValidadeLinha: validadeLinha, dTemPrev: !!F && (pd === 'orc' || pd === 'gar'), dPrevLinha: prevLinha,
-      dBlocos: (pd === 'pmoc' || pd === 'reca') && st.printDados ? st.printDados.blocos : pd === 'laudo' && st.printDados ? [{ t: 'Medições registradas', x: st.printDados.medicoes }, { t: 'Constatações', x: st.printDados.constatacoes }, { t: 'Conclusão', x: st.printDados.conclusao }, { t: 'Observação', x: 'Laudo emitido pelo técnico titular com base nas verificações acima. Não substitui laudo de engenheiro quando exigido.' }] : !F || !pd ? [] : pd === 'orc' ? [...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia contratual', x: fGarLinha }, { t: 'Pagamento por Pix', x: `Chave ${tit ? tit.pix : ''} (${tit ? tit.pixTipo : ''}).\nCopia e cola: ${payload()}\nPix gerado não comprova pagamento.` }]
-        : pd === 'gar' ? [{ t: 'Prazo contratual', x: semGar ? 'Sem garantia contratual neste atendimento (aparelho no estado).' : `${garTxt}, a partir de ${dataBR(Date.now())}.` }, { t: 'Cobre', x: garCobre }, { t: 'Não cobre', x: garNao }, ...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia legal', x: 'Este termo é complementar à garantia legal do Código de Defesa do Consumidor (arts. 24 e 26), que não pode ser excluída.' }]
-        : [{ t: 'Recebimento', x: `Recebi de ${F.cliNome} o valor de ${BRL.format(fTotal)} por Pix, referente ao orçamento nº ${F.numero}. Recebimento conferido pelo titular no extrato bancário em ${dataBR(Date.now())}.` }],
+      dBlocos: (pd === 'pmoc' || pd === 'reca') && st.printDados ? st.printDados.blocos : pd === 'laudo' && st.printDados ? laudoBlocosDe(st.printDados) : !F || !pd ? [] : pd === 'orc' ? [...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: ponto(ressalva) }] : []), { t: 'Garantia contratual', x: fGarLinha }, { t: 'Pagamento por Pix', x: pixBlocoDe(tit, fTotal, F.numero) }]
+        : pd === 'gar' ? garBlocosDe(garTxt, garCobre, garNao, ressalva, Date.now())
+        : [{ t: 'Recebimento', x: recebimentoDe(F.cliNome, fTotal, F.numero, Date.now()) }],
       dTemFoto: !!F && (pd === 'orc' || pd === 'gar') && !!F.fotoUrl, dFotoBg: F && F.fotoUrl ? `url("${F.fotoUrl}")` : 'none',
       dTemAssin: !!F && pd !== 'rec' && !AVULSO.includes(pd) && !!F.assin, dAssinBg: F && F.assinUrl ? `url("${F.assinUrl}")` : 'none', dAssinLeg: F ? `Assinatura do cliente: ${F.cliNome}` : '',
       dicaVis: !!st.dica, dicaExp: st.dica ? 'true' : 'false', dicaToggle: () => this.setState(x => ({ dica: !x.dica })), portao: !!PG, pRef: this.pRef, inerte: PG || (st.fOpen && st.fech) ? '' : undefined, fundoOculto: PG || (st.fOpen && st.fech) ? 'true' : undefined, pKicker: PG ? PG.k : '', pTitulo: PG ? PG.t : '', pTexto: PG ? PG.x : '',
