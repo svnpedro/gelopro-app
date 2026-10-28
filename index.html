@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="refresh" content="0; url=app/GeloPro%20App%20v5.2.dc.html?amostra=1">
 <title>GeloPro</title>
-<script>location.replace('app/GeloPro%20App%20v5.2.dc.html?amostra=1' + location.hash);</script>
+<script>/* Link de licença (?ativar=, ?licenca=, ?token=, ?chave=) segue para o app, que grava e limpa a barra de endereço; sem licença, abre a Amostra. */
+location.replace('app/GeloPro%20App%20v5.2.dc.html' + (/[?&](ativar|licenca|token|chave)=/.test(location.search) ? location.search : '?amostra=1') + location.hash);</script>
 </head>
 <body>
 <a href="app/GeloPro%20App%20v5.2.dc.html?amostra=1">Abrir GeloPro v5.2 (amostra)</a> · <a href="app/GeloPro%20App%20v5.2.dc.html">Versão normal</a> · <a href="app/GeloPro%20Componentes.dc.html">Componentes</a>

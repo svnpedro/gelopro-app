@@ -1,9 +1,9 @@
 marca,linha,criterio,valor,fonte_id,status
-Elgin,Eco Inverter HVFC/HVQC (R-410A),Superaquecimento correto (Tsuc medida a 20 cm da valvula de servico menos Tevap pela pressao de succao),7 a 11 C,F14,OFICIAL
-Elgin,Eco Inverter HVFC/HVQC (R-410A),Superaquecimento acima do limite,> 11 C: adicionar fluido (sempre na fase liquida),F14,OFICIAL
-Elgin,Eco Inverter HVFC/HVQC (R-410A),Superaquecimento abaixo do limite,< 7 C: remover fluido (com recolhedora),F14,OFICIAL
-Elgin,Eco Inverter HVFC/HVQC (R-410A),"Diferenca retorno x insuflamento na evaporadora (velocidade media, refrigeracao)",10 a 15 C,F14,OFICIAL
-Elgin,Eco Inverter HVFC/HVQC (R-410A),Entrada de ar no condensador x temperatura externa,diferenca maxima 2 C,F14,OFICIAL
-Elgin,Eco Inverter HVFC/HVQC (R-410A),Pressao minima na unidade externa antes de instalar,690 kPa (100 psi),F14,OFICIAL
-Elgin,Eco Inverter HVFC/HVQC (R-410A),Vacuo,250 a 500 microns (33 a 66 Pa),F14,OFICIAL
-Elgin,Eco Inverter HVFC/HVQC (R-410A),Tensao de alimentacao,+-10% do valor de placa,F14,OFICIAL
+Elgin,Eco Inverter HVFC/HVQC (R-410A),Superaquecimento correto (Tsuc medida a 20 cm da válvula de serviço menos Tevap pela pressão de sucção),7 a 11 °C,F14,OFICIAL
+Elgin,Eco Inverter HVFC/HVQC (R-410A),Superaquecimento acima do limite,> 11 °C: adicionar fluido (sempre na fase líquida),F14,OFICIAL
+Elgin,Eco Inverter HVFC/HVQC (R-410A),Superaquecimento abaixo do limite,< 7 °C: remover fluido (com recolhedora),F14,OFICIAL
+Elgin,Eco Inverter HVFC/HVQC (R-410A),"Diferença retorno x insuflamento na evaporadora (velocidade média, refrigeração)",10 a 15 °C,F14,OFICIAL
+Elgin,Eco Inverter HVFC/HVQC (R-410A),Entrada de ar no condensador x temperatura externa,diferença máxima 2 °C,F14,OFICIAL
+Elgin,Eco Inverter HVFC/HVQC (R-410A),Pressão mínima na unidade externa antes de instalar,690 kPa (100 psi),F14,OFICIAL
+Elgin,Eco Inverter HVFC/HVQC (R-410A),Vácuo,250 a 500 microns (33 a 66 Pa),F14,OFICIAL
+Elgin,Eco Inverter HVFC/HVQC (R-410A),Tensão de alimentação,+-10% do valor de placa,F14,OFICIAL

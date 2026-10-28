@@ -7,11 +7,11 @@
 </head>
 <body>
 <x-dc>
-<button type="button" ref="{{ ref }}" role="option" aria-selected="{{ selTxt }}" aria-disabled="{{ ariaDes }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;min-width:0;min-height:56px;box-sizing:border-box;padding:0 12px 0 {{ padE }};border-radius:16px;border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;gap:8px;cursor:{{ cursor }};pointer-events:{{ pe }};text-align:left;transition:transform 120ms ease-out,box-shadow 180ms ease-out;--peca-hover:{{ hov }};--peca-press-bg:{{ actBg }};--peca-press:{{ act }};" style-hover="box-shadow:var(--peca-hover);" style-active="transform:translateY(1px);background:var(--peca-press-bg);box-shadow:var(--peca-press);">
+<button type="button" ref="{{ ref }}" role="option" aria-label="{{ aria }}" aria-selected="{{ selTxt }}" aria-disabled="{{ ariaDes }}" disabled="{{ des }}" data-foco="{{ foco }}" onClick="{{ acao }}" style="width:100%;min-width:0;min-height:56px;box-sizing:border-box;padding:0 12px 0 {{ padE }};border-radius:16px;border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};transform:{{ desloc }};display:flex;align-items:center;gap:8px;cursor:{{ cursor }};pointer-events:{{ pe }};text-align:left;transition:transform 120ms ease-out,box-shadow 180ms ease-out;--peca-hover:{{ hov }};--peca-press-bg:{{ actBg }};--peca-press:{{ act }};" style-hover="box-shadow:var(--peca-hover);" style-active="transform:translateY(1px);background:var(--peca-press-bg);box-shadow:var(--peca-press);">
   <sc-if value="{{ temLogo }}" hint-placeholder-val="{{ false }}"><span data-pastilha="" data-decor="" aria-hidden="true" style="position:relative;flex:none;width:40px;height:40px;box-sizing:border-box;border-radius:10px;background:#ffffff;border:1px solid var(--gp-outline,#9aa3ad);display:flex;align-items:center;justify-content:center;"><dc-import name="LogoMarca" marca="{{ logo }}" tamanho="{{ 36 }}" hint-size="36px,36px"></dc-import>
     <sc-if value="{{ selLogo }}" hint-placeholder-val="{{ false }}"><span data-check="" style="position:absolute;top:-7px;right:-7px;width:18px;height:18px;box-sizing:border-box;border-radius:50%;background:var(--gp-accent-fill,#1d4ed8);border:1.5px solid var(--gp-dock-ring,#67c6ff);color:var(--gp-on-sel-mark,#67c6ff);display:flex;align-items:center;justify-content:center;"><svg data-check-svg="" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;"><path d="M20 6 9 17l-5-5"></path></svg></span></sc-if>
   </span></sc-if>
-  <span style="flex:1;min-width:0;font-family:'Roboto',sans-serif;font-weight:{{ peso }};font-size:{{ fs }};line-height:20px;color:{{ cor }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rotulo }}</span>
+  <span data-opcao-sub="{{ subTxt }}" style="flex:1;min-width:0;padding:{{ subPad }};font-family:'Roboto',sans-serif;font-weight:{{ peso }};font-size:{{ fs }};line-height:20px;color:{{ cor }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ rotulo }}</span>
   <sc-if value="{{ selTexto }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-check="" style="flex:none;color:var(--gp-on-sel-mark);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="sucesso" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></sc-if>
 </button>
 </x-dc>
@@ -41,7 +41,10 @@ class Component extends DCLogic {
       if (tw > avail) fs = Math.max(14, Math.floor(16 * avail / tw * 2) / 2);
     }
     return {
-      ref: this.ref, rotulo, sel, temLogo: !!logo, logo, selLogo: sel && !!logo, selTexto: sel && !logo, padE: logo ? '10px' : '16px', selTxt: sel ? 'true' : 'false', acao: this.props.acao, fs: fs + 'px', des, ariaDes: des ? 'true' : undefined,
+      // Subtítulo opcional (PR #27: marca do nominal do NTC, "10K" + Midea · Springer · Carrier), desenhado pelo CSS do app
+      // ([data-opcao-sub]::after): o texto do botão e o nome acessível seguem só o nominal ("10K"), como o pr23.js e o pr24.js leem.
+      subTxt: this.props.sub || undefined, subPad: this.props.sub ? '6px 0' : '0', aria: this.props.sub ? rotulo : undefined,
+      ref: this.ref, rotulo, sel, temLogo: !!logo, logo, selLogo: sel && !!logo, selTexto: sel && !logo && !this.props.sub, padE: logo || this.props.sub ? '10px' : '16px', selTxt: sel ? 'true' : 'false', acao: this.props.acao, fs: fs + 'px', des, ariaDes: des ? 'true' : undefined,
       foco: e === 'foco' ? '1' : undefined, peso: sel ? 700 : 600,
       // Selecionada: aro neon --gp-dock-ring (o mesmo da tecla ativa do dock) e check em --gp-on-sel-mark.
       borda: des ? '1px dashed var(--gp-outline-variant)' : sel ? '1px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)',

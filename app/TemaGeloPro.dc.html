@@ -275,6 +275,46 @@ const TEMAS = {
     '--gp-key-hover': 'rgba(9,30,66,.06)', '--gp-key-pressed': 'rgba(2,6,13,.16)', '--gp-key-shadow': 'rgba(2,6,13,.3)',
   },
 };
+// Lei Zero-Leitura (PR #27, skills/ui-design/zero-leitura-e-tokens-semanticos.md): cores das etiquetas .tag, do rótulo .lbl e do número-chave.
+// Titânio leva os hex da lei. Claro e Sol (visor branco) trocam o fundo translúcido por tinta clara e o texto por tom escuro: o verde #22c55e,
+// o âmbar #fbbf24 e o ciano #67c6ff sobre branco ficam abaixo de 2,5:1 e reprovariam o contraste do GeloProPortao (G-L3).
+// Fixas nos três temas (hex no CSS do app): marca, pontas de prova, borne, perigo e tipo de documento.
+const TAGS = {
+  titanio: {
+    '--gp-tg-lbl': '#94a3b8', '--gp-tg-num': '#67c6ff', '--gp-tg-dinheiro': '#22c55e',
+    '--gp-tg-cap-bg': '#13294a', '--gp-tg-cap': '#67c6ff',
+    '--gp-tg-flu-bg': '#1e293b', '--gp-tg-flu': '#e0f2fe', '--gp-tg-flu-borda': '#67c6ff',
+    '--gp-tg-valor-bg': 'rgba(34,197,94,.14)', '--gp-tg-valor': '#22c55e', '--gp-tg-lucro-bg': 'rgba(34,197,94,.14)', '--gp-tg-lucro': '#4ade80',
+    '--gp-tg-neutro-bg': '#1e293b', '--gp-tg-custo': '#cbd5e1', '--gp-tg-data': '#cbd5e1', '--gp-tg-estado': '#e2e8f0', '--gp-tg-estado-borda': '#475569',
+    '--gp-tg-medida-bg': '#0a182d', '--gp-tg-medida': '#67c6ff', '--gp-tg-medida-borda': 'rgba(103,198,255,.35)',
+    '--gp-tg-modo-bg': '#1e293b', '--gp-tg-modo': '#fde68a',
+    '--gp-tg-ok-bg': 'rgba(34,197,94,.16)', '--gp-tg-ok': '#22c55e', '--gp-tg-alerta-bg': 'rgba(251,191,36,.16)', '--gp-tg-alerta': '#fbbf24',
+    '--gp-tg-falha-bg': 'rgba(248,113,113,.16)', '--gp-tg-falha': '#f87171',
+    '--gp-tg-semref-bg': 'rgba(51,65,85,.4)', '--gp-tg-semref': '#94a3b8',
+    '--gp-tg-fonte': '#94a3b8', '--gp-tg-fonte-borda': '#334155',
+    '--gp-tg-prazo-bg': 'rgba(103,198,255,.14)', '--gp-tg-prazo': '#67c6ff',
+    // LED apagado: #475569 da lei dá 2,3:1 sobre #0a182d (reprova o G-L3); o "○" sai em #94a3b8 (6,9:1).
+    '--gp-tg-led-bg': '#0a182d', '--gp-tg-led': '#67c6ff', '--gp-tg-led-off': '#94a3b8', '--gp-tg-led-rot': '#94a3b8',
+  },
+  claro: {
+    '--gp-tg-lbl': '#475569', '--gp-tg-num': '#0369a1', '--gp-tg-dinheiro': '#166534',
+    '--gp-tg-cap-bg': '#dbeafe', '--gp-tg-cap': '#1e3a8a',
+    '--gp-tg-flu-bg': '#f0f9ff', '--gp-tg-flu': '#0c4a6e', '--gp-tg-flu-borda': '#0369a1',
+    '--gp-tg-valor-bg': '#dcfce7', '--gp-tg-valor': '#166534', '--gp-tg-lucro-bg': '#dcfce7', '--gp-tg-lucro': '#166534',
+    '--gp-tg-neutro-bg': '#e2e8f0', '--gp-tg-custo': '#334155', '--gp-tg-data': '#334155', '--gp-tg-estado': '#1e293b', '--gp-tg-estado-borda': '#64748b',
+    '--gp-tg-medida-bg': '#e0f2fe', '--gp-tg-medida': '#075985', '--gp-tg-medida-borda': '#7dd3fc',
+    '--gp-tg-modo-bg': '#fef9c3', '--gp-tg-modo': '#713f12',
+    '--gp-tg-ok-bg': '#dcfce7', '--gp-tg-ok': '#166534', '--gp-tg-alerta-bg': '#fef3c7', '--gp-tg-alerta': '#92400e',
+    '--gp-tg-falha-bg': '#fee2e2', '--gp-tg-falha': '#991b1b',
+    '--gp-tg-semref-bg': '#e2e8f0', '--gp-tg-semref': '#334155',
+    '--gp-tg-fonte': '#475569', '--gp-tg-fonte-borda': '#94a3b8',
+    '--gp-tg-prazo-bg': '#e0f2fe', '--gp-tg-prazo': '#075985',
+    '--gp-tg-led-bg': '#e0f2fe', '--gp-tg-led': '#0369a1', '--gp-tg-led-off': '#475569', '--gp-tg-led-rot': '#334155',
+  },
+};
+// Sol (alto contraste): as tintas do Claro com contorno marinho e texto de apoio mais escuro.
+TAGS.sol = { ...TAGS.claro, '--gp-tg-lbl': '#334155', '--gp-tg-estado-borda': '#091e42', '--gp-tg-medida-borda': '#075985', '--gp-tg-fonte': '#334155', '--gp-tg-fonte-borda': '#334155', '--gp-tg-flu-borda': '#091e42' };
+Object.keys(TAGS).forEach(k => Object.assign(TEMAS[k], TAGS[k]));
 // Nome antigo do tema claro (v5.1 e telas salvas antes de 26/10).
 const NOME = { bancada: 'claro', titanio: 'titanio', claro: 'claro', sol: 'sol' };
 const aliases = () => ({
