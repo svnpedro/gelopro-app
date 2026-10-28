@@ -1,34 +1,34 @@
 marca,linha,codigo,descricao,fonte_id,status,faca
-LG,Split Hi Wall Inverter (Libero/Hero/Artcool),CH01,Sensor de temperatura ambiente da evaporadora aberto ou em curto (5K @25C),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH02,Sensor do tubo (entrada) da evaporadora aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH05,Falha de comunicação entre evaporadora e condensadora,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH06,Sensor do tubo de saída da evaporadora aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH09,Erro de EEPROM da evaporadora (o mesmo manual também associa CH09 ao conector CN-OPTION),F03,OFICIAL_COM_CONFLITO,
-LG,Split Hi Wall Inverter,CH10,Motor do ventilador da evaporadora travado ou sem funcionar após 1 min,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH12,Sensor do tubo médio da evaporadora aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH21,"Corrente alta no IPM / pico DC (compressor travado ou em curto, IPM)",F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH22,Corrente máxima CT2 (entrada acima de 14 A),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH23,Tensão DC baixa (abaixo de 140 V DC),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH24,Baixa pressão (pressostato de baixa aberto),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH25,Tensão AC de entrada anormal (baixa ou alta),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH26,Erro de posição/ligação DC do compressor,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH27,Falha PSC / sobrecorrente no circuito AC-DC,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH28,Tensão alta no link DC,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH29,Erro de fase / corrente elevada do compressor,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH32,Alta temperatura do tubo de descarga (compressor inverter),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH33,Alta temperatura do tubo de descarga (compressor convencional),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH40,Sensor CT aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH41,Sensor do tubo de descarga (D-pipe) aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH44,Sensor de ar externo da condensadora aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH45,Sensor do tubo da condensadora aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH46,Sensor do tubo de sucção aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH51,Sobrecapacidade (combinação de unidades acima do limite),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH53,Falha de comunicação evaporadora-condensadora (sem dados por 3 min),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH60,Erro de EEPROM da condensadora,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH61,Alta temperatura do tubo da condensadora,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH62,Alta temperatura do dissipador (heat sink),F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH65,Sensor do dissipador aberto ou em curto,F03,OFICIAL,
-LG,Split Hi Wall Inverter,CH67,Motor do ventilador da condensadora travado,F03,OFICIAL,
+LG,Split Hi Wall Inverter (Libero/Hero/Artcool),CH01,Sensor de temperatura ambiente da evaporadora aberto ou em curto (5K @25C),F03,OFICIAL,"Desconectar o sensor ambiente da placa interna e medir no Sensor NTC (curva LG 5K a 25 °C); conferir chicote e conector antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH02,Sensor do tubo (entrada) da evaporadora aberto ou em curto,F03,OFICIAL,"Soltar o conector do sensor do tubo de entrada da evaporadora na placa e medir a resistência no Sensor NTC (curva LG 5K a 25 °C); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH05,Falha de comunicação entre evaporadora e condensadora,F03,OFICIAL,"Medir 198 a 242 V CA nos bornes de força e oscilação DC no borne de sinal S entre evaporadora e condensadora; revisar emendas no cabo PP antes de condenar placa"
+LG,Split Hi Wall Inverter,CH06,Sensor do tubo de saída da evaporadora aberto ou em curto,F03,OFICIAL,"Soltar o conector do sensor do tubo de saída da evaporadora na placa e medir a resistência no Sensor NTC (curva LG 5K a 25 °C); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH09,Erro de EEPROM da evaporadora (o mesmo manual também associa CH09 ao conector CN-OPTION),F03,OFICIAL_COM_CONFLITO,"Desligar o disjuntor por 2 min, conferir o encaixe do conector CN-OPTION e oxidação na placa interna; persistindo após religar, orçar reparo ou troca da placa interna"
+LG,Split Hi Wall Inverter,CH10,Motor do ventilador da evaporadora travado ou sem funcionar após 1 min,F03,OFICIAL,"Com o disjuntor desligado, girar a turbina com a mão e conferir travamento; medir a alimentação e os enrolamentos do motor no conector da placa antes de orçar o motor"
+LG,Split Hi Wall Inverter,CH12,Sensor do tubo médio da evaporadora aberto ou em curto,F03,OFICIAL,"Soltar o conector do sensor do tubo médio da evaporadora na placa e medir a resistência no Sensor NTC (curva LG 5K a 25 °C); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH21,"Corrente alta no IPM / pico DC (compressor travado ou em curto, IPM)",F03,OFICIAL,"Testar diodo na ponte IPM (P, N, U, V, W) e resistência equilibrada nos 3 enrolamentos UVW do compressor (0,7 a 2,5 Ω) mais isolamento contra a carcaça"
+LG,Split Hi Wall Inverter,CH22,Corrente máxima CT2 (entrada acima de 14 A),F03,OFICIAL,"Medir com alicate a corrente de entrada (acima de 14 A atua a proteção) e a rede sob carga; lavar a condensadora e medir os enrolamentos UVW do compressor antes de orçar a placa"
+LG,Split Hi Wall Inverter,CH23,Tensão DC baixa (abaixo de 140 V DC),F03,OFICIAL,"Medir o barramento P–N (~310 V CC em rede de 220 V; abaixo de 140 V CC atua o código) e a rede sob carga; testar a ponte retificadora e os capacitores do link DC antes de orçar a placa"
+LG,Split Hi Wall Inverter,CH24,Baixa pressão (pressostato de baixa aberto),F03,OFICIAL,"Medir a pressão de sucção no PT/SH e a continuidade do pressostato de baixa; procurar vazamento com espuma ou nitrogênio antes de orçar reparo, vácuo e carga de fluido"
+LG,Split Hi Wall Inverter,CH25,Tensão AC de entrada anormal (baixa ou alta),F03,OFICIAL,"Medir a tensão da rede sob carga nos bornes da condensadora (198 a 242 V CA em 220 V); corrigir disjuntor, cabo ou emenda antes de mexer na placa"
+LG,Split Hi Wall Inverter,CH26,Erro de posição/ligação DC do compressor,F03,OFICIAL,"Conferir o conector U, V, W do compressor e medir os 3 enrolamentos (iguais, 0,7 a 2,5 Ω) e o isolamento contra a carcaça; testar a ponte IPM antes de condenar compressor ou placa"
+LG,Split Hi Wall Inverter,CH27,Falha PSC / sobrecorrente no circuito AC-DC,F03,OFICIAL,"Medir a rede sob carga e testar o retificador e o circuito PFC da placa da condensadora; conferir o reator e os conectores antes de orçar a placa inverter"
+LG,Split Hi Wall Inverter,CH28,Tensão alta no link DC,F03,OFICIAL,"Medir o barramento P–N em funcionamento (~310 V CC em 220 V) e a tensão da rede; com sobretensão na rede, corrigir a instalação antes de trocar a placa"
+LG,Split Hi Wall Inverter,CH29,Erro de fase / corrente elevada do compressor,F03,OFICIAL,"Conferir o conector U, V, W do compressor e medir os 3 enrolamentos (iguais, 0,7 a 2,5 Ω) e o isolamento contra a carcaça; testar a ponte IPM antes de condenar compressor ou placa"
+LG,Split Hi Wall Inverter,CH32,Alta temperatura do tubo de descarga (compressor inverter),F03,OFICIAL,"Medir o SH no PT/SH e o sensor do tubo de descarga no Sensor NTC (curva LG 200K); conferir carga de fluido, vazamento e limpeza da condensadora antes de condenar o compressor inverter"
+LG,Split Hi Wall Inverter,CH33,Alta temperatura do tubo de descarga (compressor convencional),F03,OFICIAL,"Medir o SH no PT/SH e o sensor do tubo de descarga no Sensor NTC (curva LG 200K); conferir carga de fluido, vazamento e o capacitor do compressor convencional antes de condená-lo"
+LG,Split Hi Wall Inverter,CH40,Sensor CT aberto ou em curto,F03,OFICIAL,"Conferir o conector do sensor CT na placa da condensadora e comparar a corrente do alicate com a leitura da placa; sem leitura com o compressor ligado, orçar reparo da placa"
+LG,Split Hi Wall Inverter,CH41,Sensor do tubo de descarga (D-pipe) aberto ou em curto,F03,OFICIAL,"Soltar o conector do sensor do tubo de descarga (D-pipe) na placa e medir a resistência no Sensor NTC (curva LG 200K a 25 °C); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH44,Sensor de ar externo da condensadora aberto ou em curto,F03,OFICIAL,"Soltar o conector do sensor de ar externo da condensadora na placa e medir a resistência no Sensor NTC (curva LG 10K a 25 °C); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH45,Sensor do tubo da condensadora aberto ou em curto,F03,OFICIAL,"Soltar o conector do sensor do tubo da condensadora na placa e medir a resistência no Sensor NTC (curva LG 10K a 25 °C); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH46,Sensor do tubo de sucção aberto ou em curto,F03,OFICIAL,"Soltar o conector do sensor do tubo de sucção na placa e medir a resistência no Sensor NTC (curva LG 10K a 25 °C); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH51,Sobrecapacidade (combinação de unidades acima do limite),F03,OFICIAL,"Conferir na etiqueta a capacidade de cada evaporadora e o limite da condensadora multi; refazer a combinação dentro do limite antes de qualquer reparo"
+LG,Split Hi Wall Inverter,CH53,Falha de comunicação evaporadora-condensadora (sem dados por 3 min),F03,OFICIAL,"Medir 198 a 242 V CA nos bornes de força e oscilação DC no borne de sinal S entre evaporadora e condensadora; revisar emendas no cabo PP antes de condenar placa"
+LG,Split Hi Wall Inverter,CH60,Erro de EEPROM da condensadora,F03,OFICIAL,"Desligar o disjuntor por 2 min e religar; conferir encaixe da memória (EEPROM) e oxidação na placa da condensadora; persistindo, orçar reparo ou troca da placa"
+LG,Split Hi Wall Inverter,CH61,Alta temperatura do tubo da condensadora,F03,OFICIAL,"Lavar a serpentina da condensadora e liberar a circulação de ar; medir o SH no PT/SH e o sensor do tubo da condensadora (curva LG 10K) antes de condenar o compressor"
+LG,Split Hi Wall Inverter,CH62,Alta temperatura do dissipador (heat sink),F03,OFICIAL,"Conferir o aperto e a pasta térmica do dissipador do IPM, o motor ventilador e a limpeza da condensadora; medir o sensor do dissipador antes de orçar a placa"
+LG,Split Hi Wall Inverter,CH65,Sensor do dissipador aberto ou em curto,F03,OFICIAL,"Soltar o conector do sensor do dissipador (heat sink) na placa e medir a resistência no Sensor NTC (curva do fabricante para o modelo); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+LG,Split Hi Wall Inverter,CH67,Motor do ventilador da condensadora travado,F03,OFICIAL,"Com o disjuntor desligado, girar a hélice com a mão e conferir travamento; medir a alimentação do motor da condensadora no conector antes de orçar o motor ou a placa"
 Midea/Springer,Hi Wall Inverter AG (IOM 256.08.805),EH00/EH0A,Erro de EEPROM da unidade interna,F05,OFICIAL_PARCIAL,"Desligar disjuntor por 2 min, conferir encaixe e oxidação na placa interna; persistindo, orçar reparo ou troca da placa"
 Midea/Springer,Hi Wall Inverter AG,EL01,Falha de comunicação entre unidades interna e externa,F05,OFICIAL_PARCIAL,"Medir tensão 198–242 V CA nos bornes L/N e pulso de comunicação no borne S; revisar cabo de interligação e emendas antes de condenar placa"
 Midea/Springer,Hi Wall Inverter AG,EH02,Erro de sinal de tensão,F05,OFICIAL_PARCIAL,"Medir 198–242 V CA na entrada da evaporadora e revisar bornes e emendas da alimentação; persistindo com a rede normal, orçar reparo da placa interna"
@@ -43,18 +43,18 @@ Midea/Springer,Hi Wall Inverter AG,EC07,Ventilador do condensador com velocidade
 Midea/Springer,Hi Wall Inverter AG,EH0b,Falha de comunicação do display com a placa da unidade interna,F05,OFICIAL_PARCIAL,"Conferir o cabo e o conector do display até a placa interna; persistindo, orçar reparo da placa ou do display"
 Midea/Springer,Hi Wall Inverter AG,EL0c,Detecção de perda (fuga) de refrigerante,F05,OFICIAL_PARCIAL,"Medir pressão de sucção e SH no PT/SH e procurar vazamento nas flanges antes de completar carga; orçar carga de fluido e vácuo"
 Midea/Springer,Hi Wall Inverter AG,PC04,Erro na placa inverter do compressor,F05,OFICIAL_PARCIAL,"Medir o barramento P–N (~310 V CC), a ponte IPM e os enrolamentos U–V–W no módulo Inverter antes de condenar placa ou compressor"
-Samsung,Brasil (geral),CF,Lembrete de limpeza do filtro (não é defeito),F08,OFICIAL,
-Samsung,Brasil (geral),dF/dL,Degelo em operação de aquecimento (não é defeito),F08,OFICIAL,
-Samsung,Brasil (geral),C1,Limpeza automática em operação (não é defeito),F08,OFICIAL,
-Samsung,Brasil (geral),C422,EEV com funcionamento anormal no autoteste / refrigeração insuficiente,F08,OFICIAL,
-Samsung,Portugal (linha pode diferir),E1 21,Defeito do sensor de temperatura ambiente,F10,OFICIAL_OUTRO_PAIS,
-Samsung,Portugal (linha pode diferir),E1 22,Defeito do sensor de temperatura do trocador de calor,F10,OFICIAL_OUTRO_PAIS,
-EOS,Master Inverter,F1/F2/F4,Funcionamento anormal (manual não detalha cada código),F09,OFICIAL_SEM_DETALHE,
-Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E2,Falha no sensor de temperatura ambiente (LED Timer pisca 2x a cada 5 s),F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,
-Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E3,Falha no sensor de degelo (LED Timer pisca 3x a cada 5 s),F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,
-Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E4,Anormalidade na unidade externa,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,
-Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E5,Sem retorno do motor ventilador,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,
-Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E6,Zero cruzamento sem sinal,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,
-Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E7,Falha sem retorno da unidade externa,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,
-Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E8,Proteção de superaquecimento,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,
-Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E9,Falha no bombeamento,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,
+Samsung,Brasil (geral),CF,Lembrete de limpeza do filtro (não é defeito),F08,OFICIAL,"Limpar o filtro e zerar o aviso no controle; orientar o cliente sobre a limpeza a cada 15 dias e oferecer a higienização completa"
+Samsung,Brasil (geral),dF/dL,Degelo em operação de aquecimento (não é defeito),F08,OFICIAL,"Aguardar o fim do degelo automático e explicar ao cliente que é operação normal do aquecimento; oferecer a higienização preventiva da condensadora"
+Samsung,Brasil (geral),C1,Limpeza automática em operação (não é defeito),F08,OFICIAL,"Aguardar a limpeza automática terminar e explicar ao cliente que é operação normal; oferecer a higienização completa quando a sujeira voltar"
+Samsung,Brasil (geral),C422,EEV com funcionamento anormal no autoteste / refrigeração insuficiente,F08,OFICIAL,"Conferir o conector e medir a resistência da bobina da EEV; medir o SH no PT/SH e procurar vazamento antes de orçar a válvula ou a carga de fluido"
+Samsung,Portugal (linha pode diferir),E1 21,Defeito do sensor de temperatura ambiente,F10,OFICIAL_OUTRO_PAIS,"Soltar o conector do sensor de temperatura ambiente na placa e medir a resistência no Sensor NTC (Samsung: nominal impresso no sensor ou na tabela do fabricante); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+Samsung,Portugal (linha pode diferir),E1 22,Defeito do sensor de temperatura do trocador de calor,F10,OFICIAL_OUTRO_PAIS,"Soltar o conector do sensor do trocador de calor na placa e medir a resistência no Sensor NTC (Samsung: nominal impresso no sensor ou na tabela do fabricante); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+EOS,Master Inverter,F1/F2/F4,Funcionamento anormal (manual não detalha cada código),F09,OFICIAL_SEM_DETALHE,"Desconectar sensores ambiente e de serpentina da evaporadora e medir resistência em kΩ a 25 °C (curva 10K/15K no módulo Sensor NTC); revisar encaixe na placa antes de trocar o kit de sensores"
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E2,Falha no sensor de temperatura ambiente (LED Timer pisca 2x a cada 5 s),F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,"Soltar o conector do sensor de temperatura ambiente (LED Timer 2×) na placa e medir a resistência no Sensor NTC (Elgin: nominal impresso no sensor ou na tabela do fabricante); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E3,Falha no sensor de degelo (LED Timer pisca 3x a cada 5 s),F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,"Soltar o conector do sensor de degelo da condensadora (LED Timer 3×) na placa e medir a resistência no Sensor NTC (Elgin: nominal impresso no sensor ou na tabela do fabricante); conferir chicote, conector e fixação do bulbo antes de orçar a troca do sensor"
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E4,Anormalidade na unidade externa,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,"Ler o código no LED da placa da condensadora e medir a rede sob carga nos bornes (198 a 242 V CA); conferir sensores externos e o compressor antes de orçar"
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E5,Sem retorno do motor ventilador,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,"Girar a turbina com a mão e conferir travamento; medir a alimentação e o sinal de retorno (sensor Hall) do motor no conector da placa antes de orçar o motor ou a placa"
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E6,Zero cruzamento sem sinal,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,"Medir a tensão entre L e N e o aterramento na evaporadora; conferir o circuito de detecção de zero cruzamento na placa interna antes de orçar o reparo da placa"
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E7,Falha sem retorno da unidade externa,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,"Medir 198 a 242 V CA entre L e N na condensadora e o sinal no borne de comunicação; revisar o cabo de interligação, as emendas e a ordem dos fios antes de condenar placa"
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E8,Proteção de superaquecimento,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,"Lavar a serpentina da condensadora e liberar o ar quente; medir a corrente do compressor com alicate e o SH no PT/SH antes de condenar o compressor"
+Elgin,Split SHFI/QI-18/24/30 (Boletim 03/16),E9,Falha no bombeamento,F13,OFICIAL_BOLETIM_COPIA_TERCEIRO,"Medir pressão de sucção, SH no PT/SH e a corrente do compressor; procurar vazamento e conferir válvulas de serviço abertas antes de orçar carga de fluido ou compressor"
