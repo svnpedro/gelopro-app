@@ -1950,9 +1950,10 @@ class Component extends DCLogic {
       const outro = deDiag && st.fech && rascunhoComDono(st.fech) && st.fech.sint !== st.sint;
       const F = outro ? { ...FECH0(), sint: st.sint } : st.fech || { ...FECH0(), sint: deDiag ? st.sint : null }, cat = (st.base && st.base.cat) || [], ids = (sug || []).filter(id => cat.some(c => c.id === id));
       const c = cat.find(x => x.id === ids[0]), novo = !!c && !F.itens.some(x => x.sid === c.id);
-      let itens = F.itens;
-      if (novo) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...itens, itemDe(c, st.sel.btu)];
-      (lancar || []).map(id => cat.find(x => x.id === id)).filter(x => x && !itens.some(y => y.sid === x.id)).forEach(x => { itens = itens.every(y => !y.d.trim() && !String(y.v).trim()) ? [itemDe(x, st.sel.btu)] : [...itens, itemDe(x, st.sel.btu)]; });
+      // PR #54 (R2): o item lançado de uma ficha já sai no porte do aparelho do atendimento (selOrc), não no do seletor da ficha.
+      let itens = F.itens; const btuA = (st.selOrc || st.sel).btu;
+      if (novo) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, btuA)] : [...itens, itemDe(c, btuA)];
+      (lancar || []).map(id => cat.find(x => x.id === id)).filter(x => x && !itens.some(y => y.sid === x.id)).forEach(x => { itens = itens.every(y => !y.d.trim() && !String(y.v).trim()) ? [itemDe(x, btuA)] : [...itens, itemDe(x, btuA)]; });
       const sugF = !ids.length ? F.sug || [] : somar ? [...new Set([...ids, ...(F.sug || [])])] : ids;
       return { fech: travaIsento({ ...F, itens, sug: sugF, ...(novo ? higLimpa(F, c) : {}) }), fOpen: true, drawer: null, ...(outro ? { fechGuardado: st.fech } : {}) };
     });
@@ -2265,7 +2266,10 @@ class Component extends DCLogic {
     const rRegua = rCurva && tCurva[0] <= 0 ? rCurva : null;
     const ntcLimAberto = rRegua ? rRegua[1] * 1.15 : rCurva ? Infinity : 450, ntcLimCurto = rRegua ? Math.max(0.15, rRegua[0] / 1.15) : 0.15;
     const fkn = (v) => `${v < 10 ? v.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) : Math.round(v).toLocaleString('pt-BR')} kΩ`, ntcLimTxt = fkn(ntcLimAberto), ntcCurtoTxt = fkn(ntcLimCurto);
-    const ntcFalha = Rlido !== null && Rlido > 0 && Rlido < ntcLimCurto ? 'curto' : Rlido !== null && Rlido > ntcLimAberto ? 'aberto' : '';
+    // PR #54 (reteste R1): temperatura fora da faixa da tabela não prova defeito do sensor. Com ela, a leitura não vira curto, aberto nem
+    // "fora da curva": o visor pede para repetir a medição dentro da faixa da tabela e mantém as ações comerciais, sem extrapolar a curva.
+    const tFora = Tn !== null && !!tCurva && (Tn < tCurva[0] || Tn > tCurva[1]) && !rZero;
+    const ntcFalha = tFora ? '' : Rlido !== null && Rlido > 0 && Rlido < ntcLimCurto ? 'curto' : Rlido !== null && Rlido > ntcLimAberto ? 'aberto' : '';
     // Faixa mínima e máxima do fabricante ponto a ponto (PR #48, Daikin 10K: Rmin e Rmax da Table 2), quando a curva traz as colunas _min e _max.
     let ptsMin = [], ptsMax = [];
     if (sn && B.curvas[sn.arquivo_curva] && key) {
@@ -2292,13 +2296,13 @@ class Component extends DCLogic {
     const ponta = rAlem ? (Rlido > rCurva[1] ? pts[0] : pts[pts.length - 1]) : null;
     const bPonta = ponta ? tolEm(ponta[0]) || [ponta[1], ponta[1]] : null;
     const noLimite = !!bPonta && Rlido >= bPonta[0] && Rlido <= bPonta[1];
-    const rFora = rAlem && !noLimite;
+    const rFora = rAlem && !noLimite && !tFora;
     const Rn = Rlido !== null && Rlido > 0 && !rFora ? Rlido : null;
     const rexp = Tn !== null && pts.length ? interp(pts.map(p => p[0]), pts.map(p => p[1]), Tn) : null;
     const teq = Rn !== null && pts.length ? interp(pts.map(p => p[1]), pts.map(p => p[0]), Rn) : null;
     const pontaTxt = ponta ? `${Rlido > rCurva[1] ? 'acima de' : 'abaixo de'} ${fk(ponta[1])} kΩ, ponta de ${f1(ponta[0])} °C da tabela` : '';
     const dif = rexp !== null && Rn !== null ? (Rn - rexp) / rexp * 100 : null;
-    const ntcTErro = medErro(st.ntcT) || (Tn !== null && tCurva && rexp === null ? `fora da curva: ${f1(tCurva[0])} a ${f1(tCurva[1])} °C` : '');
+    const ntcTErro = medErro(st.ntcT) || (tFora ? `fora da faixa desta tabela: ${f1(tCurva[0])} a ${f1(tCurva[1])} °C` : '');
     const ntcRErro = medErro(st.ntcR) || (Rlido !== null && Rlido < 0 ? 'resistência não pode ser negativa' : rFora ? `fora da curva: ${fk(rCurva[0])} a ${fk(rCurva[1])} kΩ; meça de novo e, se repetir, orce a troca do sensor` : '');
     const ntcReg = Rn !== null || rZero, ntcTReg = Tn !== null && !ntcTErro;
     const vUpg = st.tela === 'vazio' && st.modo === 'upg';
@@ -2332,7 +2336,8 @@ class Component extends DCLogic {
     const garCobre = F ? garCobreDe(F.cobre) : '', garNao = F ? garNaoDe(F.naoCobre) : '';
     const semGar = semGarantia(garTxt);
     const fGarLinha = garLinhaDe(garTxt, garCobre, garNao);
-    // PR #52 (reteste N1): todo documento e mensagem que cita o equipamento usa o do atendimento (selOrc), não o da ficha aberta no seletor.
+    // PR #52 (reteste N1) e PR #54 (R2): todo documento e mensagem que cita o equipamento (marca, BTU/h e fluido) usa o do atendimento (selOrc),
+    // não o da ficha aberta no seletor.
     // Com o Fechamento aberto, selOrc já voltou para sel (componentDidUpdate); fora dele, uma ficha de outra marca não troca o aparelho do cliente.
     const selA = st.selOrc || st.sel;
     const equip = `${selA.marca}, ${selA.btu} BTU/h, ${selA.fluido}`;
@@ -2467,7 +2472,7 @@ class Component extends DCLogic {
       pdfTemMsg: !!(PP && PP.msg), pdfMsgTipo: PP && PP.msg ? PP.msg[0] : '', pdfMsg: PP && PP.msg ? PP.msg[1] : '',
       pdfBaixar: () => this.pdfBaixar(), pdfCompartilhar: () => this.pdfCompartilhar(), pdfCopiarResumo: () => this.pdfCopiarResumo(),
       pdfFech: !!PP && PP.onde === 'fech' && !!F && fp === 4, pdfLaudo: !!PP && PP.onde === 'laudo' && st.tela === 'laudo', pdfPmoc: !!PP && PP.onde === 'pmoc' && st.tela === 'pmoc', pdfReca: !!PP && PP.onde === 'reca' && st.tela === 'scripts' };
-    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: selA.marca, btu: selA.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto, bonif: bonif ? bonifLinha : '', fluido: st.sel.fluido });
+    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: selA.marca, btu: selA.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto, bonif: bonif ? bonifLinha : '', fluido: selA.fluido });
     const pd = st.printDoc;
     const B2 = st.btu, sB = (k) => (e) => { const v = e.target.value; this.setState(x => ({ btu: { ...x.btu, [k]: v } })); };
     const bA = med(B2.area), bP = String(B2.pes).trim() ? med(B2.pes) : 1, bWv = String(B2.w).trim() ? med(B2.w) : 0, bf = med(B2.sol === 'Sol da tarde' ? B2.f2 : B2.f1), bfp = String(B2.f3).trim() ? med(B2.f3) : 0;
@@ -2637,8 +2642,6 @@ class Component extends DCLogic {
     const INV_PH = { tensao_pn: 'Ex.: 312 V', ipm: 'Ex.: infinito nos 7 pares', compressor: 'Ex.: 1,6 Ω nos três', motor_dc: 'Ex.: 12 Ω nos três', sensores: 'Ex.: T2 10,4 kΩ a 24 °C' };
     const invTxt = invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return r.r ? `${i + 1}. ${e.titulo}: ${r.r.toLowerCase()}${r.v ? ' (' + r.v + ')' : ''}` : null; }).filter(Boolean).join('\n');
     const tolBand = rexp !== null ? tolEm(Tn) : null;
-    // Temperatura e resistência informadas, mas a temperatura passa da tabela: o visor orienta a nova medição (regra 6), sem extrapolar.
-    const tForaN = !rZero && !ntcFalha && !rFora && Tn !== null && Rn !== null && !!tCurva && rexp === null;
     const dentro = tolBand && Rn !== null ? Rn >= tolBand[0] && Rn <= tolBand[1] : null;
     const faixaTxt = tolBand ? `${fk(tolBand[0])}–${fk(tolBand[1])} kΩ` : '';
     const PM = st.pmoc, pmS = (k) => (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ pmoc: { ...x.pmoc, [k]: v } })); };
@@ -2719,7 +2722,7 @@ class Component extends DCLogic {
       diags.push({ ico: 'pt-sh', val: v, ver: falta, verCurto: falta, aria: `Diagnóstico da medição: ${v}, ${st.sel.fluido}. Para o superaquecimento, ${falta}. Toque para completar no PT/SH`, acao: abrirMod('ptsh') });
     }
     if (ntcReg) {
-      const v = rZero ? 'curto ou escala' : rFora ? 'fora da curva' : dentro !== null ? `${dentro ? 'dentro' : 'fora'} da tolerância` : dif !== null ? `${dif > 0 ? '+' : ''}${f1(dif)} % da curva` : teq !== null ? `≈ ${f1(teq)} °C pela curva` : sens.length ? 'falta o °C do sensor' : 'medir e orçar';
+      const v = rZero ? 'curto ou escala' : tFora ? 'temperatura fora da tabela' : rFora ? 'fora da curva' : dentro !== null ? `${dentro ? 'dentro' : 'fora'} da tolerância` : dif !== null ? `${dif > 0 ? '+' : ''}${f1(dif)} % da curva` : teq !== null ? `≈ ${f1(teq)} °C pela curva` : sens.length ? 'falta o °C do sensor' : 'medir e orçar';
       diags.push({ ico: 'sensor-ntc', val: `NTC ${st.ntcR.trim()} kΩ`, ver: v, cor: rZero ? VER_COR.falha : dentro !== null ? (dentro ? VER_COR.ok : VER_COR.falha) : ntcVer ? VER_COR[ntcVer] : '', verCurto: v.replace(' da tolerância', ' da toler.').replace(' da curva', ''), aria: `Diagnóstico da medição: sensor NTC ${st.ntcR.trim()} kΩ, ${v}.${sens.length ? '' : ` ${ORIENTA_NTC} ${ORIENTA_NTC_CTA}`} Toque para ver a análise no NTC`, acao: abrirMod('ntc') });
     }
     // Altura útil do aparelho: abaixo de 760 px a faixa de diagnóstico tira o título do visor; abaixo de 640 px ele sai sempre.
@@ -2759,16 +2762,16 @@ class Component extends DCLogic {
       invOrcar: () => { const cFora = (IV.compressor || {}).r === 'Fora'; this.abrirFech(['reparo_placa', 'placa_nova', ...(cFora ? ['compressor_troca'] : [])], true, cFora ? ['compressor_troca'] : null); },
       invLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cons: invTxt ? (x.laudo.cons ? x.laudo.cons + '\n' : '') + (invUni ? `Checklist Inverter (procedimento universal, ${marca}):\n` : 'Checklist Inverter (manual Midea Mission2 3D):\n') + invTxt : x.laudo.cons } })),
       invFonte: invUni ? 'Protocolo de Bancada Inverter 220 V CA / 310 V CC (Base Técnica GeloPro): valores físicos da retificação de 220 V CA, do teste de diodo e do equilíbrio entre as fases.' : `${fonteTxt('F20')}; ${fonteTxt('F21')}. Manual de serviço do fabricante (linha global).`,
-      ntcTolTipo: rZero || ntcFalha || rFora || tForaN ? 'aviso' : tolR && dentro !== null ? (dentro ? 'sucesso' : 'aviso') : 'info',
+      ntcTolTipo: rZero || ntcFalha || rFora ? 'aviso' : tFora ? 'info' : tolR && dentro !== null ? (dentro ? 'sucesso' : 'aviso') : 'info',
       // PR #46 (reteste §4.6): curto, aberto, resistência zero ou leitura fora da tolerância abrem o aviso já expandido; a causa provável e o
       // "Confirme no multímetro" ficam na tela, sem toque na seta, acima do CTA de orçar a troca.
-      ntcTolAberto: !!(rZero || ntcFalha || rFora || tForaN || !tolR || dentro === false),
-      ntcTolT: rZero ? 'Resistência zero não entra no cálculo' : ntcFalha === 'curto' ? `Sensor NTC em curto provável (abaixo de ${ntcCurtoTxt}${rCurva ? ', além da curva' : ''})` : ntcFalha === 'aberto' ? `Sensor NTC aberto provável (acima de ${ntcLimTxt}${rCurva ? ', além da curva' : ''})` : rFora ? `Fora da curva (${pontaTxt}${bPonta[1] > bPonta[0] ? `, faixa ${fk(bPonta[0])}–${fk(bPonta[1])} kΩ` : ''})` : tForaN ? `Temperatura fora da tabela (${f1(tCurva[0])} a ${f1(tCurva[1])} °C)` : !tolR ? MEDIR_ORCAR : dentro === null ? (tolMinMax ? 'Tolerância declarada: Rmín a Rmáx da tabela do fabricante' : `Tolerância declarada: R${tolRef} ±${tolR.r25_tol_pct}%${tolTb !== null ? ` e B ±${tolR.beta_tol_pct}%` : ''}`) : dentro ? (noLimite ? `Dentro do esperado no limite da curva (${faixaTxt})` : `Dentro da tolerância (${faixaTxt})`) : `Fora da tolerância (${faixaTxt})`,
+      ntcTolAberto: !!(rZero || tFora || ntcFalha || rFora || !tolR || dentro === false),
+      ntcTolT: rZero ? 'Resistência zero não entra no cálculo' : tFora ? `Temperatura fora da faixa desta tabela (${f1(tCurva[0])} a ${f1(tCurva[1])} °C)` : ntcFalha === 'curto' ? `Sensor NTC em curto provável (abaixo de ${ntcCurtoTxt}${rCurva ? ', além da curva' : ''})` : ntcFalha === 'aberto' ? `Sensor NTC aberto provável (acima de ${ntcLimTxt}${rCurva ? ', além da curva' : ''})` : rFora ? `Fora da curva (${pontaTxt}${bPonta[1] > bPonta[0] ? `, faixa ${fk(bPonta[0])}–${fk(bPonta[1])} kΩ` : ''})` : !tolR ? MEDIR_ORCAR : dentro === null ? (tolMinMax ? 'Tolerância declarada: Rmín a Rmáx da tabela do fabricante' : `Tolerância declarada: R${tolRef} ±${tolR.r25_tol_pct}%${tolTb !== null ? ` e B ±${tolR.beta_tol_pct}%` : ''}`) : dentro ? (noLimite ? `Dentro do esperado no limite da curva (${faixaTxt})` : `Dentro da tolerância (${faixaTxt})`) : `Fora da tolerância (${faixaTxt})`,
       ntcTolX: rZero ? 'Zero indica curto no sensor, no conector ou na fiação, ou multímetro fora da escala. Confira antes de comparar com a curva.'
+        : tFora ? 'Temperatura fora da faixa desta tabela. Repita a medição dentro da faixa indicada para conferir o sensor.'
         : ntcFalha === 'curto' ? 'Causa provável: sensor, conector ou fiação em curto. Confirme no multímetro com o sensor desconectado da placa antes de substituir; confirmado, orce em "Orçar substituição de sensor NTC".'
         : ntcFalha === 'aberto' ? 'Causa provável: sensor rompido, conector solto ou fio partido. Confirme no multímetro o conector e a continuidade do fio antes de substituir; confirmado, orce em "Orçar substituição de sensor NTC".'
         : rFora ? 'A leitura passou da ponta da tabela do fabricante além da tolerância. Meça de novo com o sensor desconectado da placa, conferindo a escala do multímetro e o conector; repetindo fora, orce em "Orçar substituição de sensor NTC".'
-        : tForaN ? `A tabela do fabricante vai de ${f1(tCurva[0])} a ${f1(tCurva[1])} °C. Meça de novo com o sensor nessa faixa de temperatura e compare; com a leitura fora do esperado, orce em "Orçar substituição de sensor NTC".`
         : !tolR ? `${ORIENTA_NTC} ${ORIENTA_NTC_CTA}` : dentro === null ? `${tolR.escopo}. Informe temperatura e resistência.` : dentro ? `${noLimite ? `Leitura além da ponta da tabela (${pontaTxt}), dentro da tolerância declarada dessa ponta; nenhum valor foi extrapolado. ` : ''}${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).` : `Repita a medição em outra temperatura e confira conector e fiação antes de condenar o sensor. ${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).`,
       telaPmoc: st.tela === 'pmoc', telaScripts: st.tela === 'scripts',
       pmSet: Object.fromEntries(['amb', 'end', 'cid', 'tel', 'prop', 'propDoc', 'propCont', 'rt', 'reg', 'art', 'ambs', 'emerg'].map(k => [k, pmS(k)])),
@@ -2921,7 +2924,7 @@ class Component extends DCLogic {
         qMenosCor: x.q <= 1 ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', qMaisCor: x.q >= QTD_MAX ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)',
         temMult: x.q > 1 && x.n > 0, multTxt: x.q > 1 && x.n > 0 ? `${x.q} × ${BRL.format(x.n)} = ${BRL.format(x.s)}` : '',
         // Linha excedente (PR #24): com o metro adicional de tubulação, a conta pronta do fluido a mais por metro, no fluido do topo.
-        temTubo: x.sid === 'tubo_metro' && x.q >= 1, tuboTxt: `Adicional de fluido p/ ${x.q} m excedente(s): ~${x.q * TUBO_G_M[porteDe(st.sel.btu) >= 2 ? 2 : 1]} g (${st.sel.fluido} em balança)`,
+        temTubo: x.sid === 'tubo_metro' && x.q >= 1, tuboTxt: `Adicional de fluido p/ ${x.q} m excedente(s): ~${x.q * TUBO_G_M[porteDe(selA.btu) >= 2 ? 2 : 1]} g (${selA.fluido} em balança)`,
         temCusto: !!c && cm > 0 && !discreto, semPeca: !!c && !cm && !discreto, verCusto: !discreto, custoAria: `Custo da peça do item ${i + 1}`, estOn: est ? 'true' : 'false', compOn: comp ? 'true' : 'false',
         setEst: setCusto(0), setComp: setCusto(cm), compTxt: c ? `${INSUMO.includes(c.id) ? 'Comprar insumo' : 'Comprar peça'} (~${R0(cm).replace(' ', '\u00a0')})` : '',
         estBorda: tE.borda, estFundo: tE.fundo, estCor: tE.cor, compBorda: tC.borda, compFundo: tC.fundo, compCor: tC.cor,
@@ -3015,7 +3018,7 @@ class Component extends DCLogic {
       fZapModelos: ZAP_MODELOS.map((t, k) => { const on = !!F && (F.zapModelo || 1) === k + 1; return { t, on: on ? 'true' : 'false', borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-outline)', fundo: on ? 'var(--gp-mold-selected)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-selected)' : 'var(--gp-on-surface)', acao: () => this.fSet({ zapModelo: k + 1, zapTxt: null }) }; }),
       // Novo aparelho deste mesmo cliente (PR #30): novo atendimento com nome, telefone, marca, BTU/h e fluido; o resto zera como no Concluir.
       fNovoMesmo: () => this.setState(x => ({ ...ATEND0(x.btu), sel: { ...x.sel }, fech: { ...FECH0(), cliNome: x.fech ? x.fech.cliNome : '', cliTel: x.fech ? x.fech.cliTel : '' } })),
-      fNovoMesmoAria: `Novo aparelho deste mesmo cliente: começa outro atendimento com ${F && F.cliNome.trim() ? F.cliNome.trim() : 'o cliente'}, ${st.sel.marca}, ${st.sel.btu} BTU/h e ${st.sel.fluido}`,
+      fNovoMesmoAria: `Novo aparelho deste mesmo cliente: começa outro atendimento com ${F && F.cliNome.trim() ? F.cliNome.trim() : 'o cliente'}, ${selA.marca}, ${selA.btu} BTU/h e ${selA.fluido}`,
       fZapTxt: zapAtual(), fSetZapTxt: (e) => this.fSet({ zapTxt: limparTxt(e.target.value) }),
       fZap: () => { this.numero(); const tel = zapNum(F.cliTel); window.open(zapUrl(F.cliTel, zapAtual()), '_blank', 'noopener'); this.fSet({ msg: ['sucesso', 'Mensagem aberta no WhatsApp', tel ? 'Confira e envie.' : 'Sem telefone: escolha o contato no WhatsApp.'] }); },
       fTemMsg: !!(F && F.msg), fMsgTipo: F && F.msg ? F.msg[0] : 'info', fMsgT: F && F.msg ? F.msg[1] : '', fMsgX: F && F.msg ? F.msg[2] : '',
