@@ -125,6 +125,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
    (navegador antigo), vale o align-items:end da própria grade. */
 @supports (grid-template-rows:subgrid){
 [data-campos-linha]{row-gap:0 !important;}
+/* Carga térmica (PR #43, PR38-S2-3): abaixo de 400 px, Área e Pessoas lado a lado e Aparelhos (W) na linha de baixo, em largura cheia; o 99999 recusado
+   cabe inteiro ao lado do ícone de erro (em 3 colunas sobravam 29 px a 320 px). */
+@media (max-width:399.98px){[data-campos-carga]{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}[data-campos-carga] > .sc-host:last-child{grid-column:1 / -1;}}
 [data-campos-linha] > .sc-host,[data-campos-linha] > .sc-host > label{display:grid !important;grid-row:span 3;grid-template-rows:subgrid;grid-template-columns:minmax(0,1fr);row-gap:0 !important;}
 [data-campos-linha] > .sc-host > label > :first-child:not([data-campo]){align-self:end;}
 [data-campos-linha] > .sc-host > label > [data-campo],[data-campos-linha] > .sc-host > label > [data-campo] ~ *{margin-top:6px;}
@@ -153,6 +156,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:1ms !important;}}
 @media print{@page{size:A4;margin:12mm}html,body{background:#fff !important}body *{visibility:hidden !important}[data-print],[data-print] *{visibility:visible !important}[data-print]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important}[data-print],[data-print] *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}[data-print] [data-doc-fechamento],[data-print] [data-doc-foto-bloco],[data-print] [data-doc-assinatura],[data-print] [data-doc-preventiva]{page-break-inside:avoid;break-inside:avoid}}
 </style>
+<script src="offline-gelopro.js"></script>
 <script src="marca-gelopro.js"></script>
 <script src="portao-gelopro.js"></script>
 <script src="pdf-gelopro.js"></script>
@@ -238,7 +242,16 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <h2 style="{{ h2Estilo }}">{{ homeTitulo }}</h2>
-                  <div data-home-modo="" role="tablist" aria-label="Tela inicial" style="flex:none;height:{{ abaH }};margin-bottom:-2px;padding:0 2px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
+                  <!-- Atendimento em andamento (PR #43, EXT-MIX-2/3): com rascunho de cliente ou medição registrada, a Home mostra de quem é e a escolha direta
+                       entre continuar e começar outro atendimento (limpa orçamento, medições e laudo do anterior). Sem nada em andamento, não ocupa espaço. -->
+                  <sc-if value="{{ temAtendAtivo }}" hint-placeholder-val="{{ false }}"><div data-atendimento-ativo="" role="group" aria-label="Atendimento em andamento" style="flex:none;display:flex;flex-direction:column;gap:6px;box-sizing:border-box;padding:8px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);">
+                    <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ atendAtivoT }}</span>
+                    <div style="display:grid;grid-template-columns:{{ atendCols }};gap:6px;">
+                      <sc-if value="{{ temAtendContinuar }}" hint-placeholder-val="{{ false }}"><button type="button" data-atendimento-continuar="" onClick="{{ atendContinuar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">{{ atendContinuarT }}</button></sc-if>
+                      <button type="button" data-novo-atendimento="" onClick="{{ novoAtend }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">Novo atendimento (limpar anterior)</button>
+                    </div>
+                  </div></sc-if>
+                  <div data-home-modo=""" role="tablist" aria-label="Tela inicial" style="flex:none;height:{{ abaH }};margin-bottom:-2px;padding:0 2px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
                     <sc-for list="{{ abasHome }}" as="a" hint-placeholder-count="2">
                       <button type="button" role="tab" data-aba-home="{{ a.k }}" aria-selected="{{ a.on }}" onClick="{{ a.acao }}" style="min-width:0;height:48px;margin:{{ abaM }} 0;box-sizing:border-box;padding:0;border:0;border-radius:999px;background:transparent;display:flex;align-items:center;cursor:pointer;" style-active="transform:translateY(1px);">
                         <span style="flex:1;min-width:0;height:{{ abaH }};box-sizing:border-box;padding:0 6px;border-radius:999px;border:{{ a.borda }};background:{{ a.fundo }};color:{{ a.cor }};display:flex;align-items:center;justify-content:center;font-family:'Roboto',sans-serif;font-weight:700;font-size:{{ a.fs }};line-height:18px;white-space:nowrap;">{{ a.t }}</span>
@@ -451,7 +464,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </sc-for>
                   </div>
                   <sc-if value="{{ ptTemVer }}" hint-placeholder-val="{{ false }}"><div data-pt-veredito="{{ ptVer }}" class="tags" style="flex:none;"><span class="{{ ptVerTag.c }}" data-selo="" data-rotulo="">{{ ptVerTag.t }}</span></div></sc-if>
-                  <sc-if value="{{ ptAlto }}" hint-placeholder-val="{{ false }}"><p data-ptsh-dica="" style="flex:none;margin:0;padding:0 4px;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">Antes de completar fluido: confirme filtros/serpentina limpos e elimine vazamentos nas flanges.</p></sc-if>
+                  <sc-if value="{{ ptAlto }}" hint-placeholder-val="{{ false }}"><p data-ptsh-dica="" style="flex:none;margin:0;padding:0 4px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">▲ Causa provável — confirme no manômetro antes de completar fluido: filtros/serpentina limpos e nenhum vazamento nas flanges.</p></sc-if>
                   <sc-if value="{{ ptR410 }}" hint-placeholder-val="{{ false }}"><div data-lembrete-fluido="R410A" class="tags" style="flex:none;"><span class="tag tag-fluido" data-selo="" data-rotulo="">R410A</span><span class="tag tag-perigo" data-selo="" data-rotulo="">⚠ SÓ LÍQUIDO</span><span class="corpo apoio">carga com o cilindro invertido</span></div></sc-if>
                   <sc-if value="{{ ptTemPar }}" hint-placeholder-val="{{ false }}"><div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Termômetro no tubo de sucção: preso e isolado</span><div data-fotos-comparacao="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span data-foto="erro" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptParErro }};"></span><span data-faixa-legenda="erro" data-rotulo="" class="{{ ptFxErroC }}">{{ ptFxErro }}</span></span><span data-foto="certo" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptParCerto }};"></span><span data-faixa-legenda="certo" data-rotulo="" class="{{ ptFxCertoC }}">{{ ptFxCerto }}</span></span></div></div></sc-if>
                   <sc-if value="{{ ptVacTemPar }}" hint-placeholder-val="{{ false }}"><div data-ptsh-vacuo="" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;"><span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Antes da carga: flange vedada e vácuo abaixo de 500 µmHg</span><div data-fotos-comparacao="" data-ptsh-vacuo-fotos="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span data-foto="erro" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptVacParErro }};"></span><span data-faixa-legenda="erro" data-rotulo="" class="{{ ptVacFxErroC }}">{{ ptVacFxErro }}</span></span><span data-foto="certo" style="position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ ptVacParCerto }};"></span><span data-faixa-legenda="certo" data-rotulo="" class="{{ ptVacFxCertoC }}">{{ ptVacFxCerto }}</span></span></div></div></sc-if>
@@ -498,7 +511,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaBTU }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
                   <dc-import name="SeletorPrazo" rotulo="Ferramenta" opcoes="{{ nbOps }}" valor="Carga térmica" acao="{{ nbTroca }}" style="display:block;flex:none;" hint-size="100%,76px"></dc-import>
-                  <div data-campos-linha="" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end;">
+                  <div data-campos-linha="" data-campos-carga="" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end;">
                     <dc-import name="CampoTexto" rotulo="Área (m²)" valor="{{ bArea }}" estado="{{ bE.area }}" erroMsg="{{ bM.area }}" aoDigitar="{{ bSetArea }}" placeholder="Ex.: 12" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="Pessoas" valor="{{ bPes }}" estado="{{ bE.pes }}" erroMsg="{{ bM.pes }}" aoDigitar="{{ bSetPes }}" placeholder="Ex.: 2" modo="numeric" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     <dc-import name="CampoTexto" rotulo="Aparelhos (W)" valor="{{ bW }}" estado="{{ bE.w }}" erroMsg="{{ bM.w }}" aoDigitar="{{ bSetW }}" placeholder="300" modo="numeric" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
@@ -599,6 +612,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ fEquip }}</span>
                     <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);white-space:pre-line;">{{ lMed }}</span>
                   </div>
+                  <sc-if value="{{ lTemMed }}" hint-placeholder-val="{{ false }}"><div data-laudo-escolha="" style="flex:none;display:flex;flex-direction:column;gap:6px;">
+                    <button type="button" data-laudo-medicoes="" aria-pressed="{{ lMedOn }}" onClick="{{ lMedToggle }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">{{ lMedBtn }}</button>
+                    <sc-if value="{{ lMedNovoVis }}" hint-placeholder-val="{{ false }}"><button type="button" data-laudo-limpar-medicoes="" onClick="{{ lMedLimpar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">Iniciar novo atendimento (limpar medições anteriores)</button></sc-if>
+                  </div></sc-if>
                   <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Constatações</span>
                   <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="Constatações" rows="3" value="{{ lConst }}" onInput="{{ lSetConst }}" placeholder="O que foi verificado e encontrado" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                   <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Conclusão</span>
@@ -694,6 +711,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <input type="file" accept=".json,application/json" data-cofre-arquivo="" aria-label="Arquivo de backup do Cofre" onChange="{{ cofreArquivo }}" style="display:none;">
                     <sc-if value="{{ temCofreMsg }}" hint-placeholder-val="{{ false }}"><div data-cofre-msg="" role="status" aria-live="polite" class="tags"><span class="{{ cofreMsgC }}" data-selo="" data-rotulo="">{{ cofreMsgT }}</span><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ cofreMsgX }}</span></div></sc-if>
                   </div>
+                  <sc-if value="{{ temCofreQuar }}" hint-placeholder-val="{{ false }}"><div data-cofre-quarentena="" role="alert" style="flex:none;display:flex;flex-direction:column;gap:8px;">
+                    <dc-import name="Aviso" tipo="aviso" titulo="Dados corrompidos do Cofre preservados em quarentena" texto="{{ cofreQuarTxt }}" style="display:block;flex:none;" hint-size="100%,72px"></dc-import>
+                    <button type="button" data-cofre-quar-exportar="" onClick="{{ cofreQuarExportar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:16px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);display:flex;align-items:center;justify-content:center;gap:8px;font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>Baixar o arquivo bruto de recuperação (.txt)</span></button>
+                  </div></sc-if>
                   <sc-if value="{{ cVazio }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="info" titulo="Nenhum documento emitido neste aparelho" texto="Orçamentos, garantias, recibos e laudos aparecem aqui depois do primeiro PDF." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-if value="{{ temCofreFiltros }}" hint-placeholder-val="{{ false }}"><div data-cofre-filtros="{{ cofreFiltroK }}" role="group" aria-label="Filtrar os atendimentos do Cofre" style="flex:none;display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ cofreFiltros }}" as="cf" hint-placeholder-count="3"><button type="button" data-cofre-filtro="{{ cf.k }}" aria-pressed="{{ cf.on }}" onClick="{{ cf.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ cf.borda }};background:{{ cf.fundo }};color:{{ cf.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ cf.t }}</button></sc-for></div></sc-if>
                   <sc-if value="{{ cofreFiltroVazio }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="info" titulo="{{ cofreFiltroVazioT }}" texto="Toque em Todos para ver os outros atendimentos." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
@@ -914,6 +935,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="{{ fDiscretoIco }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
                 <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">Ocultar custos/lucro (cliente ao lado)</span>
               </button>
+              <sc-if value="{{ fTemGuardado }}" hint-placeholder-val="{{ false }}"><div data-rascunho-guardado="" role="status" style="display:flex;flex-direction:column;gap:8px;">
+                <dc-import name="Aviso" tipo="info" titulo="{{ fGuardadoT }}" texto="Este orçamento começou só com o serviço do diagnóstico atual. Escolha: continuar o atendimento anterior ou seguir com este e descartar o anterior." style="display:block;" hint-size="100%,64px"></dc-import>
+                <button type="button" data-rascunho-retomar="" onClick="{{ fRetomar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">{{ fRetomarT }}</button>
+                <button type="button" data-rascunho-descartar="" onClick="{{ fDescartar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">Iniciar novo atendimento (limpar anterior)</button>
+              </div></sc-if>
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Cliente</span>
               <dc-import name="CampoTexto" rotulo="Nome do cliente" valor="{{ fCliNome }}" aoDigitar="{{ fSetCliNome }}" placeholder="Como sai no documento" estado="{{ fCliNomeE }}" erroMsg="informe o nome do cliente" style="display:block;" hint-size="100%,74px"></dc-import>
               <dc-import name="CampoTexto" rotulo="WhatsApp do cliente" valor="{{ fCliTel }}" aoDigitar="{{ fSetCliTel }}" placeholder="DDD e número" modo="tel" ajuda="Opcional. Usado no botão de envio." style="display:block;" hint-size="100%,96px"></dc-import>
@@ -947,10 +973,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ it.temEco }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="padding:0 4px;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Economia preventiva:</strong> {{ it.eco }}</span></sc-if>
                   <button type="button" data-editar-item="" aria-expanded="{{ it.edExp }}" onClick="{{ it.edToggle }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ it.edTxt }}</button>
                   <sc-if value="{{ it.edAberto }}" hint-placeholder-val="{{ false }}"><div data-editor-item="" style="display:flex;flex-direction:column;gap:8px;padding:4px 0 8px;">
-                    <button type="button" data-auto-justificar="" disabled="{{ it.autoJOff }}" onClick="{{ it.autoJ }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-active="transform:translateY(1px);">Gerar justificativa e faixa de tabela p/ este valor</button>
+                    <button type="button" data-auto-justificar="" disabled="{{ it.autoJOff }}" onClick="{{ it.autoJ }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-active="transform:translateY(1px);">{{ it.autoJRot }}</button>
                     <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Procedimento incluso</span>
                     <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaJ }}" rows="3" value="{{ it.jVal }}" onInput="{{ it.setJ }}" placeholder="O que está incluso neste serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
-                    <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Faixa de referência de tabela</span>
+                    <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ it.fRot }}</span>
                     <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaF }}" rows="2" value="{{ it.fVal }}" onInput="{{ it.setF }}" placeholder="Ex.: R$ 180,00 a R$ 290,00" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
                     <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Economia preventiva</span>
                     <span data-campo="1" style="display:flex;box-sizing:border-box;padding:10px 14px;border-radius:16px;border:1.5px solid var(--gp-outline);background:var(--gp-field);box-shadow:inset 0 2px 4px var(--gp-shadow-raise);"><textarea aria-label="{{ it.ariaE }}" rows="3" value="{{ it.eVal }}" onInput="{{ it.setE }}" placeholder="O que o cliente evita gastar com este serviço" style="flex:1;min-width:0;resize:vertical;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);"></textarea></span>
@@ -1277,9 +1303,26 @@ const gravar = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); ret
 // contador negativo ou infinito) viram vazio, nunca erro de tela. A numeração nunca fica abaixo do maior número já gravado no Cofre: um contador
 // estragado não repete número de documento emitido.
 const lerObj = (k) => { const v = ler(k); return v && typeof v === 'object' && !Array.isArray(v) ? limparObj(v) : null; };
-const lerDocs = (k) => { const v = ler(k); return Array.isArray(v) ? v.filter(x => x && typeof x === 'object' && !Array.isArray(x) && x.numero && x.tipo) : []; };
-const numDoc = (x, pre) => { const n = parseInt(String(x.numero).slice(pre.length), 10); return Number.isSafeInteger(n) && n > 0 && n < 1e6 ? n : 0; };
-const lerSeq = (A) => { const n = Number(ler(A.seq)); return Math.max(Number.isSafeInteger(n) && n > 0 && n < 1e6 ? n : 0, ...lerDocs(A.docs).map(x => numDoc(x, A.pre))); };
+// Quarentena do Cofre (PR #43, EXT-ARM): texto ilegível (JSON quebrado, tipo trocado ou item estragado) é copiado inteiro para
+// <chave>.quarentena.<Date.now()> antes de qualquer gravação. Cada texto diferente ganha a sua chave e nenhuma é sobrescrita; o mesmo texto lido de
+// novo não duplica. O Cofre avisa e oferece baixar o texto bruto para recuperação.
+const QUARENTENA = '.quarentena.';
+const DOC_TIPOS = ['orc', 'gar', 'rec', 'laudo', 'pmoc', 'reca'];
+const quarentenas = (k) => { const out = []; try { for (let i = 0; i < localStorage.length; i++) { const c = localStorage.key(i); if (c && c.startsWith(k + QUARENTENA)) out.push(c); } } catch (e) {} return out.sort(); };
+const quarentena = (k, bruto) => { try { if (quarentenas(k).some(c => localStorage.getItem(c) === bruto)) return; localStorage.setItem(k + QUARENTENA + Date.now(), bruto); } catch (e) {} };
+const docValido = (x) => x && typeof x === 'object' && !Array.isArray(x) && x.numero && x.tipo;
+const lerDocs = (k) => {
+  let bruto = null; try { bruto = localStorage.getItem(k); } catch (e) {}
+  if (!bruto || !bruto.trim() || bruto.trim() === 'null') return [];
+  let v; try { v = JSON.parse(bruto); } catch (e) { v = undefined; }
+  if (!Array.isArray(v)) { quarentena(k, bruto); return []; }
+  const ok = v.filter(docValido); if (ok.length < v.length) quarentena(k, bruto);
+  return ok;
+};
+// EXT-IMP-2 (PR #43): até 999.999.999 (7 a 9 dígitos); depois do 0999999 vem o 1000000 e o 1000001, nunca o mesmo número duas vezes.
+const NUM_MAX = 1e9;
+const numDoc = (x, pre) => { const s = String(x.numero); if (!s.startsWith(pre)) return 0; const n = Number(s.slice(pre.length)); return /^\d{1,9}$/.test(s.slice(pre.length)) && Number.isSafeInteger(n) && n > 0 && n < NUM_MAX ? n : 0; };
+const lerSeq = (A) => { const n = Number(ler(A.seq)); return Math.max(Number.isSafeInteger(n) && n > 0 && n < NUM_MAX ? n : 0, ...lerDocs(A.docs).map(x => numDoc(x, A.pre))); };
 const dig = (v) => String(v || '').replace(/\D/g, '');
 // Sanitização anti-HTML/script (PR #40, achado S0 da extensão): nome do cliente, descrição, ressalva, titular, marca livre, laudo, PMOC e recibo
 // perdem qualquer tag e os sinais < e > ao salvar e ao exibir. "<img src=x onerror=alert(1)>" nunca chega ao documento, ao PDF nem ao WhatsApp.
@@ -1395,6 +1438,18 @@ const VISITA_VALORES = [60, 80, 100, 120, 150];
 const QTD_MAX = 99;
 const qtdDe = (x) => Math.max(1, Math.min(QTD_MAX, parseInt(String(x.q ?? '').replace(/\D/g, ''), 10) || 1));
 const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null, justif: true, catAberto: false, sug: [], ressalva: '', foto: null, fotoUrl: null, fotoErro: '', discreto: false, bonif: false, bonifItem: null, bonifVal: null, desc: 'nenhum', descLivre: '', validade: '3 dias', catAba: 'todos' });
+// Rascunho do orçamento (PR #43, EXT-RAS): o fechamento dos passos 1 a 3 fica em gelopro.rascunho a cada mudança e volta depois de recarregar a
+// página. Foto e assinatura (imagens) não vão para o localStorage: no retorno, o técnico colhe de novo. Passo 4, Concluir e modo Amostra não gravam.
+const K_RASC = 'gelopro.rascunho', RASC_FORA = ['foto', 'fotoUrl', 'fotoErro', 'assin', 'msg', 'tentou', 'catAberto', 'itemEd'];
+const lerRascunho = () => {
+  const r = ler(K_RASC); if (!r || typeof r !== 'object' || !r.fech || typeof r.fech !== 'object' || Array.isArray(r.fech)) return null;
+  const f = { ...FECH0(), ...limparFundo(r.fech) };
+  if (!Array.isArray(f.itens) || !f.itens.every(i => i && typeof i === 'object') || !(f.passo >= 1 && f.passo <= 3)) return null;
+  return { ...f, foto: null, fotoUrl: null, assin: null, msg: null, tentou: 0, catAberto: false };
+};
+const gravarRascunho = (F) => { try { if (!F || !(F.passo >= 1 && F.passo <= 3)) return localStorage.removeItem(K_RASC); localStorage.setItem(K_RASC, JSON.stringify({ em: Date.now(), fech: Object.fromEntries(Object.entries(F).filter(([k]) => !RASC_FORA.includes(k))) })); } catch (e) {} };
+// Rascunho com dono (PR #43, EXT-MIX-2): tem cliente ou item preenchido? Então é de um atendimento, e o diagnóstico de outro sintoma não o mistura.
+const rascunhoComDono = (F) => !!F && (String(F.cliNome || '').trim().length > 0 || (F.itens || []).some(x => String(x.d || '').trim() || String(x.v || '').trim()));
 // Assinatura como blob: o data URL tem ';' e o estilo do modelo corta o valor ali, então a imagem não chegava ao PDF.
 const blobDe = (d) => { try { const [cab, b64] = d.split(','), bin = atob(b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return URL.createObjectURL(new Blob([u8], { type: (cab.match(/^data:([^;,]+)/) || [])[1] || 'image/png' })); } catch (e) { return null; } };
 const dataBR = (ms) => new Date(ms).toLocaleDateString('pt-BR');
@@ -1528,12 +1583,12 @@ const tipDe = (c, btu) => { const p = porteDe(btu); return p === 3 && c.tip36 !=
 // Faixa de tabela do porte: piso e teto acompanham o típico na mesma proporção, arredondados a R$ 10 (no porte 1, a tabela base).
 const faixaDe = (c, btu) => { const tip = tipDe(c, btu), k = c.tip && tip !== c.tip ? tip / c.tip : 1, r10 = (v) => v === null || k === 1 ? v : Math.round(v * k / 10) * 10; return { min: r10(c.min), max: r10(c.max), tip }; };
 const faixaPorte = (c, btu) => { const f = faixaDe(c, btu); return f.min !== null && f.max !== null ? `${BRL.format(f.min)} a ${BRL.format(f.max)}` : ''; };
-// Modo Esperto Comercial (PR #35): faixa que acompanha o valor cobrado (85 % a 125 %, em dezenas). R$ 380,00 → "R$ 320,00 a R$ 480,00".
-const faixaElastica = (v) => `${BRL.format(Math.round(v * 0.85 / 10) * 10)} a ${BRL.format(Math.round(v * 1.25 / 10) * 10)}`;
-// Teto de honestidade (PR #40, S0-1): até 1,6× o teto do porte a faixa acompanha o valor (85 % a 125 %); acima disso (R$ 50.000 numa placa de
-// tabela até R$ 1.470) nunca se inventa tabela: volta a faixa oficial do porte. R$ 380 no capacitor (teto R$ 290 × 1,6 = R$ 464) segue elástico.
-const TETO_ELASTICO = 1.6;
-const faixaHonesta = (c, btu, v) => { const f = faixaDe(c, btu); return f.max !== null && v > f.max + 0.004 && v <= f.max * TETO_ELASTICO + 0.004 ? faixaElastica(v) : faixaPorte(c, btu); };
+// Faixa honesta (PR #43, EXT-FAIXA, decisão do Pedro): "Faixa de referência de tabela" no passo 3, no PDF e no WhatsApp só com os valores reais da
+// tabela do catálogo e só com o valor cobrado até 1,6× o teto do porte. Acima disso, sem faixa. Nenhuma faixa é calculada do preço (fim da faixa
+// elástica de 85 % a 125 % do PR #35): o item livre ou a faixa digitada pelo técnico saem como "Estimativa técnica do serviço executado".
+const TETO_FAIXA = 1.6;
+const faixaTabela = (c, btu, v) => { const f = faixaDe(c, btu); return f.min !== null && f.max !== null && v > 0 && v <= f.max * TETO_FAIXA + 0.004 ? faixaPorte(c, btu) : ''; };
+const FAIXA_TAB = 'Faixa de referência de tabela (peça + mão de obra + garantia)', FAIXA_EST = 'Estimativa técnica do serviço executado';
 const AUTO_J = 'Execução técnica especializada com ferramental de precisão, insumos de primeira linha e ensaio operacional em carga';
 const AUTO_ECO = 'Previne agravamento de falha elétrica/mecânica e preserva a vida útil do equipamento';
 // Trava anti-isento (PR #35): a visita só vira ISENTO com pelo menos 1 outro serviço ou peça no orçamento. Se o último sair com a chave ligada,
@@ -1640,7 +1695,7 @@ const docPdf = (tipo, d0, tit0, x = {}) => {
     : tipo === 'rec' ? [{ t: 'Recebimento', x: recebimentoDe(d.cliente, total, d.numero, em) }]
     : [...(ressalva ? [{ t: 'Ressalva / estado encontrado', x: pontoDoc(ressalva) }] : []), ...(garTxt ? [{ t: 'Garantia contratual', x: garLinhaDe(garTxt, cobre, nao) }] : []), { t: 'Pagamento por Pix', x: pixBlocoDe(tit, total, d.numero) }];
   return {
-    tipo, titulo: PDF_TITULO[tipo] || 'Documento', numero: d.numero || '', data: dataBR(em), base: BASE_MES, via2: x.via2 ? `2ª via em ${dataBR(Date.now())}` : '',
+    tipo, titulo: (PDF_TITULO[tipo] || 'Documento') + (d.rev > 1 ? ` · Revisão ${d.rev}` : ''), numero: d.numero || '', atend: d.atend || '', data: dataBR(em), base: BASE_MES, via2: x.via2 ? `2ª via em ${dataBR(Date.now())}` : '',
     titular: tit ? { nome: tit.nome, doc: tit.docFmt, docTipo: tit.docTipo, cidade: tit.cidade, pix: tit.pix } : {},
     cliente: { nome: d.cliente || 'Cliente', tel: foneBR(d.tel), equip: /BTU\/h/.test(d.equip || '') ? String(d.equip).split(', ').join(' · ') : d.equip || '' },
     itensTitulo: tipo === 'gar' ? 'Serviços cobertos' : 'Itens',
@@ -1649,7 +1704,7 @@ const docPdf = (tipo, d0, tit0, x = {}) => {
     blocos, preventiva: fech ? prevLinhaDe(d.prevEm || maisMeses(em, 6)) : '',
     foto: fech ? x.foto || null : null, assinatura: fech ? x.assin || null : null, assinaturaLegenda: `Assinatura do cliente: ${d.cliente || ''}`,
     assinaturaNota: fech && !x.assin ? `Assinatura do cliente colhida na aprovação do orçamento em ${dataBR(em)} (1ª via).` : '',
-    nome: pdfNome(tipo, d.numero, d.cliente),
+    nome: pdfNome(tipo, d.rev > 1 ? `${d.numero}-Rev${d.rev}` : d.numero, d.cliente),
   };
 };
 // Cola de instrumento (PR #24): referência pronta nas etapas de capacímetro (−5%) e de tensão sob carga (±10%), sem conta de cabeça no sol.
@@ -1749,10 +1804,10 @@ const PECAS = ['AreaAssinatura', 'AtalhoTecla', 'Aviso', 'CampoTexto', 'FolhaDoc
 const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], resp: {}, res: null, modo: null, modK: null, prev: null, foco: null, dica: false };
 // Dados do atendimento (cliente, aparelho, medições, hipóteses, carga, laudo, orçamento, garantia, assinatura). Concluir volta a isto.
 // Ficam fora: titular, licença, tema e documentos emitidos (localStorage), e os fatores da carga térmica, que são ajuste do técnico.
-const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fOpen: false, printDoc: null, printDados: null, pdfPronto: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcNom: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, oemPlat: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
+const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fechGuardado: null, selOrc: null, fOpen: false, printDoc: null, printDados: null, pdfPronto: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcNom: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, oemPlat: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
 
 class Component extends DCLogic {
-  state = { ...ATEND0(), lic: lerObj(K_LIC), tit: lerObj(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null, abaHome: 'sintomas', marcaLivre: '', cofreMsg: null };
+  state = { ...ATEND0(), fech: lerRascunho(), lic: lerObj(K_LIC), tit: lerObj(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null, abaHome: 'sintomas', marcaLivre: '', cofreMsg: null };
 
   componentDidMount() {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
@@ -1768,7 +1823,7 @@ class Component extends DCLogic {
     this.ativarPelaUrl();
     let n = 0; this._fp = setInterval(() => { n++; const el = this.pRef.current; if (el && el.querySelector('input,button')) { this.focarPortao(); clearInterval(this._fp); } else if (n > 40 || (!el && n > 10)) clearInterval(this._fp); }, 150);
   }
-  entrarAmostra() { this.setState({ amostra: true, licAm: { plano: 'LIFETIME_6', ativadoEm: Date.now(), bumps: [] }, pMsg: null }); }
+  entrarAmostra() { this.setState({ amostra: true, fech: null, fechGuardado: null, licAm: { plano: 'LIFETIME_6', ativadoEm: Date.now(), bumps: [] }, pMsg: null }); }
   ativarPelaUrl() {
     let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
     if (q.get('amostra') === '1') this.entrarAmostra();
@@ -1854,31 +1909,43 @@ class Component extends DCLogic {
   // sugeridos ficam marcados no catálogo. Itens já lançados pelo técnico são mantidos.
   // somar (PR #24, "Orçar" do PT/SH e do NTC): o item entra nos indicados sem apagar os que o diagnóstico já sugeriu.
   // lancar (PR #35): serviços que entram todos no orçamento, além do 1º da lista (laudo: desinstalação + instalação de aparelho novo).
-  abrirFech(sug, somar, lancar) {
+  // deDiag (PR #43, EXT-MIX-2): "Montar orçamento" do resultado de um sintoma. Se o rascunho aberto é de outro atendimento (tem cliente ou item e
+  // nasceu de outro sintoma ou fora do diagnóstico), ele não é misturado: fica guardado (fechGuardado, com "Retomar" no passo 1) e o orçamento
+  // novo começa só com o serviço sugerido.
+  abrirFech(sug, somar, lancar, deDiag) {
     this.setState(st => {
-      const F = st.fech || FECH0(), cat = (st.base && st.base.cat) || [], ids = (sug || []).filter(id => cat.some(c => c.id === id));
+      const outro = deDiag && st.fech && rascunhoComDono(st.fech) && st.fech.sint !== st.sint;
+      const F = outro ? { ...FECH0(), sint: st.sint } : st.fech || { ...FECH0(), sint: deDiag ? st.sint : null }, cat = (st.base && st.base.cat) || [], ids = (sug || []).filter(id => cat.some(c => c.id === id));
       const c = cat.find(x => x.id === ids[0]), novo = !!c && !F.itens.some(x => x.sid === c.id);
       let itens = F.itens;
       if (novo) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, st.sel.btu)] : [...itens, itemDe(c, st.sel.btu)];
       (lancar || []).map(id => cat.find(x => x.id === id)).filter(x => x && !itens.some(y => y.sid === x.id)).forEach(x => { itens = itens.every(y => !y.d.trim() && !String(y.v).trim()) ? [itemDe(x, st.sel.btu)] : [...itens, itemDe(x, st.sel.btu)]; });
       const sugF = !ids.length ? F.sug || [] : somar ? [...new Set([...ids, ...(F.sug || [])])] : ids;
-      return { fech: travaIsento({ ...F, itens, sug: sugF, ...(novo ? higLimpa(F, c) : {}) }), fOpen: true, drawer: null };
+      return { fech: travaIsento({ ...F, itens, sug: sugF, ...(novo ? higLimpa(F, c) : {}) }), fOpen: true, drawer: null, ...(outro ? { fechGuardado: st.fech } : {}) };
     });
   }
   fRef = React.createRef();
   fSet(patch) { this.setState(st => ({ fech: travaIsento({ ...st.fech, ...(typeof patch === 'function' ? patch(st.fech) : patch) }) })); }
   arq() { return this.state.amostra ? ARQ.amostra : ARQ.real; }
-  numero(avulso) { if (!avulso && this.state.fech && this.state.fech.numero) return this.state.fech.numero; const A = this.arq(), n = lerSeq(A) + 1; gravar(A.seq, n); const num = A.pre + String(n).padStart(4, '0'); if (!avulso) this.fSet({ numero: num }); return num; }
+  // atend (PR #43, EXT-MIX-1): identidade do atendimento, criada junto com o nº. Vai em cada documento do Cofre e na mídia do IndexedDB, para a
+  // 2ª via nunca pegar foto ou assinatura de outro atendimento que recebeu o mesmo nº.
+  numero(avulso) { if (!avulso && this.state.fech && this.state.fech.numero) return this.state.fech.numero; const A = this.arq(), n = lerSeq(A) + 1; gravar(A.seq, n); const num = A.pre + String(n).padStart(4, '0'); if (!avulso) { this._atend = { num, id: `${num}@${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}` }; this.fSet({ numero: num, atend: this._atend.id }); } return num; }
   imprimir(tipo, doc) {
-    const num = AVULSO.includes(tipo) ? this.numero(true) : this.numero();
-    doc = { ...doc, numero: num };
+    const num = AVULSO.includes(tipo) ? this.numero(true) : this.numero(), F0 = this.state.fech;
+    const atend = AVULSO.includes(tipo) ? '' : (F0 && F0.numero === num && F0.atend) || (this._atend && this._atend.num === num ? this._atend.id : '');
+    doc = { ...doc, numero: num, ...(atend ? { atend } : {}) };
     // Preventiva de 6 meses no Cofre (PR #21): a mesma data da etiqueta impressa no orçamento e na garantia vira o dia de chamar o cliente.
     const em = Date.now(), prev = AVULSO.includes(tipo) ? {} : { prevEm: maisMeses(em, 6), prevData: dataBR(maisMeses(em, 6)) };
-    const A = this.arq(), lista = lerDocs(A.docs), reg = { ...doc, tipo, numero: num, em, ...prev }; lista.push(reg); gravar(A.docs, lista);
+    // Revisão (PR #43, C7-REV): orçamento já emitido com este nº no mesmo atendimento e reemitido com outro total sai como "Revisão N" no PDF,
+    // no [data-print] e no Cofre. Reemitido com o mesmo total, segue a revisão anterior.
+    const A = this.arq(), lista = lerDocs(A.docs);
+    if (tipo === 'orc') { const ant = lista.filter(d => d.tipo === 'orc' && d.numero === num && (d.atend || '') === (atend || '')), ult = ant[ant.length - 1];
+      if (ult) { const r0 = Math.max(1, ...ant.map(d => Number(d.rev) || 1)); doc = { ...doc, rev: Number(doc.total) !== Number(ult.total) ? r0 + 1 : r0 }; } }
+    const reg = { ...doc, tipo, numero: num, em, ...prev }; lista.push(reg); gravar(A.docs, lista);
     // Plano A ([data-print]). PR #41: o app nunca chama window.print() sozinho, na bateria e no uso real (no Chrome do técnico e na extensão a janela
     // nativa congelava a aba). O [data-print] fica montado para a impressão por ação explícita (Ctrl+P ou menu Imprimir); só nela o título da aba
     // vira o nome do arquivo (beforeprint) e volta no afterprint. O arquivo sai pelo PDF nativo (Planos B e C).
-    this._nomeImpressao = pdfNome(tipo, num, doc.cliente);
+    this._nomeImpressao = pdfNome(tipo, doc.rev > 1 ? `${num}-Rev${doc.rev}` : num, doc.cliente);
     this.setState({ printDoc: tipo, printDados: doc });
     // Planos B e C: o arquivo .pdf real, gerado no aparelho, com foto e assinatura do atendimento (orçamento e garantia).
     const F = this.state.fech, comImg = (tipo === 'orc' || tipo === 'gar') && F;
@@ -1931,12 +1998,14 @@ class Component extends DCLogic {
   }
   // 2ª via do Cofre: reemite o documento gravado e baixa o .pdf em 1 toque. Com o atendimento ainda aberto, leva a foto e a assinatura.
   pdfCofre(reg) {
-    const F = this.state.fech, mesmo = F && F.numero && F.numero === reg.numero && (reg.tipo === 'orc' || reg.tipo === 'gar');
+    const F = this.state.fech, mesmo = F && F.numero && F.numero === reg.numero && (!reg.atend || F.atend === reg.atend) && (reg.tipo === 'orc' || reg.tipo === 'gar');
     this.gerarPdf(reg, { onde: 'cofre', num: reg.numero, via2: true }, { via2: true, foto: mesmo ? F.foto : null, assin: mesmo ? F.assin : null }, () => this.pdfBaixar());
   }
+  // EXT-MIX-4 (PR #43): ficha que abre com outra marca ou fluido (extra.sel) não muda o equipamento do orçamento em andamento: o equipamento dele
+  // fica em selOrc e volta quando o orçamento reabre (componentDidUpdate). Trocar Marca, BTU/h ou Fluido pela pílula é escolha do técnico e vale.
   abrir(tela, extra) {
     this.precarregarModulo(tela);
-    this.setState(st => ({ prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, foco: null, ...extra }));
+    this.setState(st => ({ ...(extra && extra.sel && !st.selOrc && rascunhoComDono(st.fech) ? { selOrc: st.sel } : {}), prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, foco: null, ...extra }));
   }
   componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('beforeprint', this._antesImpressao); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._focoT); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
   pRef = React.createRef();
@@ -1949,6 +2018,9 @@ class Component extends DCLogic {
     if (!el) this._pFoco = null;
   }
   componentDidUpdate(prev, prevSt) {
+    // Rascunho (EXT-RAS): grava quando o fechamento muda; o modo Amostra e a simulação de cadastro nunca gravam.
+    if (this.state.fOpen && this.state.selOrc) this.setState({ sel: this.state.selOrc, selOrc: null });
+    if (this.state.fech !== this._fechGravado) { this._fechGravado = this.state.fech; if (!this.state.amostra && (this.props.simular || 'real') === 'real') gravarRascunho(this.state.fech); }
     if (prev.tema !== this.props.tema && this.state.tema !== null) this.setState({ tema: null });
     // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #c1c0c1 no Titânio e no Claro.
     const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
@@ -2102,7 +2174,7 @@ class Component extends DCLogic {
     const w2 = (pw - 8) / 2;
     const B = st.base, marca = st.sel.marca, marcaUni = !OPTS.marca.list.includes(marca);
     const usarMarca = (nome) => { const n = limparTxt(nome).replace(/\s+/g, ' ').trim().slice(0, 24); if (!n) return; const c = [...OPTS.marca.list, ...MARCAS_OEM].find(x => norm(x) === norm(n)) || n;
-      this.setState(x => ({ sel: { ...x.sel, marca: c }, drawer: null, marcaLivre: '', ...(c !== x.sel.marca ? { ntcS: null, oemPlat: null, codExp: null } : {}) })); };
+      this.setState(x => ({ sel: { ...x.sel, marca: c }, selOrc: null, drawer: null, marcaLivre: '', ...(c !== x.sel.marca ? { ntcS: null, oemPlat: null, codExp: null } : {}) })); };
     const fonteTxt = (ids) => (ids || '').split(';').filter(Boolean).map(id => { const f = B && B.fon[id]; return f ? `${id} · ${f.emissor}` : id; }).join('; ');
     // Fonte humana da curva (PR #27): o manual de serviço da lista ("Manual Midea Inverter"), ou a tabela do fabricante.
     const manualDe = (ids, m) => { const L = String(ids || '').split(';').filter(Boolean), id = L.find(i => B && B.fon[i] && /manual|service/i.test(B.fon[i].titulo)) || L[0], f = id && B ? B.fon[id] : null; return id ? `${id} · ${f && /manual|service/i.test(f.titulo) ? 'Manual' : 'Tabela'} ${m}${f && /inverter/i.test(f.titulo) ? ' Inverter' : ''}` : ''; };
@@ -2146,9 +2218,14 @@ class Component extends DCLogic {
     }
     // Resistência: negativa é erro de digitação; zero é leitura real (curto ou escala), registrada mas fora do cálculo.
     const Tn = med(st.ntcT), Rlido = med(st.ntcR), rZero = Rlido === 0;
-    // Sensor em curto ou aberto (PR #40): abaixo de 0,15 kΩ é curto; acima de 450 kΩ é aberto. O aviso aponta direto para o orçamento do sensor.
-    const ntcFalha = Rlido !== null && Rlido > 0 && Rlido < 0.15 ? 'curto' : Rlido !== null && Rlido > 450 ? 'aberto' : '';
     const tCurva = pts.length ? [Math.min(...pts.map(p => p[0])), Math.max(...pts.map(p => p[0]))] : null, rCurva = pts.length ? [Math.min(...pts.map(p => p[1])), Math.max(...pts.map(p => p[1]))] : null;
+    // Curto e aberto (PR #43, EXT-NTC-2): pelos extremos da curva do sensor escolhido, sem limite fixo. Aberto provável = acima de 1,15 × a maior
+    // resistência da tabela daquela curva; curto provável = abaixo do menor valor da tabela ÷ 1,15 (nunca acima de 0,15 kΩ de piso). O LG 200K de
+    // descarga a 5 °C (465 kΩ) e a 0 °C (585,6 kΩ) está na própria curva e passa. Sem curva escolhida, só o piso de 0,15 kΩ e o teto de 450 kΩ do PR #40.
+    // Fora da curva não prova o defeito: o texto dá a causa provável e o que medir no multímetro antes de substituir (EXT-CAT).
+    const ntcLimAberto = rCurva ? rCurva[1] * 1.15 : 450, ntcLimCurto = rCurva ? Math.max(0.15, rCurva[0] / 1.15) : 0.15;
+    const fkn = (v) => `${v < 10 ? v.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) : Math.round(v).toLocaleString('pt-BR')} kΩ`, ntcLimTxt = fkn(ntcLimAberto), ntcCurtoTxt = fkn(ntcLimCurto);
+    const ntcFalha = Rlido !== null && Rlido > 0 && Rlido < ntcLimCurto ? 'curto' : Rlido !== null && Rlido > ntcLimAberto ? 'aberto' : '';
     const rFora = Rlido !== null && Rlido > 0 && !!rCurva && (Rlido < rCurva[0] || Rlido > rCurva[1]);
     const Rn = Rlido !== null && Rlido > 0 && !rFora ? Rlido : null;
     const rexp = Tn !== null && pts.length ? interp(pts.map(p => p[0]), pts.map(p => p[1]), Tn) : null;
@@ -2203,13 +2280,21 @@ class Component extends DCLogic {
     // Modo cliente ao lado (PR #20): 1 toque esconde custo, bastidor, custo interno, combos e lucro; ficam itens, valores e o termômetro.
     const discreto = !!F && !!F.discreto;
     const txtItem = (x, k, pad) => String(x[k] !== undefined && x[k] !== null ? x[k] : pad || '').trim();
-    // Faixa elástica (PR #35): sem faixa digitada pelo técnico, o valor cobrado acima do teto da tabela leva a faixa junto (nunca entrega ao
-    // cliente que o preço passou da tabela); dentro ou abaixo do teto, a faixa exata da tabela. Faixa digitada no item vale como está.
-    const faixaPad = (x) => { const c = catDe(x); return c ? faixaHonesta(c, st.sel.btu, x.n) : ''; };
+    // Editor do item: o campo da faixa abre com a faixa real da tabela do porte (item do catálogo) ou vazio (item livre).
+    const faixaPad = (x) => { const c = catDe(x); return c ? faixaPorte(c, st.sel.btu) : ''; };
+    // Para o cliente (EXT-FAIXA): faixa da tabela só no item do catálogo até 1,6× o teto; texto digitado diferente da tabela, ou item livre,
+    // vira "Estimativa técnica do serviço executado"; campo apagado pelo técnico não sai.
+    const faixaCli = (x) => {
+      const c = catDe(x), dig = x.faixa !== undefined && x.faixa !== null ? String(x.faixa).trim() : null, tab = c ? faixaPorte(c, st.sel.btu) : '';
+      if (dig === '') return '';
+      if (dig !== null && dig !== tab) return `${FAIXA_EST}: ${dig}`;
+      const of = c ? faixaTabela(c, st.sel.btu, x.n) : '';
+      return of ? `${FAIXA_TAB}: ${of}` : '';
+    };
     const jCli = (x) => {
       if (!justif) return { j: '', faixa: '', eco: '' };
-      const c = catDe(x), j = txtItem(x, 'j', c && c.j), fx = txtItem(x, 'faixa', faixaPad(x)), e = txtItem(x, 'eco', c && c.eco);
-      return { j: j ? `Procedimento incluso: ${ponto(j)}` : '', faixa: fx ? `Faixa de referência de tabela (peça + mão de obra + garantia): ${fx}` : '', eco: e ? `Economia preventiva: ${ponto(e)}` : '' };
+      const c = catDe(x), j = txtItem(x, 'j', c && c.j), e = txtItem(x, 'eco', c && c.eco);
+      return { j: j ? `Procedimento incluso: ${ponto(j)}` : '', faixa: faixaCli(x), eco: e ? `Economia preventiva: ${ponto(e)}` : '' };
     };
     // Painel de Lucro Líquido (bastidor): lucro = total − custo das peças (estoque R$ 0 ou compra pelo custo médio) − custo interno.
     // Termômetro: abaixo do piso da tabela (ou do custo) = vermelho; entre o piso e o típico = âmbar; no típico ou acima = verde. Nada trava o avanço.
@@ -2330,13 +2415,20 @@ class Component extends DCLogic {
     const bDif = bEst && bAp ? (bAp - bEst) / bEst * 100 : null;
     const fmtBTU = (v) => Math.round(v).toLocaleString('pt-BR') + ' BTU/h';
     const capRec = bEst ? OPTS.btu.list.map(btuNum).find(v => v >= bEst) || null : null;
-    const LD = st.laudo, lMed = [ptOk ? `Sucção ${st.ptP.trim()} psig, tubo ${st.ptT.trim()} °C (${st.sel.fluido})` : '', ntcReg ? `Sensor NTC: ${st.ntcR.trim()} kΩ a ${ntcTReg ? st.ntcT.trim() : '—'} °C${rZero ? ' (zero: fora do cálculo)' : ''}` : '', bEst ? `Carga térmica estimada: ${fmtBTU(bEst)} para aparelho de ${st.sel.btu} BTU/h` : ''].filter(Boolean).join('\n') || 'Nenhuma medição registrada nesta sessão.';
+    const LD = st.laudo, lMedL = [ptOk ? `Sucção ${st.ptP.trim()} psig, tubo ${st.ptT.trim()} °C (${st.sel.fluido})` : '', ntcReg ? `Sensor NTC: ${st.ntcR.trim()} kΩ a ${ntcTReg ? st.ntcT.trim() : '—'} °C${rZero ? ' (zero: fora do cálculo)' : ''}` : '', bEst ? `Carga térmica estimada: ${fmtBTU(bEst)} para aparelho de ${st.sel.btu} BTU/h` : ''].filter(Boolean);
+    // Medições no laudo (PR #43, EXT-MIX-3): as leituras da sessão (PT/SH, NTC, carga térmica) só entram com a confirmação do técnico para este
+    // cliente. Trocou o cliente do laudo, a confirmação cai: a medição de um atendimento nunca vai sozinha para o laudo do seguinte.
+    const lMedQuais = [ptOk ? 'PT/SH' : '', ntcReg ? 'Sensor NTC' : '', bEst ? 'carga térmica' : ''].filter(Boolean);
+    const lMedOk = lMedL.length > 0 && typeof LD.medCli === 'string' && norm(LD.medCli) === norm(String(LD.cli || '').trim());
+    const lMed = lMedOk ? lMedL.join('\n') : lMedL.length ? 'Medições desta sessão não incluídas neste laudo.' : 'Nenhuma medição registrada nesta sessão.';
     const lOk = LD.cli.trim().length >= 2 && LD.cons.trim() && LD.conc.trim();
     const docs = lerDocs(this.arq().docs);
-    const porNum = {}; docs.forEach(d => { const k = d.numero || '—'; (porNum[k] = porNum[k] || []).push(d); });
+    // Agrupamento por atendimento (PR #43, EXT-IMP-5): nº + atend. Dois atendimentos com o mesmo nº nunca dividem o cartão; documento antigo sem
+    // atend agrupa pelo nº, como antes.
+    const porNum = {}; docs.forEach(d => { const k = (d.numero || '—') + (d.atend ? '#' + d.atend : ''); (porNum[k] = porNum[k] || []).push(d); });
     // Preventiva de 6 meses (PR #21): prevEm gravado no documento; atendimento salvo antes disso usa a data de emissão + 6 meses (a mesma regra da etiqueta).
-    const cofreL = Object.entries(porNum).map(([n, ds]) => { const ult = ds[ds.length - 1], base = ds.find(d => !AVULSO.includes(d.tipo)) || ult, dias = diasGar(base.garantia); const venc = dias ? base.em + dias * DIA : null;
-      const prevEm = AVULSO.includes(base.tipo) ? null : base.prevEm || maisMeses(base.em, 6); return { n, ds, ult, base, venc, prevEm }; }).sort((a, b) => b.ult.em - a.ult.em);
+    const cofreL = Object.entries(porNum).map(([k, ds]) => { const n = ds[0].numero || '—'; const ult = ds[ds.length - 1], base = ds.find(d => !AVULSO.includes(d.tipo)) || ult, dias = diasGar(base.garantia); const venc = dias ? base.em + dias * DIA : null;
+      const prevEm = AVULSO.includes(base.tipo) ? null : base.prevEm || maisMeses(base.em, 6); return { k, n, ds, ult, base, venc, prevEm }; }).sort((a, b) => b.ult.em - a.ult.em);
     const zap = (tel, msg) => window.open(zapUrl(tel, msg), '_blank', 'noopener');
     // Envio direto no WhatsApp (PR #26): Carga térmica, Laudo, PMOC e Recibo avulso, timbrados pelo titular e com a mesma validação do PDF.
     // Número do cliente só quando é celular conhecido (o do atendimento com o mesmo nome, ou o do PMOC); sem número, o técnico escolhe a conversa.
@@ -2356,25 +2448,78 @@ class Component extends DCLogic {
     const cofreF = cofreK === 'prev' ? cofreL.filter(c => c.prevEm).sort((a, b) => a.prevEm - b.prevEm) : cofreK === 'garantia' ? cofreL.filter(garAtiva).sort((a, b) => a.venc - b.venc) : cofreL;
     // Backup da carteira (PR #30): exporta os documentos do Cofre em gelopro-cofre-backup.json e importa mesclando sem duplicar
     // (mesmo tipo + número + emissão). A numeração sobe até o maior número restaurado: o próximo documento nunca repete um número do backup.
-    const cofreExportar = () => {
-      const A = this.arq(), lista = lerDocs(A.docs), dados = { app: 'GeloPro', versao: 'v5.2', tipo: 'cofre-backup', formato: 1, exportadoEm: new Date().toISOString(), amostra: !!st.amostra, seq: lerSeq(A), docs: lista };
+    // PR #43 (EXT-BKP): a foto e a assinatura (JPEG do IndexedDB) de cada orçamento e garantia vão no arquivo, em base64 (midia), e voltam para o
+    // IndexedDB na importação: a 2ª via no outro aparelho sai com as 2 imagens.
+    const cofreExportar = async () => {
+      const A = this.arq(), lista = lerDocs(A.docs), P = window.GeloProPDF, midia = {};
+      const pares = [...new Map(lista.filter(d => d.tipo === 'orc' || d.tipo === 'gar').map(d => [`${d.numero}|${d.atend || ''}`, d])).values()];
+      if (P && P.exportarMidia) for (const d of pares) { const m = await P.exportarMidia(d.numero, d.atend || '').catch(() => null); if (m) midia[P.chaveMidia(d.numero, d.atend || '')] = { ...m, numero: d.numero }; }
+      const nM = Object.keys(midia).length, dados = { app: 'GeloPro', versao: 'v5.2', tipo: 'cofre-backup', formato: 2, exportadoEm: new Date().toISOString(), amostra: !!this.state.amostra, seq: lerSeq(A), docs: lista, midia };
       const u = URL.createObjectURL(new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' })), a = document.createElement('a');
       a.href = u; a.download = 'gelopro-cofre-backup.json'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 5000);
-      this.setState({ cofreMsg: { ok: true, t: '✓ Backup exportado', x: `${lista.length} ${lista.length === 1 ? 'documento' : 'documentos'} em gelopro-cofre-backup.json` } });
+      this.setState({ cofreMsg: { ok: true, t: '✓ Backup exportado', x: `${lista.length} ${lista.length === 1 ? 'documento' : 'documentos'}${nM ? ` com foto e assinatura de ${nM} ${nM === 1 ? 'atendimento' : 'atendimentos'}` : ''} em gelopro-cofre-backup.json` } });
+    };
+    // Importação blindada (PR #43): cada documento é conferido antes de entrar (EXT-IMP-1/3/4): tipo conhecido, nº de 1 a 9 dígitos, emissão válida,
+    // total e itens coerentes; arquivo da Amostra nunca entra no Cofre real. O texto passa pelo limparFundo (EXT-SAN-2). Nº já usado no Cofre por
+    // outro cliente (EXT-IMP-5) entra com o sufixo -IMP (0001-IMP), preservando os dois, e a foto e a assinatura do backup seguem o nº com sufixo.
+    const motivoInvalido = (x, A) => {
+      if (!x || typeof x !== 'object' || Array.isArray(x)) return 'não é um documento';
+      if (!DOC_TIPOS.includes(x.tipo)) return 'tipo de documento desconhecido';
+      if (!numDoc({ numero: String(x.numero).replace(/-IMP\d*$/, '') }, A.pre)) return `número inválido (${String(x.numero).slice(0, 12)})`;
+      if (!(typeof x.em === 'number' && Number.isFinite(x.em) && x.em > 0 && x.em < Date.now() + 366 * DIA)) return 'data de emissão inválida';
+      const reais = ['total', 'subtotal', 'desconto'].find(k => x[k] !== undefined && x[k] !== null && !(typeof x[k] === 'number' && Number.isFinite(x[k]) && x[k] >= 0));
+      if (reais) return `${reais} inválido`;
+      if (x.itens !== undefined && !(Array.isArray(x.itens) && x.itens.every(i => i && typeof i === 'object' && !Array.isArray(i) && ['v', 's', 'q'].every(k => i[k] === undefined || i[k] === null || i[k] === '' || Number.isFinite(Number(i[k]))))) ) return 'itens inválidos';
+      if (x.prevEm !== undefined && x.prevEm !== null && !(typeof x.prevEm === 'number' && Number.isFinite(x.prevEm))) return 'data da preventiva inválida';
+      return '';
     };
     const cofreArquivo = (e) => {
       const f = e.target.files && e.target.files[0]; if (!f) return;
-      f.text().then(txt => {
+      f.text().then(async txt => {
         e.target.value = '';
         let d = null; try { d = JSON.parse(txt); } catch (er) { d = null; }
         const lista = Array.isArray(d) ? d : d && Array.isArray(d.docs) ? d.docs : null;
-        if (!lista || lista.some(x => !x || typeof x !== 'object' || !x.numero || !x.tipo)) return this.setState({ cofreMsg: { ok: false, t: '✗ Arquivo de backup inválido', x: 'Use o gelopro-cofre-backup.json exportado pelo Cofre do GeloPro.' } });
-        const A = this.arq(), atual = lerDocs(A.docs), chave = (x) => `${x.tipo}|${x.numero}|${x.em}`, ja = new Set(atual.map(chave)), novos = lista.filter(x => !ja.has(chave(x)));
+        const invalido = (x) => this.setState({ cofreMsg: { ok: false, t: '✗ Arquivo de backup inválido', x } });
+        if (!lista) return invalido('Use o gelopro-cofre-backup.json exportado pelo Cofre do GeloPro.');
+        const A = this.arq();
+        if (!this.state.amostra && ((d && d.amostra === true) || lista.some(x => x && /^AMOSTRA-/.test(String(x.numero))))) return invalido('Este backup é do modo Amostra e não entra no Cofre real.');
+        const erros = [], validos = [];
+        lista.forEach((x, i) => { const m = motivoInvalido(x, A); if (m) erros.push(`documento ${i + 1}: ${m}`); else validos.push(limparFundo(x)); });
+        if (!validos.length) return invalido(`Nenhum documento válido (${erros.slice(0, 3).join('; ')}).`);
+        const atual = lerDocs(A.docs), cliN = (x) => norm(String(x.cliente || '').trim()), dono = {};
+        atual.forEach(x => (dono[x.numero] = dono[x.numero] || new Set()).add(cliN(x)));
+        const chave = (x, n) => `${x.tipo}|${n}|${x.em}`, ja = new Set(atual.flatMap(x => [chave(x, x.numero), ...(x.numOrig ? [chave(x, x.numOrig)] : [])]));
+        let seq = Math.max(lerSeq(A), ...validos.map(x => numDoc(x, A.pre))), renum = 0; const remap = {}, novos = [];
+        validos.forEach(x => {
+          if (ja.has(chave(x, x.numero))) return;
+          let num = x.numero; const k = `${x.numero}|${cliN(x)}`;
+          if (remap[k]) num = remap[k];
+          else if (dono[x.numero] && !dono[x.numero].has(cliN(x))) { let s2 = 1; do { num = `${x.numero}-IMP${s2 > 1 ? s2 : ''}`; s2++; } while (dono[num] && !dono[num].has(cliN(x))); remap[k] = num; renum++; }
+          const reg = num === x.numero ? x : { ...x, numero: num, numOrig: x.numero };
+          novos.push(reg); ja.add(chave(x, x.numero)); (dono[num] = dono[num] || new Set()).add(cliN(x));
+        });
         const todos = [...atual, ...novos].sort((a, b) => (a.em || 0) - (b.em || 0)); gravar(A.docs, todos);
-        const maior = Math.max(0, ...todos.map(x => numDoc(x, A.pre))), sq = Number(ler(A.seq)); if (maior > (Number.isSafeInteger(sq) && sq > 0 ? sq : 0)) gravar(A.seq, maior);
-        const rep = lista.length - novos.length;
-        this.setState({ cofreMsg: { ok: true, t: '✓ Carteira restaurada', x: `${novos.length} ${novos.length === 1 ? 'documento novo' : 'documentos novos'}${rep ? ` · ${rep} já ${rep === 1 ? 'estava' : 'estavam'} no Cofre` : ''}` } });
+        const maior = Math.max(seq, ...todos.map(x => numDoc(x, A.pre))), sq = Number(ler(A.seq)); if (maior > (Number.isSafeInteger(sq) && sq > 0 ? sq : 0)) gravar(A.seq, maior);
+        // Mídia do backup (EXT-BKP): só para os documentos que entraram agora, no nº final (renumerado ou não).
+        const P = window.GeloProPDF, M = d && d.midia && typeof d.midia === 'object' && !Array.isArray(d.midia) ? d.midia : {};
+        let nMid = 0;
+        if (P && P.importarMidia) for (const [chave, m] of Object.entries(M)) {
+          const n = m && typeof m.numero === 'string' ? m.numero : chave.split('__')[0], alvo = remap[`${n}|${norm(String((m && m.cliente) || '').trim())}`] || n;
+          if (!novos.some(x => x.numero === alvo && (x.numOrig || x.numero) === n)) continue;
+          if (await P.importarMidia(alvo, m).catch(() => null)) nMid++;
+        }
+        const rep = validos.length - novos.length;
+        this.setState({ cofreMsg: { ok: true, t: '✓ Carteira restaurada', x: [`${novos.length} ${novos.length === 1 ? 'documento novo' : 'documentos novos'}`, rep ? `${rep} já ${rep === 1 ? 'estava' : 'estavam'} no Cofre` : '',
+          nMid ? `foto e assinatura de ${nMid} ${nMid === 1 ? 'atendimento' : 'atendimentos'}` : '', renum ? `${renum} ${renum === 1 ? 'atendimento' : 'atendimentos'} com nº já usado por outro cliente ${renum === 1 ? 'entrou' : 'entraram'} com o sufixo -IMP` : '',
+          erros.length ? `${erros.length} ${erros.length === 1 ? 'recusado' : 'recusados'}: ${erros.slice(0, 2).join('; ')}` : ''].filter(Boolean).join(' · ') } });
       });
+    };
+    // Quarentena do Cofre (EXT-ARM): aviso no Cofre e o texto bruto em 1 toque.
+    const quarK = quarentenas(this.arq().docs), quarUlt = quarK[quarK.length - 1]; let quarBruto = null; try { quarBruto = quarUlt ? localStorage.getItem(quarUlt) : null; } catch (e) {}
+    const cofreQuarExportar = () => {
+      if (!quarBruto) return;
+      const u = URL.createObjectURL(new Blob([quarBruto], { type: 'text/plain' })), a = document.createElement('a');
+      a.href = u; a.download = `gelopro-cofre-quarentena-${quarUlt.split('.').pop()}.txt`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 5000);
     };
 
     // Central de Avisos do Sininho (PR #22). Cada aviso tem categoria, data e hora e ação de 1 toque. Data e hora: a 1ª vez que o aviso apareceu
@@ -2497,7 +2642,7 @@ class Component extends DCLogic {
     // Vereditos com cor (PR #27, Lei Zero-Leitura): SH na faixa oficial Elgin; desvio do NTC ≤ ±5 % verde, até ±10 % âmbar, acima vermelho.
     const shVer = sh === null ? null : !shFx ? 'semref' : sh < num(shFx[1]) ? 'baixo' : sh > num(shFx[2]) ? 'alto' : 'ok';
     const ntcVer = dif === null ? null : Math.abs(dif) <= 5 ? 'ok' : Math.abs(dif) <= 10 ? 'alerta' : 'falha';
-    const shTag = !shVer ? null : shVer === 'ok' ? TG('ok', `✓ DENTRO ${shFx[1]}–${shFx[2]} °C`) : shVer === 'alto' ? TG('alerta', '▲ ALTO → ADICIONAR (LÍQUIDO)') : shVer === 'baixo' ? TG('alerta', '▼ BAIXO → RECOLHER') : TG('sem-ref', 'SEM FAIXA');
+    const shTag = !shVer ? null : shVer === 'ok' ? TG('ok', `✓ DENTRO ${shFx[1]}–${shFx[2]} °C`) : shVer === 'alto' ? TG('alerta', '▲ ALTO → PROVÁVEL FALTA DE FLUIDO') : shVer === 'baixo' ? TG('alerta', '▼ BAIXO → PROVÁVEL EXCESSO DE FLUIDO') : TG('sem-ref', 'SEM FAIXA');
     const ntcTag = !ntcVer ? null : ntcVer === 'ok' ? TG('ok', '✓ DESVIO ≤ ±5 %') : ntcVer === 'alerta' ? TG('alerta', `${dif > 0 ? '▲' : '▼'} DESVIO ATÉ ±10 %`) : TG('falha', '✗ DESVIO > ±10 %');
     const abrirMod = (k) => () => lock ? this.vazio('upg', { modK: k }) : this.abrir(k, { modK: k });
     if (sh !== null) {
@@ -2549,10 +2694,10 @@ class Component extends DCLogic {
       invLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cons: invTxt ? (x.laudo.cons ? x.laudo.cons + '\n' : '') + (invUni ? `Checklist Inverter (procedimento universal, ${marca}):\n` : 'Checklist Inverter (manual Midea Mission2 3D):\n') + invTxt : x.laudo.cons } })),
       invFonte: invUni ? 'Procedimento universal de bancada (Base Técnica GeloPro): valores físicos da retificação de 220 V CA, do teste de diodo e do equilíbrio entre as fases.' : `${fonteTxt('F20')}; ${fonteTxt('F21')}. Status: oficial de outro país.`,
       ntcTolTipo: rZero || ntcFalha ? 'aviso' : tolR && dentro !== null ? (dentro ? 'sucesso' : 'aviso') : 'info',
-      ntcTolT: rZero ? 'Resistência zero não entra no cálculo' : ntcFalha === 'curto' ? 'Sensor NTC em curto (abaixo de 0,15 kΩ)' : ntcFalha === 'aberto' ? 'Sensor NTC aberto (acima de 450 kΩ)' : !tolR ? 'Sem tolerância na base' : dentro === null ? `Tolerância declarada: R25 ±${tolR.r25_tol_pct}% e B ±${tolR.beta_tol_pct}%` : dentro ? `Dentro da tolerância (${faixaTxt})` : `Fora da tolerância (${faixaTxt})`,
+      ntcTolT: rZero ? 'Resistência zero não entra no cálculo' : ntcFalha === 'curto' ? `Sensor NTC em curto provável (abaixo de ${ntcCurtoTxt}${rCurva ? ', além da curva' : ''})` : ntcFalha === 'aberto' ? `Sensor NTC aberto provável (acima de ${ntcLimTxt}${rCurva ? ', além da curva' : ''})` : !tolR ? 'Sem tolerância na base' : dentro === null ? `Tolerância declarada: R25 ±${tolR.r25_tol_pct}% e B ±${tolR.beta_tol_pct}%` : dentro ? `Dentro da tolerância (${faixaTxt})` : `Fora da tolerância (${faixaTxt})`,
       ntcTolX: rZero ? 'Zero indica curto no sensor, no conector ou na fiação, ou multímetro fora da escala. Confira antes de comparar com a curva.'
-        : ntcFalha === 'curto' ? 'Resistência quase zero: sensor, conector ou fiação em curto. Troque o sensor e orce agora em "Orçar substituição de sensor NTC".'
-        : ntcFalha === 'aberto' ? 'Resistência muito alta: sensor rompido, conector solto ou fio partido. Troque o sensor e orce agora em "Orçar substituição de sensor NTC".' : !tolR ? 'Compare a diferença com a tolerância do fabricante antes de condenar o sensor.' : dentro === null ? `${tolR.escopo}. Informe temperatura e resistência.` : dentro ? `${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).` : `Repita a medição em outra temperatura e confira conector e fiação antes de condenar o sensor. ${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).`,
+        : ntcFalha === 'curto' ? 'Causa provável: sensor, conector ou fiação em curto. Confirme no multímetro com o sensor desconectado da placa antes de substituir; confirmado, orce em "Orçar substituição de sensor NTC".'
+        : ntcFalha === 'aberto' ? 'Causa provável: sensor rompido, conector solto ou fio partido. Confirme no multímetro o conector e a continuidade do fio antes de substituir; confirmado, orce em "Orçar substituição de sensor NTC".' : !tolR ? 'Compare a diferença com a tolerância do fabricante antes de condenar o sensor.' : dentro === null ? `${tolR.escopo}. Informe temperatura e resistência.` : dentro ? `${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).` : `Repita a medição em outra temperatura e confira conector e fiação antes de condenar o sensor. ${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).`,
       telaPmoc: st.tela === 'pmoc', telaScripts: st.tela === 'scripts',
       pmSet: Object.fromEntries(['amb', 'end', 'cid', 'tel', 'prop', 'propDoc', 'propCont', 'rt', 'reg', 'art', 'ambs', 'emerg'].map(k => [k, pmS(k)])),
       pmAmb: PM.amb, pmEnd: PM.end, pmCid: PM.cid, pmTel: PM.tel, pmProp: PM.prop, pmPropDoc: PM.propDoc, pmPropCont: PM.propCont, pmRt: PM.rt, pmReg: PM.reg, pmArt: PM.art, pmAmbs: PM.ambs, pmEmerg: PM.emerg,
@@ -2632,7 +2777,10 @@ class Component extends DCLogic {
       lCli: LD.cli, lSetCli: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, cli: v } })); }, lCliE: LD.tentou && LD.cli.trim().length < 2 ? 'erro' : 'normal',
       lConst: LD.cons, lSetConst: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, cons: v } })); },
       lConc: LD.conc, lSetConc: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, conc: v } })); },
-      lMed, lErro: LD.tentou && !lOk,
+      lMed, lErro: LD.tentou && !lOk, lTemMed: lMedL.length > 0, lMedOn: lMedOk ? 'true' : 'false',
+      lMedBtn: lMedOk ? 'Tirar as medições deste laudo' : `Continuar atendimento de ${st.sel.marca} ${st.sel.btu} BTU/h: incluir ${lMedL.length === 1 ? 'a medição' : `as ${lMedL.length} medições`} (${lMedQuais.join(', ')})`,
+      lMedNovoVis: !lMedOk, lMedLimpar: () => this.setState(x => ({ ptP: '', ptT: '', ntcR: '', ntcT: '', btu: { ...ATEND0(x.btu).btu }, laudo: { ...x.laudo, medCli: null } })),
+      lMedToggle: () => this.setState(x => ({ laudo: { ...x.laudo, medCli: lMedOk ? null : String(x.laudo.cli || '').trim() } })),
       // Laudo de inviabilidade (PR #35): a troca do aparelho vira orçamento na hora, com desinstalação e instalação no porte do topo.
       lOrcar: () => this.abrirFech(['desinstalacao', 'instalacao_split'], true, ['desinstalacao', 'instalacao_split']),
       lPdf: () => { if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } })); this.imprimir('laudo', { cliente: LD.cli, equip, medicoes: lMed, constatacoes: LD.cons, conclusao: LD.conc }); },
@@ -2643,7 +2791,7 @@ class Component extends DCLogic {
           'Monto o orçamento de um aparelho novo com instalação. É só responder por aqui.']));
       },
       cVazio: !cofreL.length,
-      cofre: cofreF.map(c => { const aberto = st.cofreSel === c.n, b = c.base, nome = tit ? tit.nome : '';
+      cofre: cofreF.map(c => { const aberto = st.cofreSel === c.k, b = c.base, nome = tit ? tit.nome : '';
         // Convite da preventiva para o aparelho daquele atendimento (Marca + BTU/h); documento antigo sem marca/btu tira os dois do texto do equipamento.
         const prevData = c.prevEm ? b.prevData || dataBR(c.prevEm) : '', aparelho = aparelhoDe(b);
         const prevMsg = `Olá, ${b.cliente}. Aqui é ${nome}. Está na hora da manutenção preventiva de 6 meses do seu ar-condicionado${aparelho ? ' ' + aparelho : ''} (recomendada para ${prevData}). A higienização completa preserva o rendimento e a economia de energia. Quer agendar um horário?`;
@@ -2660,21 +2808,27 @@ class Component extends DCLogic {
           c.venc ? (restam < 0 ? TG('prazo', `garantia vencida ${ddaa(c.venc)}`, { cls: 'encerrado' }) : restam <= 30 ? TG('prazo', `▲ garantia até ${ddaa(c.venc)}`, { cls: 'alerta' }) : TG('prazo', `✓ garantia até ${ddaa(c.venc)}`, { cls: 'ok' })) : null].filter(Boolean);
         return { tipo: `Nº ${c.n}`, tipoDoc: TG('doc', (NOMES[tipoP] || 'Documento').toUpperCase(), { cls: { orc: 'orc', laudo: 'laudo', rec: 'rec', reca: 'rec', gar: 'gar', pmoc: 'pmoc' }[tipoP] || '' }),
           aparelho, marca: ap.m, temMarca: !!ap.m, temLogo: OPTS.marca.list.includes(ap.m), marcaC: 'tag tag-marca' + (OPTS.marca.list.includes(ap.m) ? ' com-logo' : ''), btu: ap.bt, temBtu: !!ap.bt, temAparelho: !!(ap.m || ap.bt), dados,
-          docsTxt: `Documentos: ${[...new Set(c.ds.map(d => NOMES[d.tipo]))].join(', ')}`, t: b.cliente || 'Cliente', exp: aberto ? 'true' : 'false',
-          acao: () => this.setState(x => ({ cofreSel: x.cofreSel === c.n ? null : c.n })), aberto,
+          docsTxt: `Documentos: ${[...new Set(c.ds.map(d => NOMES[d.tipo] + (d.rev > 1 ? ` (Revisão ${d.rev})` : '')))].join(', ')}`, t: b.cliente || 'Cliente', exp: aberto ? 'true' : 'false',
+          acao: () => this.setState(x => ({ cofreSel: x.cofreSel === c.k ? null : c.k })), aberto,
           // 2ª via em PDF (PR #25): o último documento de cada tipo do atendimento, reemitido e baixado em 1 toque.
-          pdfs: [...new Map(c.ds.map(d => [d.tipo, d])).values()].map(d => ({ k: d.tipo, l: `Baixar PDF: ${NOMES[d.tipo] || 'Documento'}`, acao: () => this.pdfCofre(d) })),
+          pdfs: [...new Map(c.ds.map(d => [d.tipo, d])).values()].map(d => ({ k: d.tipo, l: `Baixar PDF: ${NOMES[d.tipo] || 'Documento'}${d.rev > 1 ? ` · Revisão ${d.rev}` : ''}`, acao: () => this.pdfCofre(d) })),
           temPdf: aberto && !!PP && PP.onde === 'cofre' && PP.num === c.n,
           gSelo: c.venc ? (Date.now() > c.venc ? 'Garantia vencida' : 'Garantia vigente') : 'Sem garantia', gTipo: c.venc ? (Date.now() > c.venc ? 'aviso' : 'sucesso') : 'neutro', msgs,
           temPrev: !!c.prevEm, prevTxt: `Próxima preventiva: ${prevData}`, prevC: `tag tag-prazo tag-l${prevRestam !== null && prevRestam <= 15 ? ' alerta' : ''}`, prevAria: `Chamar ${b.cliente || 'o cliente'} para a preventiva no WhatsApp`, prevZap: () => zap(b.tel, prevMsg) };
       }),
       temCofreFiltros: cofreL.length > 0, cofreFiltroK: cofreK,
+      temCofreQuar: !!quarBruto, cofreQuarExportar,
+      cofreQuarTxt: quarBruto ? `Parte do Cofre deste aparelho estava ilegível (${quarBruto.length.toLocaleString('pt-BR')} caracteres, guardados em ${dataHora(Number(quarUlt.split('.').pop()))}). O conteúdo original ficou intacto em quarentena e não é apagado pelos próximos documentos${quarK.length > 1 ? ` (${quarK.length} cópias; o botão baixa a mais recente)` : ''}. Baixe o arquivo para recuperar os registros.` : '',
       cofreExportar, cofreArquivo, cofreImportar: () => { const i = document.querySelector('[data-cofre-arquivo]'); if (i) i.click(); },
       temCofreMsg: !!st.cofreMsg, cofreMsgT: st.cofreMsg ? st.cofreMsg.t : '', cofreMsgX: st.cofreMsg ? st.cofreMsg.x : '', cofreMsgC: `tag ${st.cofreMsg && !st.cofreMsg.ok ? 'tag-falha' : 'tag-ok'}`,
       cofreFiltros: [['todos', 'Todos', cofreL.length], ['prev', 'Preventiva 6 meses', cofreL.filter(c => c.prevEm).length], ['garantia', 'Garantia ativa', cofreL.filter(garAtiva).length]].map(([k, l, n]) => ({ k, ...pilula(cofreK === k, `${l} (${n})`, () => this.setState({ cofreFiltro: k, cofreSel: null })) })),
       cofreFiltroVazio: cofreL.length > 0 && !cofreF.length, cofreFiltroVazioT: cofreK === 'prev' ? 'Nenhum atendimento com preventiva de 6 meses' : 'Nenhuma garantia ativa no Cofre',
       fAberto: !!(st.fOpen && F), fRef: this.fRef, fSair, fKicker: 'Fechamento', fTitulo: PASSOS[fp - 1], fPassoTxt: `Passo ${fp} de 4`,
       fP1: fp === 1, fP2: fp === 2, fP3: fp === 3, fP4: fp === 4,
+      // Rascunho guardado (EXT-MIX-2): "Retomar" troca o orçamento atual pelo guardado (e guarda o atual, se ele já tiver cliente ou item).
+      fTemGuardado: fp === 1 && !!st.fechGuardado, fGuardadoT: st.fechGuardado ? `Orçamento de ${String(st.fechGuardado.cliNome || '').trim() || 'outro atendimento'} guardado` : '',
+      fRetomarT: st.fechGuardado ? `Continuar atendimento de ${String(st.fechGuardado.cliNome || '').trim() || 'outro atendimento'}` : '', fDescartar: () => this.setState({ fechGuardado: null }),
+      fRetomar: () => this.setState(x => x.fechGuardado ? { fech: x.fechGuardado, fechGuardado: rascunhoComDono(x.fech) ? x.fech : null } : null),
       fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: limparTxt(e.target.value) }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
       fCliTel: F ? F.cliTel : '', fSetCliTel: (e) => this.fSet({ cliTel: e.target.value }),
       fEquip: equip, fTemDiag: !!r && !discreto, fDiag: r ? `Hipótese interna (não vai ao cliente): ${r.t}` : '',
@@ -2702,11 +2856,12 @@ class Component extends DCLogic {
         edExp: ed ? 'true' : 'false', edAberto: ed, edTxt: ed ? 'Fechar a edição deste item' : 'Editar textos e faixa deste item', edToggle: () => this.fSet(f => ({ itemEd: f.itemEd === i ? null : i })),
         jVal: txtItem(x, 'j', c && c.j), fVal: txtItem(x, 'faixa', faixaPad(x)), eVal: ecoV, setJ: setX('j'), setF: setX('faixa'), setE: setX('eco'),
         // Auto-justificador (PR #35): em qualquer item (do catálogo ou do "+ Adicionar item"), 1 toque preenche procedimento e economia que
-        // estiverem vazios e a faixa compatível com o valor digitado. Sem valor válido, o botão fica desligado.
-        autoJOff: !(x.n > 0), autoJ: () => { if (!(x.n > 0)) return; this.fSet(f => ({ itens: f.itens.map((y, j) => j !== i ? y : { ...y, j: txtItem(y, 'j', c && c.j) ? y.j : AUTO_J, faixa: c && faixaDe(c, st.sel.btu).max !== null && x.n > faixaDe(c, st.sel.btu).max * TETO_ELASTICO + 0.004 ? faixaPorte(c, st.sel.btu) : faixaElastica(x.n), eco: txtItem(y, 'eco', c && c.eco) ? y.eco : AUTO_ECO }) })); },
+        // estiverem vazios. Sem valor válido, o botão fica desligado. Faixa (PR #43, EXT-FAIXA): no item do catálogo, a faixa real da tabela do
+        // porte; no item livre, nenhuma (nunca uma faixa tirada do preço).
+        autoJOff: !(x.n > 0), autoJ: () => { if (!(x.n > 0)) return; this.fSet(f => ({ itens: f.itens.map((y, j) => j !== i ? y : { ...y, j: txtItem(y, 'j', c && c.j) ? y.j : AUTO_J, faixa: c && faixaPorte(c, st.sel.btu) ? faixaPorte(c, st.sel.btu) : y.faixa, eco: txtItem(y, 'eco', c && c.eco) ? y.eco : AUTO_ECO }) })); },
         edAjuda: discreto ? 'Campo de texto vazio não sai no documento nem no WhatsApp.' : 'Campo de texto vazio não sai no documento nem no WhatsApp. O custo da peça é só seu e entra no lucro líquido.',
         custoRot: `Custo real da peça do item ${i + 1} (só para você)`, custoVal: x.custo === undefined || x.custo === null ? '' : typeof x.custo === 'number' ? v2(x.custo) : x.custo, setCustoTxt: setX('custo'), custoE: reaisErro(x.custo) ? 'erro' : 'normal',
-        ariaJ: `Procedimento incluso do item ${i + 1}`, ariaF: `Faixa de referência de tabela do item ${i + 1}`, ariaE: `Economia preventiva do item ${i + 1}`, ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itemEd: null, itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
+        ariaJ: `Procedimento incluso do item ${i + 1}`, ariaF: c ? `Faixa de referência de tabela do item ${i + 1}` : `Estimativa técnica do serviço do item ${i + 1}`, fRot: c ? 'Faixa de referência de tabela' : 'Estimativa técnica do serviço (opcional)', autoJRot: c ? 'Gerar justificativa e faixa de tabela p/ este valor' : 'Gerar justificativa técnica p/ este item', ariaE: `Economia preventiva do item ${i + 1}`, ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itemEd: null, itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
       fAddItem: () => this.fSet(f => ({ itens: [...f.itens, { d: '', v: '' }] })),
       // Catálogo "+ Adicionar peça ou serviço da tabela" (bastidor do técnico).
       fCatTxt: F && F.catAberto ? 'Fechar a tabela de peças e serviços' : '+ Adicionar peça ou serviço da tabela', fCatExp: F && F.catAberto ? 'true' : 'false', fCatAberto: !!(F && F.catAberto) && CAT.length > 0,
@@ -2795,7 +2950,7 @@ class Component extends DCLogic {
       fKeys: fp === 1 ? [{ l: 'Sair', pri: false, aria: 'Sair e manter o rascunho', acao: fSair }, { l: 'Continuar', pri: true, verde: true, aria: 'Continuar para a garantia', acao: avancar }]
         : fp === 4 ? [{ l: 'Voltar', pri: false, aria: 'Voltar', acao: voltarF }, { l: 'Concluir', pri: true, aria: 'Concluir e começar outro atendimento', acao: () => this.setState(x => ATEND0(x.btu)) }]
         : [{ l: 'Voltar', pri: false, aria: 'Voltar', acao: voltarF }, { l: fp === 3 ? 'Aprovar' : 'Continuar', pri: true, verde: true, aria: fp === 3 ? 'Aprovar o orçamento' : 'Continuar', acao: avancar }],
-      temPrint: !!pd && (AVULSO.includes(pd) ? !!st.printDados : !!F), dTipo: PDF_TITULO[pd] || 'Orçamento', dNum: AVULSO.includes(pd) && st.printDados ? st.printDados.numero : F ? F.numero : '', dData: dataBR(Date.now()),
+      temPrint: !!pd && (AVULSO.includes(pd) ? !!st.printDados : !!F), dTipo: (PDF_TITULO[pd] || 'Orçamento') + (st.printDados && st.printDados.rev > 1 ? ` · Revisão ${st.printDados.rev}` : ''), dNum: AVULSO.includes(pd) && st.printDados ? st.printDados.numero : F ? F.numero : '', dData: dataBR(Date.now()),
       dTit: tit ? { nome: tit.nome, doc: tit.docFmt, pix: tit.pix, cidade: tit.cidade } : {},
       dCli: AVULSO.includes(pd) && st.printDados ? st.printDados.cliente : F ? F.cliNome + (F.cliTel ? ' · ' + F.cliTel : '') : '', dEquip: AVULSO.includes(pd) && st.printDados && st.printDados.equip !== undefined ? st.printDados.equip : equip, dItensVis: pd !== 'rec' && !AVULSO.includes(pd), dItensTit: pd === 'gar' ? 'Serviços cobertos' : 'Itens',
       dItens: fi.map(x => { const jc = jCli(x); return { d: descQ(x), vf: x.q > 1 && x.s !== null ? BRL.format(x.s) : x.n != null ? BRL.format(x.n) : '—', temJ: !!(jc.j || jc.faixa || jc.eco), j: jc.j, faixa: jc.faixa, temE: !!jc.eco, eco: jc.eco }; }), dTotal: BRL.format(fTotal),
@@ -2882,6 +3037,11 @@ class Component extends DCLogic {
       avisoCats: AVISO_CATS.map(([k, l]) => ({ k, ...pilula(avCat === k, `${l} (${k === 'todos' ? avisos.length : avisos.filter(a => a.cat === k).length})`, () => this.setState({ avisoCat: k })) })),
       avisoItens: avLista.map(a => ({ k: a.k, cat: a.cat, catTag: TG(...(AVISO_TAG[a.cat] || ['sem-ref', ''])), em: String(a.em), quando: dataHora(a.em), t: a.t, ico: a.ico, cor: AVISO_COR[a.cat], chips: a.chips || [], temChips: !!(a.chips && a.chips.length),
         novo: (st.avisosNovos || []).includes(a.k), temAcoes: a.acoes.length > 0, acoes: a.acoes, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)' })),
+      temAtendAtivo: rascunhoComDono(F) || lMedL.length > 0,
+      atendAtivoT: `Atendimento em andamento: ${F && String(F.cliNome || '').trim() ? String(F.cliNome).trim() : 'cliente não informado'} · ${st.sel.marca} ${st.sel.btu} BTU/h${lMedL.length ? ` · ${lMedL.length} ${lMedL.length === 1 ? 'medição' : 'medições'}` : ''}`,
+      temAtendContinuar: rascunhoComDono(F), atendCols: rascunhoComDono(F) ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
+      atendContinuarT: `Continuar atendimento de ${F && String(F.cliNome || '').trim() ? String(F.cliNome).trim() : 'orçamento aberto'}`, atendContinuar: () => this.abrirFech(),
+      novoAtend: () => this.setState(x => ATEND0(x.btu)),
       irTitular: () => this.vazio('tit'),
       irLeitura: () => this.vazio('leit'),
       irOrcamento: () => this.abrirFech(),
@@ -3001,7 +3161,7 @@ class Component extends DCLogic {
       resKeys: [
         PC && PC.tecInicio && r && !r.tec ? { l: 'Medir com instrumento', aria: 'Medir com instrumento: abrir a checagem de técnico', pri: false, amarelo: true, onClick: () => this.setState(x => ({ tela: 'etapa', etapa: PC.tecInicio, res: null, pk: null, dica: false })) }
           : { l: 'Refazer', aria: 'Refazer', pri: false, onClick: () => this.setState({ ...RESET }) },
-        { l: 'Montar orçamento', aria: 'Montar orçamento com a peça ou serviço sugerido', pri: true, verde: true, onClick: () => this.abrirFech(rServ) },
+        { l: 'Montar orçamento', aria: 'Montar orçamento com a peça ou serviço sugerido', pri: true, verde: true, onClick: () => this.abrirFech(rServ, false, null, true) },
       ],
       vIconeNome: m ? m.i : 'info', vTitulo: m ? m.vt : '', vTexto: m ? m.vx : '',
       
@@ -3031,7 +3191,7 @@ class Component extends DCLogic {
       opcoesSel: dSel ? OPTS[d].list.map(label => {
         const on = st.sel[d] === label;
         // Gaveta Marca: emblema da marca na pastilha à esquerda (LogoMarca); BTU/h e Fluido só com texto.
-        return { label, on, logo: d === 'marca' ? label : '', sel: on ? 'true' : 'false', borda: on ? '1.5px solid var(--gp-primary)' : '1px solid var(--gp-outline-variant)', onClick: () => { if (performance.now() - (this._gavetaEm || 0) < GAVETA_TRAVA) return; this.setState(x => ({ sel: { ...x.sel, [d]: label }, drawer: null, ...(d === 'marca' && label !== x.sel.marca ? { ntcS: null, oemPlat: null } : {}) })); } };
+        return { label, on, logo: d === 'marca' ? label : '', sel: on ? 'true' : 'false', borda: on ? '1.5px solid var(--gp-primary)' : '1px solid var(--gp-outline-variant)', onClick: () => { if (performance.now() - (this._gavetaEm || 0) < GAVETA_TRAVA) return; this.setState(x => ({ sel: { ...x.sel, [d]: label }, selOrc: null, drawer: null, ...(d === 'marca' && label !== x.sel.marca ? { ntcS: null, oemPlat: null } : {}) })); } };
       }) : [],
       busca: st.busca, setBusca: (e) => this.setState({ busca: e.target.value }),
       fichasInfo: catF.length ? (() => { const nF = fichasF.reduce((t, f) => t + nEnt(f), 0), nC = catF.reduce((t, f) => t + nEnt(f), 0); return `${nF === nC ? nC : nF + ' de ' + nC} fichas. Cada uma abre o percurso, a tabela ou a ferramenta real.`; })() : 'A base técnica ainda está carregando.',

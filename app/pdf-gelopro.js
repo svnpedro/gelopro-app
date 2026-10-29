@@ -309,19 +309,41 @@
     catch (e) { ok(null); }
   }));
   const copia = (g) => g && g.bytes ? { bytes: new Uint8Array(g.bytes), w: g.w, h: g.h } : null;
-  // Junta com o que já está guardado: um documento sem foto não apaga a foto gravada antes para o mesmo nº.
+  // PR #43 (EXT-MIX-1): chave composta por atendimento. Com m.atend (identidade criada no app junto com o nº), a mídia fica em "<nº>__<atend>":
+  // outro atendimento que receba o mesmo nº (Cofre e contador apagados, IndexedDB intacto) grava e lê outra chave e nunca herda foto nem
+  // assinatura. Sem atend (chamada antiga ou documento de antes do PR #43), a chave é o nº, com a trava por cliente do PR #29.
+  const chaveMidia = (num, atend) => { const k = String(num || '').trim(); return !k ? '' : atend ? `${k}__${atend}` : k; };
   async function salvarMidia(num, m) {
-    const k = String(num || '').trim(); if (!k || !m) return null;
+    const k = m ? chaveMidia(num, m.atend) : ''; if (!k) return null;
     const [foto, assinatura] = await Promise.all([jpeg(m.foto, 1600).catch(() => null), jpeg(m.assinatura, 1000).catch(() => null)]);
     if (!foto && !assinatura) return null;
     const ant = (await pedido('readonly', (st) => st.get(k))) || {};
-    const reg = { foto: copia(foto) || ant.foto || null, assinatura: copia(assinatura) || ant.assinatura || null, cliente: m.cliente || ant.cliente || '', em: Date.now() };
+    // Mesmo registro: dentro do mesmo atendimento a garantia sem foto mantém a foto do orçamento; sem atend, o mesmo cliente (ou em branco).
+    const mesmo = !!m.atend || !m.cliente || !ant.cliente || m.cliente === ant.cliente;
+    const reg = { foto: copia(foto) || (mesmo ? ant.foto || null : null), assinatura: copia(assinatura) || (mesmo ? ant.assinatura || null : null), cliente: m.cliente || (mesmo ? ant.cliente || '' : ''), atend: m.atend || '', em: Date.now() };
     return (await pedido('readwrite', (st) => st.put(reg, k))) === null ? null : reg;
   }
-  async function lerMidia(num) {
-    const k = String(num || '').trim(); if (!k) return null;
+  async function lerMidia(num, atend, cliente) {
+    const k = chaveMidia(num, atend); if (!k) return null;
     const reg = await pedido('readonly', (st) => st.get(k));
-    return reg && (reg.foto || reg.assinatura) ? reg : null;
+    if (!reg || (!reg.foto && !reg.assinatura)) return null;
+    if (!atend && reg.cliente && cliente && reg.cliente !== cliente) return null;
+    return reg;
+  }
+  // Backup do Cofre (PR #43, EXT-BKP): a mídia de um nº em JSON (JPEG em base64) e de volta para o IndexedDB.
+  const paraB64 = (g) => { if (!g || !g.bytes) return null; let s = ''; const u = g.bytes; for (let i = 0; i < u.length; i += 8192) s += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return { jpeg: btoa(s), w: g.w, h: g.h }; };
+  const deB64 = (o) => { try { if (!o || typeof o.jpeg !== 'string' || !(o.w > 0) || !(o.h > 0)) return null; const bin = atob(o.jpeg), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u[0] === 0xFF && u[1] === 0xD8 ? { bytes: u, w: o.w, h: o.h } : null; } catch (e) { return null; } };
+  async function exportarMidia(num, atend) {
+    const k = chaveMidia(num, atend); if (!k) return null;
+    const reg = await pedido('readonly', (st) => st.get(k));
+    if (!reg || (!reg.foto && !reg.assinatura)) return null;
+    return { foto: paraB64(reg.foto), assinatura: paraB64(reg.assinatura), cliente: reg.cliente || '', atend: reg.atend || '' };
+  }
+  async function importarMidia(num, m) {
+    const k = m && typeof m === 'object' ? chaveMidia(num, typeof m.atend === 'string' ? m.atend : '') : ''; if (!k) return null;
+    const foto = deB64(m.foto), assinatura = deB64(m.assinatura); if (!foto && !assinatura) return null;
+    const reg = { foto, assinatura, cliente: typeof m.cliente === 'string' ? m.cliente : '', atend: typeof m.atend === 'string' ? m.atend : '', em: Date.now() };
+    return (await pedido('readwrite', (st) => st.put(reg, k))) === null ? null : reg;
   }
 
   // ── API ──
@@ -343,12 +365,12 @@
     // Só com o mesmo cliente gravado na 1ª via: um nº reaproveitado (sequência zerada) nunca leva a imagem de outro atendimento.
     const comImg = d.tipo === 'orc' || d.tipo === 'gar', cli = (d.cliente && d.cliente.nome) || '';
     if (comImg && d.via2 && d.numero && (!d.foto || !d.assinatura)) {
-      const m = await lerMidia(d.numero).catch(() => null);
-      if (m && (!m.cliente || !cli || m.cliente === cli)) { if (!d.foto && m.foto) d.foto = m.foto; if (!d.assinatura && m.assinatura) d.assinatura = m.assinatura; }
+      const m = await lerMidia(d.numero, d.atend || '', cli).catch(() => null);
+      if (m) { if (!d.foto && m.foto) d.foto = m.foto; if (!d.assinatura && m.assinatura) d.assinatura = m.assinatura; }
     }
     const [foto, assin] = await Promise.all([jpeg(d.foto, 1600).catch(() => null), jpeg(d.assinatura, 1000).catch(() => null)]);
     // 1ª via com foto ou assinatura: guarda o JPEG já convertido pelo nº do documento, para a 2ª via sair completa depois de "Concluir".
-    if (comImg && !d.via2 && d.numero && (foto || assin)) await salvarMidia(d.numero, { foto, assinatura: assin, cliente: cli }).catch(() => null);
+    if (comImg && !d.via2 && d.numero && (foto || assin)) await salvarMidia(d.numero, { foto, assinatura: assin, cliente: cli, atend: d.atend || '' }).catch(() => null);
     const imgs = [];
     if (foto) imgs.push(Object.assign(foto, { nome: 'Im' + (imgs.length + 1) }));
     if (assin) imgs.push(Object.assign(assin, { nome: 'Im' + (imgs.length + 1) }));
@@ -412,5 +434,5 @@
     if (!embutido()) return pode ? 'falhou' : 'sem-suporte';
     return texto && await copiar(texto) ? 'embutido-resumo' : 'embutido';
   }
-  window.GeloProPDF = { gerar, nomeArquivo, baixar, compartilhar, copiar, resumo, embutido, salvarMidia, lerMidia, jpeg, quebrar, largura, A4: [PW, PH] };
+  window.GeloProPDF = { gerar, nomeArquivo, baixar, compartilhar, copiar, resumo, embutido, salvarMidia, lerMidia, exportarMidia, importarMidia, chaveMidia, jpeg, quebrar, largura, A4: [PW, PH] };
 })();
