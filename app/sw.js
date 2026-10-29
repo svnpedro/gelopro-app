@@ -1,7 +1,7 @@
 // GeloPro · Service worker offline (PR #43, C9-OFFLINE; PR #44, núcleo local). Sem sinal, "puxar para atualizar" não derruba mais o app.
 // PR #44: React, ReactDOM, Babel, o gerador de QR (vendor/) e as fontes (fontes/) vêm do próprio pacote, sem CDN. No install o SW já baixa o
-// núcleo local (NUCLEO): o app e suas peças, support.js, vendor/*, fontes/*, marca/*, ref/* e manifest.json. Assim o app abre offline com as
-// mesmas fontes desde o 1º acesso, sem depender do que a página carregou antes de o SW ativar.
+// núcleo local (NUCLEO): o app e suas peças, support.js, vendor/*, fontes/* (Roboto, Roboto Mono, Figtree e, desde o PR #47, Lato Medium), marca/*,
+// ref/* e manifest.json. Assim o app abre offline com as mesmas fontes desde o 1º acesso, sem depender do que a página carregou antes de o SW ativar.
 // O Babel (vendor/babel-standalone-7.29.0.min.js, 3,1 MB) fica no pacote mas fora do NUCLEO: o support.js só o pede para x-import de .jsx/.tsx,
 // que nenhuma peça usa. Se algum dia for pedido, entra no cache pelo caminho normal do fetch.
 // Rede primeiro, com prazo: com sinal, a resposta vem fresca do servidor e a cópia do cache é atualizada; se a rede não responder em 3 s e houver
@@ -21,6 +21,8 @@ const NUCLEO = [
   'vendor/react-18.3.1.production.min.js', 'vendor/react-dom-18.3.1.production.min.js', 'vendor/qrcode-generator-1.4.4.js',
   'fontes/roboto-latin-wght-normal.woff2', 'fontes/roboto-latin-ext-wght-normal.woff2', 'fontes/roboto-mono-latin-wght-normal.woff2',
   'fontes/roboto-mono-latin-ext-wght-normal.woff2', 'fontes/figtree-latin-wght-normal.woff2', 'fontes/figtree-latin-ext-wght-normal.woff2',
+  // PR #47: Lato Medium (500) do slogan do topo, latin e latin-ext, no install como as demais fontes.
+  'fontes/lato-latin-500-normal.woff2', 'fontes/lato-latin-ext-500-normal.woff2',
   'marca/gelopro-logo-completa.png', 'marca/gelopro-mascote.png', 'marca/gelopro-wordmark.png',
   'ref/acetinado-sedoso.css', 'ref/acetinado-sedoso.svg', 'ref/camera.png', 'ref/tex-borracha.png', 'ref/tex-face.png',
   // PR #46: a base técnica (tabela de preços, percursos, códigos, curvas NTC) também entra no install. Sem isso, um CSV que terminava de baixar

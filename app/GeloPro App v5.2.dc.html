@@ -20,6 +20,9 @@
 @font-face{font-family:'Roboto Mono';font-style:normal;font-display:swap;font-weight:600 800;src:url(fontes/roboto-mono-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
 @font-face{font-family:'Figtree';font-style:normal;font-display:swap;font-weight:700 800;src:url(fontes/figtree-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
 @font-face{font-family:'Figtree';font-style:normal;font-display:swap;font-weight:700 800;src:url(fontes/figtree-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+/* PR #47: Lato Medium (500, Lato 2.015) só para o slogan do topo. Licença em fontes/LICENSE-lato.txt. */
+@font-face{font-family:'Lato';font-style:normal;font-display:swap;font-weight:500;src:url(fontes/lato-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
+@font-face{font-family:'Lato';font-style:normal;font-display:swap;font-weight:500;src:url(fontes/lato-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
 </style>
 <link href="ref/acetinado-sedoso.css" rel="stylesheet">
 <style>
@@ -159,6 +162,17 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 /* Olho de Águia (PR #26), só em telas de até 340 px (320 px e zoom do sistema): o dock aproxima as 6 teclas (vão de 4 para 2 px) para cada
    uma ter 48 px de toque e o rótulo "NTC/BTU" ficar em 14 px; a grade da Home mantém 48 px por cartão e rola por dentro quando a altura acaba. */
 @media (max-width:340px){[data-dock-barra]{padding-left:2px !important;padding-right:2px !important;}nav[aria-label="Módulos"]{gap:2px !important;}[data-grade-sintomas]{grid-auto-rows:minmax(66px,1fr) !important;}}
+/* Slogan do topo (PR #47, Pedro): Lato Medium (500, fontes/lato-*-500-normal.woff2) com espaçamento aberto de 0.05em, sempre em 1 linha.
+   Medido no Chromium com a Lato 2.015: a frase "Inteligência & Diagnóstico em Climatização" ocupa 21,01 em (178,6 px em 8,5 px; 231,1 px em 11 px).
+   Com 0.12em ela ocupava 23,95 em (203,6 px em 8,5 px) e o slogan desceria já abaixo de 386 px, levando o topo a 125 px em 360 e 375; o Pedro
+   escolheu 0.05em para manter 112 px a partir de 360 px.
+   Na coluna ao lado do urso, o corpo é a largura da coluna ÷ 21,15 (0,7 % de folga), de 8,5 a 11 px. A coluna mede a largura interna do topo menos
+   156 px; abaixo de 180 px de coluna (topo interno < 336 px, tela < 360 px) o piso de 8,5 px não cabe: o slogan desce para baixo do urso e usa a
+   largura inteira do topo (o botão da marca + as 2 colunas de 48 px e os 2 vãos de 4 px do Sininho e da chavinha = +104 px). A linha da marca
+   ganha 13 px (2 de vão + 11 de linha) para ele; nada passa por baixo do Sininho nem da chavinha. O slogan descido não recebe toque
+   (pointer-events:none): a área de toque da marca continua só a do botão, que termina antes do Sininho. */
+[data-topo-slogan]{font-family:'Lato','Roboto',sans-serif;font-weight:500;letter-spacing:0.05em;font-size:clamp(8.5px, calc(100cqw / 21.15), 11px);}
+@container gp-topo (max-width:335.98px){[data-topo-linha]{margin-bottom:13px;}[data-topo-slogan]{position:absolute;left:0;top:calc(100% + 2px);width:calc(100% + 104px);max-width:none !important;pointer-events:none;font-size:clamp(8.5px, calc((100cqw + 156px) / 21.15), 11px);}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:1ms !important;}}
 @media print{@page{size:A4;margin:12mm}html,body{background:#fff !important}body *{visibility:hidden !important}[data-print],[data-print] *{visibility:visible !important}[data-print]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important}[data-print],[data-print] *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}[data-print] [data-doc-fechamento],[data-print] [data-doc-foto-bloco],[data-print] [data-doc-assinatura],[data-print] [data-doc-preventiva]{page-break-inside:avoid;break-inside:avoid}}
 </style>
@@ -180,18 +194,19 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
     <div inert="{{ inerte }}" aria-hidden="{{ fundoOculto }}" style="position:relative;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;">
       <div style="flex:1;min-height:0;box-sizing:border-box;padding:0 6px 4px;display:flex;flex-direction:column;gap:{{ colGap }};">
 
-        <header style="flex:none;display:flex;flex-direction:column;gap:10px;padding:0 6px;">
+        <header data-topo="" style="flex:none;display:flex;flex-direction:column;gap:10px;padding:0 6px;container:gp-topo / inline-size;">
           <div data-topo-linha="" style="display:grid;grid-template-columns:minmax(0,1fr) 48px 48px;column-gap:4px;align-items:start;">
             <!-- Marca no topo (PR #45/#46): urso oficial e, na coluna à direita dele, empilhados dentro dos mesmos 46 px: o wordmark GeloPRO gravado no
                  metal (letras do PNG oficial como máscara; "Gelo" #091e42, "PRO" #0a3a9a, sombra interna e filete de luz), o slogan oficial em 1 linha e o
-                 nome do titular. O topo volta à altura da base (~112 px). O slogan escala com a largura real da coluna (cqw, 7 a 11 px): em 320 px a coluna
-                 tem 140 px. Exceção G-L1 só em [data-topo-slogan] (≥ 7 px) e [data-topo-nome] (≥ 11 px). O botão fica na 1ª coluna do grid e nunca passa
-                 por baixo do Sininho nem da chavinha. -->
-            <button type="button" aria-label="{{ topoAria }}" data-topo-marca="" onClick="{{ irTitular }}" style="grid-column:1;grid-row:1;min-width:0;min-height:48px;box-sizing:border-box;margin:0;padding:1px 0 0;border:0;background:transparent;display:flex;align-items:center;gap:6px;text-align:left;cursor:pointer;" style-hover="filter:brightness(1.06);" style-active="transform:translateY(1px);">
+                 nome do titular. O topo volta à altura da base (~112 px). O botão fica na 1ª coluna do grid e nunca passa por baixo do Sininho nem da
+                 chavinha. PR #47: slogan em Lato Medium com espaçamento aberto, sempre em 1 linha, mínimo 8,5 px (regra [data-topo-slogan] no <style>);
+                 quando a coluna não comporta a frase em 8,5 px, ele desce para baixo do urso, na largura inteira do topo. Exceção G-L1 só em
+                 [data-topo-slogan] (≥ 8,5 px) e [data-topo-nome] (≥ 11 px). -->
+            <button type="button" aria-label="{{ topoAria }}" data-topo-marca="" onClick="{{ irTitular }}" style="position:relative;grid-column:1;grid-row:1;min-width:0;min-height:48px;box-sizing:border-box;margin:0;padding:1px 0 0;border:0;background:transparent;display:flex;align-items:center;gap:6px;text-align:left;cursor:pointer;" style-hover="filter:brightness(1.06);" style-active="transform:translateY(1px);">
               <img data-topo-mascote="" src="marca/gelopro-mascote.png" alt="" width="46" height="46" decoding="async" style="flex:none;display:block;width:46px;height:46px;object-fit:contain;">
               <span data-topo-coluna="" style="flex:1;min-width:0;container-type:inline-size;display:flex;flex-direction:column;align-items:flex-start;gap:1px;">
                 <span data-topo-gravado="" style="flex:none;display:inline-flex;filter:drop-shadow(0 1px 0 rgba(255,255,255,0.75));"><span data-topo-wordmark="" role="img" aria-label="GeloPRO" style="display:block;width:109px;height:20px;background:linear-gradient(180deg,rgba(2,6,13,.45) 0%,rgba(2,6,13,0) 40%),linear-gradient(90deg,#091e42 0 52.6%,#0a3a9a 52.6% 100%);-webkit-mask:url(marca/gelopro-wordmark.png) center / 100% 100% no-repeat;mask:url(marca/gelopro-wordmark.png) center / 100% 100% no-repeat;"></span></span>
-                <span data-topo-slogan="" style="display:block;max-width:100%;white-space:nowrap;color:var(--gp-on-chassis);text-shadow:var(--gp-engrave);font-family:'Roboto',sans-serif;font-weight:500;font-size:clamp(7px, 5cqw, 11px);line-height:11px;letter-spacing:0.01em;">Inteligência &amp; Diagnóstico em Climatização</span>
+                <span data-topo-slogan="" style="display:block;max-width:100%;white-space:nowrap;color:var(--gp-on-chassis);text-shadow:var(--gp-engrave);line-height:11px;">Inteligência &amp; Diagnóstico em Climatização</span>
                 <span data-topo-nome="" style="display:block;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;text-wrap:balance;color:var(--gp-on-chassis);text-shadow:var(--gp-engrave);font:600 11px/13px 'Roboto',sans-serif;">{{ topoNome }}</span>
               </span>
             </button>

@@ -64,8 +64,9 @@
         const controle = !!el.closest('button,[role="button"],[role="tab"],label,[data-rotulo]');
         const curto = txt.length <= 20 && controle;
         // Exceção explícita (PR #45/#46, Pedro): no topo, dentro dos 46 px do urso, o nome do titular ([data-topo-nome], mínimo 11 px) e o slogan
-        // oficial ([data-topo-slogan], 1 linha que escala com a coluna, mínimo 7 px) ficam subordinados à marca. Contraste, peso e corte seguem valendo.
-        const topoMin = el.closest('[data-topo-slogan]') ? 7 : el.closest('[data-topo-nome]') ? 11 : 0;
+        // oficial ([data-topo-slogan], 1 linha que escala com a coluna, mínimo 8,5 px desde o PR #47) ficam subordinados à marca. Contraste, peso e
+        // corte seguem valendo.
+        const topoMin = el.closest('[data-topo-slogan]') ? 8.5 : el.closest('[data-topo-nome]') ? 11 : 0;
         if (topoMin) { if (fs < topoMin) falha('G-L1 tamanho', el, `${fs}px no topo da marca (mínimo ${topoMin})`); }
         else if (fs < 14) falha('G-L1 tamanho', el, `${fs}px (mínimo 14)`);
         else if (fs < 16 && !curto) falha('G-L1 tamanho', el, `${fs}px em texto que informa (mínimo 16)`);
