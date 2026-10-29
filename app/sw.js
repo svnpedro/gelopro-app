@@ -36,6 +36,9 @@ const NUCLEO = [
   '../base-tecnica/pt_r410a_elgin_kpa.csv', '../base-tecnica/pt_r410a_r32_r22.csv',
   // PR #48: curvas NTC com fonte de manual de serviço (Midea TP de descarga, Daikin 10K e 20K, Samsung 10K e IPM).
   '../base-tecnica/ntc_midea_tp.csv', '../base-tecnica/ntc_daikin.csv', '../base-tecnica/ntc_samsung.csv',
+  // PR #50: curvas TCL, Agratto e Elgin (boletim 20 a 30 °C) e códigos conferidos por script contra o PDF de origem. Só pré-cache:
+  // ainda não ligadas ao motor do NTC nem à tela de código no display (aprovação do Pedro).
+  '../base-tecnica/ntc_tcl.csv', '../base-tecnica/ntc_agratto.csv', '../base-tecnica/ntc_elgin_boletim.csv', '../base-tecnica/codigos_erro_conferidos.csv',
 ];
 const guardavel = (u) => /^https?:/.test(u) && !/\/__|chrome-extension:/.test(u);
 const buscar = async (url) => {
