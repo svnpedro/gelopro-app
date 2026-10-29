@@ -18,7 +18,7 @@
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:260,&quot;height&quot;:320},&quot;chave&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;+5511999999999&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;nome&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Refrigeração Amostra&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;cidade&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;São Paulo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;valor&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:120,&quot;tsType&quot;:&quot;number&quot;},&quot;txid&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;ORC0001&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tamanho&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:220,&quot;tsType&quot;:&quot;number&quot;},&quot;estado&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;normal&quot;,&quot;carregando&quot;,&quot;erro&quot;,&quot;desabilitado&quot;],&quot;default&quot;:&quot;normal&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;erroMsg&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;payload&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;string&quot;}}">
-const LIBS = [['qrcode', 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js'], ['GeloProPix', './gelopro-pix.js']];
+const LIBS = [['qrcode', './vendor/qrcode-generator-1.4.4.js'], ['GeloProPix', './gelopro-pix.js']];
 const ESPERA = (window.__gpQRWait = window.__gpQRWait || []);
 const carregar = (cb) => {
   const falta = LIBS.filter(([g]) => !window[g]);
