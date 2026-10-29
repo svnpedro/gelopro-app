@@ -43,7 +43,7 @@ class Component extends DCLogic {
     if (e === 'erro') erroTxt = p.erroMsg || 'Cadastre a chave Pix do titular';
     else if (e === 'desabilitado') erroTxt = 'Disponível com o orçamento preenchido';
     else if (!car) {
-      if (LIBS.some(([g]) => window['__gpErro_' + g])) erroTxt = 'Gerador de QR indisponível sem conexão nesta prévia';
+      if (LIBS.some(([g]) => window['__gpErro_' + g])) erroTxt = 'Gerador de QR indisponível sem conexão';
       else if (!libs) car = true;
       else {
         try {

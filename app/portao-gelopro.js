@@ -63,7 +63,11 @@
         const fs = parseFloat(cs.fontSize), fw = parseInt(cs.fontWeight, 10) || 400, txt = t || el.value || el.placeholder;
         const controle = !!el.closest('button,[role="button"],[role="tab"],label,[data-rotulo]');
         const curto = txt.length <= 20 && controle;
-        if (fs < 14) falha('G-L1 tamanho', el, `${fs}px (mínimo 14)`);
+        // Exceção explícita (PR #45/#46, Pedro): no topo, dentro dos 46 px do urso, o nome do titular ([data-topo-nome], mínimo 11 px) e o slogan
+        // oficial ([data-topo-slogan], 1 linha que escala com a coluna, mínimo 7 px) ficam subordinados à marca. Contraste, peso e corte seguem valendo.
+        const topoMin = el.closest('[data-topo-slogan]') ? 7 : el.closest('[data-topo-nome]') ? 11 : 0;
+        if (topoMin) { if (fs < topoMin) falha('G-L1 tamanho', el, `${fs}px no topo da marca (mínimo ${topoMin})`); }
+        else if (fs < 14) falha('G-L1 tamanho', el, `${fs}px (mínimo 14)`);
         else if (fs < 16 && !curto) falha('G-L1 tamanho', el, `${fs}px em texto que informa (mínimo 16)`);
         else if (fs < 16 && curto && fw < 600) falha('G-L1 tamanho', el, `rótulo ${fs}px peso ${fw} (mínimo 14 px peso 600)`);
         if (fs < 18 && fw < 500) falha('G-L2 peso', el, `peso ${fw} em ${fs}px (mínimo 500)`);

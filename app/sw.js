@@ -6,7 +6,8 @@
 // que nenhuma peça usa. Se algum dia for pedido, entra no cache pelo caminho normal do fetch.
 // Rede primeiro, com prazo: com sinal, a resposta vem fresca do servidor e a cópia do cache é atualizada; se a rede não responder em 3 s e houver
 // cópia guardada, a cópia responde (a rede segue atualizando o cache por trás). Sem sinal, a cópia guardada responde.
-// O resto (base técnica, cenas) segue a lista que a página manda uma vez (offline-gelopro.js), 4 por vez, e o caminho normal de cada GET.
+// A base técnica (../base-tecnica/*.csv) entra no install desde o PR #46. O resto (cenas) segue a lista que a página manda uma vez
+// (offline-gelopro.js), 4 por vez, e o caminho normal de cada GET.
 'use strict';
 const CACHE = 'gelopro-offline-v2';
 const REDE_MS = 3000;
@@ -22,6 +23,15 @@ const NUCLEO = [
   'fontes/roboto-mono-latin-ext-wght-normal.woff2', 'fontes/figtree-latin-wght-normal.woff2', 'fontes/figtree-latin-ext-wght-normal.woff2',
   'marca/gelopro-logo-completa.png', 'marca/gelopro-mascote.png', 'marca/gelopro-wordmark.png',
   'ref/acetinado-sedoso.css', 'ref/acetinado-sedoso.svg', 'ref/camera.png', 'ref/tex-borracha.png', 'ref/tex-face.png',
+  // PR #46: a base técnica (tabela de preços, percursos, códigos, curvas NTC) também entra no install. Sem isso, um CSV que terminava de baixar
+  // depois da lista mandada pela página nunca ia para o cache, e offline a tabela de peças ficava "carregando".
+  '../base-tecnica/FONTES.csv', '../base-tecnica/FONTES_novas.csv', '../base-tecnica/FONTES_tecnico.csv', '../base-tecnica/codigos_erro.csv',
+  '../base-tecnica/codigos_erro_novos.csv', '../base-tecnica/criterios_operacionais.csv', '../base-tecnica/inverter_checklist.csv',
+  '../base-tecnica/ntc_gree.csv', '../base-tecnica/ntc_lg.csv', '../base-tecnica/ntc_lg_descarga.csv', '../base-tecnica/ntc_midea_pontos.csv',
+  '../base-tecnica/ntc_resumo.csv', '../base-tecnica/ntc_tolerancias.csv', '../base-tecnica/percursos_etapas.csv',
+  '../base-tecnica/percursos_resultados.csv', '../base-tecnica/percursos_tecnico_etapas.csv', '../base-tecnica/percursos_tecnico_resultados.csv',
+  '../base-tecnica/piscadas.csv', '../base-tecnica/pmoc_atividades.csv', '../base-tecnica/precos_regionais_2026.csv',
+  '../base-tecnica/pt_r410a_elgin_kpa.csv', '../base-tecnica/pt_r410a_r32_r22.csv',
 ];
 const guardavel = (u) => /^https?:/.test(u) && !/\/__|chrome-extension:/.test(u);
 const buscar = async (url) => {

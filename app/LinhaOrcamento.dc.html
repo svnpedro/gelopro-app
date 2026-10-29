@@ -10,10 +10,10 @@
 <sc-if value="{{ editavel }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
   <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
-    <span data-campo="1" data-foco="{{ focoD }}" style="flex:1 1 100%;min-width:0;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:{{ bordaD }};background:{{ fundo }};box-shadow:{{ rec }};display:flex;align-items:center;">
+    <span data-campo="1" data-foco="{{ focoD }}" style="flex:1 1 100%;min-width:0;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:var(--gp-r-campo, 14px);border:{{ bordaD }};background:{{ fundo }};box-shadow:{{ rec }};display:flex;align-items:center;">
       <textarea aria-label="{{ ariaD }}" rows="1" value="{{ descricao }}" onInput="{{ aoDescricao }}" placeholder="{{ phD }}" disabled="{{ des }}" aria-invalid="{{ invD }}" style="flex:1;min-width:0;min-height:24px;box-sizing:content-box;padding:0;border:0;outline:none;resize:none;overflow:hidden;field-sizing:content;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:{{ corTxt }};--gp-on-surface-variant:{{ corPh }};"></textarea>
     </span>
-    <span data-campo="1" style="flex:1 1 96px;min-width:0;height:56px;box-sizing:border-box;padding:0 12px;border-radius:16px;border:{{ bordaV }};background:{{ fundo }};box-shadow:{{ rec }};display:flex;align-items:center;gap:6px;">
+    <span data-campo="1" style="flex:1 1 96px;min-width:0;height:56px;box-sizing:border-box;padding:0 12px;border-radius:var(--gp-r-campo, 14px);border:{{ bordaV }};background:{{ fundo }};box-shadow:{{ rec }};display:flex;align-items:center;gap:6px;">
       <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:{{ corVar }};">R$</span>
       <input aria-label="{{ ariaV }}" inputMode="decimal" value="{{ valor }}" onInput="{{ aoValor }}" placeholder="0,00" disabled="{{ des }}" aria-invalid="{{ invV }}" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;text-align:right;font:500 16px/24px 'Roboto',sans-serif;color:{{ corTxt }};--gp-on-surface-variant:{{ corPh }};font-variant-numeric:tabular-nums;">
     </span>
