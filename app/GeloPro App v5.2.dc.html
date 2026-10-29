@@ -2260,8 +2260,10 @@ class Component extends DCLogic {
     // Fora da curva não prova o defeito: o texto dá a causa provável e o que medir no multímetro antes de substituir (EXT-CAT).
     // PR #48: curva curta (Samsung, só de 15 a 40 °C) não serve de régua de aberto/curto: um sensor bom a 5 °C passa do máximo dela. Os extremos
     // da curva só valem quando ela desce até 0 °C; senão ficam o piso de 0,15 kΩ e o teto de 450 kΩ do PR #40 (a leitura fora da curva segue avisada).
+    // PR #52 (reteste N4): com curva curta (Samsung 10K e IPM do dissipador, 15 a 40 °C) o teto fixo de 450 kΩ não vale: o IPM no frio passaria
+    // dele sem defeito. Nessas curvas a leitura além da ponta segue a regra das pontas (abaixo); o teto de 450 kΩ fica só para o NTC sem tabela escolhida.
     const rRegua = rCurva && tCurva[0] <= 0 ? rCurva : null;
-    const ntcLimAberto = rRegua ? rRegua[1] * 1.15 : 450, ntcLimCurto = rRegua ? Math.max(0.15, rRegua[0] / 1.15) : 0.15;
+    const ntcLimAberto = rRegua ? rRegua[1] * 1.15 : rCurva ? Infinity : 450, ntcLimCurto = rRegua ? Math.max(0.15, rRegua[0] / 1.15) : 0.15;
     const fkn = (v) => `${v < 10 ? v.toLocaleString('pt-BR', { maximumFractionDigits: 2 }) : Math.round(v).toLocaleString('pt-BR')} kΩ`, ntcLimTxt = fkn(ntcLimAberto), ntcCurtoTxt = fkn(ntcLimCurto);
     const ntcFalha = Rlido !== null && Rlido > 0 && Rlido < ntcLimCurto ? 'curto' : Rlido !== null && Rlido > ntcLimAberto ? 'aberto' : '';
     // Faixa mínima e máxima do fabricante ponto a ponto (PR #48, Daikin 10K: Rmin e Rmax da Table 2), quando a curva traz as colunas _min e _max.
@@ -2270,13 +2272,34 @@ class Component extends DCLogic {
       const rows = B.curvas[sn.arquivo_curva], kMin = key.replace(/_kohm$/, '_min_kohm'), kMax = key.replace(/_kohm$/, '_max_kohm');
       if (kMin in (rows[0] || {}) && kMax in (rows[0] || {})) { ptsMin = rows.map(r => [num(r.temp_c), num(r[kMin])]).filter(p => p[0] !== null && p[1] !== null); ptsMax = rows.map(r => [num(r.temp_c), num(r[kMax])]).filter(p => p[0] !== null && p[1] !== null); }
     }
-    const rFora = Rlido !== null && Rlido > 0 && !!rCurva && (Rlido < rCurva[0] || Rlido > rCurva[1]);
+    // PR #48: a tolerância é do sensor (marca e sensor), não só da marca: o TP da Midea (R90 ±3%, B 3950) não herda a do T1 a T4 (R25 ±3%, B ±3%).
+    const tolR = sn && !sn.universal && B && B.tol ? B.tol.find(t => t.marca === sn.marca && t.sensor === sn.sensor) : null;
+    const tolMinMax = !!tolR && ptsMin.length > 1 && ptsMax.length > 1, tolRef = tolR ? num(tolR.t_ref_c) ?? 25 : 25, tolTb = tolR ? num(tolR.beta_tol_pct) : null;
+    // Faixa de tolerância declarada numa temperatura da tabela (nunca fora dela: interp devolve null além das pontas).
+    const tolEm = (t) => {
+      const rt = t !== null && pts.length ? interp(pts.map(p => p[0]), pts.map(p => p[1]), t) : null;
+      if (!tolR || rt === null) return null;
+      if (tolMinMax) { const lo = interp(ptsMin.map(p => p[0]), ptsMin.map(p => p[1]), t), hi = interp(ptsMax.map(p => p[0]), ptsMax.map(p => p[1]), t); return lo !== null && hi !== null ? [lo, hi] : null; }
+      // Sem tolerância de B declarada, vale só a de R: com B exato ela é a mesma em toda a curva (sem fórmula Beta, regra 2 da base).
+      const T = t + 273.15, T0 = tolRef + 273.15, bn = num(tolR.beta_nom), tr = num(tolR.r25_tol_pct) / 100, tb = tolTb !== null && bn !== null ? tolTb / 100 : 0, rs = [];
+      for (const fr of [1 - tr, 1 + tr]) for (const fb of [1 - tb, 1 + tb]) rs.push(fr * (tb ? Math.exp(bn * (fb - 1) * (1 / T - 1 / T0)) : 1));
+      return [rt * Math.min(...rs), rt * Math.max(...rs)];
+    };
+    // PR #52 (reteste N2): leitura além do último ponto da tabela. Compara com o ponto da ponta e a tolerância dele, sem extrapolar valor:
+    // dentro dessa faixa é "no limite da curva" (a leitura vale e o veredito sai pela temperatura medida); além dela, "fora da curva",
+    // com a orientação de medir de novo e orçar. Curva sem tolerância declarada: a faixa da ponta é o próprio valor da tabela.
+    const rAlem = Rlido !== null && Rlido > 0 && !!rCurva && (Rlido < rCurva[0] || Rlido > rCurva[1]);
+    const ponta = rAlem ? (Rlido > rCurva[1] ? pts[0] : pts[pts.length - 1]) : null;
+    const bPonta = ponta ? tolEm(ponta[0]) || [ponta[1], ponta[1]] : null;
+    const noLimite = !!bPonta && Rlido >= bPonta[0] && Rlido <= bPonta[1];
+    const rFora = rAlem && !noLimite;
     const Rn = Rlido !== null && Rlido > 0 && !rFora ? Rlido : null;
     const rexp = Tn !== null && pts.length ? interp(pts.map(p => p[0]), pts.map(p => p[1]), Tn) : null;
     const teq = Rn !== null && pts.length ? interp(pts.map(p => p[1]), pts.map(p => p[0]), Rn) : null;
+    const pontaTxt = ponta ? `${Rlido > rCurva[1] ? 'acima de' : 'abaixo de'} ${fk(ponta[1])} kΩ, ponta de ${f1(ponta[0])} °C da tabela` : '';
     const dif = rexp !== null && Rn !== null ? (Rn - rexp) / rexp * 100 : null;
     const ntcTErro = medErro(st.ntcT) || (Tn !== null && tCurva && rexp === null ? `fora da curva: ${f1(tCurva[0])} a ${f1(tCurva[1])} °C` : '');
-    const ntcRErro = medErro(st.ntcR) || (Rlido !== null && Rlido < 0 ? 'resistência não pode ser negativa' : rFora ? `fora da curva: ${fk(rCurva[0])} a ${fk(rCurva[1])} kΩ; confira escala, conector e fiação` : '');
+    const ntcRErro = medErro(st.ntcR) || (Rlido !== null && Rlido < 0 ? 'resistência não pode ser negativa' : rFora ? `fora da curva: ${fk(rCurva[0])} a ${fk(rCurva[1])} kΩ; meça de novo e, se repetir, orce a troca do sensor` : '');
     const ntcReg = Rn !== null || rZero, ntcTReg = Tn !== null && !ntcTErro;
     const vUpg = st.tela === 'vazio' && st.modo === 'upg';
     const F = st.fech, fp = F ? F.passo : 1, tent = !!F && F.tentou === fp;
@@ -2309,7 +2332,10 @@ class Component extends DCLogic {
     const garCobre = F ? garCobreDe(F.cobre) : '', garNao = F ? garNaoDe(F.naoCobre) : '';
     const semGar = semGarantia(garTxt);
     const fGarLinha = garLinhaDe(garTxt, garCobre, garNao);
-    const equip = `${st.sel.marca}, ${st.sel.btu} BTU/h, ${st.sel.fluido}`;
+    // PR #52 (reteste N1): todo documento e mensagem que cita o equipamento usa o do atendimento (selOrc), não o da ficha aberta no seletor.
+    // Com o Fechamento aberto, selOrc já voltou para sel (componentDidUpdate); fora dele, uma ficha de outra marca não troca o aparelho do cliente.
+    const selA = st.selOrc || st.sel;
+    const equip = `${selA.marca}, ${selA.btu} BTU/h, ${selA.fluido}`;
     const payload = () => pixDe(tit, fTotal, F && F.numero);
     const fItem = (i, k) => (e) => { const v = limparTxt(e.target.value); this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
     const avancar = () => { const ok = fp === 1 ? ok1 : fp === 2 ? ok2 : fp === 3 ? ok3 : true; if (!ok) return this.fSet({ tentou: fp }); if (fp === 3) this.numero(); this.fSet({ passo: Math.min(4, fp + 1), tentou: 0, msg: null }); };
@@ -2441,7 +2467,7 @@ class Component extends DCLogic {
       pdfTemMsg: !!(PP && PP.msg), pdfMsgTipo: PP && PP.msg ? PP.msg[0] : '', pdfMsg: PP && PP.msg ? PP.msg[1] : '',
       pdfBaixar: () => this.pdfBaixar(), pdfCompartilhar: () => this.pdfCompartilhar(), pdfCopiarResumo: () => this.pdfCopiarResumo(),
       pdfFech: !!PP && PP.onde === 'fech' && !!F && fp === 4, pdfLaudo: !!PP && PP.onde === 'laudo' && st.tela === 'laudo', pdfPmoc: !!PP && PP.onde === 'pmoc' && st.tela === 'pmoc', pdfReca: !!PP && PP.onde === 'reca' && st.tela === 'scripts' };
-    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: st.sel.marca, btu: st.sel.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto, bonif: bonif ? bonifLinha : '', fluido: st.sel.fluido });
+    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: selA.marca, btu: selA.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto, bonif: bonif ? bonifLinha : '', fluido: st.sel.fluido });
     const pd = st.printDoc;
     const B2 = st.btu, sB = (k) => (e) => { const v = e.target.value; this.setState(x => ({ btu: { ...x.btu, [k]: v } })); };
     const bA = med(B2.area), bP = String(B2.pes).trim() ? med(B2.pes) : 1, bWv = String(B2.w).trim() ? med(B2.w) : 0, bf = med(B2.sol === 'Sol da tarde' ? B2.f2 : B2.f1), bfp = String(B2.f3).trim() ? med(B2.f3) : 0;
@@ -2459,7 +2485,7 @@ class Component extends DCLogic {
     const bDif = bEst && bAp ? (bAp - bEst) / bEst * 100 : null;
     const fmtBTU = (v) => Math.round(v).toLocaleString('pt-BR') + ' BTU/h';
     const capRec = bEst ? OPTS.btu.list.map(btuNum).find(v => v >= bEst) || null : null;
-    const LD = st.laudo, lMedL = [ptOk ? `Sucção ${st.ptP.trim()} psig, tubo ${st.ptT.trim()} °C (${st.sel.fluido})` : '', ntcReg ? `Sensor NTC: ${st.ntcR.trim()} kΩ a ${ntcTReg ? st.ntcT.trim() : '—'} °C${rZero ? ' (zero: fora do cálculo)' : ''}` : '', bEst ? `Carga térmica estimada: ${fmtBTU(bEst)} para aparelho de ${st.sel.btu} BTU/h` : ''].filter(Boolean);
+    const LD = st.laudo, lMedL = [ptOk ? `Sucção ${st.ptP.trim()} psig, tubo ${st.ptT.trim()} °C (${selA.fluido})` : '', ntcReg ? `Sensor NTC: ${st.ntcR.trim()} kΩ a ${ntcTReg ? st.ntcT.trim() : '—'} °C${rZero ? ' (zero: fora do cálculo)' : ''}` : '', bEst ? `Carga térmica estimada: ${fmtBTU(bEst)} para aparelho de ${selA.btu} BTU/h` : ''].filter(Boolean);
     // Medições no laudo (PR #43, EXT-MIX-3): as leituras da sessão (PT/SH, NTC, carga térmica) só entram com a confirmação do técnico para este
     // cliente. Trocou o cliente do laudo, a confirmação cai: a medição de um atendimento nunca vai sozinha para o laudo do seguinte.
     const lMedQuais = [ptOk ? 'PT/SH' : '', ntcReg ? 'Sensor NTC' : '', bEst ? 'carga térmica' : ''].filter(Boolean);
@@ -2610,21 +2636,9 @@ class Component extends DCLogic {
     const invSet = (id, k) => (v) => { const val = k === 'v' ? v.target.value : v; this.setState(x => ({ inv: { ...x.inv, [id]: { ...(x.inv[id] || {}), [k]: val } } })); };
     const INV_PH = { tensao_pn: 'Ex.: 312 V', ipm: 'Ex.: infinito nos 7 pares', compressor: 'Ex.: 1,6 Ω nos três', motor_dc: 'Ex.: 12 Ω nos três', sensores: 'Ex.: T2 10,4 kΩ a 24 °C' };
     const invTxt = invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return r.r ? `${i + 1}. ${e.titulo}: ${r.r.toLowerCase()}${r.v ? ' (' + r.v + ')' : ''}` : null; }).filter(Boolean).join('\n');
-    // PR #48: a tolerância é do sensor (marca e sensor), não só da marca: o TP da Midea (R90 ±3%, B 3950) não herda a do T1 a T4 (R25 ±3%, B ±3%).
-    const tolR = sn && !sn.universal && B && B.tol ? B.tol.find(t => t.marca === sn.marca && t.sensor === sn.sensor) : null;
-    const tolMinMax = !!tolR && ptsMin.length > 1 && ptsMax.length > 1, tolRef = tolR ? num(tolR.t_ref_c) ?? 25 : 25, tolTb = tolR ? num(tolR.beta_tol_pct) : null;
-    let tolBand = null;
-    if (tolR && rexp !== null && Tn !== null) {
-      if (tolMinMax) {
-        const lo = interp(ptsMin.map(p => p[0]), ptsMin.map(p => p[1]), Tn), hi = interp(ptsMax.map(p => p[0]), ptsMax.map(p => p[1]), Tn);
-        if (lo !== null && hi !== null) tolBand = [lo, hi];
-      } else {
-        // Sem tolerância de B declarada, vale só a de R: com B exato ela é a mesma em toda a curva (sem fórmula Beta, regra 2 da base).
-        const T = Tn + 273.15, T0 = tolRef + 273.15, bn = num(tolR.beta_nom), tr = num(tolR.r25_tol_pct) / 100, tb = tolTb !== null && bn !== null ? tolTb / 100 : 0, rs = [];
-        for (const fr of [1 - tr, 1 + tr]) for (const fb of [1 - tb, 1 + tb]) rs.push(fr * (tb ? Math.exp(bn * (fb - 1) * (1 / T - 1 / T0)) : 1));
-        tolBand = [rexp * Math.min(...rs), rexp * Math.max(...rs)];
-      }
-    }
+    const tolBand = rexp !== null ? tolEm(Tn) : null;
+    // Temperatura e resistência informadas, mas a temperatura passa da tabela: o visor orienta a nova medição (regra 6), sem extrapolar.
+    const tForaN = !rZero && !ntcFalha && !rFora && Tn !== null && Rn !== null && !!tCurva && rexp === null;
     const dentro = tolBand && Rn !== null ? Rn >= tolBand[0] && Rn <= tolBand[1] : null;
     const faixaTxt = tolBand ? `${fk(tolBand[0])}–${fk(tolBand[1])} kΩ` : '';
     const PM = st.pmoc, pmS = (k) => (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ pmoc: { ...x.pmoc, [k]: v } })); };
@@ -2705,7 +2719,7 @@ class Component extends DCLogic {
       diags.push({ ico: 'pt-sh', val: v, ver: falta, verCurto: falta, aria: `Diagnóstico da medição: ${v}, ${st.sel.fluido}. Para o superaquecimento, ${falta}. Toque para completar no PT/SH`, acao: abrirMod('ptsh') });
     }
     if (ntcReg) {
-      const v = rZero ? 'curto ou escala' : dentro !== null ? `${dentro ? 'dentro' : 'fora'} da tolerância` : dif !== null ? `${dif > 0 ? '+' : ''}${f1(dif)} % da curva` : teq !== null ? `≈ ${f1(teq)} °C pela curva` : sens.length ? 'falta o °C do sensor' : 'medir e orçar';
+      const v = rZero ? 'curto ou escala' : rFora ? 'fora da curva' : dentro !== null ? `${dentro ? 'dentro' : 'fora'} da tolerância` : dif !== null ? `${dif > 0 ? '+' : ''}${f1(dif)} % da curva` : teq !== null ? `≈ ${f1(teq)} °C pela curva` : sens.length ? 'falta o °C do sensor' : 'medir e orçar';
       diags.push({ ico: 'sensor-ntc', val: `NTC ${st.ntcR.trim()} kΩ`, ver: v, cor: rZero ? VER_COR.falha : dentro !== null ? (dentro ? VER_COR.ok : VER_COR.falha) : ntcVer ? VER_COR[ntcVer] : '', verCurto: v.replace(' da tolerância', ' da toler.').replace(' da curva', ''), aria: `Diagnóstico da medição: sensor NTC ${st.ntcR.trim()} kΩ, ${v}.${sens.length ? '' : ` ${ORIENTA_NTC} ${ORIENTA_NTC_CTA}`} Toque para ver a análise no NTC`, acao: abrirMod('ntc') });
     }
     // Altura útil do aparelho: abaixo de 760 px a faixa de diagnóstico tira o título do visor; abaixo de 640 px ele sai sempre.
@@ -2745,14 +2759,17 @@ class Component extends DCLogic {
       invOrcar: () => { const cFora = (IV.compressor || {}).r === 'Fora'; this.abrirFech(['reparo_placa', 'placa_nova', ...(cFora ? ['compressor_troca'] : [])], true, cFora ? ['compressor_troca'] : null); },
       invLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cons: invTxt ? (x.laudo.cons ? x.laudo.cons + '\n' : '') + (invUni ? `Checklist Inverter (procedimento universal, ${marca}):\n` : 'Checklist Inverter (manual Midea Mission2 3D):\n') + invTxt : x.laudo.cons } })),
       invFonte: invUni ? 'Protocolo de Bancada Inverter 220 V CA / 310 V CC (Base Técnica GeloPro): valores físicos da retificação de 220 V CA, do teste de diodo e do equilíbrio entre as fases.' : `${fonteTxt('F20')}; ${fonteTxt('F21')}. Manual de serviço do fabricante (linha global).`,
-      ntcTolTipo: rZero || ntcFalha ? 'aviso' : tolR && dentro !== null ? (dentro ? 'sucesso' : 'aviso') : 'info',
+      ntcTolTipo: rZero || ntcFalha || rFora || tForaN ? 'aviso' : tolR && dentro !== null ? (dentro ? 'sucesso' : 'aviso') : 'info',
       // PR #46 (reteste §4.6): curto, aberto, resistência zero ou leitura fora da tolerância abrem o aviso já expandido; a causa provável e o
       // "Confirme no multímetro" ficam na tela, sem toque na seta, acima do CTA de orçar a troca.
-      ntcTolAberto: !!(rZero || ntcFalha || !tolR || dentro === false),
-      ntcTolT: rZero ? 'Resistência zero não entra no cálculo' : ntcFalha === 'curto' ? `Sensor NTC em curto provável (abaixo de ${ntcCurtoTxt}${rCurva ? ', além da curva' : ''})` : ntcFalha === 'aberto' ? `Sensor NTC aberto provável (acima de ${ntcLimTxt}${rCurva ? ', além da curva' : ''})` : !tolR ? MEDIR_ORCAR : dentro === null ? (tolMinMax ? 'Tolerância declarada: Rmín a Rmáx da tabela do fabricante' : `Tolerância declarada: R${tolRef} ±${tolR.r25_tol_pct}%${tolTb !== null ? ` e B ±${tolR.beta_tol_pct}%` : ''}`) : dentro ? `Dentro da tolerância (${faixaTxt})` : `Fora da tolerância (${faixaTxt})`,
+      ntcTolAberto: !!(rZero || ntcFalha || rFora || tForaN || !tolR || dentro === false),
+      ntcTolT: rZero ? 'Resistência zero não entra no cálculo' : ntcFalha === 'curto' ? `Sensor NTC em curto provável (abaixo de ${ntcCurtoTxt}${rCurva ? ', além da curva' : ''})` : ntcFalha === 'aberto' ? `Sensor NTC aberto provável (acima de ${ntcLimTxt}${rCurva ? ', além da curva' : ''})` : rFora ? `Fora da curva (${pontaTxt}${bPonta[1] > bPonta[0] ? `, faixa ${fk(bPonta[0])}–${fk(bPonta[1])} kΩ` : ''})` : tForaN ? `Temperatura fora da tabela (${f1(tCurva[0])} a ${f1(tCurva[1])} °C)` : !tolR ? MEDIR_ORCAR : dentro === null ? (tolMinMax ? 'Tolerância declarada: Rmín a Rmáx da tabela do fabricante' : `Tolerância declarada: R${tolRef} ±${tolR.r25_tol_pct}%${tolTb !== null ? ` e B ±${tolR.beta_tol_pct}%` : ''}`) : dentro ? (noLimite ? `Dentro do esperado no limite da curva (${faixaTxt})` : `Dentro da tolerância (${faixaTxt})`) : `Fora da tolerância (${faixaTxt})`,
       ntcTolX: rZero ? 'Zero indica curto no sensor, no conector ou na fiação, ou multímetro fora da escala. Confira antes de comparar com a curva.'
         : ntcFalha === 'curto' ? 'Causa provável: sensor, conector ou fiação em curto. Confirme no multímetro com o sensor desconectado da placa antes de substituir; confirmado, orce em "Orçar substituição de sensor NTC".'
-        : ntcFalha === 'aberto' ? 'Causa provável: sensor rompido, conector solto ou fio partido. Confirme no multímetro o conector e a continuidade do fio antes de substituir; confirmado, orce em "Orçar substituição de sensor NTC".' : !tolR ? `${ORIENTA_NTC} ${ORIENTA_NTC_CTA}` : dentro === null ? `${tolR.escopo}. Informe temperatura e resistência.` : dentro ? `${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).` : `Repita a medição em outra temperatura e confira conector e fiação antes de condenar o sensor. ${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).`,
+        : ntcFalha === 'aberto' ? 'Causa provável: sensor rompido, conector solto ou fio partido. Confirme no multímetro o conector e a continuidade do fio antes de substituir; confirmado, orce em "Orçar substituição de sensor NTC".'
+        : rFora ? 'A leitura passou da ponta da tabela do fabricante além da tolerância. Meça de novo com o sensor desconectado da placa, conferindo a escala do multímetro e o conector; repetindo fora, orce em "Orçar substituição de sensor NTC".'
+        : tForaN ? `A tabela do fabricante vai de ${f1(tCurva[0])} a ${f1(tCurva[1])} °C. Meça de novo com o sensor nessa faixa de temperatura e compare; com a leitura fora do esperado, orce em "Orçar substituição de sensor NTC".`
+        : !tolR ? `${ORIENTA_NTC} ${ORIENTA_NTC_CTA}` : dentro === null ? `${tolR.escopo}. Informe temperatura e resistência.` : dentro ? `${noLimite ? `Leitura além da ponta da tabela (${pontaTxt}), dentro da tolerância declarada dessa ponta; nenhum valor foi extrapolado. ` : ''}${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).` : `Repita a medição em outra temperatura e confira conector e fiação antes de condenar o sensor. ${tolR.escopo} (${fonteTxt(tolR.fonte_id)}).`,
       telaPmoc: st.tela === 'pmoc', telaScripts: st.tela === 'scripts',
       pmSet: Object.fromEntries(['amb', 'end', 'cid', 'tel', 'prop', 'propDoc', 'propCont', 'rt', 'reg', 'art', 'ambs', 'emerg'].map(k => [k, pmS(k)])),
       pmAmb: PM.amb, pmEnd: PM.end, pmCid: PM.cid, pmTel: PM.tel, pmProp: PM.prop, pmPropDoc: PM.propDoc, pmPropCont: PM.propCont, pmRt: PM.rt, pmReg: PM.reg, pmArt: PM.art, pmAmbs: PM.ambs, pmEmerg: PM.emerg,
@@ -2834,7 +2851,7 @@ class Component extends DCLogic {
       lConc: LD.conc, lSetConc: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, conc: v } })); },
       lMed, lErro: LD.tentou && !lOk, lTemMed: lMedL.length > 0, lMedOn: lMedOk ? 'true' : 'false',
       // PR #46 (EXT-MIX-4): com orçamento em andamento e uma ficha de outra marca aberta, o equipamento do atendimento (selOrc) é o que vale aqui e na faixa.
-      lMedBtn: lMedOk ? 'Tirar as medições deste laudo' : `Continuar atendimento de ${(st.selOrc || st.sel).marca} ${(st.selOrc || st.sel).btu} BTU/h: incluir ${lMedL.length === 1 ? 'a medição' : `as ${lMedL.length} medições`} (${lMedQuais.join(', ')})`,
+      lMedBtn: lMedOk ? 'Tirar as medições deste laudo' : `Continuar atendimento de ${selA.marca} ${selA.btu} BTU/h: incluir ${lMedL.length === 1 ? 'a medição' : `as ${lMedL.length} medições`} (${lMedQuais.join(', ')})`,
       lMedNovoVis: !lMedOk, lMedLimpar: () => this.setState(x => ({ ptP: '', ptT: '', ntcR: '', ntcT: '', btu: { ...ATEND0(x.btu).btu }, laudo: { ...x.laudo, medCli: null } })),
       lMedToggle: () => this.setState(x => ({ laudo: { ...x.laudo, medCli: lMedOk ? null : String(x.laudo.cli || '').trim() } })),
       // Laudo de inviabilidade (PR #35): a troca do aparelho vira orçamento na hora, com desinstalação e instalação no porte do topo.
@@ -3074,7 +3091,7 @@ class Component extends DCLogic {
       ntcOut: [
         ['Esperado', rexp === null ? '—' : fk(rexp) + ' kΩ'],
         ['Diferença', dif === null ? '—' : (dif > 0 ? '+' : '') + f1(dif) + ' %'],
-        ['Equivale a', teq === null ? '—' : f1(teq) + ' °C'],
+        ['Equivale a', teq !== null ? f1(teq) + ' °C' : noLimite ? `limite da curva (${f1(ponta[0])} °C)` : '—'],
       ].map(([rot, v]) => ({ rot, ...this.mostrador('ntc-' + rot, v, st.tela === 'ntc') })),
       ntcTemVer: !!ntcTag, ntcVer: ntcVer || '', ntcVerTag: ntcTag || TG('sem-ref', ''), ntcRefUni: !!(sn && sn.universal),
       ntcGlobal: !!sn && !sn.universal && /^Midea/.test(sn.marca), // Rodapé do NTC (PR #27, achado 4): nunca o nome do arquivo interno (.csv); a fonte vira .tag-fonte com o documento humano ("F03 · Manual LG").
