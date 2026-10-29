@@ -1,2 +1,5 @@
-marca,sensor,r25_tol_pct,beta_nom,beta_tol_pct,escopo,fonte_id,status
-Midea/Springer/Carrier,"T1 ambiente, T2 evaporador, T3 condensador, T4 externo",3,4100,3,"Declarado para os sensores internos (T1 e T2) em manual Midea global; para T3 e T4 confirme no manual da linha",F18,TOLERANCIA_FABRICANTE_GLOBAL
+marca,sensor,r25_tol_pct,beta_nom,beta_tol_pct,escopo,fonte_id,status,t_ref_c
+Midea/Springer/Carrier,"T1 ambiente, T2 evaporador, T3 condensador, T4 externo",3,4100,3,Declarado para os sensores internos (T1 e T2) em manual Midea global; para T3 e T4 confirme no manual da linha,F18,TOLERANCIA_FABRICANTE_GLOBAL,25
+Midea/Springer/Carrier,TP descarga,3,3950,,Declarado para o sensor de descarga TP: R(90 C) = 5 kOhm +-3% e B(25/50) = 3950 K; tolerancia de B nao declarada,F16,TOLERANCIA_FABRICANTE_GLOBAL,90
+Daikin,interno (evaporadora Wall Mounted) 10K,1,,,"Faixa Rmin a Rmax da Table 2 ponto a ponto (em 25 C: 9,90 a 10,10 kOhm)",F24,TOLERANCIA_TABELA_FABRICANTE,25
+Samsung,"ambiente, trocador interno, externo e degelo 10K",2,,,Erro dos dados de +-2% declarado no manual de servico (E121/E122),F26,TOLERANCIA_FABRICANTE_GLOBAL,25

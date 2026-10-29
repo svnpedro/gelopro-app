@@ -34,6 +34,8 @@ const NUCLEO = [
   '../base-tecnica/percursos_resultados.csv', '../base-tecnica/percursos_tecnico_etapas.csv', '../base-tecnica/percursos_tecnico_resultados.csv',
   '../base-tecnica/piscadas.csv', '../base-tecnica/pmoc_atividades.csv', '../base-tecnica/precos_regionais_2026.csv',
   '../base-tecnica/pt_r410a_elgin_kpa.csv', '../base-tecnica/pt_r410a_r32_r22.csv',
+  // PR #48: curvas NTC com fonte de manual de serviço (Midea TP de descarga, Daikin 10K e 20K, Samsung 10K e IPM).
+  '../base-tecnica/ntc_midea_tp.csv', '../base-tecnica/ntc_daikin.csv', '../base-tecnica/ntc_samsung.csv',
 ];
 const guardavel = (u) => /^https?:/.test(u) && !/\/__|chrome-extension:/.test(u);
 const buscar = async (url) => {
