@@ -171,9 +171,16 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
       <div style="flex:1;min-height:0;box-sizing:border-box;padding:0 6px 4px;display:flex;flex-direction:column;gap:{{ colGap }};">
 
         <header style="flex:none;display:flex;flex-direction:column;gap:10px;padding:0 6px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-            <button type="button" aria-label="Titular" onClick="{{ irTitular }}" style="flex:1;min-width:0;min-height:48px;box-sizing:border-box;margin:0;padding:0;border:0;background:transparent;display:flex;align-items:center;text-align:left;cursor:pointer;" style-hover="filter:brightness(1.06);" style-active="transform:translateY(1px);">
-              <span data-topo-nome="" style="display:block;min-width:0;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gp-on-chassis);text-shadow:var(--gp-engrave);font:700 16px/20px 'Figtree',sans-serif;letter-spacing:.01em;text-transform:uppercase;text-align:left;">{{ topoNome }}</span>
+          <div data-topo-linha="" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+            <!-- Marca no topo (PR #41): urso oficial sobre o prata e o wordmark GeloPRO (recorte fiel da logo completa) na placa azul-marinho da marca,
+                 cor cravada em hex (o "Gelo" branco some no prata e no Sol). Embaixo, menor e subordinado, o nome do titular: quebra em linhas
+                 equilibradas e nunca corta; o Sininho e a chavinha ficam presos no topo da linha. -->
+            <button type="button" aria-label="{{ topoAria }}" data-topo-marca="" onClick="{{ irTitular }}" style="flex:1;min-width:0;min-height:48px;box-sizing:border-box;margin:0;padding:1px 0 0;border:0;background:transparent;display:flex;align-items:flex-start;gap:6px;text-align:left;cursor:pointer;" style-hover="filter:brightness(1.06);" style-active="transform:translateY(1px);">
+              <img data-topo-mascote="" src="marca/gelopro-mascote.png" alt="" width="46" height="46" decoding="async" style="flex:none;display:block;width:46px;height:46px;object-fit:contain;">
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:2px;">
+                <span data-topo-placa="" style="flex:none;display:inline-flex;box-sizing:border-box;padding:3px 7px;border-radius:7px;background:{{ marcaPlaca }};box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(9,30,66,.35);"><img data-topo-wordmark="" src="marca/gelopro-wordmark.png" alt="GeloPRO" width="109" height="20" decoding="async" style="display:block;width:109px;height:20px;"></span>
+                <span data-topo-nome="" style="display:block;min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere;text-wrap:balance;color:var(--gp-on-chassis);text-shadow:var(--gp-engrave);font:600 16px/18px 'Roboto',sans-serif;text-align:left;">{{ topoNome }}</span>
+              </span>
             </button>
             <button type="button" data-sininho="" aria-label="{{ sinoAria }}" aria-haspopup="dialog" onClick="{{ abrirAvisos }}" style="position:relative;flex:none;width:48px;min-height:48px;box-sizing:border-box;margin:0 -6px 0 0;padding:0;border:0;background:transparent;color:var(--gp-on-chassis);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;" style-active="transform:translateY(1px);">
               <span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="sino" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
@@ -1602,7 +1609,7 @@ const ATUALIZACOES = [
 ];
 // Selo da base (PR #24): mês da última atualização da base técnica e da tabela de preços. Atualize junto com a base.
 const BASE_MES = 'Outubro/2026', SELO_BASE = `Base Atualizada · ${BASE_MES}`;
-// Textos do documento (PR #25): uma fonte só para o [data-print] (Plano A, window.print) e para o arquivo .pdf real (GeloProPDF, 1ª e 2ª via).
+// Textos do documento (PR #25): uma fonte só para o [data-print] (Plano A, impressão por ação explícita do técnico) e para o arquivo .pdf real (GeloProPDF, 1ª e 2ª via).
 const pontoDoc = (s) => /[.!?]$/.test(s) ? s : s + '.';
 const garCobreDe = (t) => pontoDoc(String(t || '').trim() || 'Os serviços listados acima');
 const garNaoDe = (t) => pontoDoc(String(t || '').trim() || 'Mau uso, oscilação de energia e peças não trocadas neste atendimento');
@@ -1752,7 +1759,9 @@ class Component extends DCLogic {
     this._esc = (e) => { if (e.key === 'Escape' && this.state.drawer) this.setState({ drawer: null }); };
     window.addEventListener('keydown', this._esc);
     this._rs = () => this.forceUpdate(); window.addEventListener('resize', this._rs);
-    this._aposImpressao = () => { if (this._titulo0 !== undefined) document.title = this._titulo0; }; window.addEventListener('afterprint', this._aposImpressao);
+    this._antesImpressao = () => { if (!this._nomeImpressao || !document.querySelector('[data-print]')) return; if (this._titulo0 === undefined) this._titulo0 = document.title; document.title = this._nomeImpressao.replace(/\.pdf$/i, ''); };
+    this._aposImpressao = () => { if (this._titulo0 !== undefined) document.title = this._titulo0; };
+    window.addEventListener('beforeprint', this._antesImpressao); window.addEventListener('afterprint', this._aposImpressao);
     this.carregar();
     this.precarregarPecas();
     this.listaCenas();
@@ -1866,14 +1875,11 @@ class Component extends DCLogic {
     // Preventiva de 6 meses no Cofre (PR #21): a mesma data da etiqueta impressa no orçamento e na garantia vira o dia de chamar o cliente.
     const em = Date.now(), prev = AVULSO.includes(tipo) ? {} : { prevEm: maisMeses(em, 6), prevData: dataBR(maisMeses(em, 6)) };
     const A = this.arq(), lista = lerDocs(A.docs), reg = { ...doc, tipo, numero: num, em, ...prev }; lista.push(reg); gravar(A.docs, lista);
-    // Plano A ([data-print] + window.print). PR #40 (S1-6): no Chrome real do técnico e na extensão, a janela nativa de impressão congelava a aba;
-    // ela só abre na bateria automática (window.__impressoes de contador ou HeadlessChrome do Playwright). No uso real o [data-print] é montado e
-    // o arquivo sai pelo PDF nativo (Planos B e C); o título da aba não muda. Na bateria, o título vira o nome do arquivo e volta no afterprint.
-    const nome = pdfNome(tipo, num, doc.cliente);
-    const imprime = typeof window.__impressoes === 'number' || /HeadlessChrome/i.test(navigator.userAgent || '');
-    if (imprime) { try { if (this._titulo0 === undefined) this._titulo0 = document.title; document.title = nome.replace(/\.pdf$/i, ''); } catch (e) {} }
-    else if (this._titulo0 !== undefined) { try { document.title = this._titulo0; } catch (e) {} }
-    this.setState({ printDoc: tipo, printDados: doc }, () => imprime && setTimeout(() => { try { window.print(); } catch (e) {} }, 700));
+    // Plano A ([data-print]). PR #41: o app nunca chama window.print() sozinho, na bateria e no uso real (no Chrome do técnico e na extensão a janela
+    // nativa congelava a aba). O [data-print] fica montado para a impressão por ação explícita (Ctrl+P ou menu Imprimir); só nela o título da aba
+    // vira o nome do arquivo (beforeprint) e volta no afterprint. O arquivo sai pelo PDF nativo (Planos B e C).
+    this._nomeImpressao = pdfNome(tipo, num, doc.cliente);
+    this.setState({ printDoc: tipo, printDados: doc });
     // Planos B e C: o arquivo .pdf real, gerado no aparelho, com foto e assinatura do atendimento (orçamento e garantia).
     const F = this.state.fech, comImg = (tipo === 'orc' || tipo === 'gar') && F;
     this.gerarPdf(reg, { onde: { laudo: 'laudo', pmoc: 'pmoc', reca: 'reca' }[tipo] || 'fech', num }, { foto: comImg ? F.foto : null, assin: comImg ? F.assin : null });
@@ -1932,7 +1938,7 @@ class Component extends DCLogic {
     this.precarregarModulo(tela);
     this.setState(st => ({ prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, foco: null, ...extra }));
   }
-  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._focoT); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
+  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('beforeprint', this._antesImpressao); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._focoT); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
   pRef = React.createRef();
   focarPortao() {
     const fe = this.fRef.current;
@@ -2510,9 +2516,7 @@ class Component extends DCLogic {
       /superaquec|PT\/SH|\bSH\b|press[ãa]o (?:de|do) (?:fluido|suc)|carga de fluido/i.test(rTxt) ? { k: 'ptsh', ico: 'pt-sh', l: 'Conferir agora no PT/SH (superaquecimento)', aria: 'Conferir agora: abrir o PT/SH para medir o superaquecimento', acao: abrirMod('ptsh') } : null,
       /\bNTC\b|termistor/i.test(rTxt) ? { k: 'ntc', ico: 'sensor-ntc', l: 'Conferir agora no Sensor NTC', aria: 'Conferir agora: abrir o Sensor NTC para medir a resistência', acao: abrirMod('ntc') } : null,
     ].filter(Boolean);
-    const nomeTopo = tit && String(tit.nome || '').trim() ? String(tit.nome).trim() : 'SUA ASSISTÊNCIA', topoCheio = 'GELOPRO · ' + nomeTopo;
-    const topoW = faceW - 24 - 10 - 48 - 4 - 48;
-    const larguraTopo = (txt) => { if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d'); this._ctx.font = "700 16px 'Figtree', sans-serif"; return this._ctx.measureText(txt.toUpperCase()).width + 0.16 * txt.length; };
+    const nomeTopo = tit && String(tit.nome || '').trim() ? String(tit.nome).trim() : 'Sua assistência';
     const H = cheio ? innerHeight : DEV[dev], telaBaixa = H < 760, diagLado = telaBaixa && diags.length > 1;
     // Home 3C (PR #28, revista no PR #30): a chave Sintomas | Medições e Testes ocupa o lugar do título do visor (que segue para leitor de tela).
     // Abaixo dela, uma área só (placas ou medições, poços de Leituras e faixas de diagnóstico) que rola em tela baixa: nada some da tela e a placa
@@ -2869,9 +2873,9 @@ class Component extends DCLogic {
       // Faixa de 48 px sob o trilho: um ícone por posição do pino (Titânio = lua, Claro = sol fraco, Sol = sol pleno); a ativa fica cheia e marcada.
       temaIcones: ['titanio', 'claro', 'sol'].map(k => ({ ico: TEMA_ICO[k], op: k === tema ? 1 : 0.5, marca: k === tema ? 'currentColor' : 'transparent' })),
       toggleTema: () => this.setState({ tema: TEMA_PROX[tema] }),
-      // Topo com o Sininho (PR #22): título, Sininho (48 px) e chavinha (48 px) dividem a linha. Quando "GELOPRO · NOME" não cabe inteiro
-      // (nomes longos em 375 e 390 px), o topo mostra só o nome do titular, sem reticências.
-      topoNome: larguraTopo(topoCheio) <= topoW - 1 ? topoCheio : nomeTopo,
+      // Topo (PR #41): marca oficial (urso + wordmark na placa) e, embaixo, o nome do titular inteiro, em linhas equilibradas (nunca reticências).
+      topoNome: nomeTopo, topoAria: `GeloPRO · Titular: ${nomeTopo}`,
+      marcaPlaca: ((window.GeloProMarca || {}).cores || {}).faixa || '#0f345b',
       sinoAria: naoLidos.length ? `Avisos: ${naoLidos.length} ${naoLidos.length === 1 ? 'novo' : 'novos'}` : 'Avisos: nenhum novo', abrirAvisos,
       temSinoBadge: naoLidos.length > 0, sinoN: String(naoLidos.length), sinoBadge: naoLidos.length > 99 ? '99+' : String(naoLidos.length),
       dAvisos: d === 'avisos', avisoCatK: avCat, avisoVazio: !avLista.length,

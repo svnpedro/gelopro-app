@@ -1,7 +1,7 @@
 // GeloPro · Motor de PDF offline (PR #25). Monta um arquivo application/pdf de verdade (PDF 1.4, A4 595,28 × 841,89 pt) sem rede e sem biblioteca
 // externa: fontes padrão Helvetica e Helvetica-Bold em WinAnsiEncoding (CP1252: toda a acentuação do português), Symbol só para → ≥ ≤ ≈ ≠ Δ Ω,
 // quebra automática de linha e de página (item, fechamento, etiqueta, foto e assinatura nunca partidos no meio), foto de evidência e assinatura
-// do cliente em JPEG embutido (XObject /DCTDecode) e rodapé em toda página: "Documento nº … · Emitido em … · Base Atualizada … · Página X de Y".
+// do cliente em JPEG embutido (XObject /DCTDecode), logo oficial GeloPRO em FlateDecode com máscara alfa (PR #41) e rodapé em toda página: "Documento nº … · Emitido em … · Base Atualizada … · Página X de Y".
 // Uso: GeloProPDF.gerar(doc) → Promise<{ bytes: Uint8Array, blob: Blob application/pdf, paginas, nome }> (assíncrono só para decodificar as imagens);
 //      GeloProPDF.nomeArquivo(tipo, num, cliente) → "Orcamento-AMOSTRA-0001-Clinica-Veterana.pdf";
 //      GeloProPDF.baixar(blob, nome) e GeloProPDF.compartilhar(blob, nome, resumo?) (Web Share de arquivo; sem suporte, baixa o arquivo);
@@ -24,8 +24,18 @@
   const COR = { tinta: '0.067 0.094 0.153', apoio: '0.290 0.333 0.408', faixa: '0.059 0.204 0.357', clara: '0.871 0.914 0.961', branco: '1 1 1', regua: '0.796 0.827 0.867', caixa: '0.953 0.961 0.973',
     // PR #40: "PRO" em azul-gelo claro (#9fd8ff), quadro do titular na faixa (#19416d, moldura #5b7fa6) e o filete verde da sub-caixa técnica (#16a34a).
     gelo: '0.624 0.847 1', quadro: '0.098 0.255 0.427', quadroBorda: '0.357 0.498 0.651', verde: '0.086 0.639 0.290' };
-  // Marca oficial (marca-gelopro.js); sem o módulo carregado, as mesmas constantes.
-  const MARCA = () => window.GeloProMarca || { partes: ['Gelo', 'PRO'], slogan: 'INTELIGÊNCIA & DIAGNÓSTICO EM CLIMATIZAÇÃO', proporcao: 0.66, linhasSlogan: null };
+  // Marca oficial (marca-gelopro.js); sem o módulo carregado, o nome em texto como reserva.
+  const MARCA = () => window.GeloProMarca || { partes: ['Gelo', 'PRO'], logoPdf: null };
+  // Logo completa (PR #41): urso + GeloPRO + slogan, a imagem oficial embutida no marca-gelopro.js (cor RGB e alfa já no preditor PNG), decodificada
+  // uma vez. Vai para o PDF sem recompressão e sem fundo pintado: a máscara /SMask recorta a logo sobre a faixa.
+  let logoCache;
+  const b64 = (t) => { const bin = atob(t), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u; };
+  const logoPdf = () => {
+    if (logoCache !== undefined) return logoCache;
+    const L = MARCA().logoPdf;
+    try { logoCache = L && L.w && L.h && L.cor && L.alfa ? { nome: 'Logo', w: L.w, h: L.h, bytes: b64(L.cor), alfa: b64(L.alfa), flate: true } : null; } catch (e) { logoCache = null; }
+    return logoCache;
+  };
   // Pix copia e cola (BR Code EMV, começa em 000201): quebra por caractere exato, sem inserir nem perder nada (nem o espaço do nome do titular).
   const EMV = /000201\S/;
 
@@ -113,22 +123,9 @@
 
   // ── Diagramação: cada peça é uma lista de linhas { h, draw(y) }; "junto" = a peça inteira cabe na página ou abre página nova. ──
   // Linha da OS no cabeçalho por tipo de documento (o orçamento é a proposta técnica).
+  // Rótulo do quadro da assistência (PR #41): ela é a prestadora do serviço; o GeloPRO é o sistema que emite.
+  const PRESTADORA = 'PRESTADORA DO SERVIÇO';
   const OS_LINHA = { orc: 'PROPOSTA TÉCNICA', gar: 'TERMO DE GARANTIA', rec: 'RECIBO', reca: 'RECIBO', laudo: 'LAUDO TÉCNICO', pmoc: 'PMOC' };
-  // Slogan sob o nome (regra de equilíbrio do Pedro): o menor nº de linhas em que o slogan cabe em `alvo` (~66 % do nome) com corpo entre 6,5 e 7,5 pt.
-  // Nenhuma linha passa do alvo; o corpo nunca passa de 7,5 pt. INTELIGÊNCIA & / DIAGNÓSTICO EM / CLIMATIZAÇÃO, a ~7,1 pt, sob o GeloPRO de 22 pt.
-  function encaixar(M, alvo) {
-    const pal = String(M.slogan || '').split(/\s+/).filter(Boolean), w1 = (s) => largura(s, false, 1);
-    const div = (P, n) => n <= 1 ? [[P.join(' ')]] : P.slice(0, P.length - n + 1).flatMap((_, i) => div(P.slice(i + 1), n - 1).map(r => [P.slice(0, i + 1).join(' '), ...r]));
-    let ult = { linhas: pal, tam: 6.5 };
-    for (let n = 1; n <= pal.length; n++) {
-      const L = div(pal, n).map(x => ({ x, w: Math.max(...x.map(w1)) })).sort((p, q) => p.w - q.w)[0];
-      const tam = Math.min(7.5, Math.floor(alvo / L.w * 10) / 10);
-      ult = { linhas: L.x, tam };
-      if (tam >= 6.5) return ult;
-    }
-    return ult;
-  }
-
   function diagramar(d, img) {
     const pags = [];
     let ops = null, y = 0;
@@ -154,33 +151,31 @@
     };
 
     function cabecalho() {
-      // Ordem de Serviço Executiva A4 (PR #40): faixa azul-marinho de ponta a ponta. À esquerda, a marca GeloPRO em destaque (Helvetica-Bold 22 pt,
-      // "Gelo" branco + "PRO" azul-gelo) com o slogan menor e centralizado embaixo do nome (no máximo ~66 % da largura dele, até 7,5 pt), a linha
-      // "ORDEM DE SERVIÇO / … · Nº", o tipo e a emissão. À direita, o quadro do Titular / Assistência Técnica (nome, CPF/CNPJ, cidade e chave Pix).
+      // Ordem de Serviço Executiva A4 (PR #40, marca no PR #41): faixa azul-marinho de ponta a ponta. À esquerda, a logo oficial (urso + GeloPRO +
+      // slogan em 1 linha centralizado sob o nome), a linha "ORDEM DE SERVIÇO / … · Nº", o tipo e a emissão. À direita, o quadro da Prestadora do
+      // Serviço (a assistência técnica titular: nome, CPF/CNPJ, cidade e chave Pix), para o cliente nunca tomar o GeloPRO pelo prestador.
       const t = d.titular || {}, M = MARCA(), wE = LARG * 0.55, wD = LARG * 0.40, xD = MX + LARG - wD, topo = 22, TN = 22;
-      const [pA, pB] = M.partes || ['Gelo', 'PRO'], wNome = largura(pA + pB, true, TN), alvo = wNome * (M.proporcao || 0.66);
-      const S = encaixar(M, alvo), os = OS_LINHA[d.tipo] || (/garantia/i.test(tipoTxt) ? 'TERMO DE GARANTIA' : /recibo/i.test(tipoTxt) ? 'RECIBO' : /laudo/i.test(tipoTxt) ? 'LAUDO TÉCNICO' : /pmoc/i.test(tipoTxt) ? 'PMOC' : 'PROPOSTA TÉCNICA');
+      const os = OS_LINHA[d.tipo] || (/garantia/i.test(tipoTxt) ? 'TERMO DE GARANTIA' : /recibo/i.test(tipoTxt) ? 'RECIBO' : /laudo/i.test(tipoTxt) ? 'LAUDO TÉCNICO' : /pmoc/i.test(tipoTxt) ? 'PMOC' : 'PROPOSTA TÉCNICA');
+      // Logo: a largura que cabe antes do quadro (até 290 pt, slogan legível na impressão), na proporção do arquivo oficial.
+      const lg = img && img.logo, wLogo = lg ? Math.min(290, xD - MX - 14) : 0, hLogo = lg ? wLogo * lg.h / lg.w : 0;
       // Linhas da coluna da marca: [texto, negrito, corpo, entrelinha, cor].
       // A linha da OS fica inteira (o "Nº" nunca se separa do número): o corpo desce de 9,5 até 8 pt para caber antes do quadro do titular.
       const osTxt = `ORDEM DE SERVIÇO / ${os} · Nº ${numero}`, wOS = xD - MX - 14; let tOS = 9.5; while (tOS > 8 && largura(osTxt, true, tOS) > wOS) tOS -= 0.25;
       const E = [...quebrar(osTxt, true, tOS, wOS).map(s => [s, true, tOS, 13, COR.branco]),
         ...quebrar(tipoTxt, true, 14, wE).map(s => [s, true, 14, 18, COR.branco]),
         ...quebrar(`Emitido em ${d.data || ''}${d.via2 ? ` · ${d.via2}` : ''}`, false, 9.5, wE).map(s => [s, false, 9.5, 13, COR.clara])];
-      const hMarca = TN + S.linhas.length * S.tam * 1.25 + 8, hE = hMarca + E.reduce((a, l) => a + l[3], 0);
-      const D = [...(t.nome || t.doc || t.cidade || t.pix ? [['TITULAR / ASSISTÊNCIA TÉCNICA', true, 7.5, 12, COR.clara]] : []),
-        ...quebrar(t.nome || '', true, 11, wD - 24).map(s => [s, true, 11, 15, COR.branco]),
+      const hMarca = (lg ? hLogo : TN) + 8, hE = hMarca + E.reduce((a, l) => a + l[3], 0);
+      const D = [...(t.nome || t.doc || t.cidade || t.pix ? quebrar(PRESTADORA, true, 7.5, wD - 24).map(s => [s, true, 7.5, 11, COR.clara]) : []),
+        ...quebrar(t.nome || '', true, 12, wD - 24).map(s => [s, true, 12, 16, COR.branco]),
         ...[t.doc ? `${t.docTipo || 'CPF/CNPJ'}: ${t.doc}` : '', t.cidade ? `Cidade: ${t.cidade}` : '', t.pix ? `Chave Pix: ${t.pix}` : ''].filter(Boolean)
           .flatMap(s => quebrar(s, false, 9, wD - 24).map(l => [l, false, 9, 12.5, COR.clara]))];
       const hD = D.length ? D.reduce((a, l) => a + l[3], 0) + 20 : 0, h = topo + Math.max(hE, hD) + 16;
       ops.push(retangulo(0, 0, PW, h, COR.faixa), retangulo(0, h, PW, 3, COR.clara));
-      // Marca: "Gelo" + "PRO" e, centralizado embaixo do nome, o slogan em linhas menores.
-      const base = topo + TN * 0.76, cx = MX + wNome / 2;
-      ops.push(texto(MX, base, pA, true, TN, COR.branco), texto(MX + largura(pA, true, TN), base, pB, true, TN, COR.gelo));
-      let a = topo + TN + 3;
-      S.linhas.forEach(l => { ops.push(texto(cx - largura(l, false, S.tam) / 2, a + S.tam * 0.95, l, false, S.tam, COR.clara)); a += S.tam * 1.25; });
-      a = topo + hMarca;
+      if (lg) ops.push(`q ${n2(wLogo)} 0 0 ${n2(hLogo)} ${n2(MX)} ${n2(PH - topo - hLogo)} cm /${lg.nome} Do Q`);
+      else { const [pA, pB] = M.partes || ['Gelo', 'PRO'], base = topo + TN * 0.76; ops.push(texto(MX, base, pA, true, TN, COR.branco), texto(MX + largura(pA, true, TN), base, pB, true, TN, COR.gelo)); }
+      let a = topo + hMarca;
       E.forEach(([s, b, tam, lead, cor]) => { if (s) ops.push(texto(MX, a + tam * 0.95, s, b, tam, cor)); a += lead; });
-      // Quadro do titular: caixa um tom acima da faixa, moldura sutil e texto alinhado à direita.
+      // Quadro da prestadora: caixa um tom acima da faixa, moldura sutil e texto alinhado à direita.
       if (D.length) {
         ops.push(retangulo(xD, topo - 4, wD, hD, COR.quadro), `q ${COR.quadroBorda} RG 0.8 w ${n2(xD)} ${n2(PH - (topo - 4) - hD)} ${n2(wD)} ${n2(hD)} re S Q`);
         a = topo + 6; D.forEach(([s, b, tam, lead, cor]) => { if (s) ops.push(texto(xD + wD - 12 - largura(s, b, tam), a + tam * 0.95, s, b, tam, cor)); a += lead; });
@@ -274,7 +269,13 @@
     const f1 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
     const f2 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
     const f3 = add('<< /Type /Font /Subtype /Type1 /BaseFont /Symbol >>');
-    const xo = imgs.map(g => `/${g.nome} ${add([`<< /Type /XObject /Subtype /Image /Width ${g.w} /Height ${g.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${g.bytes.length} >>\nstream\n`, g.bytes, '\nendstream'])} 0 R`);
+    // JPEG da foto e da assinatura em /DCTDecode; a logo em /FlateDecode com o preditor PNG (sem perda) e a transparência numa /SMask em cinza.
+    const flate = (cores, w) => `/Filter /FlateDecode /DecodeParms << /Predictor 15 /Colors ${cores} /BitsPerComponent 8 /Columns ${w} >>`;
+    const xo = imgs.map(g => {
+      const sm = g.flate && g.alfa ? add([`<< /Type /XObject /Subtype /Image /Width ${g.w} /Height ${g.h} /ColorSpace /DeviceGray /BitsPerComponent 8 ${flate(1, g.w)} /Length ${g.alfa.length} >>\nstream\n`, g.alfa, '\nendstream']) : 0;
+      const fil = g.flate ? `${flate(3, g.w)}${sm ? ` /SMask ${sm} 0 R` : ''}` : '/Filter /DCTDecode';
+      return `/${g.nome} ${add([`<< /Type /XObject /Subtype /Image /Width ${g.w} /Height ${g.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 ${fil} /Length ${g.bytes.length} >>\nstream\n`, g.bytes, '\nendstream'])} 0 R`;
+    });
     const rec = `<< /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R /F3 ${f3} 0 R >>${xo.length ? ` /XObject << ${xo.join(' ')} >>` : ''} /ProcSet [/PDF /Text /ImageC] >>`;
     const kids = pags.map(o => { const s = o.filter(Boolean).join('\n'), cs = add([`<< /Length ${s.length} >>\nstream\n`, s, '\nendstream']); return add(`<< /Type /Page /Parent ${raiz} 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources ${rec} /Contents ${cs} 0 R >>`); });
     objs[raiz - 1] = `<< /Type /Pages /Kids [${kids.map(k => `${k} 0 R`).join(' ')}] /Count ${kids.length} >>`;
@@ -351,7 +352,8 @@
     const imgs = [];
     if (foto) imgs.push(Object.assign(foto, { nome: 'Im' + (imgs.length + 1) }));
     if (assin) imgs.push(Object.assign(assin, { nome: 'Im' + (imgs.length + 1) }));
-    const pags = diagramar(d, { foto, assin });
+    const logo = logoPdf(); if (logo) imgs.push(logo);
+    const pags = diagramar(d, { foto, assin, logo });
     const nome = d.nome || nomeArquivo(d.tipo || d.titulo, d.numero, d.cliente && d.cliente.nome);
     const bytes = serializar(pags, imgs, { titulo: nome.replace(/\.pdf$/i, ''), assunto: `${d.titulo || ''} nº ${d.numero || ''}`, autor: (d.titular && d.titular.nome) || '' });
     return { bytes, blob: new Blob([bytes], { type: 'application/pdf' }), paginas: pags.length, nome };

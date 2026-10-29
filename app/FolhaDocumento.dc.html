@@ -8,20 +8,18 @@
 <body>
 <x-dc>
 <article aria-label="{{ tipo }}" style="width:100%;max-width:794px;min-width:0;box-sizing:border-box;padding:40px 40px 32px;background:var(--gp-paper);color:var(--gp-on-paper);font-family:'Roboto',sans-serif;display:flex;flex-direction:column;gap:24px;border:1px solid var(--gp-paper-rule);">
-  <!-- Ordem de Serviço Executiva A4 (PR #40): faixa azul-marinho com a marca GeloPRO (slogan menor, ~66 % da largura do nome, centralizado
-       embaixo dele), a linha "ORDEM DE SERVIÇO / … · Nº" e o tipo à esquerda; o quadro do Titular / Assistência Técnica à direita. Cores em hex cravado. -->
+  <!-- Ordem de Serviço Executiva A4 (PR #40, marca no PR #41): faixa azul-marinho com a logo oficial (urso + GeloPRO + slogan em 1 linha
+       centralizado sob o nome, imagem de app/marca/, nunca redesenhada), a linha "ORDEM DE SERVIÇO / … · Nº" e o tipo à esquerda; o quadro da
+       Prestadora do Serviço (a assistência titular) à direita. Cores em hex cravado. -->
   <header data-os-cabecalho="" data-gp-isento="" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:16px;margin:-40px -40px 0;padding:24px 40px 20px;background:{{ corFaixa }};color:#ffffff;border-bottom:3px solid #dee9f5;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
     <div data-os-marca="" style="flex:1 1 280px;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:8px;">
-      <div data-gp-lockup="" style="display:inline-flex;flex-direction:column;align-items:center;gap:5px;">
-        <span data-gp-nome="" style="display:block;font:800 40px/40px 'Roboto',sans-serif;letter-spacing:-0.01em;white-space:nowrap;"><span style="color:{{ corGelo }};">{{ nomeA }}</span><span style="color:{{ corPro }};">{{ nomeB }}</span></span>
-        <span data-gp-slogan="" style="display:block;box-sizing:border-box;width:66%;contain:inline-size;font:500 9px/12px 'Roboto',sans-serif;letter-spacing:0.12em;text-align:center;text-wrap:balance;color:{{ corSlogan }};">{{ slogan }}</span>
-      </div>
+      <img data-gp-lockup="" src="{{ logoSrc }}" alt="{{ logoAlt }}" width="300" height="70" style="display:block;width:300px;max-width:100%;height:auto;">
       <span data-os-linha="" style="font:700 12px/18px 'Roboto',sans-serif;letter-spacing:.04em;color:#ffffff;">{{ osLinha }} <span style="white-space:nowrap;">{{ osNum }}</span></span>
       <span data-os-tipo="" style="font:700 16px/22px 'Roboto',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#ffffff;">{{ tipo }}</span>
       <span style="font:500 14px/20px 'Roboto',sans-serif;color:#dee9f5;font-variant-numeric:tabular-nums;">{{ numData }}</span>
     </div>
     <div data-os-titular="" style="flex:0 1 300px;min-width:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-end;gap:2px;padding:12px 14px;border:1px solid {{ corQuadroBorda }};border-radius:8px;background:{{ corQuadro }};text-align:right;">
-      <span style="font:700 11px/16px 'Roboto',sans-serif;letter-spacing:.08em;color:#dee9f5;">TITULAR / ASSISTÊNCIA TÉCNICA</span>
+      <span style="font:700 11px/16px 'Roboto',sans-serif;letter-spacing:.08em;color:#dee9f5;">PRESTADORA DO SERVIÇO</span>
       <span style="font:700 18px/24px 'Roboto',sans-serif;color:#ffffff;overflow-wrap:anywhere;">{{ nome }}</span>
       <sc-for list="{{ titLinhas }}" as="l" hint-placeholder-count="3"><span style="font:500 14px/20px 'Roboto',sans-serif;color:#dee9f5;overflow-wrap:anywhere;">{{ l }}</span></sc-for>
     </div>
@@ -44,11 +42,10 @@ class Component extends DCLogic {
     const tipo = this.props.tipo || 'Orçamento', num = this.props.numero ? ' · Nº ' + this.props.numero : '';
     // Linha da OS por tipo: o orçamento é a proposta técnica; garantia, recibo, laudo e PMOC dizem o que são.
     const os = /garantia/i.test(tipo) ? 'TERMO DE GARANTIA' : /recibo/i.test(tipo) ? 'RECIBO' : /laudo/i.test(tipo) ? 'LAUDO TÉCNICO' : /pmoc/i.test(tipo) ? 'PMOC' : 'PROPOSTA TÉCNICA';
-    const partes = M.partes || ['Gelo', 'PRO'];
     return {
       nome, tipo,
-      nomeA: partes[0], nomeB: partes[1], slogan: M.slogan || 'INTELIGÊNCIA & DIAGNÓSTICO EM CLIMATIZAÇÃO',
-      corFaixa: C.faixa || '#0f345b', corGelo: C.gelo || '#ffffff', corPro: C.pro || '#9fd8ff', corSlogan: C.slogan || '#dee9f5', corQuadro: C.quadro || '#19416d', corQuadroBorda: C.quadroBorda || '#5b7fa6',
+      logoSrc: (M.arquivos || {}).completa || 'marca/gelopro-logo-completa.png', logoAlt: M.alt || 'GeloPRO · Inteligência & Diagnóstico em Climatização',
+      corFaixa: C.faixa || '#0f345b', corQuadro: C.quadro || '#19416d', corQuadroBorda: C.quadroBorda || '#5b7fa6',
       osLinha: `ORDEM DE SERVIÇO / ${os}`, osNum: num.replace(/^ · /, '· '),
       titLinhas: [t.doc ? `${docTipo}: ${t.doc}` : 'CPF/CNPJ: —', t.cidade ? `Cidade: ${t.cidade}` : '', t.pix ? `Chave Pix: ${t.pix}` : 'Chave Pix: —'].filter(Boolean),
       numData: [this.props.numero ? 'Nº ' + this.props.numero : '', this.props.data ? 'Emitido em ' + this.props.data : ''].filter(Boolean).join(' · '),
