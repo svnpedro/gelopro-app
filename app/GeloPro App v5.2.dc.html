@@ -377,7 +377,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                             <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--cv-bg);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
                               <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
                               <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
-                              <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-quebra="" style="flex:0 0 100%;height:0;"></span><span data-poco-ref="{{ r.refK }}" style="flex:0 0 auto;max-width:100%;box-sizing:border-box;padding:1px 6px;border-radius:6px;background:var(--cv-ref-bg);border:1px solid var(--cv-ref-bd);min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--cv-ref);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
+                              <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-quebra="" style="flex:0 0 100%;height:0;"></span><span data-poco-ref="{{ r.refK }}" style="flex:0 0 auto;max-width:100%;box-sizing:border-box;padding:1px 4px;border-radius:6px;background:var(--cv-ref-bg);border:1px solid var(--cv-ref-bd);min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--cv-ref);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
                             </span>
                           </button>
                           <div aria-hidden="true" data-decor="" data-trilho="{{ r.k }}" style="position:relative;width:100%;height:10px;box-sizing:border-box;padding:2px;border-radius:6px;background:#020407;box-shadow:inset 0 2px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:1px;">
@@ -1890,13 +1890,25 @@ const pecaDe = (t) => { for (const m of String(t).matchAll(LIGA)) { const p = t.
 // (30/10/2026) como referência de campo: faixa de sucção por fluido, nominais NTC a 25 °C por marca e alvo de superaquecimento. vs = variantes,
 // da mais completa para a mais curta (a 1ª que cabe na largura do poço; o texto completo vai sempre no aria-label).
 const POCO_PSI = { R410A: '118–135', R32: '120–140', R22: '60–75' };
-const POCO_NTC = { LG: '5K/10K/200K', TCL: '10K/5K', Agratto: '15K/20K/50K', Samsung: '10K/49,1K', Daikin: '10K/20K', Midea: '10K/54,9K', Springer: '10K/54,9K', Carrier: '10K/54,9K', Gree: '15K/20K/50K' };
+// PR #70 (Pedro, 30/10/2026): nominais NTC de referência de campo nas 14 marcas da lista; '5K–50K' só para marca digitada fora delas.
+const POCO_NTC = { LG: '5K/10K/200K', Samsung: '10K/49,1K', Midea: '10K/54,9K', Springer: '10K/54,9K', Carrier: '10K/54,9K', Gree: '15K/20K/50K', Agratto: '15K/20K/50K',
+  Daikin: '10K/20K', TCL: '10K/5K', Elgin: '5K/10K/20K', Consul: '5K/10K/15K', Electrolux: '10K/15K/50K', Fujitsu: '10K/50K', Philco: '10K/20K/50K' };
 // PR #60: cores do trilho de 15 LEDs do visor (4 azuis abaixo da faixa, 7 verdes na faixa, 4 vermelhos acima).
 const LEDS = [...Array(4).fill('#3b82f6'), ...Array(7).fill('#22c55e'), ...Array(4).fill('#ef4444')];
 const POCO_REF = {
   PSI: (sel) => { const f = POCO_PSI[sel.fluido] || POCO_PSI.R410A; return { k: 'psi', vs: [`${f} psi`, f], aria: `Referência de campo de sucção ${sel.fluido}: ${f} psi` }; },
   'kΩ': (sel) => { const n = POCO_NTC[sel.marca] || '5K–50K'; return { k: 'ntc', vs: [n, n.replace(/K\//g, '/')], aria: `Nominais NTC de referência ${sel.marca}: ${n}` }; },
-  '°C': (sel) => { const el = sel.marca === 'Elgin' && sel.fluido === 'R410A', t = el ? 'Alvo 7–11 °C' : 'SH 7–11 °C'; return { k: 'sh', vs: el ? [t, 'Alvo 7–11', '7–11 °C'] : [t, 'SH 7–11'], aria: `Referência de campo de superaquecimento: ${t.replace('SH', 'superaquecimento')}` }; },
+  // PR #70: o 3º poço muda ao vivo com marca, fluido e porte. Elgin R410A: alvo oficial; R32 e R22: faixa do fluido; R410A nas demais marcas: SH com
+  // o adicional de carga por metro de linha do porte (até 12.000 BTU/h 15 g/m; de 18.000 para cima 25 g/m). Variantes da mais completa para a mais
+  // curta (a 1ª que cabe no poço); em tela de até 340 px vai direto a curta. O texto completo fica sempre no aria-label.
+  '°C': (sel, W) => {
+    const curta = W !== undefined && W <= 340, btu = parseInt(String(sel.btu || '').replace(/\D/g, ''), 10) || 0;
+    if (sel.marca === 'Elgin' && sel.fluido === 'R410A') return { k: 'sh', vs: ['Alvo 7–11 °C', 'Alvo 7–11', '7–11 °C'], aria: 'Referência de campo de superaquecimento: Alvo 7–11 °C (Elgin R410A)' };
+    if (sel.fluido === 'R32') return { k: 'sh', vs: curta ? ['SH 7–11 °C', 'SH 7–11'] : ['SH 7–11 · R32', '7–11 · R32', 'SH 7–11 °C', 'SH 7–11'], aria: 'Referência de campo de superaquecimento: 7–11 °C com R32' };
+    if (sel.fluido === 'R22') return { k: 'sh', vs: curta ? ['SH 6–10 °C', 'SH 6–10'] : ['SH 6–10 · R22', '6–10 · R22', 'SH 6–10 °C', 'SH 6–10'], aria: 'Referência de campo de superaquecimento: 6–10 °C com R22' };
+    const g = btu >= 18000 ? '25g/m' : '15g/m';
+    return { k: 'sh', vs: curta ? ['SH 7–11 °C', 'SH 7–11'] : [`SH 7–11 · ${g}`, `SH 7–11·${g}`, `7–11 · ${g}`, 'SH 7–11 °C', 'SH 7–11'], aria: `Referência de campo de superaquecimento: 7–11 °C; adicional de linha ${g.replace('g/m', ' g/m')} para ${sel.btu} BTU/h` };
+  },
 };
 const COLA_ETAPA = { t_ng04: 'capacitor', t_gp04: 'capacitor', t_ng03: 'tensao', t_gp03: 'tensao', t_de03: 'tensao', t_nl01: 'tensao' };
 // Carga adicional pela linha excedente (PR #24): gramas por metro no porte 1 e do porte 2 em diante; o técnico confere na balança.
@@ -3419,7 +3431,7 @@ class Component extends DCLogic {
       ].map(r => {
         // PR #58: poço sem medição nunca fica mudo. Embaixo de "— PSI", "— kΩ" e "— °C" entra a referência viva do aparelho do topo
         // ([data-poco-ref]); com medição real, o valor medido volta a ocupar o poço sozinho. Em tela estreita, a variante mais longa que cabe.
-        const ref = r.v === '—' ? POCO_REF[r.un](st.sel) : null, refW = (cw - 4 - 2 * gapG) / 3 - 22; // largura do canal menos aro (4), respiro (4) e cápsula (padding 6 + borda 1 de cada lado)
+        const ref = r.v === '—' ? POCO_REF[r.un](st.sel, W) : null, refW = (cw - 4 - 2 * gapG) / 3 - 18; // largura do canal menos aro (4), respiro (4) e cápsula (padding 4 + borda 1 de cada lado)
         const refTxt = ref ? ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1] : '';
         // PR #60: trilho de 15 LEDs (4 azuis abaixo, 7 verdes na faixa, 4 vermelhos acima) e pino pelo desvio z (−1 a 1 = dentro da faixa).
         const k = r.un === 'PSI' ? 'psi' : r.un === 'kΩ' ? 'ntc' : 'sh', z = zLeitura(k), pos = z === null ? 7.5 : Math.max(0.5, Math.min(14.5, 7.5 + z * 3.5)), aceso = Math.floor(pos);
