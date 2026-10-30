@@ -400,7 +400,7 @@ const MED = `${HOME} :is(#painel-home-medicoes,[data-home-medicoes])`;
 const BEZEL = '[data-tema="titanio"] :is(*:has(> [data-vis] [data-home-inicio]), *:has(> [data-tema] > [data-vis] [data-home-inicio]))';
 const HOME_ACETINADO = `${HOME}{background:transparent !important;background-image:none !important;box-shadow:none !important;border-color:transparent !important;color:#091e42;}
 ${BEZEL}{background:transparent !important;background-image:none !important;box-shadow:none !important;border-color:transparent !important;}
-${HOME} :is([role="tablist"][aria-label="Modo da tela inicial"],[role="tablist"][data-home-modo]){background:#1d2430 !important;border:1px solid #687280 !important;box-shadow:inset 0 2px 4px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.45) !important;border-radius:999px !important;padding:3px !important;}
+${HOME} :is([role="tablist"][aria-label="Modo da tela inicial"],[role="tablist"][data-home-modo]){background:#1d2430 !important;border:1px solid #687280 !important;box-shadow:inset 0 2px 4px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.45) !important;border-radius:999px !important;padding:0 !important;box-sizing:border-box !important;}
 ${MED} :is(h2,h3,h4,h5,p,label,small,legend,[data-texto-solto]):not(button *,[role="button"] *,[data-atalho-medicao] *,[data-telemetria] *,[data-cartao-escuro] *){color:#091e42 !important;text-shadow:0 1px 0 rgba(255,255,255,0.65) !important;}`;
 if (typeof document !== 'undefined' && !document.getElementById('gp-home-acetinado')) { const el = document.createElement('style'); el.id = 'gp-home-acetinado'; el.textContent = HOME_ACETINADO; document.head.appendChild(el); }
 
