@@ -10,57 +10,129 @@ document.head.appendChild(s);
 const ocioso = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 if (document.readyState === 'complete') ocioso(libsPix); else window.addEventListener('load', () => ocioso(libsPix));
 const LEGADO = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
-if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v91')) {
+if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v92')) {
 const st = document.createElement('style');
-st.id = 'gp-cores-global-v91';
+st.id = 'gp-cores-global-v92';
 st.textContent = `
-      /* FIX CRÍTICO: o campo Nome do cliente NUNCA pode sumir enquanto o usuário digita (vence a regra do PR #77 por especificidade e ordem) */
+      /* FIX 1: O campo Nome do cliente NUNCA pode sumir enquanto o usuário digita */
       [data-chapa][data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"],
       [data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"],
       [data-cliente-bloco][data-cli-ok="1"] {
         display: flex !important;
       }
-      /* Esconde apenas o rótulo "Cliente" solto em cima do campo para economizar altura sem nunca esconder o input */
       [data-video-enxuto="1"] [data-cliente-bloco] > span:first-child {
         display: none !important;
       }
+
+      /* FIX 2: No Passo 1 enxuto, manter o botão da tabela de peças ([data-catalogo-botao]) e o catálogo aberto ([data-catalogo]) visíveis
+         para o técnico nunca ficar travado sem conseguir trocar ou adicionar peça da tabela */
+      [data-video-enxuto="1"] [data-catalogo-botao] {
+        display: flex !important;
+        min-height: 48px !important;
+        padding: 6px 12px !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      [data-video-enxuto="1"] [data-catalogo] {
+        display: flex !important;
+      }
+
+      /* FIX 3: Estabilidade geométrica e zero deslocamento/quebra em todas as telas */
+      [data-atendimento-ativo] {
+        box-sizing: border-box !important;
+        padding: 8px 10px !important;
+        border-radius: 14px !important;
+        background: #1d2430 !important;
+        border: 1.5px solid #38bdf8 !important;
+        color: #ffffff !important;
+      }
+      [data-item-qtd] { gap: 6px !important; align-items: center !important; }
+      [data-campos-linha], [data-campos-carga] { align-items: end !important; }
     ` + (!LEGADO ? `
-      /* 1. Resultado: esconde cartão genérico "Causas prováveis para medição e orçamento / Componentes campeões..." quando já é bancada;
-         se for hipótese específica (rápida), dá fundo âmbar de diagnóstico em vez de branco/azul morto. */
+      /* FIX 4: Cores semânticas globais e fim dos cartões brancos com texto azul chapado */
       [data-res-rolagem]:has([data-res-instrumentos]) > div:has([data-res-fonte]) { display: none !important; }
       [data-res-rolagem] > div:has([data-res-fonte]) { background: #fffbeb !important; border: 1.5px solid #f59e0b !important; }
       [data-res-rolagem] > div:has([data-res-fonte]) [data-res-fonte] { display: none !important; }
-      /* Lista de causas 1, 2, 3: cada item com separação clara, título forte e 1ª causa destacada em âmbar suave */
       [data-res-rolagem] > div:has(> ol) { background: #ffffff !important; border: 1.5px solid #64748b !important; box-shadow: 0 2px 6px rgba(9,30,66,0.10) !important; }
       [data-res-rolagem] ol > li:first-child { background: #fffbeb !important; border-radius: 12px !important; padding: 8px 10px !important; border: 1px solid #fde68a !important; }
-      /* Orçamento sugerido em verde dinheiro vivo */
       [data-res-servico] { background: #f0fdf4 !important; border: 2px solid #22c55e !important; box-shadow: 0 2px 8px rgba(21,128,61,0.12) !important; }
       [data-res-servico] .lbl { color: #15803d !important; font-weight: 800 !important; }
       [data-res-servico] .destaque { color: #14532d !important; }
 
-      /* 2. Código no display e LED piscando: código em pílula âmbar/azul técnica, CAUSA em caixa vermelha clara, FAÇA em caixa verde clara */
       [data-codigo-tela] [data-cod] { display: inline-block !important; padding: 2px 10px !important; border-radius: 8px !important; background: #1e293b !important; color: #38bdf8 !important; border: 1px solid #38bdf8 !important; }
       [data-codigo-tela] [data-cod-causa] { box-sizing: border-box !important; padding: 8px 10px !important; border-radius: 10px !important; background: #fef2f2 !important; border-left: 4px solid #ef4444 !important; }
       [data-codigo-tela] [data-cod-causa] > span:last-child { color: #7f1d1d !important; }
       [data-codigo-tela] [data-cod-faca] { box-sizing: border-box !important; padding: 8px 10px !important; border-radius: 10px !important; background: #f0fdf4 !important; border-left: 4px solid #22c55e !important; }
       [data-codigo-tela] [data-cod-faca] > span:last-child { color: #14532d !important; }
 
-      /* 3. Inverter: caixa de Meta com fundo âmbar técnico e instrução "como verificar" destacada */
       [data-inv-etapa] [data-inv-meta] { background: #fffbeb !important; border: 1.5px solid #f59e0b !important; }
       [data-inv-etapa] [data-inv-meta] .lbl { color: #92400e !important; font-weight: 800 !important; }
       [data-inv-etapa] > .destaque { color: #0f172a !important; font-weight: 800 !important; }
 
-      /* 4. Selos tipo info (como "Causas prováveis", "Passo X de 4") nunca mais em branco/azul apagado (#e9f2ff / #091e42):
-         ganham azul petróleo forte (#e0f2fe / #0369a1 / borda #38bdf8) */
       [data-selo][style*="--gp-primary-container"] { background: #e0f2fe !important; color: #0369a1 !important; border-color: #0284c7 !important; }
-
-      /* 5. Cofre e Docs: cartões com borda lateral semântica e destaque no cliente/título */
       [data-cofre-card] { border-left: 4px solid #2563eb !important; background: #ffffff !important; }
     ` : '');
 document.head.appendChild(st);
 }
+const K_MEM = 'gelopro.memoria.sessao';
+const acharComp = () => {
+const no = document.querySelector('[data-home-inicio],[data-vis],[data-chapa]');
+if (!no) return null;
+const k = Object.keys(no).find(x => x.startsWith('__reactFiber'));
+for (let f = no[k]; f; f = f.return) {
+const lg = f.stateNode && f.stateNode.logic;
+if (lg && lg.state && 'fech' in lg.state && typeof lg.setState === 'function') return lg;
+}
+return null;
+};
+let restaurouMem = false;
+const sincronizarMemoria = () => {
+if (LEGADO) return;
+try {
+const lg = acharComp();
+if (!lg) return;
+const st = lg.state;
+if (!restaurouMem) {
+restaurouMem = true;
+const salvo = JSON.parse(sessionStorage.getItem(K_MEM) || 'null');
+if (salvo && (!st.fech || (!st.fech.cliNome && (!st.fech.itens || !st.fech.itens[0] || !st.fech.itens[0].d)))) {
+const patch = {};
+if (salvo.fech) patch.fech = salvo.fech;
+if (salvo.fechGuardado && !st.fechGuardado) patch.fechGuardado = salvo.fechGuardado;
+if (salvo.sel) patch.sel = salvo.sel;
+if (salvo.ptP && !st.ptP) patch.ptP = salvo.ptP;
+if (salvo.ptT && !st.ptT) patch.ptT = salvo.ptT;
+if (salvo.ntcR && !st.ntcR) patch.ntcR = salvo.ntcR;
+if (salvo.ntcT && !st.ntcT) patch.ntcT = salvo.ntcT;
+if (Object.keys(patch).length) lg.setState(patch);
+return;
+}
+}
+const F = st.fech, G = st.fechGuardado;
+const temDados = (x) => x && (String(x.cliNome || '').trim().length > 0 || (Array.isArray(x.itens) && x.itens.some(i => String(i.d || '').trim() || String(i.v || '').trim())));
+if (temDados(F) || temDados(G) || st.ptP || st.ptT || st.ntcR) {
+if (F && !String(F.cliNome || '').trim() && G && String(G.cliNome || '').trim()) {
+lg.setState(x => ({
+fech: { ...x.fech, cliNome: G.cliNome, cliTel: x.fech.cliTel || G.cliTel || '' }
+}));
+}
+const limpoF = F ? { ...F, foto: null, fotoUrl: null, assin: null, assinUrl: null } : null;
+const limpoG = G ? { ...G, foto: null, fotoUrl: null, assin: null, assinUrl: null } : null;
+sessionStorage.setItem(K_MEM, JSON.stringify({
+fech: limpoF,
+fechGuardado: limpoG,
+sel: st.sel,
+ptP: st.ptP,
+ptT: st.ptT,
+ntcR: st.ntcR,
+ntcT: st.ntcT,
+}));
+}
+} catch (e) {   }
+};
 const posPino = () => {
 try {
+sincronizarMemoria();
 const cab = document.querySelector('[data-telemetria]');
 if (!cab) return;
 const mEl = cab.querySelector('[data-cab-marca]'), bEl = cab.querySelector('[data-cab-btu]'), fEl = cab.querySelector('[data-cab-fluido]');
@@ -85,6 +157,8 @@ const iniciarObs = () => {
 posPino();
 const obs = new MutationObserver(posPino);
 obs.observe(document.body, { childList: true, subtree: true, characterData: true });
+document.addEventListener('input', () => setTimeout(sincronizarMemoria, 60), true);
+document.addEventListener('click', () => setTimeout(sincronizarMemoria, 80), true);
 };
 if (document.body) iniciarObs(); else window.addEventListener('DOMContentLoaded', iniciarObs);
 }
