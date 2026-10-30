@@ -1009,7 +1009,6 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
           <sc-if value="{{ fP1 }}" hint-placeholder-val="{{ false }}">
             <div style="display:flex;flex-direction:column;gap:12px;">
-              <sc-if value="{{ fDiscreto }}" hint-placeholder-val="{{ false }}"><div data-visao-cliente="" role="status" style="box-sizing:border-box;padding:10px 12px;border-radius:14px;background:#0f2340;border:2px solid #38bdf8;font:700 16px/22px 'Roboto',sans-serif;color:#ffffff;">✓ Visão do Cliente ativa (custos e margem ocultos)</div></sc-if>
               <sc-if value="{{ fTemGuardado }}" hint-placeholder-val="{{ false }}"><div data-rascunho-guardado="" role="status" style="display:flex;flex-direction:column;gap:8px;">
                 <dc-import name="Aviso" tipo="info" titulo="{{ fGuardadoT }}" texto="Este orçamento começou só com o serviço do diagnóstico atual. Escolha: continuar o atendimento anterior ou seguir com este e descartar o anterior." style="display:block;" hint-size="100%,64px"></dc-import>
                 <button type="button" data-rascunho-retomar="" onClick="{{ fRetomar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:var(--gp-r-tecla, 999px);border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">{{ fRetomarT }}</button>
