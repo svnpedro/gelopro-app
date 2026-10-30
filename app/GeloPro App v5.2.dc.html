@@ -68,6 +68,24 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 @keyframes gpDemoPisca{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}50%{box-shadow:0 0 0 4px rgba(251,191,36,.9)}}
 [data-demo-toque]{position:fixed;z-index:2147483646;width:46px;height:46px;border-radius:50%;border:3px solid #ffffff;background:rgba(56,189,248,.35);box-shadow:0 0 14px rgba(56,189,248,.9);pointer-events:none;animation:gpDemoToque 520ms ease-out forwards;}
 [data-demo-legenda]{position:fixed;z-index:2147483647;left:50%;top:calc(env(safe-area-inset-top, 0px) + 6px);transform:translateX(-50%);max-width:calc(100vw - 24px);box-sizing:border-box;padding:8px 16px;border-radius:999px;background:rgba(9,30,66,.94);border:2px solid #38bdf8;color:#ffffff;font:800 16px/20px 'Roboto',sans-serif;text-align:center;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.35);}
+/* PR #75 (Parte 2 das cores por natureza, hex fixos nas telas internas claras):
+   Inverter: meta (~310 V CC) e minitabela Ω em âmbar elétrico de multímetro; escala DIODO / Ω / V CC / V CA em âmbar.
+   Etapa: valor-alvo da cola em cápsula clara (verde no OK, âmbar na faixa). Resultado: MAIS COMUM em âmbar forte, preço em verde dinheiro, EDITÁVEL tracejado.
+   Cofre: valor verde dinheiro, garantia ativa esmeralda, preventiva âmbar. Fichas: instrumento por cor (multímetro/capacímetro âmbar, manômetro azul, visual verde). */
+[data-inv-meta] [data-inv-alvo]{display:inline-block;box-sizing:border-box;padding:2px 10px;border-radius:10px;background:#fffbeb;border:1.5px solid #f59e0b;color:#b45309;}
+[data-inv-meta] [data-inv-compressores]{box-sizing:border-box;padding:6px 10px;border-radius:10px;background:#fffbeb;border:1.5px solid #f59e0b;}
+.tag.tag-escala{background:#fef3c7;color:#92400e;border-color:#f59e0b;}
+[data-cola-instrumento] .tag-ok.tag-inline{background:#dcfce7;color:#15803d;box-shadow:0 0 0 3px #dcfce7,0 0 0 4px #22c55e;}
+[data-cola-instrumento] .tag-medida.tag-inline{background:#fef3c7;color:#92400e;box-shadow:0 0 0 3px #fef3c7,0 0 0 4px #f59e0b;}
+.tag.tag-mais-comum{background:#fef3c7;color:#92400e;border-color:#f59e0b;}
+[data-tema="claro"] [data-res-preco],[data-tema="sol"] [data-res-preco]{color:#15803d;}
+.tag.tag-editavel{background:#ffffff;color:#334155;border:1.5px dashed #64748b;}
+[data-cofre-dados] .tag-valor{background:#dcfce7;color:#15803d;border-color:#86efac;}
+[data-cofre-dados] .tag-prazo.ok{background:#d1fae5;color:#065f46;border-color:#6ee7b7;}
+[data-prev-data].tag-prazo{background:#fef3c7;color:#92400e;border-color:#f59e0b;}
+.tag.tag-instr-ambar{background:#fef3c7;color:#92400e;border-color:#f59e0b;}
+.tag.tag-instr-azul{background:#e0f2fe;color:#0369a1;border-color:#7dd3fc;}
+.tag.tag-instr-verde{background:#ecfdf5;color:#065f46;border-color:#6ee7b7;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -492,7 +510,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-if value="{{ temServ }}" hint-placeholder-val="{{ false }}"><div data-res-servico="" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;align-items:flex-start;gap:6px;">
                       <span class="lbl" data-rotulo="">Orçamento sugerido</span>
                       <span class="destaque">{{ resServNome }}</span>
-                      <span class="tags"><span data-res-preco="" class="num-chave dinheiro">{{ resServPreco }}</span><span class="tag tag-estado" data-selo="" data-rotulo="">EDITÁVEL</span></span>
+                      <span class="tags"><span data-res-preco="" class="num-chave dinheiro">{{ resServPreco }}</span><span class="tag tag-estado tag-editavel" data-selo="" data-rotulo="">EDITÁVEL</span></span>
                     </div></sc-if>
                     <sc-if value="{{ temResAtalhos }}" hint-placeholder-val="{{ false }}"><div data-res-atalhos="" role="group" aria-label="Conferir agora com o instrumento" style="flex:none;display:flex;flex-direction:column;gap:8px;">
                       <sc-for list="{{ resAtalhos }}" as="ra" hint-placeholder-count="1"><button type="button" data-res-atalho="{{ ra.k }}" aria-label="{{ ra.aria }}" onClick="{{ ra.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="{{ ra.ico }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>{{ ra.l }}</span></button></sc-for>
@@ -636,7 +654,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-for list="{{ bOut }}" as="o" hint-placeholder-count="3">
                       <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                         <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ o.rot }}</span>
-                        <span data-poco-tom="{{ o.tomP }}" style="display:block;box-sizing:border-box;padding:4px 6px;border-radius:10px;background:{{ o.fundoP }};border:1.5px solid {{ o.bordaP }};color:{{ o.corN }};font-family:'Roboto',sans-serif;font-size:18px;line-height:24px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:{{ o.corU }};">{{ o.un }}</span></span>
+                        <span data-poco-tom="{{ o.tomP }}" style="display:block;box-sizing:border-box;padding:4px 6px;border-radius:10px;background:{{ o.fundoP }};border:1.5px solid {{ o.bordaP }};color:{{ o.corN }};font-family:'Roboto',sans-serif;font-size:18px;line-height:24px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="display:{{ o.unD }};font-weight:600;font-size:16px;line-height:20px;color:{{ o.corU }};">{{ o.un }}</span></span>
                       </div>
                     </sc-for>
                   </div>
@@ -676,7 +694,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <div data-inv-meta="" style="box-sizing:border-box;padding:10px 12px;border-radius:16px;background:var(--gp-display);display:flex;flex-direction:column;gap:8px;">
                         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;"><span class="lbl" data-rotulo="">Meta</span><span class="{{ e.fonteTag.c }}" data-selo="" data-rotulo="" data-inv-fonte="">{{ e.fonteTag.t }}</span></div>
                         <sc-if value="{{ e.temAlvo }}" hint-placeholder-val="{{ false }}"><div class="tags" style="column-gap:10px;"><span data-inv-alvo="" class="num-chave">{{ e.alvo }}</span><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="">{{ e.cond.t }}</span></sc-if></div></sc-if>
-                        <sc-if value="{{ e.temComp }}" hint-placeholder-val="{{ false }}"><div data-inv-compressores="" style="display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;align-items:baseline;"><sc-for list="{{ e.comp }}" as="cp" hint-placeholder-count="3"><span data-rotulo="" style="font:600 14px/20px 'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;color:var(--gp-on-display);overflow-wrap:anywhere;">{{ cp.m }}</span><span style="font:800 18px/22px 'Roboto',sans-serif;color:var(--gp-tg-num);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cp.o }}</span></sc-for><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="" style="grid-column:1 / -1;justify-self:start;">{{ e.cond.t }}</span></sc-if></div></sc-if>
+                        <sc-if value="{{ e.temComp }}" hint-placeholder-val="{{ false }}"><div data-inv-compressores="" style="display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;align-items:baseline;"><sc-for list="{{ e.comp }}" as="cp" hint-placeholder-count="3"><span data-rotulo="" style="font:600 14px/20px 'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;color:var(--gp-on-display);overflow-wrap:anywhere;">{{ cp.m }}</span><span data-ohm="" style="font:800 18px/22px 'Roboto',sans-serif;color:#b45309;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cp.o }}</span></sc-for><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="" style="grid-column:1 / -1;justify-self:start;">{{ e.cond.t }}</span></sc-if></div></sc-if>
                         <div class="tags"><sc-for list="{{ e.vereditos }}" as="vd" hint-placeholder-count="2"><span class="{{ vd.c }}" data-selo="" data-rotulo="">{{ vd.t }}</span></sc-for><sc-for list="{{ e.medidas }}" as="md" hint-placeholder-count="1"><span class="{{ md.c }}" data-selo="" data-rotulo="">{{ md.t }}</span></sc-for></div>
                         <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);text-wrap:pretty;">{{ e.ref }}</span>
                       </div>
@@ -953,8 +971,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           <sc-if value="{{ dLista }}" hint-placeholder-val="{{ false }}">
             <div data-fichas="" style="display:flex;flex-direction:column;gap:12px;">
               <dc-import name="CampoTexto" aria="Buscar ficha" valor="{{ busca }}" aoDigitar="{{ setBusca }}" placeholder="Sintoma, código ou marca" icone="busca" style="display:block;" hint-size="100%,56px"></dc-import>
-              <div role="group" aria-label="Filtrar fichas por categoria" style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px;">
-                <sc-for list="{{ fichaFiltros }}" as="fc" hint-placeholder-count="5"><button type="button" aria-pressed="{{ fc.on }}" onClick="{{ fc.acao }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:999px;border:{{ fc.borda }};background:{{ fc.fundo }};color:{{ fc.cor }};font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ fc.l }}</button></sc-for>
+              <!-- PR #75: as 5 pílulas quebram linha dentro da borda (nada escondido à direita). -->
+              <div role="group" aria-label="Filtrar fichas por categoria" style="display:flex;flex-wrap:wrap;gap:6px;">
+                <sc-for list="{{ fichaFiltros }}" as="fc" hint-placeholder-count="5"><button type="button" aria-pressed="{{ fc.on }}" onClick="{{ fc.acao }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:0 12px;border-radius:999px;border:{{ fc.borda }};background:{{ fc.fundo }};color:{{ fc.cor }};font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ fc.l }}</button></sc-for>
               </div>
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fichasInfo }}</span>
               <span data-selo-atualizacao="{{ seloMes }}" class="tag tag-fonte tag-l" data-rotulo="" style="align-self:flex-start;padding:4px 12px 4px 8px;"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
@@ -1457,6 +1476,10 @@ const DOC_TIPOS = ['orc', 'gar', 'rec', 'laudo', 'pmoc', 'reca'];
 const quarentenas = (k) => { const out = []; try { for (let i = 0; i < localStorage.length; i++) { const c = localStorage.key(i); if (c && c.startsWith(k + QUARENTENA)) out.push(c); } } catch (e) {} return out.sort(); };
 const quarentena = (k, bruto) => { try { if (quarentenas(k).some(c => localStorage.getItem(c) === bruto)) return; localStorage.setItem(k + QUARENTENA + Date.now(), bruto); } catch (e) {} };
 const docValido = (x) => x && typeof x === 'object' && !Array.isArray(x) && x.numero && x.tipo;
+// PR #75 (P0, auditorias da extensão): registro de fuzzing antigo (data inválida, total negativo ou acima de R$ 500.000, "<script"/"alert(" no
+// cliente ou no nº) nunca entra no Cofre; o nome do cliente passa por limparTxt na leitura.
+const docLimpo = (d) => { const em = Number(d.em), t = d.total == null || d.total === '' ? null : Number(d.total);
+  return Number.isFinite(em) && em > 0 && (t === null || (Number.isFinite(t) && t >= 0 && t <= 500000)) && !/<script|alert\(/i.test(`${d.cliente || ''} ${d.numero || ''}`); };
 const lerDocs = (k) => {
   let bruto = null; try { bruto = localStorage.getItem(k); } catch (e) {}
   if (!bruto || !bruto.trim() || bruto.trim() === 'null') return [];
@@ -1543,7 +1566,7 @@ const invVisual = (e) => {
   const pre = [/energizado/i.test(t) && TG('perigo', '⚡ ENERGIZADO'), /Desligad|Desligue/i.test(t) && TG('estado', 'DESLIGADO'), /descarregad/i.test(t) && TG('estado', 'DESCARREGADO'),
     /IPM desmontado/i.test(t) && TG('estado', 'IPM DESMONTADO'), /conector [^.;]*solto|Solte o conector/i.test(t) && TG('estado', 'CONECTOR SOLTO'), /Desconecte o sensor/i.test(t) && TG('estado', 'SENSOR SOLTO')].filter(Boolean);
   const modo = /diodo/i.test(t) ? 'DIODO' : /em CC/i.test(t) ? 'V CC' : /em CA\b|V CA/i.test(t) ? 'V CA' : /resist|U–V/i.test(t) ? 'Ω' : e.ferramenta === 'visual' ? 'VISUAL' : '';
-  if (modo) pre.push(TG('modo', modo));
+  if (modo) pre.push(TG('modo', modo, modo === 'VISUAL' ? { cls: 'tag-instr-verde' } : { cls: 'tag-escala' }));
   const pontas = [...t.matchAll(/vermelho em ([^;]+?) e preto em ([^;.]+?)(?=;|\.|$)/gi)].map(m => [bornes(m[1]), bornes(m[2])]);
   const entre = t.match(/entre ([PN+−]) e ([PN+−])/); if (!pontas.length && entre && /em CC/i.test(t)) pontas.push([entre[1], entre[2]]);
   const a = { ...(INV_ALVO[id] || {}) };
@@ -1583,7 +1606,7 @@ const VISITA_VALORES = [60, 80, 100, 120, 150];
 // Quantidade por item (2 aparelhos, 8 metros de tubo): o valor do item é o unitário; subtotal e custo da peça multiplicam pela quantidade.
 const QTD_MAX = 99;
 const qtdDe = (x) => Math.max(1, Math.min(QTD_MAX, parseInt(String(x.q ?? '').replace(/\D/g, ''), 10) || 1));
-const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null, justif: true, catAberto: false, sug: [], ressalva: '', foto: null, fotoUrl: null, fotoErro: '', discreto: false, bonif: false, bonifItem: null, bonifVal: null, desc: 'nenhum', descLivre: '', validade: '3 dias', catAba: 'todos' });
+const FECH0 = () => ({ passo: 1, cliNome: '', cliTel: '', itens: [{ d: '', v: '' }], custo: '', prazo: '90 dias', prazoLivre: '', cobre: '', naoCobre: '', assin: null, recebido: false, tentou: 0, msg: null, justif: true, catAberto: false, sug: [], ressalva: '', foto: null, fotoUrl: null, fotoErro: '', discreto: false, bonif: false, bonifItem: null, bonifVal: null, desc: 'nenhum', descLivre: '', validade: '3 dias', catAba: 'todos' });
 // Rascunho do orçamento (PR #43, EXT-RAS): o fechamento dos passos 1 a 3 fica em gelopro.rascunho a cada mudança e volta depois de recarregar a
 // página. Foto e assinatura (imagens) não vão para o localStorage: no retorno, o técnico colhe de novo. Passo 4, Concluir e modo Amostra não gravam.
 const K_RASC = 'gelopro.rascunho', RASC_FORA = ['foto', 'fotoUrl', 'fotoErro', 'assin', 'msg', 'tentou', 'catAberto', 'itemEd'];
@@ -1929,6 +1952,8 @@ const CAP_ETAPAS = ['t_ng04', 't_gp04'];
 // grade não cresce em 375×667: o aviso vai na barra "Sem teste" (mesma linha), no aria-label dela e na dica (i) da etapa.
 const CAP_INV = 'Inverter: sem capacitor', CAP_INV_TXT = 'Inverter (compressor BLDC): o compressor não usa capacitor de partida; meça só o capacitor AC do ventilador, se houver, ou use Sem teste para seguir a Sensor NTC e Placa.';
 // Etiqueta .tag (PR #27, Lei Zero-Leitura). k = token (marca, medida, ok…); acima de 20 letras ganha .tag-l (16 px), pelo piso do portão G-L1.
+// PR #75: cor da etiqueta de instrumento pela natureza (multímetro/capacímetro/alicate âmbar, manômetro/termômetro azul, visual verde).
+const INSTR_COR = (n) => /mult|capac|alicate/i.test(n) ? 'tag-instr-ambar' : /man[oô]m|term[oô]m|pt\/sh/i.test(n) ? 'tag-instr-azul' : /visual/i.test(n) ? 'tag-instr-verde' : '';
 const TG = (k, t, x) => ({ ...(x || {}), c: `tag tag-${k}${x && x.cls ? ' ' + x.cls : ''}${String(t).length > 20 ? ' tag-l' : ''}`, t: String(t) });
 // Causa provável em 2 níveis: peça (18 px/800) e detalhe (16 px, cor de apoio). Corta na 1ª ligação (do, por, com, vírgula, parêntese…)
 // que deixe ao menos 2 palavras na peça: "Capacitor de partida" | "do compressor ou ventilador com capacitância baixa (µF)".
@@ -2018,7 +2043,11 @@ class Component extends DCLogic {
     this.buscarFeed();
     let n = 0; this._fp = setInterval(() => { n++; const el = this.pRef.current; if (el && el.querySelector('input,button')) { this.focarPortao(); clearInterval(this._fp); } else if (n > 40 || (!el && n > 10)) clearInterval(this._fp); }, 150);
   }
-  entrarAmostra() { this.setState({ amostra: true, fech: null, fechGuardado: null, licAm: { plano: 'LIFETIME_6', ativadoEm: Date.now(), bumps: [] }, pMsg: null }); }
+  // PR #75: a Amostra libera os adicionais PMOC e scripts (demonstração completa dos Docs) e limpa na hora registros de fuzzing antigos do Cofre de amostra.
+  entrarAmostra() {
+    try { const L = lerDocs(ARQ.amostra.docs); if (L.some(d => !docLimpo(d))) localStorage.setItem(ARQ.amostra.docs, JSON.stringify(L.filter(docLimpo).map(d => ({ ...d, cliente: limparTxt(d.cliente).trim() })))); } catch (e) { /* aparelho sem espaço */ }
+    this.setState({ amostra: true, fech: null, fechGuardado: null, licAm: { plano: 'LIFETIME_6', ativadoEm: Date.now(), bumps: ['pmoc', 'scripts'] }, pMsg: null });
+  }
   ativarPelaUrl() {
     let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
     if (q.get('amostra') === '1') this.entrarAmostra();
@@ -2477,7 +2506,11 @@ class Component extends DCLogic {
     // capacitor como medido OK, leva ele para o fim das causas e tira cap_partida do orçamento sugerido: a próxima causa (sensor NTC) vira a 1ª.
     // "Sem teste", "Fora" e a checagem rápida (capacitor não medido) mantêm o capacitor como 1ª causa e o orçamento de sempre.
     const capOk = !!r && r.banc && CAP_ETAPAS.some(k => st.hist.includes(k) && (st.resp || {})[k] === 'nao');
-    const rServ = r ? (capOk ? r.serv.filter(id => id !== 'cap_partida') : r.serv) : [];
+    // PR #75 (P0): R32 é Inverter (compressor BLDC sem capacitor de partida). Sem o capacitor marcado "Fora", ele desce para o fim com a etiqueta
+    // "INVERTER: SEM CAPACITOR" e sai do orçamento sugerido, como no capacitor medido "Dentro": Sensor NTC / fluido / placa viram a 1ª causa.
+    const capFora = CAP_ETAPAS.some(k => st.hist.includes(k) && (st.resp || {})[k] === 'sim');
+    const capInv = !!r && r.banc && !capOk && !capFora && st.sel.fluido === 'R32' && r.serv.includes('cap_partida');
+    const rServ = r ? (capOk || capInv ? r.serv.filter(id => id !== 'cap_partida') : r.serv) : [];
     const CAT = (st.base && st.base.cat) || [], resServ = r ? CAT.find(c => c.id === rServ[0]) || null : null;
     const mod = DK.find(k => k.id === st.modK);
     // Entrada única por sintoma: tela inicial e fichas abrem o mesmo percurso da base técnica.
@@ -2753,7 +2786,8 @@ class Component extends DCLogic {
     const blindar = () => this.fSet(f => { const at = (f.ressalva || '').trim(); return at.includes(RESSALVA_BLINDAR) ? {} : { ressalva: at ? `${at.replace(/[.;]?$/, ';')} ${RESSALVA_BLINDAR}` : RESSALVA_BLINDAR }; });
     const atualizarPorte = () => this.fSet(f => ({ itens: f.itens.map((y, j) => { const o = sobePorte.find(z => z.i === j); return o ? { ...y, v: v2(tipDe(o.c, st.sel.btu)), btu: st.sel.btu, custo: reais(String(y.custo ?? '')) === custoPorte(o.c, y.btu).cmed ? custoPorte(o.c, st.sel.btu).cmed : y.custo } : y; }) }));
     // Retorno: peça elétrica/eletrônica nova sem higienização nem ressalva. As ações valem na bandeja e no Sininho (envolver = o que fazer depois).
-    const temRetorno = !!F && temSid(PECA_RETORNO) && !temSid(['higienizacao']) && !ressalva;
+    // PR #75: qualquer item de limpeza/higienização (do catálogo, livre ou editado) já blinda o retorno; com o modo cliente ao lado, o alerta nunca aparece.
+    const temRetorno = !!F && temSid(PECA_RETORNO) && !temSid(['higienizacao']) && !F.itens.some(x => /limpeza|higieniza/i.test(String(x.d || ''))) && !ressalva && !discreto;
     const acoesRetorno = (envolver) => [...(cHig ? [{ k: 'higienizacao', l: '+ Incluir Higienização', acao: envolver(() => addCat(cHig)) }] : []), { k: 'blindar', l: 'Blindar na Garantia', acao: envolver(blindar) }];
     const tPorte = `Aparelho alterado para ${st.sel.btu} BTU/h. Atualizar preços para este porte?`;
     // Fila da bandeja no passo 1 (retorno > porte > fluido), sem os dispensados: a bandeja mostra o 1º e diz "1 de N" quando há mais.
@@ -2799,7 +2833,7 @@ class Component extends DCLogic {
     const lMedOk = lMedL.length > 0 && typeof LD.medCli === 'string' && norm(LD.medCli) === norm(String(LD.cli || '').trim());
     const lMed = lMedOk ? lMedL.join('\n') : lMedL.length ? 'Medições desta sessão não incluídas neste laudo.' : 'Nenhuma medição registrada nesta sessão.';
     const lOk = LD.cli.trim().length >= 2 && LD.cons.trim() && LD.conc.trim();
-    const docs = lerDocs(this.arq().docs);
+    const docs = lerDocs(this.arq().docs).filter(docLimpo).map(d => ({ ...d, cliente: limparTxt(d.cliente).trim() }));
     // Agrupamento por atendimento (PR #43, EXT-IMP-5): nº + atend. Dois atendimentos com o mesmo nº nunca dividem o cartão; documento antigo sem
     // atend agrupa pelo nº, como antes.
     const porNum = {}; docs.forEach(d => { const k = (d.numero || '—') + (d.atend ? '#' + d.atend : ''); (porNum[k] = porNum[k] || []).push(d); });
@@ -2987,7 +3021,7 @@ class Component extends DCLogic {
         const fe = FERR[e.ferr] || ['Observação', 'info'], k = norm(e.q + '|' + e.d), ent = { sint: x.nome, sub: `${x.nome} · etapa técnica ${i + 1}`, abrir: () => iniciar(x.id, e.id) };
         const ja = fichaEt.get(k); if (ja) { ja.ents.push(ent); return; }
         const f = { cat: 'sint', tipo: 'Etapa técnica', ico: fe[1], t: e.q, sub: ent.sub, chave: fe[0], abrir: ent.abrir, kTec: e.id, ents: [ent],
-          tags: [TG('modo', e.ferr === 'visual' ? 'VISUAL' : fe[0].toUpperCase()), ...(COLA_ETAPA[e.id] ? [TG('medida', COLA[COLA_ETAPA[e.id]].faixa)] : [])] };
+          tags: [TG('modo', e.ferr === 'visual' ? 'VISUAL' : fe[0].toUpperCase(), { cls: INSTR_COR(e.ferr === 'visual' ? 'VISUAL' : fe[0]) }), ...(COLA_ETAPA[e.id] ? [TG('medida', COLA[COLA_ETAPA[e.id]].faixa)] : [])] };
         fichaEt.set(k, f); catF.push(f);
       }); });
       const porMarca = (rows) => { const g = new Map(); rows.forEach(r => { const b = brand(r.marca); if (b) g.set(r.marca, [...(g.get(r.marca) || []), r]); }); return [...g.entries()]; };
@@ -3003,7 +3037,7 @@ class Component extends DCLogic {
       });
       [...new Map((B.inv || []).map(r => [r.familia, r])).values()].forEach(r => { const b = brand(r.marca_escopo), n = B.inv.filter(x => x.familia === r.familia).length, fam = r.familia.split('_').map(w => w.replace(/^\w/, c => c.toUpperCase())).join(' ').replace('3d', '3D');
         catF.push({ cat: 'inv', logo: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel.marca : b, tipo: 'Inverter', ico: 'placa-ipm', t: `Checklist Inverter ${fam}`, sub: r.marca_escopo.split('/').includes(st.sel.marca) ? 'Placa e IPM, com cena de cada teste' : `Placa e IPM · abre com a marca ${b}`, chave: r.familia === 'universal' ? `${n} testes · ${r.marca_escopo.split('/').length} marcas sem família própria` : `${n} testes · ${r.marca_escopo.replace(/\//g, ', ')}`,
-          tags: [TG('modo', 'MULTÍMETRO'), TG('medida', `${n} TESTES`), r.familia === 'universal' ? TG('estado', `${r.marca_escopo.split('/').length} MARCAS`) : TG('marca', b || r.marca_escopo.split('/')[0])], abrir: lock ? upg('inv') : () => this.abrir('inv', { modK: 'inv', sel: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel : { ...st.sel, marca: b } }) });
+          tags: [TG('modo', 'MULTÍMETRO', { cls: INSTR_COR('MULTÍMETRO') }), TG('medida', `${n} TESTES`), r.familia === 'universal' ? TG('estado', `${r.marca_escopo.split('/').length} MARCAS`) : TG('marca', b || r.marca_escopo.split('/')[0])], abrir: lock ? upg('inv') : () => this.abrir('inv', { modK: 'inv', sel: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel : { ...st.sel, marca: b } }) });
       });
       if ((B.pmoc || []).length) { const temP = (lic && Array.isArray(lic.bumps) ? lic.bumps : []).includes('pmoc'), ng = new Set(B.pmoc.map(r => r.grupo)).size;
         catF.push({ cat: 'inv', tipo: 'PMOC', ico: 'calendario', t: 'Checklist PMOC simplificado', sub: temP ? 'Modelo editável com PDF' : 'Adicional de Docs · veja em Docs', chave: `${B.pmoc.length} atividades em ${ng} grupos`, tags: [TG('medida', `${B.pmoc.length} ATIVIDADES`), TG('estado', `${ng} GRUPOS`)], abrir: () => temP ? this.abrir('pmoc', { modK: 'docs' }) : this.abrir('docs', { modK: 'docs' }) });
@@ -3027,18 +3061,20 @@ class Component extends DCLogic {
     const shCrit = B && marca === 'Elgin' && st.sel.fluido === 'R410A' ? (B.crit.find(c => /^Superaquecimento correto/.test(c.criterio)) || {}).valor : null;
     const shFx = shCrit && shCrit.match(/(\d+(?:[.,]\d+)?)\s*a\s*(\d+(?:[.,]\d+)?)/);
     // Vereditos com cor (PR #27, Lei Zero-Leitura): SH na faixa oficial Elgin; desvio do NTC ≤ ±5 % verde, até ±10 % âmbar, acima vermelho.
-    const shVer = sh === null ? null : !shFx ? 'semref' : sh < num(shFx[1]) ? 'baixo' : sh > num(shFx[2]) ? 'alto' : 'ok';
+    // PR #75 (P0, aprovado pelo Pedro): quando a base não traz a faixa da marca, o veredicto usa a referência de campo do 3º poço da Home (PR #70: R410A/R32
+    // 7–11 °C, R22 6–10 °C), sempre rotulada "REF. CAMPO". A Elgin R410A segue com a faixa oficial (F14).
+    const shRef = shFx ? [shFx[1], shFx[2]] : st.sel.fluido === 'R22' ? ['6', '10'] : ['7', '11'];
+    const shVer = sh === null ? null : sh < num(shRef[0]) ? 'baixo' : sh > num(shRef[1]) ? 'alto' : 'ok';
     // PR #74: cor do poço do SH ao vivo. Com faixa oficial (shFx), a dela; sem ela, só a cor usa a referência de campo do 3º poço da Home
     // (PR #70, aprovada pelo Pedro: R410A/R32 7–11 °C, R22 6–10 °C). A etiqueta de veredicto segue a regra de sempre (sem faixa = medir e orçar).
-    const shCampo = shFx ? [num(shFx[1]), num(shFx[2])] : st.sel.fluido === 'R22' ? [6, 10] : [7, 11];
-    const shCor = sh === null ? 'azul' : sh < shCampo[0] ? 'ambar' : sh > shCampo[1] ? 'vermelho' : 'verde';
+    const shCor = sh === null ? 'azul' : shVer === 'baixo' ? 'ambar' : shVer === 'alto' ? 'vermelho' : 'verde';
     const ntcVer = dif === null ? null : Math.abs(dif) <= 5 ? 'ok' : Math.abs(dif) <= 10 ? 'alerta' : 'falha';
-    const shTag = !shVer ? null : shVer === 'ok' ? TG('ok', `✓ DENTRO ${shFx[1]}–${shFx[2]} °C`) : shVer === 'alto' ? TG('alerta', '▲ ALTO → PROVÁVEL FALTA DE FLUIDO') : shVer === 'baixo' ? TG('alerta', '▼ BAIXO → PROVÁVEL EXCESSO DE FLUIDO') : TG('sem-ref', MEDIR_ORCAR);
+    const shTag = !shVer ? null : shVer === 'ok' ? TG('ok', `✓ DENTRO ${shRef[0]}–${shRef[1]} °C${shFx ? '' : ' (REF. CAMPO)'}`) : shVer === 'alto' ? TG('alerta', '▲ ALTO → PROVÁVEL FALTA DE FLUIDO') : shVer === 'baixo' ? TG('alerta', '▼ BAIXO → PROVÁVEL EXCESSO DE FLUIDO') : TG('sem-ref', MEDIR_ORCAR);
     const ntcTag = !ntcVer ? null : ntcVer === 'ok' ? TG('ok', '✓ DESVIO ≤ ±5 %') : ntcVer === 'alerta' ? TG('alerta', `${dif > 0 ? '▲' : '▼'} DESVIO ATÉ ±10 %`) : TG('falha', '✗ DESVIO > ±10 %');
     const abrirMod = (k) => () => lock ? this.vazio('upg', { modK: k }) : this.abrir(k, { modK: k });
     if (sh !== null) {
-      const v = shFx ? (sh < num(shFx[1]) ? 'abaixo da faixa Elgin' : sh > num(shFx[2]) ? 'acima da faixa Elgin' : 'dentro da faixa Elgin') : 'medir e orçar';
-      diags.push({ ico: 'pt-sh', val: `SH ${f1(sh)} °C`, ver: v, verCurto: shFx ? v.replace(' Elgin', '') : 'medir e orçar', cor: shVer === 'ok' ? VER_COR.ok : shVer === 'alto' || shVer === 'baixo' ? VER_COR.alerta : '', aria: `Diagnóstico da medição: superaquecimento ${f1(sh)} °C, ${st.sel.fluido}, ${shFx ? v + ` (${shFx[1]} a ${shFx[2]} °C)` : `${ORIENTA_SH} ${ORIENTA_SH_CTA}`}. Toque para ver a análise no PT/SH`, acao: abrirMod('ptsh') });
+      const fx = shFx ? 'faixa Elgin' : 'faixa de campo', v = `${shVer === 'baixo' ? 'abaixo da' : shVer === 'alto' ? 'acima da' : 'dentro da'} ${fx}`;
+      diags.push({ ico: 'pt-sh', val: `SH ${f1(sh)} °C`, ver: v, verCurto: v.replace(/ (Elgin|de campo)$/, ''), cor: shVer === 'ok' ? VER_COR.ok : VER_COR.alerta, aria: `Diagnóstico da medição: superaquecimento ${f1(sh)} °C, ${st.sel.fluido}, ${v} (${shRef[0]} a ${shRef[1]} °C${shFx ? '' : ', referência de campo'})${shVer === 'ok' ? '' : '. ' + ORIENTA_SH_CTA}. Toque para ver a análise no PT/SH`, acao: abrirMod('ptsh') });
     } else if (tsat !== null || (Tt !== null && !ptTErro)) {
       // 320×568: só a pressão medida em tela ≤ 340 px usa a variante curta "falta °C tubo" (a longa cortava na faixa).
       const v = tsat !== null ? `Saturação ${f1(tsat)} °C` : `Tubo ${f1(Tt)} °C`, falta = tsat !== null ? (W <= 340 ? 'falta °C tubo' : 'falta o °C do tubo') : 'falta a pressão';
@@ -3152,7 +3188,7 @@ class Component extends DCLogic {
       bArea: B2.area, bPes: B2.pes, bW: B2.w, bSetArea: sB('area'), bSetPes: sB('pes'), bSetW: sB('w'), bF1: B2.f1, bF2: B2.f2, bF3: B2.f3, bSetF1: sB('f1'), bSetF2: sB('f2'), bSetF3: sB('f3'),
       bE: Object.fromEntries(Object.entries(bErr).map(([k, v]) => [k, v ? 'erro' : 'normal'])), bM: bErr,
       bSolOps: ['Sombra/manhã', 'Sol da tarde'], bSol: B2.sol, bSetSol: (v) => this.setState(x => ({ btu: { ...x.btu, sol: v } })),
-      bOut: [['Estimativa', bEst ? fmtBTU(bEst) : '—'], ['Aparelho', bAp ? fmtBTU(bAp) : '—'], ['Folga', bDif === null ? '—' : (bDif > 0 ? '+' : '') + f1(bDif) + ' %']].map(([rot, v]) => { const m = this.mostrador('btu-' + rot, v, st.tela === 'btu', rot === 'Estimativa' ? 'azul' : rot === 'Aparelho' ? 'indigo' : bDif !== null && bDif < 0 ? 'vermelho' : 'verde'); return { rot, ...m, un: m.un.replace(/^ /, '\u00a0') }; }), // PR #66: "BTU/h" nunca quebra sozinho
+      bOut: [['Estimativa', bEst ? fmtBTU(bEst) : '—'], ['Aparelho', bAp ? fmtBTU(bAp) : '—'], ['Folga', bDif === null ? '—' : (bDif > 0 ? '+' : '') + f1(bDif) + ' %']].map(([rot, v]) => { const m = this.mostrador('btu-' + rot, v, st.tela === 'btu', rot === 'Estimativa' ? 'azul' : rot === 'Aparelho' ? 'indigo' : bDif !== null && bDif < 0 ? 'vermelho' : 'verde'); return { rot, ...m, un: m.un.trim(), unD: 'block' }; }), // PR #75: unidade (BTU/h, %) em linha própria, sem colar Estimativa e Aparelho
       bVerTag: bDif === null ? TG('sem-ref', '') : bDif < 0 ? TG('falha', '✗ NÃO COBRE') : TG('ok', '✓ COBRE'), bVerK: bDif === null ? '' : bDif < 0 ? 'nao-cobre' : 'cobre',
       bAcima: bEst !== null && bEst > BTU_SPLIT, bAcimaT: `Acima de ${BTU_SPLIT.toLocaleString('pt-BR')} BTU/h — exige múltiplos aparelhos ou dimensionamento de projeto.`,
       // Recomendação comercial (PR #20): menor capacidade da lista que cobre a estimativa, com as faixas Piso-Teto/Cassete de 48.000 e 60.000 BTU/h.
@@ -3413,8 +3449,8 @@ class Component extends DCLogic {
       ptForaX: ptRows.length ? `A tabela de ${st.sel.fluido} vai de ${f1(ptRows[0][0])} a ${f1(ptRows[ptRows.length - 1][0])} psig.` : '',
       // PR #46: sem faixa da marca, "MEDIR E ORÇAR" já abre com a orientação de medição (sem toque na seta).
       ptRefAberto: !elg.length,
-      ptRefT: elg.length ? `Elgin ${elg[0].linha}: ${elg[0].valor}` : `Superaquecimento ${marca}: ${MEDIR_ORCAR}`,
-      ptRefX: elg.length ? `Vale só para essa linha (${elg[0].fonte_id}). ${elg.slice(1).map(c => c.valor).join('. ')}.` : `${ORIENTA_SH} ${ORIENTA_SH_CTA}`,
+      ptRefT: elg.length ? `Elgin ${elg[0].linha}: ${elg[0].valor}` : `Superaquecimento ${marca}: referência de campo ${shRef[0]}–${shRef[1]} °C (${st.sel.fluido})`,
+      ptRefX: elg.length ? `Vale só para essa linha (${elg[0].fonte_id}). ${elg.slice(1).map(c => c.valor).join('. ')}.` : `${ORIENTA_SH} Acima da faixa: provável falta de fluido; abaixo: provável excesso. ${ORIENTA_SH_CTA}`,
       ...Object.fromEntries(Object.entries({ ...par('med_sh_ponto'), ...faixaFoto('sh_ponto') }).map(([k, v]) => ['pt' + k[0].toUpperCase() + k.slice(1), v])),
       // Par do vácuo (PR #37): med_vacuo_linha_erro/_certo, que o módulo já baixa com o lote med_*, no mesmo quadro 64:55 do par do termômetro.
       ...Object.fromEntries(Object.entries({ ...par('med_vacuo_linha'), ...faixaFoto('vacuo_linha') }).map(([k, v]) => ['ptVac' + k[0].toUpperCase() + k.slice(1), v])),
@@ -3588,10 +3624,10 @@ class Component extends DCLogic {
       resSelo: r && r.banc ? 'Causas prováveis' : 'Causa provável', resSeloTipo: r && r.banc ? 'info' : 'aviso',
       // Causas (bancada) em 2 níveis, "MAIS COMUM" na 1ª causa ativa e o capacitor medido "Dentro" no fim com "✓ MEDIDO OK" (PR #27).
       acoes: !r ? [] : (() => {
-        const L = r.a.map((t, i) => ({ t, cap: capOk && /^Capacitor/i.test(t) }));
+        const L = r.a.map((t, i) => ({ t, cap: (capOk || capInv) && /^Capacitor/i.test(t) }));
         return [...L.filter(x => !x.cap), ...L.filter(x => x.cap)].map((x, i) => {
           const [peca, det] = r.banc ? pecaDe(x.t) : [x.t, ''];
-          const tags = x.cap ? [TG('ok', '✓ MEDIDO OK', { capOk: '1' })] : r.banc && i === 0 ? [TG('estado', 'MAIS COMUM')] : [];
+          const tags = x.cap ? [capOk ? TG('ok', '✓ MEDIDO OK', { capOk: '1' }) : TG('estado', 'INVERTER: SEM CAPACITOR')] : r.banc && i === 0 ? [TG('estado', 'MAIS COMUM', { cls: 'tag-mais-comum' })] : [];
           return { n: i + 1, t: peca, det, temDet: !!det, cls: r.banc ? 'destaque' : 'corpo', tags, temTags: tags.length > 0, linha: i ? '1px solid var(--gp-outline-variant)' : '0' };
         });
       })(),
