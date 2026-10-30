@@ -61,6 +61,13 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 [data-tema=sol] [data-chapa]{background:var(--gp-chassis);}
 /* PR #69: entrada de tela com fôlego de equipamento (gpIn 220 ms); sem movimento com prefers-reduced-motion. */
 @media (prefers-reduced-motion: reduce){[data-anim-in],[style*="gpIn"]{animation:none !important;}}
+/* PR #72: virada do placar (modo cliente ao lado) e piloto do vídeo (?demo=viral): anel de toque, legenda e o FAÇA piscando. */
+@keyframes gpVirarA{0%{opacity:.4;transform:translateY(6px)}100%{opacity:1;transform:none}}
+@keyframes gpVirarB{0%{opacity:.4;transform:translateY(6px)}100%{opacity:1;transform:none}}
+@keyframes gpDemoToque{0%{transform:translate(-50%,-50%) scale(.4);opacity:.95}100%{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+@keyframes gpDemoPisca{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}50%{box-shadow:0 0 0 4px rgba(251,191,36,.9)}}
+[data-demo-toque]{position:fixed;z-index:2147483646;width:46px;height:46px;border-radius:50%;border:3px solid #ffffff;background:rgba(56,189,248,.35);box-shadow:0 0 14px rgba(56,189,248,.9);pointer-events:none;animation:gpDemoToque 520ms ease-out forwards;}
+[data-demo-legenda]{position:fixed;z-index:2147483647;left:50%;top:calc(env(safe-area-inset-top, 0px) + 6px);transform:translateX(-50%);max-width:calc(100vw - 24px);box-sizing:border-box;padding:8px 16px;border-radius:999px;background:rgba(9,30,66,.94);border:2px solid #38bdf8;color:#ffffff;font:800 16px/20px 'Roboto',sans-serif;text-align:center;pointer-events:none;box-shadow:0 6px 18px rgba(0,0,0,.35);}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -365,9 +372,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <div aria-hidden="true" data-decor="" data-telemetria-cab="" style="display:flex;align-items:center;gap:5px;min-width:0;padding:0 4px;font:700 11px/14px 'Roboto Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94a3b8;white-space:nowrap;overflow:hidden;">
                       <span style="flex:none;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bbf7d0 0%,#22c55e 45%,#15803d 100%);box-shadow:0 0 6px 1px rgba(34,197,94,.85);"></span>
                       <span style="flex:none;">TELEMETRIA</span>
-                      <span data-cab-marca="" style="flex:none;padding:0 5px;border-radius:4px;background:#ffffff;color:#0b1426;font:800 10px/14px 'Roboto',sans-serif;letter-spacing:.02em;">{{ telMarca }}</span>
-                      <span data-cab-btu="" style="flex:none;box-sizing:border-box;padding:0 5px;border-radius:4px;background:#13294a;border:1px solid #38bdf8;color:#67c6ff;font:800 10px/12px 'Roboto Mono',ui-monospace,monospace;">{{ telBtu }}</span>
-                      <span data-cab-fluido="" style="flex:none;box-sizing:border-box;padding:0 5px;border-radius:4px;background:#241708;border:1px solid #f59e0b;color:#fde68a;font:800 10px/12px 'Roboto Mono',ui-monospace,monospace;">{{ telFluido }}</span>
+                      <span data-cab-marca="" style="flex:none;padding:0 5px;border-radius:4px;background:#ffffff;color:#0b1426;font:800 10px/14px 'Roboto',sans-serif;letter-spacing:.02em;;animation:{{ telAnim }}">{{ telMarca }}</span>
+                      <span data-cab-btu="" style="flex:none;box-sizing:border-box;padding:0 5px;border-radius:4px;background:#13294a;border:1px solid #38bdf8;color:#67c6ff;font:800 10px/12px 'Roboto Mono',ui-monospace,monospace;;animation:{{ telAnim }}">{{ telBtu }}</span>
+                      <span data-cab-fluido="" style="flex:none;box-sizing:border-box;padding:0 5px;border-radius:4px;background:#241708;border:1px solid #f59e0b;color:#fde68a;font:800 10px/12px 'Roboto Mono',ui-monospace,monospace;;animation:{{ telAnim }}">{{ telFluido }}</span>
                       <sc-if value="{{ telTemResumo }}" hint-placeholder-val="{{ false }}"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;">{{ telResumo }}</span></sc-if>
                     </div>
                     <div role="group" aria-label="Leituras" style="box-sizing:border-box;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:{{ gradeGap }};padding:2px;border-radius:12px;background:#05090f;box-shadow:inset 0 3px 8px rgba(0,0,0,0.75);">
@@ -1032,13 +1039,41 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
           <sc-if value="{{ fP1 }}" hint-placeholder-val="{{ false }}">
             <div data-passo-in="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);display:flex;flex-direction:column;gap:12px;">
+              <!-- PR #72: o placar financeiro abre no topo do Passo 1 (visível sem rolar em 390×844). Modo cliente ao lado: total grande à direita e os
+                   dois tópicos limpos abaixo de uma linha fina, sem tijolo verde e sem faixa de "modo cliente". Modo técnico: total, lucro líquido em
+                   destaque e trilho único de 6 px com o indicador (rótulo da faixa atual em 700 + sublinhado). -->
+              <div data-lucro-painel="" data-estado="{{ fLucroEst }}" role="status" style="box-sizing:border-box;padding:14px 16px 16px;border-radius:16px;background:{{ fLucroFundo }};box-shadow:inset 6px 0 0 {{ fLucroViva }},0 6px 16px rgba(9,30,66,0.22);display:flex;flex-direction:column;gap:10px;animation:{{ fPainelAnim }};">
+                <sc-if value="{{ fDiscreto }}" hint-placeholder-val="{{ false }}"><div data-termometro="" data-modo-cliente="" role="group" aria-label="Tabela técnica referencial 2026" style="display:flex;flex-direction:column;gap:10px;">
+                  <div data-total-painel="" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:700 16px/22px 'Roboto',sans-serif;color:#e2e8f0;">Total ao cliente</span><span style="font:800 28px/32px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ fTotalTxt }}</span></div>
+                  <div aria-hidden="true" data-decor="" style="height:0;border-top:1px solid rgba(255,255,255,0.14);"></div>
+                  <span data-cliente-topico="" style="font:700 16px/22px 'Roboto',sans-serif;color:#ffffff;letter-spacing:.01em;text-wrap:pretty;">✓ TABELA TÉCNICA REFERENCIAL 2026</span>
+                  <span data-cliente-topico="" style="font:500 16px/22px 'Roboto',sans-serif;color:#e2e8f0;text-wrap:pretty;">✓ Escopo técnico com peça, mão de obra e garantia auditados para o porte do equipamento</span>
+                </div></sc-if>
+                <sc-if value="{{ fVerCusto }}" hint-placeholder-val="{{ true }}"><div data-total-painel="" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);">Total ao cliente</span><span style="font:800 28px/32px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ fTotalTxt }}</span></div></sc-if>
+                <sc-if value="{{ fTemDesc }}" hint-placeholder-val="{{ false }}"><span data-lucro-desconto="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ fDescPainel }}</span></sc-if>
+                <sc-if value="{{ fTemLucro }}" hint-placeholder-val="{{ false }}"><div data-lucro-liquido="" style="box-sizing:border-box;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,0.28);box-shadow:inset 0 0 0 1.5px {{ fLucroViva }};font:800 22px/28px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;text-wrap:balance;">{{ fLucroTxt }}</div></sc-if>
+                <sc-if value="{{ fTemLucroMsg }}" hint-placeholder-val="{{ true }}"><span data-lucro-msg="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ fLucroMsg }}</span></sc-if>
+                <sc-if value="{{ fTemTermo }}" hint-placeholder-val="{{ false }}">
+                  <div data-termometro="" role="meter" aria-label="Posição do valor na tabela de referência" aria-valuemin="0" aria-valuemax="{{ fTermMax }}" aria-valuenow="{{ fTermVal }}" aria-valuetext="{{ fTermTxt }}" style="position:relative;height:18px;margin:2px 8px 0;">
+                    <span aria-hidden="true" data-termometro-trilho="" style="position:absolute;left:0;right:0;top:6px;height:6px;border-radius:999px;background:rgba(255,255,255,0.16);"></span>
+                    <span aria-hidden="true" style="position:absolute;left:0;top:6px;height:6px;width:{{ fTermPos }};border-radius:999px;background:{{ fLucroViva }};"></span>
+                    <span aria-hidden="true" data-termometro-corte="piso" style="position:absolute;top:4px;height:10px;width:2px;margin-left:-1px;left:{{ fTermZr }};border-radius:1px;background:rgba(255,255,255,0.5);"></span>
+                    <span aria-hidden="true" data-termometro-corte="tipico" style="position:absolute;top:4px;height:10px;width:2px;margin-left:-1px;left:{{ fTermTip }};border-radius:1px;background:rgba(255,255,255,0.5);"></span>
+                    <span data-termometro-marcador="" style="position:absolute;top:1px;left:{{ fTermPos }};width:16px;height:16px;margin-left:-8px;box-sizing:border-box;border-radius:50%;background:#ffffff;box-shadow:0 0 0 3px {{ fLucroViva }},0 2px 6px rgba(0,0,0,0.5);transition:left 200ms ease-out;"></span>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;">
+                    <sc-for list="{{ fTermZonas }}" as="z" hint-placeholder-count="3"><span data-rotulo="" aria-current="{{ z.atual }}" style="font:{{ z.peso }} 14px/18px 'Roboto',sans-serif;color:{{ z.cor }};text-align:{{ z.al }};text-decoration:{{ z.sub }};text-underline-offset:3px;">{{ z.t }}</span></sc-for>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ fTemAjuste }}" hint-placeholder-val="{{ false }}"><button type="button" data-lucro-ajuste="" onClick="{{ fAjuste }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-active="transform:translateY(1px);">{{ fAjusteTxt }}</button></sc-if>
+              </div>
               <sc-if value="{{ fTemGuardado }}" hint-placeholder-val="{{ false }}"><div data-rascunho-guardado="" role="status" style="display:flex;flex-direction:column;gap:8px;">
                 <dc-import name="Aviso" tipo="info" titulo="{{ fGuardadoT }}" texto="Este orçamento começou só com o serviço do diagnóstico atual. Escolha: continuar o atendimento anterior ou seguir com este e descartar o anterior." style="display:block;" hint-size="100%,64px"></dc-import>
                 <button type="button" data-rascunho-retomar="" onClick="{{ fRetomar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:var(--gp-r-tecla, 999px);border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">{{ fRetomarT }}</button>
                 <button type="button" data-rascunho-descartar="" onClick="{{ fDescartar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:var(--gp-r-tecla, 999px);border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">Iniciar novo atendimento (limpar anterior)</button>
               </div></sc-if>
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Cliente</span>
-              <dc-import name="CampoTexto" rotulo="Nome do cliente" valor="{{ fCliNome }}" aoDigitar="{{ fSetCliNome }}" placeholder="Como sai no documento" estado="{{ fCliNomeE }}" erroMsg="informe o nome do cliente" style="display:block;" hint-size="100%,74px"></dc-import>
+              <div data-campo-cli-nome="" style="scroll-margin:16px;"><dc-import name="CampoTexto" rotulo="Nome do cliente" valor="{{ fCliNome }}" aoDigitar="{{ fSetCliNome }}" placeholder="Como sai no documento" estado="{{ fCliNomeE }}" erroMsg="informe o nome do cliente" style="display:block;" hint-size="100%,74px"></dc-import></div>
               <dc-import name="CampoTexto" rotulo="WhatsApp do cliente" valor="{{ fCliTel }}" aoDigitar="{{ fSetCliTel }}" placeholder="DDD e número" modo="tel" ajuda="Opcional. Usado no botão de envio." style="display:block;" hint-size="100%,96px"></dc-import>
               <div data-equip-orc="" style="position:relative;box-sizing:border-box;padding:12px;border-radius:16px;border:1.5px solid var(--gp-outline-variant);background:var(--gp-card-info);box-shadow:0 2px 5px rgba(9,30,66,0.08);display:flex;flex-direction:column;gap:8px;">
                 <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Equipamento (troque em Marca, BTU/h e Fluido)</span>
@@ -1142,30 +1177,6 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </div></sc-if>
               <sc-if value="{{ fPodeSugerir }}" hint-placeholder-val="{{ false }}"><button type="button" onClick="{{ fSugerir }}" style="height:56px;box-sizing:border-box;border-radius:var(--gp-r-tecla, 999px);border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Usar as ações do diagnóstico</button></sc-if>
               <sc-if value="{{ fVerCusto }}" hint-placeholder-val="{{ true }}"><dc-import name="CampoTexto" rotulo="Custo interno" valor="{{ fCusto }}" estado="{{ fCustoE }}" erroMsg="{{ fCustoM }}" aoDigitar="{{ fSetCusto }}" placeholder="0,00" modo="decimal" ajuda="Outros custos além das peças (deslocamento, material). Só para você: não sai em documento nem na visão do cliente." style="display:block;" hint-size="100%,96px"></dc-import></sc-if>
-              <div data-lucro-painel="" data-estado="{{ fLucroEst }}" role="status" style="box-sizing:border-box;padding:12px 14px 14px;border-radius:16px;background:{{ fLucroFundo }};box-shadow:inset 6px 0 0 {{ fLucroViva }};display:flex;flex-direction:column;gap:8px;">
-                <!-- PR #63: no modo cliente ao lado não existe régua de preço nem "Acima da média": só a tabela técnica, o total e o escopo auditado. -->
-                <sc-if value="{{ fDiscreto }}" hint-placeholder-val="{{ false }}"><div data-termometro="" data-modo-cliente="" role="group" aria-label="Tabela técnica referencial 2026" style="display:flex;flex-direction:column;gap:8px;">
-                  <span class="tag tag-ok tag-l" data-selo="" data-rotulo="" style="align-self:flex-start;">✓ TABELA TÉCNICA REFERENCIAL 2026</span>
-                  <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);">Total ao cliente</span><span style="font:800 24px/28px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div>
-                  <span class="tag tag-ok tag-l" data-selo="" data-rotulo="">✓ Escopo técnico com peça, mão de obra e garantia auditados para o porte do equipamento</span>
-                </div></sc-if>
-                <sc-if value="{{ fVerCusto }}" hint-placeholder-val="{{ true }}"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);">Total ao cliente</span><span style="font:700 24px/28px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;">{{ fTotalTxt }}</span></div></sc-if>
-                <sc-if value="{{ fTemDesc }}" hint-placeholder-val="{{ false }}"><span data-lucro-desconto="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ fDescPainel }}</span></sc-if>
-                <sc-if value="{{ fTemLucro }}" hint-placeholder-val="{{ false }}"><span data-lucro-liquido="" style="font:700 18px/24px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ fLucroTxt }}</span></sc-if>
-                <sc-if value="{{ fTemLucroMsg }}" hint-placeholder-val="{{ true }}"><span data-lucro-msg="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ fLucroMsg }}</span></sc-if>
-                <sc-if value="{{ fTemTermo }}" hint-placeholder-val="{{ false }}">
-                  <div data-termometro="" role="meter" aria-label="Posição do valor na tabela de referência" aria-valuemin="0" aria-valuemax="{{ fTermMax }}" aria-valuenow="{{ fTermVal }}" aria-valuetext="{{ fTermTxt }}" style="position:relative;height:18px;box-sizing:border-box;border-radius:999px;border:2px solid var(--gp-on-lucro, #ffffff);overflow:hidden;display:flex;background:var(--gp-lucro-trilho, #0b1220);">
-                    <span style="flex:none;width:{{ fTermZr }};background:var(--gp-lucro-vermelho-viva, #ef4444);"></span>
-                    <span style="flex:none;width:{{ fTermZa }};background:var(--gp-lucro-ambar-viva, #f59e0b);"></span>
-                    <span style="flex:1;background:var(--gp-lucro-verde-viva, #22c55e);"></span>
-                    <span data-termometro-marcador="" style="position:absolute;top:0;bottom:0;left:{{ fTermPos }};width:6px;margin-left:-3px;border-radius:3px;background:var(--gp-on-lucro, #ffffff);box-shadow:0 0 0 2px var(--gp-lucro-trilho, #0b1220);"></span>
-                  </div>
-                  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;">
-                    <sc-for list="{{ fTermZonas }}" as="z" hint-placeholder-count="3"><span data-rotulo="" aria-current="{{ z.atual }}" style="font:{{ z.peso }} 14px/18px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-align:{{ z.al }};text-decoration:{{ z.sub }};text-underline-offset:3px;">{{ z.t }}</span></sc-for>
-                  </div>
-                </sc-if>
-                <sc-if value="{{ fTemAjuste }}" hint-placeholder-val="{{ false }}"><button type="button" data-lucro-ajuste="" onClick="{{ fAjuste }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-active="transform:translateY(1px);">{{ fAjusteTxt }}</button></sc-if>
-              </div>
             </div>
           </sc-if>
 
@@ -1206,6 +1217,13 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           <sc-if value="{{ fP3 }}" hint-placeholder-val="{{ false }}">
             <div data-passo-in="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);display:flex;flex-direction:column;gap:12px;">
               <div data-condicoes="" class="tags"><sc-for list="{{ fCondTags }}" as="cd" hint-placeholder-count="4"><span class="{{ cd.c }}" data-selo="" data-rotulo="">{{ cd.t }}</span></sc-for></div>
+              <!-- PR #72: total e quadro de assinatura no topo do Passo 3, num cartão só. O detalhe vem abaixo e segue fechando no Total oficial
+                   ([data-total-cliente]), depois da visita ISENTA e do desconto (a ancoragem continua antes do Total). -->
+              <div data-p3-aprovar="" style="box-sizing:border-box;padding:12px 14px 14px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-info);box-shadow:0 4px 12px rgba(9,30,66,0.12);display:flex;flex-direction:column;gap:8px;">
+                <div data-p3-total="" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 12px;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ fTotalRot }}</span><span class="num-chave dinheiro total">{{ fTotalTxt }}</span></div>
+                <dc-import name="AreaAssinatura" rotulo="Assinatura do cliente" estado="{{ fAssinE }}" erroMsg="o cliente precisa assinar para aprovar o orçamento" aoMudar="{{ fSetAssin }}" altura="{{ 150 }}" style="display:block;" hint-size="100%,190px"></dc-import>
+              </div>
+              <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Detalhes do orçamento</span>
               <div style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ fCliLinha }}</span>
                 <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ fEquip }}</span>
@@ -1225,17 +1243,17 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ fGarLinha }}</span>
               <sc-if value="{{ fTemRessalva }}" hint-placeholder-val="{{ false }}"><span data-ressalva="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ fRessalvaLinha }}</span></sc-if>
               <sc-if value="{{ fTemFoto }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Foto de evidência anexada" style="display:block;width:100%;height:140px;border-radius:12px;background-color:var(--gp-display);background-image:{{ fFotoBg }};background-size:contain;background-position:center;background-repeat:no-repeat;"></span></sc-if>
-              <dc-import name="AreaAssinatura" rotulo="Assinatura do cliente" estado="{{ fAssinE }}" erroMsg="o cliente precisa assinar para aprovar o orçamento" aoMudar="{{ fSetAssin }}" altura="{{ 150 }}" style="display:block;" hint-size="100%,190px"></dc-import>
             </div>
           </sc-if>
 
           <sc-if value="{{ fP4 }}" hint-placeholder-val="{{ false }}">
             <div data-passo-in="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);display:flex;flex-direction:column;gap:12px;">
+              <div data-p4-total="" style="box-sizing:border-box;padding:12px 14px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-info);box-shadow:0 4px 12px rgba(9,30,66,0.12);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 12px;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">Total a receber no Pix</span><span class="num-chave dinheiro total">{{ fTotalTxt }}</span></div>
               <dc-import name="QRPix" chave="{{ fPixChave }}" nome="{{ fPixNome }}" cidade="{{ fPixCidade }}" valor="{{ fTotal }}" txid="{{ fTxid }}" tamanho="{{ 200 }}" style="display:block;" hint-size="100%,280px"></dc-import>
               <dc-import name="AtalhoTecla" rotulo="Copiar código Pix" icone="copiar" acao="{{ fCopiar }}" style="display:block;" hint-size="100%,60px"></dc-import>
-              <button type="button" aria-pressed="{{ fRecTxt }}" onClick="{{ fToggleRec }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:var(--gp-r-tecla, 999px);border:{{ fRecBorda }};background:{{ fRecFundo }};color:{{ fRecCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
+              <button type="button" data-conferi-extrato="" aria-pressed="{{ fRecTxt }}" onClick="{{ fToggleRec }}" style="min-height:48px;box-sizing:border-box;padding:4px 12px;border-radius:var(--gp-r-tecla, 999px);border:{{ fRecBorda }};background:{{ fRecFundo }};color:{{ fRecCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
                 <span aria-hidden="true" data-caixa-marcavel="" style="flex:none;display:inline-flex;"><sc-if value="{{ fRecMarcado }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"></rect><path d="m8 12.5 3 3 5-6"></path></svg></sc-if><sc-if value="{{ fRecMarcadoNao }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"></rect></svg></sc-if></span>
-                <span style="flex:1;min-width:0;font:600 16px/22px 'Roboto',sans-serif;">Conferi o recebimento no extrato do banco</span>
+                <span style="flex:1;min-width:0;font:500 16px/20px 'Roboto',sans-serif;">Conferi o recebimento no extrato do banco</span>
               </button>
               <dc-import name="AtalhoTecla" rotulo="PDF do orçamento" icone="documento" acao="{{ fPdfOrc }}" style="display:block;" hint-size="100%,60px"></dc-import>
               <dc-import name="AtalhoTecla" rotulo="PDF do termo de garantia" icone="garantia" acao="{{ fPdfGar }}" style="display:block;" hint-size="100%,60px"></dc-import>
@@ -1961,6 +1979,7 @@ class Component extends DCLogic {
     this.listaCenas();
     this.ativarPelaUrl();
     this.iniciarLicenca();
+    window.gpRodarVideoViral = () => { this._video = true; if (!this.state.lic && !this.state.amostra) this.entrarAmostra(); return new Promise(ok => setTimeout(() => ok(this.rodarVideoViral()), 600)); };
     this.buscarFeed();
     let n = 0; this._fp = setInterval(() => { n++; const el = this.pRef.current; if (el && el.querySelector('input,button')) { this.focarPortao(); clearInterval(this._fp); } else if (n > 40 || (!el && n > 10)) clearInterval(this._fp); }, 150);
   }
@@ -1968,6 +1987,10 @@ class Component extends DCLogic {
   ativarPelaUrl() {
     let q; try { q = new URLSearchParams(location.search); } catch (e) { return; }
     if (q.get('amostra') === '1') this.entrarAmostra();
+    // PR #72: ?amostra=1&video=1 e ?demo=viral abrem o orçamento com o cliente "Sr. Carlos" e a garantia de 90 dias (vídeo sem digitação);
+    // ?demo=viral também roda sozinho o roteiro do anúncio (window.gpRodarVideoViral).
+    if (q.get('video') === '1' || q.get('demo') === 'viral') this._video = true;
+    if (q.get('demo') === 'viral') { this.entrarAmostra(); setTimeout(() => this.rodarVideoViral(), 1600); }
     // Licença na URL (?ativar=, ?licenca=, ?token= ou ?chave=): grava no aparelho (localStorage) e limpa a barra de endereço na hora (PR #27),
     // para o link já ativado não ser copiado nem repassado. Sai a query string inteira; o #hash fica.
     const tok = ['ativar', 'licenca', 'token', 'chave'].map(k => q.get(k)).find(Boolean); if (!tok) return;
@@ -2020,6 +2043,51 @@ class Component extends DCLogic {
     const r = await L.ativar(id);
     if (r.tipo === 'ok') { this.setState({ licBusy: false, licId: '' }); return this.aplicarCracha(r.cracha); }
     this.setState({ licBusy: false, licMsg: r.tipo === 'erro' ? r.codigo : r.tipo === 'sem-servidor' ? 'SEM_SERVIDOR' : 'FALHA_SERVIDOR' });
+  }
+  // PR #72: piloto automático do vídeo (?demo=viral ou window.gpRodarVideoViral()). Roda sozinho, como um técnico: topo (marca, BTU/h e gás com os
+  // 3 visores recalibrando), Código no display com o FAÇA piscando e "Orçar", lucro no topo do Passo 1, folha + olho (custos somem), assinatura
+  // e Pix pronto no Passo 4. Cada toque mostra um anel e cada etapa uma legenda curta. Termina com window.__demoFim = true.
+  async rodarVideoViral() {
+    if (this._demo) return; this._demo = true; this._video = true; window.__demoFim = false;
+    const d = (ms) => new Promise(r => setTimeout(r, ms)), vis = (e) => !!e && e.getClientRects().length > 0;
+    const nome = (e) => ((e.getAttribute('aria-label') || '') + ' ' + (e.innerText || '')).replace(/\s+/g, ' ').trim();
+    const achar = (sel, f) => [...document.querySelectorAll(sel)].find(e => vis(e) && f(e));
+    const legenda = (t) => { let L = document.querySelector('[data-demo-legenda]'); if (!L) { L = document.createElement('div'); L.setAttribute('data-demo-legenda', ''); L.setAttribute('aria-hidden', 'true'); document.body.appendChild(L); } L.textContent = t; };
+    const anel = (x, y) => { const a = document.createElement('div'); a.setAttribute('data-demo-toque', ''); a.setAttribute('aria-hidden', 'true'); a.style.left = x + 'px'; a.style.top = y + 'px'; document.body.appendChild(a); setTimeout(() => a.remove(), 600); };
+    const toque = async (el, depois = 650) => { if (!el) return false; el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); await d(380); const r = el.getBoundingClientRect(); anel(r.left + r.width / 2, r.top + r.height / 2); await d(170); el.click(); await d(depois); return true; };
+    const escolher = async (rot, op) => { await toque(achar('button', e => new RegExp('^' + rot).test(e.getAttribute('aria-label') || '')), 520); await toque(achar('[role="option"]', e => nome(e) === op || nome(e).startsWith(op + ' ')), 900); };
+    const topoVisor = () => { try { window.scrollTo(0, 0); } catch (e) {} const v = this.fRef.current && this.fRef.current.querySelector('[data-vis]'); if (v) v.scrollTo({ top: 0, behavior: 'smooth' }); };
+    try {
+      this.setState({ ...RESET, fOpen: false, abaHome: 'sintomas', drawer: null }); await d(700);
+      // a) Topo: os 3 visores recalibram juntos e o pino varre o trilho.
+      legenda('1 toque no topo: marca, BTU/h e gás');
+      await escolher('Marca', 'Samsung'); await escolher('BTU/h', '18.000'); await escolher('Fluido', 'R32'); await escolher('Marca', 'Midea'); await escolher('Fluido', 'R410A');
+      legenda('Os 3 visores recalibram na hora'); await d(1300);
+      // b) Código no display: o FAÇA pisca e o botão verde Orçar abre o orçamento.
+      legenda('Código no display: o que fazer');
+      await toque(achar('[data-grade-sintomas] button', e => /Código no display/.test(nome(e))), 900);
+      for (const c of [...document.querySelectorAll('[role="listitem"] button')].filter(vis).slice(0, 6)) { await toque(c, 700); const o = document.querySelector('[data-orcar-codigo] button'); if (o && !/preventiva/i.test(nome(o))) break; }
+      const faca = document.querySelector('[data-cod-faca]'); if (faca) { faca.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); faca.style.borderRadius = '10px'; faca.style.animation = 'gpDemoPisca 600ms ease-in-out 3'; }
+      await d(2000);
+      legenda('1 toque: Orçar'); await toque(document.querySelector('[data-orcar-codigo] button'), 1000); topoVisor();
+      // c) Passo 1: o lucro abre no topo; a folha + olho esconde os custos com o cliente ao lado.
+      topoVisor(); legenda('Seu lucro líquido, na hora'); await d(2400);
+      legenda('Cliente ao lado? 1 toque e os custos somem'); await toque(document.querySelector('[data-modo-discreto]'), 500); topoVisor(); await d(2200);
+      // d) Garantia (90 dias já marcada), assinatura no dedo e Pix pronto.
+      legenda('Garantia e assinatura na tela');
+      await toque(achar('button', e => (e.getAttribute('aria-label') || '') === 'Continuar para a garantia'), 900);
+      await toque(achar('button', e => (e.getAttribute('aria-label') || '') === 'Continuar'), 900);
+      const cv = [...document.querySelectorAll('[role="dialog"] canvas')].find(vis);
+      if (cv) { cv.scrollIntoView({ block: 'center', behavior: 'smooth' }); await d(500); const r = cv.getBoundingClientRect(), ev = (t, x, y) => cv.dispatchEvent(new PointerEvent(t, { bubbles: true, pointerId: 7, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y, buttons: 1 }));
+        const x0 = r.left + r.width * 0.12, y0 = r.top + r.height * 0.6; ev('pointerdown', x0, y0);
+        for (let i = 1; i <= 46; i++) { const t = i / 46; ev('pointermove', x0 + t * r.width * 0.76, y0 - Math.sin(t * Math.PI * 5) * r.height * 0.22 - t * r.height * 0.08); await d(18); }
+        ev('pointerup', x0 + r.width * 0.76, y0 - r.height * 0.08); await d(700); }
+      await toque(achar('button', e => (e.getAttribute('aria-label') || '') === 'Aprovar o orçamento'), 1200);
+      topoVisor(); legenda('Pix pronto: QR e código para copiar'); await d(3000);
+      legenda('GeloPRO: do código ao Pix'); await d(1600);
+    } catch (e) { /* a demonstração nunca derruba o app */ } finally {
+      const L = document.querySelector('[data-demo-legenda]'); if (L) L.remove(); this._demo = false; window.__demoFim = true;
+    }
   }
   // Micro-bip seco de multímetro (2400 Hz, 35 ms) ao tocar num canal do visor; mudo com prefers-reduced-motion ou sem AudioContext.
   bip() {
@@ -2118,7 +2186,8 @@ class Component extends DCLogic {
       if (novo) itens = itens.every(x => !x.d.trim() && !String(x.v).trim()) ? [itemDe(c, btuA)] : [...itens, itemDe(c, btuA)];
       (lancar || []).map(id => cat.find(x => x.id === id)).filter(x => x && !itens.some(y => y.sid === x.id)).forEach(x => { itens = itens.every(y => !y.d.trim() && !String(y.v).trim()) ? [itemDe(x, btuA)] : [...itens, itemDe(x, btuA)]; });
       const sugF = !ids.length ? F.sug || [] : somar ? [...new Set([...ids, ...(F.sug || [])])] : ids;
-      return { fech: travaIsento({ ...F, itens, sug: sugF, ...(novo ? higLimpa(F, c) : {}) }), fOpen: true, drawer: null, ...(outro ? { fechGuardado: st.fech } : {}) };
+      const vid = this._video ? { cliNome: F.cliNome || 'Sr. Carlos', prazo: F.prazo || '90 dias' } : {};
+      return { fech: travaIsento({ ...F, itens, sug: sugF, ...(novo ? higLimpa(F, c) : {}), ...vid }), fOpen: true, drawer: null, ...(outro ? { fechGuardado: st.fech } : {}) };
     });
   }
   fRef = React.createRef();
@@ -2292,7 +2361,9 @@ class Component extends DCLogic {
     const st = this.state;
     // PR #68: troca de Marca, BTU/h ou Fluido dispara a varredura do pino (500 ms) e o micro-bip; a 1ª montagem não varre.
     const selK = `${st.sel.marca}|${st.sel.btu}|${st.sel.fluido}`;
-    if (this._selK !== undefined && this._selK !== selK) { this._varreN = (this._varreN || 0) + 1; setTimeout(() => this.bip(), 0); }
+    if (this._selK !== undefined && this._selK !== selK) { this._varreN = (this._varreN || 0) + 1; this._varreT = Date.now(); setTimeout(() => this.bip(), 0); setTimeout(() => this.setState({}), 460); }
+    // PR #72: pulso de recalibração de 300 ms nos 3 canais e nas pílulas do cabeçalho TELEMETRIA, junto da varredura (some na renderização seguinte).
+    const recal = this._varreN && Date.now() - (this._varreT || 0) < 420 ? `${this._varreN % 2 ? 'gpPulseResult' : 'gpPulseResult2'} 300ms ease-out` : null;
     this._selK = selK;
     // Três modos na chavinha: titanio (padrão de fábrica) -> claro -> sol. "bancada" é o nome antigo do claro.
     const tema = TEMA_NOME[st.tema || this.props.tema] || 'titanio';
@@ -2537,7 +2608,7 @@ class Component extends DCLogic {
     const payload = () => pixDe(tit, fTotal, F && F.numero);
     const fItem = (i, k) => (e) => { const v = limparTxt(e.target.value); this.fSet(f => ({ itens: f.itens.map((y, j) => j === i ? { ...y, [k]: v } : y) })); };
     // PR #66 (item 5): trava de 350 ms no avanço: um duplo toque em Continuar no passo 2 não aprova o passo 3.
-    const avancar = () => { if (Date.now() - (this._passoEm || 0) < 350) return; this._passoEm = Date.now(); const ok = fp === 1 ? ok1 : fp === 2 ? ok2 : fp === 3 ? ok3 : true; if (!ok) return this.fSet({ tentou: fp }); if (fp === 3) this.numero(); this.fSet({ passo: Math.min(4, fp + 1), tentou: 0, msg: null }); };
+    const avancar = () => { if (Date.now() - (this._passoEm || 0) < 350) return; this._passoEm = Date.now(); const ok = fp === 1 ? ok1 : fp === 2 ? ok2 : fp === 3 ? ok3 : true; if (!ok) { this.fSet({ tentou: fp }); if (fp === 1 && F && F.cliNome.trim().length < 2) setTimeout(() => { const c = this.fRef.current && this.fRef.current.querySelector('[data-campo-cli-nome]'); if (!c) return; c.scrollIntoView({ block: 'center', behavior: 'smooth' }); const i = c.querySelector('input'); if (i) try { i.focus({ preventScroll: true }); } catch (e) {} }, 60); return; } if (fp === 3) this.numero(); this.fSet({ passo: Math.min(4, fp + 1), tentou: 0, msg: null }); };
     // Voltar de Aprovação ou Pix apaga a assinatura: o quadro reaparece em branco e o cliente assina de novo o que estiver na tela.
     // A caixa do PDF do passo 4 sai junto: voltar e aprovar de novo pede um arquivo novo.
     const voltarF = () => { this.fSet({ passo: Math.max(1, fp - 1), tentou: 0, msg: null, zapTxt: null, ...(fp >= 3 ? { assin: null, assinUrl: null } : {}) }); if (st.pdfPronto && st.pdfPronto.onde === 'fech') this.setState({ pdfPronto: null }); };
@@ -3171,7 +3242,9 @@ class Component extends DCLogic {
         acao: () => addCat(c) }; }),
       fTemCombo: fp === 1 && combos.length > 0 && !discreto, fCombos: combos.map(c => { const l = R0(Math.max(0, (tipDe(c, st.sel.btu) || 0) - custoPorte(c, st.sel.btu).cmed)); return { id: c.id, lucro: TG('lucro', `+${l}`), nome: c.t, aria: `Incluir ${c.t}: +${l} de lucro líquido`, acao: () => addCat(c) }; }),
       // Modo cliente ao lado e visita bonificada (PR #20), com o mesmo desenho de chave do detalhamento técnico.
-      fDiscreto: discreto, fVerCusto: !discreto, fDiscretoOn: discreto ? 'true' : 'false', fDiscretoToggle: () => this.fSet(f => ({ discreto: !f.discreto, catDet: null })),
+      fDiscreto: discreto, fVerCusto: !discreto, fDiscretoOn: discreto ? 'true' : 'false', fDiscretoToggle: () => { this._virarN = (this._virarN || 0) + 1; this.fSet(f => ({ discreto: !f.discreto, catDet: null })); },
+      // PR #72: virada suave do placar ao tocar na folha + olho (alterna A/B para reiniciar a animação a cada toque).
+      fPainelAnim: this._virarN ? `gpVirar${this._virarN % 2 ? 'A' : 'B'} 320ms cubic-bezier(0.22, 1, 0.36, 1)` : 'none',
       // PR #63: ativo = marinho #0f2340 com aro #38bdf8 e ícone #67c6ff; desligado = mesma tecla do ✕.
       fDiscretoBorda: discreto ? '2px solid #38bdf8' : '1px solid var(--gp-sec-edge)', fDiscretoFundo: discreto ? '#0f2340' : 'var(--gp-sec-key)', fDiscretoCor: discreto ? '#67c6ff' : 'var(--gp-on-sec-accent)', fDiscretoSombra: discreto ? '0 0 10px rgba(56,189,248,.45)' : 'var(--gp-sec-raise)',
       fTemBonifChave: !!F && (podeBonif || !!F.bonif), fBonifOn: F && F.bonif ? 'true' : 'false', fBonifToggle: bonifToggle, fBonifTxt: `Bonificar taxa de diagnóstico (${BRL.format(bonifVal)} → ${BRL.format(0)}) se aprovar hoje`,
@@ -3215,8 +3288,8 @@ class Component extends DCLogic {
         : lucroEst === 'amarelo' ? `Na média da tabela. Dá para acrescentar +${BRL.format(alvoAj - fTotal)} e chegar ao valor típico.`
         : lucro <= 0 ? `Abaixo do custo (${BRL.format(custoTot)}). Ajuste antes de fechar.` : `Abaixo do piso da tabela (${BRL.format(piso)}).`,
       fTemTermo: temValor && !discreto, fTermMax: String(Math.round(escala)), fTermVal: String(Math.round(fTotal)), fTermTxt: `${BRL.format(fTotal)}; piso ${BRL.format(piso)}, típico ${BRL.format(tipico)}`,
-      fTermZr: pct(piso) + '%', fTermZa: Math.max(0, pct(tipico) - pct(piso)) + '%', fTermPos: `calc(${pct(fTotal)}% + ${fTotal <= 0 ? 3 : pct(fTotal) >= 100 ? -3 : 0}px)`,
-      fTermZonas: [['vermelho', 'Abaixo do piso', 'left'], ['amarelo', 'Na média da tabela', 'center'], ['verde', discreto ? 'Acima da média' : 'Margem alta', 'right']].map(([k, t, al]) => ({ t, al, atual: lucroEst === k ? 'true' : undefined, peso: lucroEst === k ? 700 : 600, sub: lucroEst === k ? 'underline' : 'none' })),
+      fTermZr: pct(piso) + '%', fTermTip: pct(tipico) + '%', fTermPos: `${pct(fTotal)}%`,
+      fTermZonas: [['vermelho', 'Abaixo do piso', 'left'], ['amarelo', 'Na média da tabela', 'center'], ['verde', discreto ? 'Acima da média' : 'Margem alta', 'right']].map(([k, t, al]) => ({ t, al, atual: lucroEst === k ? 'true' : undefined, peso: lucroEst === k ? 700 : 600, sub: lucroEst === k ? 'underline' : 'none', cor: lucroEst === k ? '#ffffff' : '#e2e8f0' })),
       fTemAjuste: (lucroEst === 'amarelo' || lucroEst === 'vermelho') && !discreto, fAjusteTxt: lucroEst === 'amarelo' ? `Ajustar para ${BRL.format(alvoAj)}` : 'Ajustar para o piso',
       fAjuste: () => ajustar(lucroEst === 'amarelo' ? 'tip' : 'min'),
       fTotal, fTotalTxt: BRL.format(fTotal),
@@ -3229,7 +3302,7 @@ class Component extends DCLogic {
       fPixChave: tit ? tit.pix : '', fPixNome: tit ? tit.nome : '', fPixCidade: tit ? tit.cidade : '', fTxid: 'ORC' + ((F && F.numero) || ''),
       fCopiar: () => { const p = payload(); const ok = () => this.fSet({ msg: ['sucesso', 'Código Pix copiado', 'Cole no app do banco ou envie ao cliente.'] }); const no = () => this.fSet({ msg: ['aviso', 'Não deu para copiar', p ? p : 'Gerador de Pix indisponível.'] }); if (p && navigator.clipboard) navigator.clipboard.writeText(p).then(ok, no); else no(); },
       fRecTxt: F && F.recebido ? 'true' : 'false', fToggleRec: () => this.fSet(f => ({ recebido: !f.recebido })), fRecMarcado: !!(F && F.recebido), fRecMarcadoNao: !(F && F.recebido), fRecIco: F && F.recebido ? 'sucesso' : 'neutro',
-      fRecBorda: F && F.recebido ? '2px solid var(--gp-success)' : '1px solid var(--gp-outline)', fRecFundo: F && F.recebido ? 'var(--gp-success-container)' : 'var(--gp-card-action)', fRecCor: F && F.recebido ? 'var(--gp-on-success-container)' : 'var(--gp-on-surface)',
+      fRecBorda: F && F.recebido ? '2px solid var(--gp-success)' : '1px dashed var(--gp-outline)', fRecFundo: F && F.recebido ? 'var(--gp-success-container)' : 'transparent', fRecCor: F && F.recebido ? 'var(--gp-on-success-container)' : 'var(--gp-on-surface-variant)',
       fRecE: F && F.recebido ? 'normal' : 'desabilitado',
       ...pdfVals,
       fPdfOrc: () => this.imprimir('orc', docBase()), fPdfGar: () => this.imprimir('gar', docBase()), fPdfRec: () => F && F.recebido && this.imprimir('rec', docBase()),
@@ -3423,7 +3496,7 @@ class Component extends DCLogic {
       temAtalhoVet: st.tela === 'etapa' && !E.tec && !st.hist.length && !!(PC && PC.tecInicio && PC.etapas[PC.tecInicio]),
       atalhoVet: () => PC && PC.tecInicio && this.setState(x => ({ etapa: PC.tecInicio, hist: [...x.hist, x.etapa], pk: null, dica: false })),
       // PR #68: TELEMETRIA + pílulas de Marca, BTU/h e Fluido; com medição, o resumo segue ao lado (corta com reticências no que não couber).
-      telMarca: st.sel.marca, telBtu: `${st.sel.btu}\u00a0BTU/h`, telFluido: st.sel.fluido, telTemResumo: diags.length > 0, telResumo: diags.map(d => `${d.val} ${d.verCurto}`).join(' · '),
+      telAnim: recal || 'none', telMarca: st.sel.marca, telBtu: `${st.sel.btu}\u00a0BTU/h`, telFluido: st.sel.fluido, telTemResumo: diags.length > 0, telResumo: diags.map(d => `${d.val} ${d.verCurto}`).join(' · '),
       leituras: [
         { un: 'PSI', v: tsat !== null ? st.ptP.trim() : '—', o: tsat !== null ? 'Informada' : st.ptP.trim() ? 'Valor inválido' : 'Sem medição', faixa: `Sucção, ${st.sel.fluido}`, aria: tsat !== null ? `Pressão de sucção ${st.ptP.trim()} psig, ${st.sel.fluido}. Toque para abrir o PT/SH` : `Pressão, ${st.sel.fluido}: sem medição válida. Toque para lançar`, onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
@@ -3435,7 +3508,7 @@ class Component extends DCLogic {
         const refTxt = ref ? ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1] : '';
         // PR #60: trilho de 15 LEDs (4 azuis abaixo, 7 verdes na faixa, 4 vermelhos acima) e pino pelo desvio z (−1 a 1 = dentro da faixa).
         const k = r.un === 'PSI' ? 'psi' : r.un === 'kΩ' ? 'ntc' : 'sh', z = zLeitura(k), pos = z === null ? 7.5 : Math.max(0.5, Math.min(14.5, 7.5 + z * 3.5)), aceso = Math.floor(pos);
-        return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px',
+        return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), ...(recal ? { anim: recal } : {}), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px',
           // PR #66 (itens 20–21): aro sempre de 2 px; só a cor acompanha o resultado do canal (âmbar fora da faixa, vermelho em falha).
           borda: aroDe(k, z), aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: '1', corU: 'var(--cv-un)', varre: this._varreN ? `gpSweepPino${this._varreN % 2 ? 'A' : 'B'} 500ms ease-out` : 'none',
           // PR #68: os 7 verdes da faixa ficam sempre acesos; azul e vermelho apagados, menos o LED sob o pino.
