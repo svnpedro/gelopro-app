@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'gelopro-offline-v94';
+const CACHE = 'gelopro-offline-v97';
 const REDE_MS = 3000;
 const NUCLEO = [
 'GeloPro App v5.2.dc.html', 'support.js', 'manifest.json',
@@ -30,14 +30,14 @@ const FEED_VAZIO = '{ "versao": 1, "avisos": [] }';
 const guardavel = (u) => /^https?:/.test(u) && !/\/__|chrome-extension:/.test(u) && !/^\/api\//.test(new URL(u).pathname);
 const buscar = async (url) => {
 const mesmo = new URL(url).origin === self.location.origin;
-try { const r = await fetch(url, { mode: mesmo ? 'same-origin' : 'cors', credentials: 'omit' }); if (r.ok) return r; } catch (e) {   }
+try { const r = await fetch(url, { mode: mesmo ? 'same-origin' : 'cors', credentials: 'omit' }); if (r.ok) return r; } catch (e) { }
 if (mesmo) return null;
 try { const r = await fetch(url, { mode: 'no-cors', credentials: 'omit' }); return r.type === 'opaque' || r.ok ? r : null; } catch (e) { return null; }
 };
 self.addEventListener('install', (e) => {
 e.waitUntil(caches.open(CACHE).then((c) => Promise.all(NUCLEO.map(async (u) => {
 const url = new URL(u, self.location).href;
-try { const r = await fetch(url, { cache: 'reload', credentials: 'omit' }); if (r.ok) await c.put(url, r); } catch (err) {   }
+try { const r = await fetch(url, { cache: 'reload', credentials: 'omit' }); if (r.ok) await c.put(url, r); } catch (err) { }
 }))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('gelopro-offline-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

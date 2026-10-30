@@ -4,14 +4,14 @@ const K_DEV = 'gelopro.aparelho', K_CRACHA = 'gelopro.cracha', API = '/api/licen
 const CODIGOS = ['NAO_ENCONTRADA', 'LICENCA_BLOQUEADA', 'PLANO_EXPIRADO_90D', 'LIMITE_APARELHOS', 'DADOS_INCOMPLETOS'];
 const limpar = (s) => String(s == null ? '' : s).replace(/<[^>]*>/g, '').replace(/[<>]/g, '').trim().slice(0, 120);
 const lerLS = (k) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } };
-const gravarLS = (k, v) => { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {   } };
+const gravarLS = (k, v) => { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) { } };
 const idb = () => new Promise((ok, erro) => {
 if (!window.indexedDB) return erro(new Error('sem IndexedDB'));
 const r = indexedDB.open('gelopro-licenca', 1);
 r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains('kv')) r.result.createObjectStore('kv'); };
 r.onsuccess = () => ok(r.result); r.onerror = () => erro(r.error);
 });
-const idbPor = async (k, v) => { try { const db = await idb(); await new Promise((ok) => { const t = db.transaction('kv', 'readwrite'); if (v == null) t.objectStore('kv').delete(k); else t.objectStore('kv').put(JSON.stringify(v), k); t.oncomplete = t.onerror = t.onabort = ok; }); db.close(); } catch (e) {   } };
+const idbPor = async (k, v) => { try { const db = await idb(); await new Promise((ok) => { const t = db.transaction('kv', 'readwrite'); if (v == null) t.objectStore('kv').delete(k); else t.objectStore('kv').put(JSON.stringify(v), k); t.oncomplete = t.onerror = t.onabort = ok; }); db.close(); } catch (e) { } };
 const idbLer = async (k) => { try { const db = await idb(); const v = await new Promise((ok) => { const g = db.transaction('kv').objectStore('kv').get(k); g.onsuccess = () => ok(g.result); g.onerror = () => ok(null); }); db.close(); return v ? JSON.parse(v) : null; } catch (e) { return null; } };
 const guardar = (k, v) => { gravarLS(k, v); return idbPor(k, v); };
 const novoId = () => { try { if (crypto.randomUUID) return crypto.randomUUID(); const b = crypto.getRandomValues(new Uint8Array(16)); return [...b].map(x => x.toString(16).padStart(2, '0')).join(''); } catch (e) { return 'gp-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2); } };
@@ -68,5 +68,12 @@ return null;
 }
 const esquecer = () => guardar(K_CRACHA, null);
 window.GeloProLicenca = { API, deviceId, cracha, ativar, checar, enviarTitular, restaurar, esquecer, limpar };
-try { window.dispatchEvent(new Event('gelopro:licenca-pronta')); } catch (e) {   }
+try { window.dispatchEvent(new Event('gelopro:licenca-pronta')); } catch (e) { }
+try {
+if (typeof document !== 'undefined' && !document.querySelector('script[src*="offline-gelopro.js"]')) {
+const s = document.createElement('script');
+s.src = 'offline-gelopro.js?v=97';
+document.head.appendChild(s);
+}
+} catch (e) { }
 })();
