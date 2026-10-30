@@ -42,6 +42,25 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 /* PR #64: na superfície clara (visor #dfe6f0 do PR #62, Papel Técnico) o aro neon das teclas verdes some no fundo (G-L4 contorno 2,3:1);
    ali o aro vira verde fechado #007a00 (4,4:1). A capa #00b100 e o texto branco não mudam. */
 [data-tema="claro"] [data-verde="1"]{--gp-verde-aro:#007a00;}
+/* PR #68: identidade cromática de cada instrumento no visor da Home (fim do "tudo azul"). PSI = azul gelo (manômetro), kΩ = âmbar Fluke
+   (multímetro do NTC), °C = verde esmeralda (termômetro do SH). Titânio escuro; Claro e Sol em tinta clara com texto escuro (AA ≥ 4,5:1).
+   Aro de alerta (#f87171) vem do resultado; a espessura (2 px) nunca muda. */
+[data-canal="psi"]{--cv-bg:#0c1d36;--cv-borda:#38bdf8;--cv-un:#67c6ff;--cv-ref-bg:#06101f;--cv-ref-bd:rgba(103,198,255,0.4);--cv-ref:#bae6fd;}
+[data-canal="ntc"]{--cv-bg:#241708;--cv-borda:#f59e0b;--cv-un:#fbbf24;--cv-ref-bg:#160d04;--cv-ref-bd:rgba(251,191,36,0.45);--cv-ref:#fde68a;}
+[data-canal="sh"]{--cv-bg:#06241c;--cv-borda:#10b981;--cv-un:#34d399;--cv-ref-bg:#031711;--cv-ref-bd:rgba(52,211,153,0.45);--cv-ref:#a7f3d0;}
+[data-tema="claro"] [data-canal="psi"],[data-tema="sol"] [data-canal="psi"]{--cv-bg:#f0f9ff;--cv-borda:#0369a1;--cv-un:#075985;--cv-ref-bg:#e0f2fe;--cv-ref-bd:#7dd3fc;--cv-ref:#0c4a6e;}
+[data-tema="claro"] [data-canal="ntc"],[data-tema="sol"] [data-canal="ntc"]{--cv-bg:#fffbeb;--cv-borda:#b45309;--cv-un:#92400e;--cv-ref-bg:#fef3c7;--cv-ref-bd:#f59e0b;--cv-ref:#78350f;}
+[data-tema="claro"] [data-canal="sh"],[data-tema="sol"] [data-canal="sh"]{--cv-bg:#ecfdf5;--cv-borda:#047857;--cv-un:#065f46;--cv-ref-bg:#d1fae5;--cv-ref-bd:#34d399;--cv-ref:#064e3b;}
+/* Varredura de calibração do pino ao trocar Marca, BTU/h ou Fluido (A/B alternam para a animação reiniciar). Sem animação com movimento reduzido. */
+@keyframes gpSweepPinoA{0%{left:0%}55%{left:100%}}
+@keyframes gpSweepPinoB{0%{left:0%}55%{left:100%}}
+@media (prefers-reduced-motion: reduce){[data-pino]{animation:none !important;}}
+/* PR #69: diálogos de tela cheia (Fechamento e portão) com a mesma chapa acetinada do chassi, sem a classe .gp-acetinado-sedoso (ela fica só
+   no [data-chassi]). O url() vai direto, relativo ao app: dentro de var() num estilo inline ele resolveria em app/ e não em app/ref/. Sol: branco. */
+[data-chapa]{background-color:var(--gp-satin-surface,#c1c0c1);background-image:url("ref/acetinado-sedoso.svg");background-repeat:no-repeat;background-position:center;background-size:100% 100%;}
+[data-tema=sol] [data-chapa]{background:var(--gp-chassis);}
+/* PR #69: entrada de tela com fôlego de equipamento (gpIn 220 ms); sem movimento com prefers-reduced-motion. */
+@media (prefers-reduced-motion: reduce){[data-anim-in],[style*="gpIn"]{animation:none !important;}}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -164,7 +183,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 [data-cofre-exportar]:disabled,[data-marca-aplicar]:disabled,[data-auto-justificar]:disabled{opacity:.5;cursor:not-allowed;}
 @keyframes gpSpin{to{transform:rotate(360deg)}}
 @keyframes gpFlow{to{background-position:48px 0}}
-@keyframes gpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes gpIn{0%{opacity:0;transform:translateY(10px) scale(0.992)}100%{opacity:1;transform:translateY(0) scale(1)}}
 /* Alerta que entra deslizando (PR #35): a bandeja recorta com clip-path, não com overflow hidden, para o deslize não contar como texto cortado. */
 @keyframes gpBandeja{from{transform:translateY(6px)}to{transform:translateY(0)}}
 @keyframes gpPulseResult{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
@@ -284,7 +303,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
                 <!-- PR #46 (S1 do reteste): a tela inicial rola por inteiro. A área da grade nunca encolhe abaixo de 3 placas de 66 px (gradeMin), então,
                      com a faixa de atendimento em celular pequeno, as abas ficam no lugar e as placas seguem inteiras e tocáveis, rolando. -->
-                <div data-home-inicio="" style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;margin:0 -8px;padding:0 8px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none;animation:gpIn 180ms ease-out;">
+                <div data-home-inicio="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;margin:0 -8px;padding:0 8px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <h2 style="{{ h2Estilo }}">{{ homeTitulo }}</h2>
                   <!-- Atendimento em andamento (PR #43, EXT-MIX-2/3): com rascunho de cliente ou medição registrada, a Home mostra de quem é e a escolha direta
                        entre continuar e começar outro atendimento (limpa orçamento, medições e laudo do anterior). Sem nada em andamento, não ocupa espaço.
@@ -306,14 +325,14 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </div>
                   <div data-home-rolagem="" style="flex:1 0 auto;min-height:calc({{ gradeMin }} + 6px);overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--gp-outline) transparent;margin:0 -8px;padding:0 8px 6px;display:flex;flex-direction:column;gap:12px;">
                   <sc-if value="{{ abaSintomas }}" hint-placeholder-val="{{ true }}">
-                  <div data-grade-sintomas="" role="tabpanel" aria-label="Sintomas" style="flex:1 1 0;width:100%;box-sizing:border-box;justify-items:stretch;min-height:{{ gradeMin }};display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:{{ gradeGap }};padding:0 2px;">
+                  <div data-grade-sintomas="" role="tabpanel" aria-label="Sintomas" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);flex:1 1 0;width:100%;box-sizing:border-box;justify-items:stretch;min-height:{{ gradeMin }};display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:{{ gradeGap }};padding:0 2px;">
                     <sc-for list="{{ sintomas }}" as="s" hint-placeholder-count="9">
                       <dc-import name="PlacaSintoma" nome="{{ s.nome }}" icone="{{ s.icone }}" canto="{{ s.canto }}" acao="{{ s.onClick }}" style="display:block;min-width:0;min-height:0;height:round(down, 100%, 1px);" hint-size="100%,100%"></dc-import>
                     </sc-for>
                   </div>
                   </sc-if>
                   <sc-if value="{{ abaMedicoes }}" hint-placeholder-val="{{ false }}">
-                  <div data-home-medicoes="" role="tabpanel" aria-label="Medições e Testes" style="flex:1 1 0;min-height:{{ gradeMin }};display:flex;flex-direction:column;gap:{{ gradeGap }};">
+                  <div data-home-medicoes="" role="tabpanel" aria-label="Medições e Testes" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);flex:1 1 0;min-height:{{ gradeMin }};display:flex;flex-direction:column;gap:{{ gradeGap }};">
                     <div data-gavetas-medicao="" style="flex:none;display:flex;flex-direction:column;gap:{{ gradeGap }};padding:0 2px;">
                       <sc-for list="{{ gavetasMed }}" as="g" hint-placeholder-count="2">
                         <button type="button" data-atalho-medicao="{{ g.k }}" aria-label="{{ g.aria }}" onClick="{{ g.acao }}" style="flex:none;width:100%;height:50px;box-sizing:border-box;padding:0 8px 0 6px;border-radius:16px;border:var(--gp-tile-border);background:var(--gp-tile);box-shadow:var(--gp-tile-relief);display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(2px);">
@@ -343,23 +362,27 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <!-- PR #66 (itens 1–3): carcaça 3 px para fora (borda 1 + padding 2) e Leituras com padding 2 e o mesmo vão da grade: as bordas dos 3 canais
                        caem exatamente nas colunas da grade 3×3 de cima. -->
                   <div data-telemetria="" style="flex:none;box-sizing:border-box;margin:-2px -3px;padding:3px 2px 4px;border-radius:16px;background:linear-gradient(180deg,#1c2738 0%,#0d1522 100%);border:1px solid #3b4a60;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -2px 0 rgba(0,0,0,.55),0 2px 4px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:2px;">
-                    <div aria-hidden="true" data-decor="" data-telemetria-cab="" style="display:flex;align-items:center;gap:6px;min-width:0;padding:0 4px;font:700 11px/12px 'Roboto Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94a3b8;white-space:nowrap;overflow:hidden;">
+                    <div aria-hidden="true" data-decor="" data-telemetria-cab="" style="display:flex;align-items:center;gap:5px;min-width:0;padding:0 4px;font:700 11px/14px 'Roboto Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94a3b8;white-space:nowrap;overflow:hidden;">
                       <span style="flex:none;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bbf7d0 0%,#22c55e 45%,#15803d 100%);box-shadow:0 0 6px 1px rgba(34,197,94,.85);"></span>
-                      <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;">{{ telemetriaTxt }}</span>
+                      <span style="flex:none;">TELEMETRIA</span>
+                      <span data-cab-marca="" style="flex:none;padding:0 5px;border-radius:4px;background:#ffffff;color:#0b1426;font:800 10px/14px 'Roboto',sans-serif;letter-spacing:.02em;">{{ telMarca }}</span>
+                      <span data-cab-btu="" style="flex:none;box-sizing:border-box;padding:0 5px;border-radius:4px;background:#13294a;border:1px solid #38bdf8;color:#67c6ff;font:800 10px/12px 'Roboto Mono',ui-monospace,monospace;">{{ telBtu }}</span>
+                      <span data-cab-fluido="" style="flex:none;box-sizing:border-box;padding:0 5px;border-radius:4px;background:#241708;border:1px solid #f59e0b;color:#fde68a;font:800 10px/12px 'Roboto Mono',ui-monospace,monospace;">{{ telFluido }}</span>
+                      <sc-if value="{{ telTemResumo }}" hint-placeholder-val="{{ false }}"><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;">{{ telResumo }}</span></sc-if>
                     </div>
                     <div role="group" aria-label="Leituras" style="box-sizing:border-box;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:{{ gradeGap }};padding:2px;border-radius:12px;background:#05090f;box-shadow:inset 0 3px 8px rgba(0,0,0,0.75);">
                       <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
                         <div data-canal="{{ r.k }}" style="min-width:0;display:flex;flex-direction:column;gap:3px;">
                           <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="position:relative;min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:12px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
-                            <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
+                            <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--cv-bg);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
                               <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
                               <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
-                              <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span data-poco-ref="{{ r.refK }}" style="flex:0 0 100%;min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--gp-on-reading-unit);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
+                              <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-quebra="" style="flex:0 0 100%;height:0;"></span><span data-poco-ref="{{ r.refK }}" style="flex:0 0 auto;max-width:100%;box-sizing:border-box;padding:1px 6px;border-radius:6px;background:var(--cv-ref-bg);border:1px solid var(--cv-ref-bd);min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--cv-ref);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
                             </span>
                           </button>
                           <div aria-hidden="true" data-decor="" data-trilho="{{ r.k }}" style="position:relative;width:100%;height:10px;box-sizing:border-box;padding:2px;border-radius:6px;background:#020407;box-shadow:inset 0 2px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:1px;">
                             <sc-for list="{{ r.leds }}" as="ld" hint-placeholder-count="15"><span data-led="{{ ld.z }}" style="display:block;border-radius:2px;background:linear-gradient(180deg,rgba(255,255,255,.55) 0%,{{ ld.c }} 38%,{{ ld.c }} 100%);opacity:{{ ld.op }};box-shadow:{{ ld.halo }};"></span></sc-for>
-                            <span data-pino="" style="position:absolute;top:-4px;left:{{ r.pino }};width:6px;height:18px;margin-left:-3px;border-radius:3px;background:linear-gradient(90deg,#64748b 0%,#f8fafc 45%,#94a3b8 100%);box-shadow:0 1px 2px rgba(0,0,0,.8);opacity:{{ r.pinoOp }};transition:left 180ms ease-out;"></span>
+                            <span data-pino="" style="position:absolute;top:-4px;left:{{ r.pino }};width:6px;height:18px;margin-left:-3px;border-radius:3px;background:linear-gradient(90deg,#e2e8f0 0%,#ffffff 45%,#f1f5f9 100%);box-shadow:0 0 0 1.5px var(--cv-borda),0 1px 3px rgba(0,0,0,.85);opacity:{{ r.pinoOp }};transition:left 180ms ease-out;animation:{{ r.varre }};"></span>
                           </div>
                         </div>
                       </sc-for>
@@ -388,7 +411,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <sc-if value="{{ dicaVis }}" hint-placeholder-val="{{ false }}"><p style="flex:none;margin:0;padding:2px 4px 0;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ dica }}</p></sc-if>
                   <sc-if value="{{ temCola }}" hint-placeholder-val="{{ false }}"><div data-cola-instrumento="{{ colaK }}" style="flex:none;box-sizing:border-box;padding:0 8px 0 12px;border-radius:16px;background:var(--gp-card-info);box-shadow:inset 3px 0 0 var(--gp-dock-ring);display:flex;flex-direction:column;justify-content:center;font:600 16px/19px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">
                     <span><strong style="font-weight:700;">{{ colaRot }}</strong> {{ colaL1a }}<span class="{{ colaL1c }}" data-selo="" data-rotulo="">{{ colaL1b }}</span></span>
@@ -420,7 +443,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaResultado }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <div data-res-rolagem="" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
                     <div style="flex:none;box-sizing:border-box;padding:16px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);box-shadow:var(--gp-mold-shadow);display:flex;flex-direction:column;gap:8px;">
                       <dc-import name="Selo" texto="{{ resSelo }}" tipo="{{ resSeloTipo }}" style="align-self:flex-start;" hint-size="140px,26px"></dc-import>
@@ -460,7 +483,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaCodigo }}" hint-placeholder-val="{{ false }}">
-                <div data-codigo-tela="" style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div data-codigo-tela="" style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <dc-import name="CampoTexto" aria="Código mostrado no display" valor="{{ codBusca }}" aoDigitar="{{ setCod }}" placeholder="Código ou parte da descrição" icone="busca" style="display:block;flex:none;" hint-size="100%,56px"></dc-import>
                   <span style="flex:none;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ codInfo }}</span>
                   <dc-import name="Aviso" tipo="aviso" titulo="Código aponta o circuito, não a peça" texto="Sozinho, não confirma a peça com defeito. Meça antes de trocar." style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
@@ -506,7 +529,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaPT }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <sc-if value="{{ ptTemAlerta }}" hint-placeholder-val="{{ false }}">
                   <div data-bandeja="" style="flex:none;clip-path:inset(0 round 16px);border-radius:16px;">
         <div data-alerta-diamante="{{ ptAlerta.k }}" data-tom="{{ ptAlerta.tom }}" role="alert" style="box-sizing:border-box;padding:8px 8px 10px 16px;border-radius:16px;background:{{ ptAlerta.fundo }};box-shadow:inset 6px 0 0 {{ ptAlerta.viva }};display:flex;flex-direction:column;gap:8px;animation:gpBandeja 120ms ease-out;">
@@ -546,7 +569,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaNTC }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <dc-import name="SeletorPrazo" rotulo="Ferramenta" opcoes="{{ nbOps }}" valor="Sensor NTC" acao="{{ nbTroca }}" style="display:block;flex:none;" hint-size="100%,76px"></dc-import>
                   <sc-if value="{{ ntcTem }}" hint-placeholder-val="{{ false }}">
                     <div role="listbox" aria-label="{{ ntcSensRot }}" data-ntc-uni="{{ ntcUni }}" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
@@ -578,7 +601,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
 
               <sc-if value="{{ telaBTU }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <dc-import name="SeletorPrazo" rotulo="Ferramenta" opcoes="{{ nbOps }}" valor="Carga térmica" acao="{{ nbTroca }}" style="display:block;flex:none;" hint-size="100%,76px"></dc-import>
                   <div data-campos-linha="" data-campos-carga="" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end;">
                     <dc-import name="CampoTexto" rotulo="Área (m²)" valor="{{ bArea }}" estado="{{ bE.area }}" erroMsg="{{ bM.area }}" aoDigitar="{{ bSetArea }}" placeholder="Ex.: 12" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
@@ -612,7 +635,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
               <sc-if value="{{ telaInv }}" hint-placeholder-val="{{ false }}">
                 <sc-if value="{{ invTem }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <dc-import name="Aviso" tipo="aviso" titulo="{{ invAvisoT }}" texto="{{ invAvisoX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <sc-if value="{{ invAnotar }}" hint-placeholder-val="{{ false }}"><div data-inv-anotar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Anotar resultados para o laudo" amarelo="{{ true }}" icone="documento" acao="{{ invAnotarAcao }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
                   <sc-for list="{{ invEtapas }}" as="e" hint-placeholder-count="3">
@@ -646,7 +669,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 </div>
                 </sc-if>
                 <sc-if value="{{ invSem }}" hint-placeholder-val="{{ true }}">
-                <div style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 8px;text-align:center;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 8px;text-align:center;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <span style="flex:none;width:56px;height:56px;border-radius:16px;background:var(--gp-icon-well);box-shadow:inset 0 2px 5px var(--gp-shadow-raise);display:flex;align-items:center;justify-content:center;color:var(--gp-on-icon-well);"><dc-import name="IconeGP" nome="placa-ipm" tamanho="{{ 28 }}" hint-size="28px,28px"></dc-import></span>
                   <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:balance;">{{ invSemT }}</span>
                   <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ invSemX }}</span>
@@ -655,7 +678,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaDocs }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <sc-for list="{{ docsHub }}" as="d" hint-placeholder-count="3">
                     <dc-import name="LinhaFicha" tipo="{{ d.tipo }}" titulo="{{ d.t }}" sub="{{ d.s }}" acao="{{ d.acao }}" style="display:block;flex:none;" hint-size="100%,88px"></dc-import>
                   </sc-for>
@@ -675,7 +698,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaLaudo }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <dc-import name="CampoTexto" rotulo="Cliente" valor="{{ lCli }}" aoDigitar="{{ lSetCli }}" placeholder="Nome do cliente" estado="{{ lCliE }}" erroMsg="informe o cliente" style="display:block;flex:none;" hint-size="100%,74px"></dc-import>
                   <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:4px;">
                     <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Equipamento e medições registradas</span>
@@ -704,7 +727,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaPmoc }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <dc-import name="Aviso" tipo="info" titulo="Modelo oficial do PMOC" texto="Prédio de uso coletivo com ar precisa de PMOC. Acima de 60.000 BTU/h, precisa de responsável técnico." style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">1. Ambiente climatizado</span>
                   <dc-import name="CampoTexto" rotulo="Nome do edifício ou entidade" valor="{{ pmAmb }}" aoDigitar="{{ pmSet.amb }}" estado="{{ pmAmbE }}" erroMsg="informe o ambiente" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import>
@@ -743,7 +766,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaScripts }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <dc-import name="Aviso" tipo="info" titulo="Textos prontos para editar" texto="{{ scDados }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <sc-for list="{{ scripts }}" as="c" hint-placeholder-count="3">
                     <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
@@ -772,7 +795,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaCofre }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <div data-cofre-backup="" style="flex:none;display:flex;flex-direction:column;gap:8px;">
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">
                       <button type="button" data-cofre-exportar="" disabled="{{ cVazio }}" onClick="{{ cofreExportar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:16px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);display:flex;align-items:center;justify-content:center;gap:8px;font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>Exportar backup (.json)</span></button>
@@ -823,7 +846,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaVazio }}" hint-placeholder-val="{{ false }}">
-                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:16px;animation:gpIn 180ms ease-out;">
+                <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:16px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <div style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 8px;text-align:center;">
                     <span style="flex:none;width:56px;height:56px;border-radius:16px;background:var(--gp-icon-well);box-shadow:inset 0 2px 5px var(--gp-shadow-raise);display:flex;align-items:center;justify-content:center;color:var(--gp-on-icon-well);"><dc-import name="IconeGP" nome="{{ vIconeNome }}" tamanho="{{ 28 }}" hint-size="28px,28px"></dc-import></span>
                     <div style="display:flex;flex-direction:column;gap:8px;">
@@ -860,7 +883,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
     <div aria-hidden="{{ dHidden }}" style="position:absolute;inset:0;z-index:40;pointer-events:{{ dPE }};visibility:{{ dVis }};">
       <div onClick="{{ fecharDrawer }}" style="position:absolute;inset:0;background:var(--gp-scrim);opacity:{{ dOp }};transition:opacity 200ms ease-out;"></div>
-      <div role="dialog" aria-modal="true" aria-label="{{ dTitulo }}" style="position:absolute;left:8px;right:8px;bottom:8px;box-sizing:border-box;padding:8px 8px 10px;border-radius:24px;background:var(--gp-chassis);box-shadow:var(--gp-chassis-ring);transform:{{ dT }};transition:transform 200ms ease-out;display:flex;flex-direction:column;gap:8px;">
+      <div role="dialog" aria-modal="true" aria-label="{{ dTitulo }}" style="position:absolute;left:8px;right:8px;bottom:8px;box-sizing:border-box;padding:8px 8px 10px;border-radius:24px;background:var(--gp-chassis);box-shadow:var(--gp-chassis-ring);transform:{{ dT }};transition:transform 240ms cubic-bezier(0.22, 1, 0.36, 1),opacity 200ms ease-out;display:flex;flex-direction:column;gap:8px;">
           <span aria-hidden="true" data-decor="" style="align-self:center;width:44px;height:5px;border-radius:3px;background:var(--gp-chassis-edge);"></span>
           <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:12px;padding:0 4px;">
             <div style="flex:1;min-width:0;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
@@ -991,7 +1014,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
     <sc-if value="{{ fAberto }}" hint-placeholder-val="{{ false }}">
     <!-- PR #58 (Papel Técnico): Fechamento/Orçamento (passos 1 a 4, catálogo, garantia e assinatura) na superfície clara quando o tema global é titânio. -->
     <div data-tema="{{ temaPapel }}" style="display:contents;">
-    <div ref="{{ fRef }}" role="dialog" aria-modal="true" aria-label="{{ fTitulo }}" style="position:absolute;inset:0;z-index:27;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));background:var(--gp-chassis);background-blend-mode:overlay,normal;display:flex;flex-direction:column;gap:12px;">
+    <div ref="{{ fRef }}" data-chapa="" data-anim-in="" role="dialog" aria-modal="true" aria-label="{{ fTitulo }}" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);position:absolute;inset:0;z-index:27;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
       <!-- PR #66 (item 4): cabeçalho de altura fixa e vaga de 48×48 à direita em todos os passos: ✕, selo e título no mesmo Y do passo 1 ao 4. -->
       <div data-cabecalho="" style="flex:none;min-height:56px;display:flex;align-items:center;gap:8px;padding:0 4px;">
         <button type="button" aria-label="Sair do fechamento" onClick="{{ fSair }}" style="width:48px;height:48px;flex:none;border:0;border-radius:var(--gp-r-tecla, 999px);display:flex;align-items:center;justify-content:center;color:var(--gp-on-sec-accent);background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);cursor:pointer;" style-active="transform:translateY(2px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
@@ -1008,7 +1031,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         <div data-vis="" style="height:100%;box-sizing:border-box;padding:16px;border-radius:21px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
 
           <sc-if value="{{ fP1 }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;gap:12px;">
+            <div data-passo-in="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);display:flex;flex-direction:column;gap:12px;">
               <sc-if value="{{ fTemGuardado }}" hint-placeholder-val="{{ false }}"><div data-rascunho-guardado="" role="status" style="display:flex;flex-direction:column;gap:8px;">
                 <dc-import name="Aviso" tipo="info" titulo="{{ fGuardadoT }}" texto="Este orçamento começou só com o serviço do diagnóstico atual. Escolha: continuar o atendimento anterior ou seguir com este e descartar o anterior." style="display:block;" hint-size="100%,64px"></dc-import>
                 <button type="button" data-rascunho-retomar="" onClick="{{ fRetomar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:var(--gp-r-tecla, 999px);border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">{{ fRetomarT }}</button>
@@ -1044,9 +1067,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <button type="button" aria-pressed="{{ it.compOn }}" onClick="{{ it.setComp }}" style="min-width:0;min-height:56px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ it.compBorda }};background:{{ it.compFundo }};color:{{ it.compCor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ it.compTxt }}</button>
                   </div></sc-if>
                   <sc-if value="{{ it.semPeca }}" hint-placeholder-val="{{ false }}"><span data-custo-peca="" style="padding:0 4px;font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Serviço sem peça: custo R$ 0</span></sc-if>
-                  <sc-if value="{{ it.temDica }}" hint-placeholder-val="{{ false }}"><span data-dica="" style="display:block;box-sizing:border-box;padding:8px 10px;border-radius:10px;border-left:3px solid #2563eb;background:#eff6ff;font:500 16px/22px 'Roboto',sans-serif;color:#091e42;text-wrap:pretty;"><strong style="font-weight:700;">Dica técnica:</strong> {{ it.dica }}</span></sc-if>
+                  <sc-if value="{{ it.temDica }}" hint-placeholder-val="{{ false }}"><span data-dica="" style="display:block;box-sizing:border-box;padding:8px 10px;border-radius:10px;border-left:3px solid #38bdf8;background:var(--gp-card-action);font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Dica técnica:</strong> {{ it.dica }}</span></sc-if>
                   <sc-if value="{{ it.temEvita }}" hint-placeholder-val="{{ false }}"><span data-evita="" class="tags" style="padding:0 4px;"><sc-for list="{{ it.evita }}" as="ev" hint-placeholder-count="1"><span class="{{ ev.c }}" data-selo="" data-rotulo="">{{ ev.t }}</span></sc-for></span></sc-if>
-                  <sc-if value="{{ it.temEco }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="display:block;box-sizing:border-box;padding:8px 10px;border-radius:10px;border-left:3px solid #059669;background:#ecfdf5;font:500 16px/22px 'Roboto',sans-serif;color:#091e42;text-wrap:pretty;"><strong style="font-weight:700;">Economia preventiva:</strong> {{ it.eco }}</span></sc-if>
+                  <sc-if value="{{ it.temEco }}" hint-placeholder-val="{{ false }}"><span data-economia="" style="display:block;box-sizing:border-box;padding:8px 10px;border-radius:10px;border-left:3px solid #22c55e;background:var(--gp-card-action);font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;"><strong style="font-weight:700;">Economia preventiva:</strong> {{ it.eco }}</span></sc-if>
                   <button type="button" data-editar-item="" aria-expanded="{{ it.edExp }}" onClick="{{ it.edToggle }}" style="display:flex;align-items:center;gap:8px;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span style="flex:1;min-width:0;">{{ it.edTxt }}</span><span aria-hidden="true" style="flex:none;display:inline-flex;transform:{{ it.edSeta }};transition:transform 150ms ease-out;"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
                   <sc-if value="{{ it.edAberto }}" hint-placeholder-val="{{ false }}"><div data-editor-item="" style="display:flex;flex-direction:column;gap:8px;padding:4px 0 8px;">
                     <button type="button" data-auto-justificar="" disabled="{{ it.autoJOff }}" onClick="{{ it.autoJ }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-active="transform:translateY(1px);">{{ it.autoJRot }}</button>
@@ -1147,7 +1170,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           </sc-if>
 
           <sc-if value="{{ fP2 }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;gap:12px;">
+            <div data-passo-in="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);display:flex;flex-direction:column;gap:12px;">
               <dc-import name="Aviso" tipo="info" titulo="A garantia legal vale sempre" texto="A garantia legal do Código de Defesa do Consumidor (arts. 24 e 26) existe mesmo sem termo e não pode ser excluída. O prazo abaixo é contratual e complementar a ela." style="display:block;" hint-size="100%,48px"></dc-import>
               <dc-import name="SeletorPrazo" rotulo="Garantia contratual" valor="{{ fPrazo }}" estado="{{ fPrazoE }}" erroMsg="escolha um prazo" acao="{{ fSetPrazo }}" style="display:block;" hint-size="100%,104px"></dc-import>
               <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><div data-prazo-rapido="" role="group" aria-label="Prazos rápidos" style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ fPrazoPilulas }}" as="pz" hint-placeholder-count="3"><button type="button" aria-pressed="{{ pz.on }}" onClick="{{ pz.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ pz.borda }};background:{{ pz.fundo }};color:{{ pz.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ pz.t }}</button></sc-for></div></sc-if>
@@ -1181,7 +1204,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           </sc-if>
 
           <sc-if value="{{ fP3 }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;gap:12px;">
+            <div data-passo-in="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);display:flex;flex-direction:column;gap:12px;">
               <div data-condicoes="" class="tags"><sc-for list="{{ fCondTags }}" as="cd" hint-placeholder-count="4"><span class="{{ cd.c }}" data-selo="" data-rotulo="">{{ cd.t }}</span></sc-for></div>
               <div style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ fCliLinha }}</span>
@@ -1207,7 +1230,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           </sc-if>
 
           <sc-if value="{{ fP4 }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-direction:column;gap:12px;">
+            <div data-passo-in="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);display:flex;flex-direction:column;gap:12px;">
               <dc-import name="QRPix" chave="{{ fPixChave }}" nome="{{ fPixNome }}" cidade="{{ fPixCidade }}" valor="{{ fTotal }}" txid="{{ fTxid }}" tamanho="{{ 200 }}" style="display:block;" hint-size="100%,280px"></dc-import>
               <dc-import name="AtalhoTecla" rotulo="Copiar código Pix" icone="copiar" acao="{{ fCopiar }}" style="display:block;" hint-size="100%,60px"></dc-import>
               <button type="button" aria-pressed="{{ fRecTxt }}" onClick="{{ fToggleRec }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:var(--gp-r-tecla, 999px);border:{{ fRecBorda }};background:{{ fRecFundo }};color:{{ fRecCor }};display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">
@@ -1258,7 +1281,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
     </div>
     </sc-if>
     <sc-if value="{{ portao }}" hint-placeholder-val="{{ false }}">
-    <div ref="{{ pRef }}" tabindex="-1" role="dialog" aria-modal="true" aria-label="{{ pTitulo }}" style="position:absolute;inset:0;z-index:28;outline:none;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));background:var(--gp-chassis);background-blend-mode:overlay,normal;display:flex;flex-direction:column;gap:12px;">
+    <div ref="{{ pRef }}" data-chapa="" tabindex="-1" role="dialog" aria-modal="true" aria-label="{{ pTitulo }}" style="position:absolute;inset:0;z-index:28;outline:none;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
       <div data-cabecalho="" style="flex:none;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
         <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ pKicker }}</span>
         <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-pill);text-wrap:balance;">{{ pTitulo }}</span>
@@ -2255,6 +2278,10 @@ class Component extends DCLogic {
 
   renderVals() {
     const st = this.state;
+    // PR #68: troca de Marca, BTU/h ou Fluido dispara a varredura do pino (500 ms) e o micro-bip; a 1ª montagem não varre.
+    const selK = `${st.sel.marca}|${st.sel.btu}|${st.sel.fluido}`;
+    if (this._selK !== undefined && this._selK !== selK) { this._varreN = (this._varreN || 0) + 1; setTimeout(() => this.bip(), 0); }
+    this._selK = selK;
     // Três modos na chavinha: titanio (padrão de fábrica) -> claro -> sol. "bancada" é o nome antigo do claro.
     const tema = TEMA_NOME[st.tema || this.props.tema] || 'titanio';
     const sol = tema === 'sol';
@@ -2805,8 +2832,9 @@ class Component extends DCLogic {
     // PSI: faixa de sucção do fluido (POCO_PSI); °C: superaquecimento contra o alvo 7–11 °C (só com pressão e tubo); kΩ: veredito da tolerância.
     // Aro do canal: kΩ fora da tolerância, curto ou aberto = vermelho; PSI fora da faixa do fluido = âmbar (vermelho bem fora);
     // SH fora de 7–11 °C só na Elgin R410A (a única faixa oficial da base) = âmbar.
-    const aroDe = (k, z) => { if (z === null) return 'var(--gp-dock-ring)'; if (k === 'ntc') return z === 0 ? 'var(--gp-dock-ring)' : '#f87171';
-      if (k === 'sh' && !(st.sel.marca === 'Elgin' && st.sel.fluido === 'R410A')) return 'var(--gp-dock-ring)'; const a = Math.abs(z); return a <= 1 ? 'var(--gp-dock-ring)' : a > 2 ? '#f87171' : '#fbbf24'; };
+    // PR #68: aro na cor do instrumento (--cv-borda); fora da faixa ou em falha, vermelho alerta #f87171.
+    const aroDe = (k, z) => { if (z === null) return 'var(--cv-borda)'; if (k === 'ntc') return z === 0 ? 'var(--cv-borda)' : '#f87171';
+      if (k === 'sh' && !(st.sel.marca === 'Elgin' && st.sel.fluido === 'R410A')) return 'var(--cv-borda)'; return Math.abs(z) <= 1 ? 'var(--cv-borda)' : '#f87171'; };
     const zLeitura = (k) => {
       if (k === 'psi') { const P0 = med(st.ptP), f = (POCO_PSI[st.sel.fluido] || POCO_PSI.R410A).split('–').map(Number); return P0 === null ? null : (P0 - (f[0] + f[1]) / 2) / ((f[1] - f[0]) / 2); }
       if (k === 'sh') return sh === null || !Number.isFinite(sh) ? null : (sh - 9) / 2;
@@ -3373,16 +3401,17 @@ class Component extends DCLogic {
         onClick: () => iniciar(x.id),
       })),
       pergunta: E.q, dica: E.d.replace('{F}', st.sel.fluido) + (CAP_ETAPAS.includes(E.id) ? ' ' + CAP_INV_TXT : ''), temaAttr: tema,
-      // PR #58 (Papel Técnico): no titânio, o Fechamento/Orçamento e os formulários de Laudo, PMOC e Recibo saem do visor escuro para a superfície
-      // clara do próprio TemaGeloPro (cinza-gelo #eef2f6, cartões #ffffff, texto #091e42/#19365c, avanço #00b100). Claro e sol ficam como estão.
-      temaPapel: tema === 'titanio' ? 'claro' : tema, temaVisor: tema === 'titanio' && ['laudo', 'pmoc', 'scripts'].includes(st.tela) ? 'claro' : tema,
+      // PR #69 (item 22 da extensão, decisão do Pedro): as telas internas seguem o tema ativo do aparelho. No titânio, Orçamento, Laudo, PMOC e
+      // Recibo mantêm o mesmo visor safira escuro da tela principal; claro e sol vêm da chave de tema do topo.
+      temaPapel: tema, temaVisor: tema,
       // Cola de instrumento (PR #24) nas etapas de capacímetro e de tensão sob carga; nas outras etapas não ocupa altura.
       temCola: st.tela === 'etapa' && !!COLA_ETAPA[E.id], colaK: COLA_ETAPA[E.id] || '', colaRot: cola ? cola.rot : '', colaL1a: cola ? cola.l1a : '', colaL1b: cola ? cola.l1b : '', colaL1c: cola ? `tag tag-${cola.tg} tag-inline` : '', colaL2: cola ? cola.l2 : '',
       // Atalho do veterano (PR #21): na 1ª pergunta da checagem rápida (decisão do Pedro, 27/10), pula direto para a medição com instrumento.
       // Da 2ª pergunta em diante as cenas ficam com a altura toda. A pergunta atual fica no histórico: o Voltar do cabeçalho devolve o técnico a ela.
       temAtalhoVet: st.tela === 'etapa' && !E.tec && !st.hist.length && !!(PC && PC.tecInicio && PC.etapas[PC.tecInicio]),
       atalhoVet: () => PC && PC.tecInicio && this.setState(x => ({ etapa: PC.tecInicio, hist: [...x.hist, x.etapa], pk: null, dica: false })),
-      telemetriaTxt: diags.length ? `TELEMETRIA · ${diags.map(d => `${d.val} ${d.verCurto}`).join(' · ')}` : `TELEMETRIA · ${st.sel.marca} ${st.sel.btu} · ${st.sel.fluido}`,
+      // PR #68: TELEMETRIA + pílulas de Marca, BTU/h e Fluido; com medição, o resumo segue ao lado (corta com reticências no que não couber).
+      telMarca: st.sel.marca, telBtu: `${st.sel.btu}\u00a0BTU/h`, telFluido: st.sel.fluido, telTemResumo: diags.length > 0, telResumo: diags.map(d => `${d.val} ${d.verCurto}`).join(' · '),
       leituras: [
         { un: 'PSI', v: tsat !== null ? st.ptP.trim() : '—', o: tsat !== null ? 'Informada' : st.ptP.trim() ? 'Valor inválido' : 'Sem medição', faixa: `Sucção, ${st.sel.fluido}`, aria: tsat !== null ? `Pressão de sucção ${st.ptP.trim()} psig, ${st.sel.fluido}. Toque para abrir o PT/SH` : `Pressão, ${st.sel.fluido}: sem medição válida. Toque para lançar`, onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
@@ -3390,14 +3419,15 @@ class Component extends DCLogic {
       ].map(r => {
         // PR #58: poço sem medição nunca fica mudo. Embaixo de "— PSI", "— kΩ" e "— °C" entra a referência viva do aparelho do topo
         // ([data-poco-ref]); com medição real, o valor medido volta a ocupar o poço sozinho. Em tela estreita, a variante mais longa que cabe.
-        const ref = r.v === '—' ? POCO_REF[r.un](st.sel) : null, refW = (cw - 4 - 20) / 3 - 4 - 4 - 8; // borda, respiro e a curva da pílula
+        const ref = r.v === '—' ? POCO_REF[r.un](st.sel) : null, refW = (cw - 4 - 2 * gapG) / 3 - 22; // largura do canal menos aro (4), respiro (4) e cápsula (padding 6 + borda 1 de cada lado)
         const refTxt = ref ? ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1] : '';
         // PR #60: trilho de 15 LEDs (4 azuis abaixo, 7 verdes na faixa, 4 vermelhos acima) e pino pelo desvio z (−1 a 1 = dentro da faixa).
         const k = r.un === 'PSI' ? 'psi' : r.un === 'kΩ' ? 'ntc' : 'sh', z = zLeitura(k), pos = z === null ? 7.5 : Math.max(0.5, Math.min(14.5, 7.5 + z * 3.5)), aceso = Math.floor(pos);
         return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px',
           // PR #66 (itens 20–21): aro sempre de 2 px; só a cor acompanha o resultado do canal (âmbar fora da faixa, vermelho em falha).
-          borda: aroDe(k, z), aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: z === null ? '.45' : '1',
-          leds: LEDS.map((c, i) => ({ c, z: i < 4 ? 'baixo' : i < 11 ? 'faixa' : 'alto', op: z !== null && i === aceso ? '1' : '.32', halo: z !== null && i === aceso ? `0 0 6px 1px ${c}` : 'none' })),
+          borda: aroDe(k, z), aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: '1', corU: 'var(--cv-un)', varre: this._varreN ? `gpSweepPino${this._varreN % 2 ? 'A' : 'B'} 500ms ease-out` : 'none',
+          // PR #68: os 7 verdes da faixa ficam sempre acesos; azul e vermelho apagados, menos o LED sob o pino.
+          leds: LEDS.map((c, i) => { const fx = i >= 4 && i < 11, sob = z !== null && i === aceso; return { c, z: i < 4 ? 'baixo' : fx ? 'faixa' : 'alto', op: sob ? '1' : fx ? '0.92' : '.32', halo: sob ? `0 0 6px 1px ${c}` : fx ? '0 0 6px rgba(34,197,94,0.65)' : 'none' }; }),
           onClick: () => { this.bip(); r.onClick(); } };
       }),
       linhas: E.ops.map((o, i, a) => a.length > 2 && i === a.length - 1 ? 'minmax(min-content,auto)' : 'minmax(min-content,1fr)').join(' '),
