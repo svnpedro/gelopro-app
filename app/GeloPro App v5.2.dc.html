@@ -499,7 +499,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <div data-res-rolagem="" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
                     <!-- PR #78: na hipótese de bancada de Não gela, Gela pouco e Forma gelo, os instrumentos reais ficam no topo (1 toque cada). -->
-                    <sc-if value="{{ resTemInstr }}" hint-placeholder-val="{{ false }}"><div data-res-instrumentos="" role="group" aria-label="Medir com instrumento" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><sc-for list="{{ resInstr }}" as="ri" hint-placeholder-count="4"><button type="button" data-res-instr="{{ ri.k }}" onClick="{{ ri.acao }}" style="min-width:0;min-height:52px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid #f59e0b;background:#fffbeb;color:#78350f;font:700 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-active="transform:translateY(1px);">{{ ri.l }}</button></sc-for></div></sc-if>
+                    <sc-if value="{{ resTemInstr }}" hint-placeholder-val="{{ false }}"><div data-res-instrumentos="" role="group" aria-label="Medir com instrumento" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><sc-for list="{{ resInstr }}" as="ri" hint-placeholder-count="4"><button type="button" data-res-instr="{{ ri.k }}" onClick="{{ ri.acao }}" style="min-width:0;min-height:64px;box-sizing:border-box;padding:8px 10px;border-radius:16px;border:var(--gp-tile-border, 0);background:var(--gp-tile, linear-gradient(180deg,#24466f 0%,#19365c 100%));box-shadow:var(--gp-tile-relief);color:var(--gp-on-tile, #ffffff);text-shadow:var(--gp-on-tile-shadow);display:flex;align-items:center;gap:8px;cursor:pointer;" style-hover="filter:brightness(1.08);" style-active="transform:translateY(2px);box-shadow:var(--gp-tile-relief-pressed);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-tile-icon, #bfdbfe);"><dc-import name="IconeGP" nome="{{ ri.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span><span style="flex:1;min-width:0;font:700 15px/18px 'Roboto',sans-serif;color:var(--gp-on-tile, #ffffff);text-align:left;text-wrap:balance;">{{ ri.l }}</span></button></sc-for></div></sc-if>
                     <div style="flex:none;box-sizing:border-box;padding:16px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);box-shadow:var(--gp-mold-shadow);display:flex;flex-direction:column;gap:8px;">
                       <dc-import name="Selo" texto="{{ resSelo }}" tipo="{{ resSeloTipo }}" style="align-self:flex-start;" hint-size="140px,26px"></dc-import>
                       <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:balance;">{{ resTitulo }}</span>
@@ -526,7 +526,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <span class="tags"><span data-res-preco="" class="num-chave dinheiro">{{ resServPreco }}</span><span class="tag tag-estado tag-editavel" data-selo="" data-rotulo="">EDITÁVEL</span></span>
                     </div></sc-if>
                     <sc-if value="{{ temResAtalhos }}" hint-placeholder-val="{{ false }}"><div data-res-atalhos="" role="group" aria-label="Conferir agora com o instrumento" style="flex:none;display:flex;flex-direction:column;gap:8px;">
-                      <sc-for list="{{ resAtalhos }}" as="ra" hint-placeholder-count="1"><button type="button" data-res-atalho="{{ ra.k }}" aria-label="{{ ra.aria }}" onClick="{{ ra.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="{{ ra.ico }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>{{ ra.l }}</span></button></sc-for>
+                      <sc-for list="{{ resAtalhos }}" as="ra" hint-placeholder-count="1"><button type="button" data-res-atalho="{{ ra.k }}" aria-label="{{ ra.aria }}" onClick="{{ ra.acao }}" style="min-height:64px;box-sizing:border-box;padding:8px 10px;border-radius:16px;border:var(--gp-tile-border, 0);background:var(--gp-tile, linear-gradient(180deg,#24466f 0%,#19365c 100%));box-shadow:var(--gp-tile-relief);color:var(--gp-on-tile, #ffffff);text-shadow:var(--gp-on-tile-shadow);display:flex;align-items:center;gap:8px;cursor:pointer;" style-hover="filter:brightness(1.08);" style-active="transform:translateY(2px);box-shadow:var(--gp-tile-relief-pressed);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-tile-icon, #bfdbfe);"><dc-import name="IconeGP" nome="{{ ra.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span><span style="flex:1;min-width:0;font:700 15px/18px 'Roboto',sans-serif;color:var(--gp-on-tile, #ffffff);text-align:left;text-wrap:balance;">{{ ra.l }}</span></button></sc-for>
                     </div></sc-if>
                   </div>
                   <div data-res-teclas="" style="flex:none;display:grid;grid-template-columns:{{ resCols }};gap:8px;">
@@ -2568,11 +2568,6 @@ class Component extends DCLogic {
     const capFora = CAP_ETAPAS.some(k => st.hist.includes(k) && (st.resp || {})[k] === 'sim');
     const capInv = !!r && r.banc && !capOk && !capFora && st.sel.fluido === 'R32' && r.serv.includes('cap_partida');
     const rServ = r ? (capOk || capInv ? r.serv.filter(id => id !== 'cap_partida') : r.serv) : [];
-    // PR #84 (uso real): o "Medir com instrumento" do rodapé do Resultado nunca volta a uma pergunta visual. Some onde os instrumentos já estão no
-    // topo (ng/gp/ge_inc) ou onde o destino real é o próprio resultado (pi/ba_inc); nos demais, leva ao destino do atalho real (ATALHO_REAL).
-    const resMedir = (() => { if (!(PC && PC.tecInicio && r && !r.tec)) return 'nenhum'; if (LEGADO_TESTES) return 'legado'; const A = ATALHO_REAL[st.sint];
-      if (r.banc && /^(ng|gp|ge)_inc$/.test(st.res || '') || !A) return 'some'; if (A[0] === 'res') return A[1] === st.res || !PC.res[A[1]] ? 'some' : 'real';
-      return PC.etapas[A[1]] && FERR_INSTR.includes(PC.etapas[A[1]].ferr) ? 'real' : 'some'; })();
     const CAT = (st.base && st.base.cat) || [], resServ = r ? CAT.find(c => c.id === rServ[0]) || null : null;
     const mod = DK.find(k => k.id === st.modK);
     // Entrada única por sintoma: tela inicial e fichas abrem o mesmo percurso da base técnica.
@@ -3163,6 +3158,32 @@ class Component extends DCLogic {
       /superaquec|PT\/SH|\bSH\b|press[ãa]o (?:de|do) (?:fluido|suc)|carga de fluido/i.test(rTxt) ? { k: 'ptsh', ico: 'pt-sh', l: 'Conferir agora no PT/SH (superaquecimento)', aria: 'Conferir agora: abrir o PT/SH para medir o superaquecimento', acao: abrirMod('ptsh') } : null,
       /\bNTC\b|termistor/i.test(rTxt) ? { k: 'ntc', ico: 'sensor-ntc', l: 'Conferir agora no Sensor NTC', aria: 'Conferir agora: abrir o Sensor NTC para medir a resistência', acao: abrirMod('ntc') } : null,
     ].filter(Boolean);
+    // PR #88 (uso real): instrumentos sempre no topo do Resultado, em [data-res-instrumentos], com o mesmo visual de tecla 3D da Home.
+    // Hipóteses gerais (*_inc) trazem a bancada do sintoma; resultados específicos trazem os atalhos que antes iam embaixo (resAt).
+    // Legado (HeadlessChrome sem ?real=1): só ng/gp/ge_inc, como antes; os atalhos de baixo seguem iguais.
+    const resInstrL = (() => {
+      if (!r) return [];
+      const abrirI = (k) => () => lock ? this.vazio('upg', { modK: k }) : this.abrir(k, { modK: k });
+      const etapaDe = (sint, id) => () => this.setState(x => ({ tela: 'etapa', sint, etapa: id, res: null, hist: sint === x.sint ? x.hist : [], pk: null, dica: false }));
+      const I = {
+        ptsh: { k: 'ptsh', ico: 'pt-sh', l: 'Abrir PT/SH (Manômetro)', acao: abrirI('ptsh') },
+        ntc: { k: 'ntc', ico: 'sensor-ntc', l: 'Medir Sensor NTC (kΩ)', acao: abrirI('ntc') },
+        inv: { k: 'inv', ico: 'inverter', l: 'Testar Placa Inverter', acao: abrirI('inv') },
+      };
+      const PRC = (st.base && st.base.perc) || {}, cap = (id, sint) => PRC[sint] && PRC[sint].etapas[id] ? { k: 'cap', ico: 'capacitor', l: 'Medir capacitor (µF)', acao: etapaDe(sint, id) } : null;
+      if (LEGADO_TESTES) return !(r.banc && /^(ng|gp|ge)_inc$/.test(st.res || '')) ? [] : [I.ptsh, I.ntc, I.inv, st.res !== 'ge_inc' ? cap(st.res === 'gp_inc' ? 't_gp04' : 't_ng04', st.sint) : null].filter(Boolean);
+      const id = st.res || '', geral = /^(t_)?(ng|gp|ge|de|nl)_inc$/.test(id);
+      if (geral && /^(naogela|gelapouco)$/.test(st.sint)) return [I.ptsh, I.ntc, I.inv, cap(st.sint === 'gelapouco' ? 't_gp04' : 't_ng04', st.sint)].filter(Boolean);
+      if (geral && st.sint === 'gelo') return [I.ptsh, I.ntc, I.inv];
+      if (geral && st.sint === 'desliga') return [I.ptsh, I.ntc, I.inv, cap('t_ng04', 'naogela')].filter(Boolean);
+      if (geral && st.sint === 'naoliga') { const m = ['t_nl01', 't_nl02'].find(e => PC && PC.etapas[e] && !st.hist.includes(e)); return [I.inv, ...(m ? [{ k: 'mult', ico: 'multimetro', l: 'Medir tensão / fusível', acao: etapaDe('naoliga', m) }] : [])]; }
+      return resAt.map(a => I[a.k] || { ...a, ico: a.ico || 'codigo' });
+    })();
+    // PR #84 (uso real): o "Medir com instrumento" do rodapé do Resultado nunca volta a uma pergunta visual. Some onde os instrumentos já estão no
+    // topo ([data-res-instrumentos], PR #88) ou onde o destino real é o próprio resultado (pi/ba_inc); nos demais, leva ao destino do atalho real (ATALHO_REAL).
+    const resMedir = (() => { if (!(PC && PC.tecInicio && r && !r.tec)) return 'nenhum'; if (LEGADO_TESTES) return 'legado'; const A = ATALHO_REAL[st.sint];
+      if (resInstrL.length || !A) return 'some'; if (A[0] === 'res') return A[1] === st.res || !PC.res[A[1]] ? 'some' : 'real';
+      return PC.etapas[A[1]] && FERR_INSTR.includes(PC.etapas[A[1]].ferr) ? 'real' : 'some'; })();
     const nomeTopo = tit && String(tit.nome || '').trim() ? String(tit.nome).trim() : 'Sua assistência';
     const H = cheio ? innerHeight : DEV[dev], telaBaixa = H < 760, diagLado = telaBaixa && diags.length > 1;
     // Home 3C (PR #28, revista no PR #30): a chave Sintomas | Medições e Testes ocupa o lugar do título do visor (que segue para leitor de tela).
@@ -3733,15 +3754,9 @@ class Component extends DCLogic {
         : r.tec ? 'Checagem de técnico. Valores e limites vêm do manual do equipamento.' : 'Checagem rápida, vale para qualquer marca.',
       resFonte: `Base técnica verificada · Aplicável a ${st.sel.marca} (${st.sel.btu} BTU/h · ${st.sel.fluido})`,
       // Atalho secundário para conferir na hora: PT/SH quando o texto fala de superaquecimento, pressão ou carga de fluido; NTC quando fala do sensor.
-      temResAtalhos: resAt.length > 0, resAtalhos: resAt,
+      temResAtalhos: resAt.length > 0 && LEGADO_TESTES, resAtalhos: resAt, // PR #88: no uso real os atalhos sobem para [data-res-instrumentos]
       resLista: r && r.banc ? 'Causas prováveis' : 'O que fazer agora',
-      resTemInstr: !!r && r.banc && /^(ng|gp|ge)_inc$/.test(st.res || ''),
-      resInstr: !r || !/^(ng|gp|ge)_inc$/.test(st.res || '') ? [] : [
-        { k: 'ptsh', l: 'Abrir PT/SH (Manômetro)', acao: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
-        { k: 'ntc', l: 'Medir Sensor NTC (kΩ)', acao: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
-        { k: 'inv', l: 'Testar Placa Inverter', acao: () => lock ? this.vazio('upg', { modK: 'inv' }) : this.abrir('inv', { modK: 'inv' }) },
-        ...(PC && PC.etapas[st.res === 'gp_inc' ? 't_gp04' : 't_ng04'] && st.res !== 'ge_inc' ? [{ k: 'cap', l: 'Medir capacitor (µF)', acao: () => this.setState(x => ({ tela: 'etapa', etapa: st.res === 'gp_inc' ? 't_gp04' : 't_ng04', res: null, pk: null, dica: false })) }] : []),
-      ],
+      resTemInstr: resInstrL.length > 0, resInstr: resInstrL,
       temServ: !!resServ, resServNome: resServ ? resServ.t : '', resServPreco: resServ ? BRL.format(tipDe(resServ, st.sel.btu) || 0) : '',
       temProx: !!(r && r.prox), resProx: r && r.prox ? r.prox : '',
       resSelo: r && r.banc ? 'Causas prováveis' : 'Causa provável', resSeloTipo: r && r.banc ? 'info' : 'aviso',
