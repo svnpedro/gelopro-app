@@ -149,6 +149,17 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 .tag-led .led-dot{flex:none;width:18px;height:18px;box-sizing:border-box;border-radius:50%;border:2px solid var(--gp-tg-led);background:var(--gp-tg-led);}
 .tag-led .led-est.pisca .led-dot{background:linear-gradient(90deg,var(--gp-tg-led) 50%,transparent 50%);animation:gpLed 1s steps(2,jump-none) infinite;}
 .tag-led .led-est.off .led-dot{border-color:var(--gp-tg-led-off);background:transparent;}
+/* PR #73: cada .tag-led na cor real do LED escrito nela (vermelho, verde ou âmbar para amarelo/laranja/timer); os outros seguem no azul do tema.
+   Código e LED abertos: CAUSA em vermelho claro, FAÇA em verde claro e "NÃO TROCAR PEÇA SÓ PELO CÓDIGO" em âmbar (hex fixo, iguais nos 3 temas). */
+.tag-led[data-led-cor="vermelho"]{--gp-tg-led:#dc2626;background:#fef2f2;border-color:#ef4444;color:#991b1b;}
+.tag-led[data-led-cor="verde"]{--gp-tg-led:#16a34a;background:#ecfdf5;border-color:#10b981;color:#065f46;}
+.tag-led[data-led-cor="ambar"]{--gp-tg-led:#d97706;background:#fffbeb;border-color:#f59e0b;color:#92400e;}
+.tag-led[data-led-cor="vermelho"] .led-rot,.tag-led[data-led-cor="vermelho"] .led-est{color:#991b1b;}
+.tag-led[data-led-cor="verde"] .led-rot,.tag-led[data-led-cor="verde"] .led-est{color:#065f46;}
+.tag-led[data-led-cor="ambar"] .led-rot,.tag-led[data-led-cor="ambar"] .led-est{color:#92400e;}
+.tag.tag-causa{background:#fef2f2;color:#991b1b;border-color:#fca5a5;}
+.tag.tag-faca{background:#ecfdf5;color:#065f46;border-color:#6ee7b7;}
+.tag.tag-nao-trocar{background:#fef3c7;color:#92400e;border-color:#f59e0b;}
 @keyframes gpLed{50%{opacity:.4}}
 .tag-fonte-canto{align-self:flex-end;}
 /* Subtítulo de marca no botão nominal do NTC (PR #27): 14 px/600 na cor do rótulo, quebra limpa, fora do texto lido pelos testes. */
@@ -276,6 +287,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </header>
 
         <sc-if value="{{ temTopo }}" hint-placeholder-val="{{ false }}">
+          <div data-tema="{{ temaVisor }}" style="display:contents;">
           <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:8px;padding:0 6px;">
             <button type="button" aria-label="Voltar" onClick="{{ voltar }}" style="width:48px;height:48px;flex:none;border-radius:14px;border:1px solid var(--gp-sec-edge);background:var(--gp-sec-key);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 120ms ease-out;" style-hover="filter:brightness(1.04);" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="voltar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
             <div style="flex:1;min-width:0;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
@@ -285,9 +297,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <sc-if value="{{ temSelo }}" hint-placeholder-val="{{ false }}"><dc-import name="Selo" texto="{{ seloTxt }}" tipo="info" vivo="{{ true }}" style="flex:none;" hint-size="104px,26px"></dc-import></sc-if>
             <sc-if value="{{ temLogoMod }}" hint-placeholder-val="{{ false }}"><span data-logo-modulo="{{ logoMod }}" style="flex:none;display:inline-flex;box-sizing:border-box;padding:4px;border-radius:14px;border:2px solid var(--gp-pill-edge);background:var(--gp-pill);box-shadow:var(--gp-pill-shadow);"><dc-import name="LogoMarca" marca="{{ logoMod }}" tamanho="{{ 44 }}" hint-size="44px,44px"></dc-import></span></sc-if>
           </div>
+          </div>
         </sc-if>
 
         <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
+        <div data-tema="{{ temaVisor }}" style="display:contents;">
         <div data-cabecalho="" style="flex:none;display:flex;align-items:flex-start;gap:8px;padding:0 6px;">
           <button type="button" aria-label="Voltar" onClick="{{ voltar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="voltar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
           <div style="flex:1;min-width:0;gap:0;box-sizing:border-box;min-height:48px;padding:3px 12px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
@@ -296,11 +310,13 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           </div>
           <button type="button" aria-label="Como verificar" aria-expanded="{{ dicaExp }}" onClick="{{ dicaToggle }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);color:var(--gp-on-sec-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(2px);box-shadow:var(--gp-sec-sunk);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="info" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span></button>
         </div>
+        </div>
         </sc-if>
 
         <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:{{ aroR }};background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
-          <!-- PR #58 (Papel Técnico): Laudo, PMOC e Recibo avulso abrem o visor na superfície clara do TemaGeloPro quando o tema global é titânio
-               (data-tema aninhado: a paleta vem da regra que o próprio TemaGeloPro gera para [data-tema] [data-tema=claro|titanio|sol]). -->
+          <!-- PR #73 (Papel Técnico em todas as telas internas): no titânio, só a Home (st.tela === 'inicio') mantém o visor escuro; Etapa, Resultado,
+               Código, LED, PT/SH, NTC, Carga térmica, Inverter, Docs, Laudo, PMOC, Recibo, Cofre, Titular e Vazio abrem na superfície clara do
+               TemaGeloPro (data-tema aninhado: a paleta vem da regra que o próprio TemaGeloPro gera para [data-tema] [data-tema=claro|titanio|sol]). -->
           <div data-tema="{{ temaVisor }}" style="display:contents;">
           <div data-vis="" style="position:relative;height:100%;box-sizing:border-box;padding:{{ visPad }};border-radius:{{ visR }};overflow:hidden;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);display:flex;flex-direction:column;gap:8px;">
 
@@ -384,6 +400,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                             <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--cv-bg);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
                               <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
                               <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
+                              <sc-if value="{{ r.temLogo }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-poco-marca="{{ r.logoMarca }}" style="flex:none;display:inline-flex;width:16px;height:16px;"><dc-import name="LogoMarca" marca="{{ r.logoMarca }}" tamanho="{{ 16 }}" hint-size="16px,16px"></dc-import></span></sc-if>
                               <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-quebra="" style="flex:0 0 100%;height:0;"></span><span data-poco-ref="{{ r.refK }}" style="flex:0 0 auto;max-width:100%;box-sizing:border-box;padding:1px 4px;border-radius:6px;background:var(--cv-ref-bg);border:1px solid var(--cv-ref-bd);min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--cv-ref);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
                             </span>
                           </button>
@@ -501,14 +518,14 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                           <span data-cod="" style="font:800 22px/26px 'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ c.codigo }}</span>
                           <span style="grid-column:{{ c.descCol }};grid-row:{{ c.descRow }};font:700 16px/20px 'Roboto',sans-serif;text-wrap:pretty;">{{ c.descricao }}</span>
                           <span aria-hidden="true" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;transform:{{ c.seta }};"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
-                          <sc-if value="{{ c.temLeds }}" hint-placeholder-val="{{ false }}"><span data-led-painel="" class="tags" style="grid-column:1 / -1;"><sc-for list="{{ c.leds }}" as="ld" hint-placeholder-count="2"><span class="tag tag-led" data-selo="" data-rotulo="" data-led-estado="{{ ld.k }}"><span class="led-rot">{{ ld.rot }}</span><span class="{{ ld.c }}"><span class="led-dot" role="img" aria-label="{{ ld.aria }}"></span>{{ ld.n }}</span></span></sc-for></span></sc-if>
+                          <sc-if value="{{ c.temLeds }}" hint-placeholder-val="{{ false }}"><span data-led-painel="" class="tags" style="grid-column:1 / -1;"><sc-for list="{{ c.leds }}" as="ld" hint-placeholder-count="2"><span class="tag tag-led" data-selo="" data-rotulo="" data-led-cor="{{ ld.cor }}" data-led-estado="{{ ld.k }}"><span class="led-rot">{{ ld.rot }}</span><span class="{{ ld.c }}"><span class="led-dot" role="img" aria-label="{{ ld.aria }}"></span>{{ ld.n }}</span></span></sc-for></span></sc-if>
                           <sc-if value="{{ c.temEscopo }}" hint-placeholder-val="{{ false }}"><span class="tags" style="grid-column:1 / -1;"><span class="tag tag-medida tag-l" data-selo="" data-rotulo="" data-cod-escopo="">{{ c.escopoTxt }}</span></span></sc-if>
                           <sc-if value="{{ c.temNormal }}" hint-placeholder-val="{{ false }}"><span class="tags" style="grid-column:1 / -1;"><span class="tag tag-ok" data-selo="" data-rotulo="" data-tag-nao-defeito="">✓ NÃO É DEFEITO</span></span></sc-if>
                           <sc-if value="{{ c.aberto }}" hint-placeholder-val="{{ false }}">
                             <span data-cod-aberto="" style="grid-column:1 / -1;display:flex;flex-direction:column;align-items:stretch;gap:10px;">
-                              <span data-cod-causa="" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;"><span class="tag tag-estado" data-selo="" data-rotulo="">CAUSA</span><span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ c.causa }}</span></span>
-                              <span data-cod-faca="" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;"><span class="tag tag-medida" data-selo="" data-rotulo="">FAÇA</span><span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ c.faca }}</span></span>
-                              <sc-if value="{{ c.naoTrocar }}" hint-placeholder-val="{{ true }}"><span class="tags"><span class="tag tag-alerta tag-l" data-selo="" data-rotulo="" data-nao-trocar="">NÃO TROCAR PEÇA SÓ PELO CÓDIGO</span></span></sc-if>
+                              <span data-cod-causa="" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;"><span class="tag tag-causa" data-selo="" data-rotulo="">CAUSA</span><span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ c.causa }}</span></span>
+                              <span data-cod-faca="" style="display:flex;flex-direction:column;align-items:flex-start;gap:4px;"><span class="tag tag-faca" data-selo="" data-rotulo="">FAÇA</span><span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;">{{ c.faca }}</span></span>
+                              <sc-if value="{{ c.naoTrocar }}" hint-placeholder-val="{{ true }}"><span class="tags"><span class="tag tag-nao-trocar tag-l" data-selo="" data-rotulo="" data-nao-trocar="">NÃO TROCAR PEÇA SÓ PELO CÓDIGO</span></span></sc-if>
                               <span style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;">
                                 <dc-import name="Selo" texto="{{ c.selo }}" tipo="{{ c.seloTipo }}" hint-size="96px,26px"></dc-import>
                                 <span class="tag tag-fonte" data-selo="" data-rotulo="">{{ c.fonte }}</span>
@@ -888,6 +905,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
       </nav>
     </div>
 
+    <!-- PR #73: gavetas (Marca, BTU/h, Fluido, Consultar fichas, Central de Avisos) na superfície clara quando o tema global é titânio. -->
+    <div data-tema="{{ temaPapel }}" style="display:contents;">
     <div aria-hidden="{{ dHidden }}" style="position:absolute;inset:0;z-index:40;pointer-events:{{ dPE }};visibility:{{ dVis }};">
       <div onClick="{{ fecharDrawer }}" style="position:absolute;inset:0;background:var(--gp-scrim);opacity:{{ dOp }};transition:opacity 200ms ease-out;"></div>
       <div role="dialog" aria-modal="true" aria-label="{{ dTitulo }}" style="position:absolute;left:8px;right:8px;bottom:8px;box-sizing:border-box;padding:8px 8px 10px;border-radius:24px;background:var(--gp-chassis);box-shadow:var(--gp-chassis-ring);transform:{{ dT }};transition:transform 240ms cubic-bezier(0.22, 1, 0.36, 1),opacity 200ms ease-out;display:flex;flex-direction:column;gap:8px;">
@@ -1015,6 +1034,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </div>
         </div>
       </div>
+    </div>
     </div>
 
 
@@ -1299,6 +1319,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
     </div>
     </sc-if>
     <sc-if value="{{ portao }}" hint-placeholder-val="{{ false }}">
+    <!-- PR #73: portão (ativação, titular, upgrade) na superfície clara quando o tema global é titânio. -->
+    <div data-tema="{{ temaPapel }}" style="display:contents;">
     <div ref="{{ pRef }}" data-chapa="" tabindex="-1" role="dialog" aria-modal="true" aria-label="{{ pTitulo }}" style="position:absolute;inset:0;z-index:28;outline:none;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;">
       <div data-cabecalho="" style="flex:none;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
         <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-pill-label);">{{ pKicker }}</span>
@@ -1326,6 +1348,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           <dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" estado="{{ k.e }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
         </sc-for>
       </div>
+    </div>
     </div>
     </sc-if>
   </div>
@@ -1887,7 +1910,7 @@ const ledsDe = (pad) => {
     if (m && !/^\d|^Ap[óo]s|^C[óo]digo/i.test(m[1])) return nomes(m[1]).forEach(r => out.push([r, ...est(m[2])]));
     if (!out.length) out.push([/Wi-?Fi/i.test(seg) ? 'Wi-Fi' : 'LED', ...est(seg)]);
   });
-  return out.slice(0, 4).map(([rot, e, k]) => { const n = (e.match(/\d+×/) || [''])[0], kk = k || 'aceso'; return { rot: rot.slice(0, 18), e, k: kk, n, c: 'led-est' + (k ? ' ' + k : ''), aria: kk === 'off' ? 'apagado' : kk === 'pisca' ? (n ? `piscando ${n.replace('×', '')} vezes` : 'piscando') : 'aceso' }; });
+  return out.slice(0, 4).map(([rot, e, k]) => { const n = (e.match(/\d+×/) || [''])[0], kk = k || 'aceso'; return { rot: rot.slice(0, 18), e, k: kk, n, cor: /vermelh|\bred\b/i.test(rot) ? 'vermelho' : /verde|green/i.test(rot) ? 'verde' : /amarel|laranja|timer|yellow|orange/i.test(rot) ? 'ambar' : 'tema', c: 'led-est' + (k ? ' ' + k : ''), aria: kk === 'off' ? 'apagado' : kk === 'pisca' ? (n ? `piscando ${n.replace('×', '')} vezes` : 'piscando') : 'aceso' }; });
 };
 const COLA = {
   // PR #27: a 1ª linha vira par visual (entrada → .tag com o alvo); o texto lido pelo pr24.js segue letra por letra.
@@ -1914,7 +1937,12 @@ const POCO_NTC = { LG: '5K/10K/200K', Samsung: '10K/49,1K', Midea: '10K/54,9K', 
 // PR #60: cores do trilho de 15 LEDs do visor (4 azuis abaixo da faixa, 7 verdes na faixa, 4 vermelhos acima).
 const LEDS = [...Array(4).fill('#3b82f6'), ...Array(7).fill('#22c55e'), ...Array(4).fill('#ef4444')];
 const POCO_REF = {
-  PSI: (sel) => { const f = POCO_PSI[sel.fluido] || POCO_PSI.R410A; return { k: 'psi', vs: [`${f} psi`, f], aria: `Referência de campo de sucção ${sel.fluido}: ${f} psi` }; },
+  // PR #73: o 1º poço também reage a Marca e BTU/h, sem inventar pressão por marca (a faixa física é só do fluido: R410A 118–135, R32 120–140,
+  // R22 60–75 psi). O porte entra no texto ("118–135 · 12k") e a insígnia da marca do topo entra ao lado de "PSI" (logo: true). A marca e o BTU/h vão no aria-label.
+  PSI: (sel) => {
+    const f = POCO_PSI[sel.fluido] || POCO_PSI.R410A, btu = parseInt(String(sel.btu || '').replace(/\D/g, ''), 10) || 0, k = btu ? `${Math.round(btu / 1000)}k` : '';
+    return { k: 'psi', logo: true, vs: k ? [`${f} · ${k}`, `${f}·${k}`, f] : [f], aria: `Referência de campo de sucção ${sel.fluido}: ${f} psi (${sel.marca}, ${sel.btu} BTU/h)` };
+  },
   'kΩ': (sel) => { const n = POCO_NTC[sel.marca] || '5K–50K'; return { k: 'ntc', vs: [n, n.replace(/K\//g, '/')], aria: `Nominais NTC de referência ${sel.marca}: ${n}` }; },
   // PR #70: o 3º poço muda ao vivo com marca, fluido e porte. Elgin R410A: alvo oficial; R32 e R22: faixa do fluido; R410A nas demais marcas: SH com
   // o adicional de carga por metro de linha do porte (até 12.000 BTU/h 15 g/m; de 18.000 para cima 25 g/m). Variantes da mais completa para a mais
@@ -3488,7 +3516,7 @@ class Component extends DCLogic {
       pergunta: E.q, dica: E.d.replace('{F}', st.sel.fluido) + (CAP_ETAPAS.includes(E.id) ? ' ' + CAP_INV_TXT : ''), temaAttr: tema,
       // PR #71 (Pedro): Orçamento (passos 1 a 4), Laudo, PMOC e Recibo voltam ao Papel Técnico claro quando o aparelho está no titânio (nunca
       // tela preta para o cliente ver); claro e sol seguem o tema. A chapa acetinada dos diálogos ([data-chapa]) e o gpIn continuam.
-      temaPapel: tema === 'titanio' ? 'claro' : tema, temaVisor: tema === 'titanio' && ['laudo', 'pmoc', 'scripts'].includes(st.tela) ? 'claro' : tema,
+      temaPapel: tema === 'titanio' ? 'claro' : tema, temaVisor: tema === 'titanio' && st.tela !== 'inicio' ? 'claro' : tema,
       // Cola de instrumento (PR #24) nas etapas de capacímetro e de tensão sob carga; nas outras etapas não ocupa altura.
       temCola: st.tela === 'etapa' && !!COLA_ETAPA[E.id], colaK: COLA_ETAPA[E.id] || '', colaRot: cola ? cola.rot : '', colaL1a: cola ? cola.l1a : '', colaL1b: cola ? cola.l1b : '', colaL1c: cola ? `tag tag-${cola.tg} tag-inline` : '', colaL2: cola ? cola.l2 : '',
       // Atalho do veterano (PR #21): na 1ª pergunta da checagem rápida (decisão do Pedro, 27/10), pula direto para a medição com instrumento.
@@ -3508,7 +3536,9 @@ class Component extends DCLogic {
         const refTxt = ref ? ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1] : '';
         // PR #60: trilho de 15 LEDs (4 azuis abaixo, 7 verdes na faixa, 4 vermelhos acima) e pino pelo desvio z (−1 a 1 = dentro da faixa).
         const k = r.un === 'PSI' ? 'psi' : r.un === 'kΩ' ? 'ntc' : 'sh', z = zLeitura(k), pos = z === null ? 7.5 : Math.max(0.5, Math.min(14.5, 7.5 + z * 3.5)), aceso = Math.floor(pos);
-        return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), ...(recal ? { anim: recal } : {}), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px',
+        // PR #73: a insígnia da marca só entra na 1ª linha ("— PSI [marca]") quando cabe no poço (traço + unidade + 2 vãos de 5 px + insígnia de 16 px).
+        const canalIn = (cw - 4 - 2 * gapG) / 3 - 8, temLogo = !!(ref && ref.logo && OPTS.marca.list.includes(st.sel.marca)) && larg('—', 18, 700) + larg(r.un, 18, 600) + 26 <= canalIn;
+        return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), ...(recal ? { anim: recal } : {}), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px', temLogo, logoMarca: st.sel.marca,
           // PR #66 (itens 20–21): aro sempre de 2 px; só a cor acompanha o resultado do canal (âmbar fora da faixa, vermelho em falha).
           borda: aroDe(k, z), aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: '1', corU: 'var(--cv-un)', varre: this._varreN ? `gpSweepPino${this._varreN % 2 ? 'A' : 'B'} 500ms ease-out` : 'none',
           // PR #68: os 7 verdes da faixa ficam sempre acesos; azul e vermelho apagados, menos o LED sob o pino.
@@ -3531,7 +3561,7 @@ class Component extends DCLogic {
           // PR #58: a barra do "Sem teste"/"Não sei" cresce com a linha (flex 1 1 auto), sem sobra escura do cartão abaixo ou acima dela; a cola do
           // instrumento usa o mesmo raio (16 px) e o mesmo alinhamento lateral dos cartões de cima.
           cartaoDir: sozinho ? 'column' : 'row', barDir: sozinho ? 'row' : 'column', barFlex: sozinho ? '1 1 auto' : `0 0 ${COL_RESPOSTA}px`, barW: sozinho ? '100%' : COL_RESPOSTA + 'px',
-          barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: leg, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}${capInv ? '. ' + CAP_INV_TXT : ''}` };
+          barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M5 12h14M13 6l6 6-6 6' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: leg, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}${capInv ? '. ' + CAP_INV_TXT : ''}` };
       }),
       resTitulo: r ? (r.banc ? 'Causas prováveis para medição e orçamento' : r.t) : '',
       // Sem código interno (PED01, T02, D11) nem nome de outro fabricante na tela (PR #22): a fonte vira o rótulo do aparelho do topo.
