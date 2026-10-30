@@ -39,10 +39,9 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 [data-chanfro] :focus-visible{outline-color:var(--gp-focus-key);outline-offset:-5px;}
 /* PR #58: portão com 3 teclas (Ativar, Ver planos, Amostra): a 1ª ocupa a linha inteira e as outras dividem a de baixo. */
 [data-teclas="3"] > :first-child{grid-column:1 / -1;}
-/* PR #60: dígitos fantasma do visor e sinais das teclas [-] [+] por ::before (fora do innerText dos poços). */
-[data-fantasma]::before{content:'888.8';}
-[data-step-leitura="-1"]::before{content:'\2212';}
-[data-step-leitura="1"]::before{content:'+';}
+/* PR #64: na superfície clara (visor #dfe6f0 do PR #62, Papel Técnico) o aro neon das teclas verdes some no fundo (G-L4 contorno 2,3:1);
+   ali o aro vira verde fechado #007a00 (4,4:1). A capa #00b100 e o texto branco não mudam. */
+[data-tema="claro"] [data-verde="1"]{--gp-verde-aro:#007a00;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -314,7 +313,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </div>
                   </sc-if>
                   <sc-if value="{{ abaMedicoes }}" hint-placeholder-val="{{ false }}">
-                  <div data-home-medicoes="" role="tabpanel" aria-label="Medições e Testes" style="flex:1 1 0;display:flex;flex-direction:column;gap:{{ gradeGap }};">
+                  <div data-home-medicoes="" role="tabpanel" aria-label="Medições e Testes" style="flex:1 1 0;min-height:{{ gradeMin }};display:flex;flex-direction:column;gap:{{ gradeGap }};">
                     <div data-gavetas-medicao="" style="flex:none;display:flex;flex-direction:column;gap:{{ gradeGap }};padding:0 2px;">
                       <sc-for list="{{ gavetasMed }}" as="g" hint-placeholder-count="2">
                         <button type="button" data-atalho-medicao="{{ g.k }}" aria-label="{{ g.aria }}" onClick="{{ g.acao }}" style="flex:none;width:100%;height:50px;box-sizing:border-box;padding:0 8px 0 6px;border-radius:16px;border:var(--gp-tile-border);background:var(--gp-tile);box-shadow:var(--gp-tile-relief);display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(2px);">
@@ -329,7 +328,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </div>
                     <div data-grade-medicoes="" style="flex:1 1 0;min-height:{{ gradeMedMin }};display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:{{ gradeGap }};padding:0 2px;">
                       <sc-for list="{{ cartoesMed }}" as="c" hint-placeholder-count="6">
-                        <div data-atalho-medicao="{{ c.k }}" style="min-width:0;min-height:0;height:round(down, 100%, 1px);max-height:{{ cartaoMax }};align-self:center;display:flex;">
+                        <!-- PR #64: grid (não flex) para o host da PlacaSintoma esticar: antes cada cartão media a largura do próprio nome (92 a 111 px na mesma linha). -->
+                        <div data-atalho-medicao="{{ c.k }}" style="min-width:0;min-height:0;height:round(down, 100%, 1px);max-height:{{ cartaoMax }};align-self:center;display:grid;grid-template:minmax(0,1fr) / minmax(0,1fr);">
                           <dc-import name="PlacaSintoma" nome="{{ c.t }}" icone="{{ c.ico }}" canto="nenhum" acao="{{ c.acao }}" style="display:block;flex:1;min-width:0;min-height:0;" hint-size="100%,100%"></dc-import>
                         </div>
                       </sc-for>
@@ -337,9 +337,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </div>
                   </sc-if>
                   <!-- PR #60: Visor Digital Industrial B+C. Carcaça de manifold usinada (chanfro 3D, vidro fumê rebaixado), cabeçalho de telemetria e, por
-                       canal, a janela digital (o mesmo button > span de sempre: valor, unidade e [data-poco-ref]), o trilho de 15 LEDs com o pino e as
-                       teclas [-] [+]. Tudo o que é decoração fica em aria-hidden + data-decor, fora do button > span; dígitos fantasma e sinais das
-                       teclas vêm de ::before (fora do innerText lido pelos testes). -->
+                       canal, a janela digital (o mesmo button > span de sempre: valor, unidade e [data-poco-ref]) e o trilho de 15 LEDs com o pino, na largura
+                       toda do canal. PR #64: sem as teclas [-] [+] (20×18 px, toque errado) e sem os dígitos fantasma 888.8 (borravam o "— °C"). A
+                       geometria do visor não muda ao medir: janela de 44 px fixa e o resumo das medições no cabeçalho de telemetria. -->
                   <div data-telemetria="" style="flex:none;box-sizing:border-box;margin:-2px 0;padding:3px 5px 4px;border-radius:16px;background:linear-gradient(180deg,#1c2738 0%,#0d1522 100%);border:1px solid #3b4a60;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -2px 0 rgba(0,0,0,.55),0 2px 4px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:2px;">
                     <div aria-hidden="true" data-decor="" data-telemetria-cab="" style="display:flex;align-items:center;gap:6px;min-width:0;padding:0 4px;font:700 11px/12px 'Roboto Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94a3b8;white-space:nowrap;overflow:hidden;">
                       <span style="flex:none;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bbf7d0 0%,#22c55e 45%,#15803d 100%);box-shadow:0 0 6px 1px rgba(34,197,94,.85);"></span>
@@ -349,27 +349,24 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
                         <div data-canal="{{ r.k }}" style="min-width:0;display:flex;flex-direction:column;gap:3px;">
                           <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="position:relative;min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:12px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
-                            <div aria-hidden="true" data-decor="" data-fantasma="" style="position:absolute;left:0;right:0;top:4px;text-align:center;font:700 18px/20px 'Roboto Mono',ui-monospace,monospace;color:var(--gp-on-reading);opacity:.07;pointer-events:none;"></div>
                             <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
                               <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
                               <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
                               <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span data-poco-ref="{{ r.refK }}" style="flex:0 0 100%;min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--gp-on-reading-unit);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
                             </span>
                           </button>
-                          <div aria-hidden="true" data-decor="" style="display:flex;align-items:center;gap:3px;">
-                            <span role="button" tabindex="0" data-step-leitura="-1" aria-label="{{ r.ariaMenos }}" onClick="{{ r.menos }}" onKeyDown="{{ r.menosTecla }}" style="flex:none;width:20px;height:18px;border-radius:5px;background:linear-gradient(180deg,#334155 0%,#1e293b 100%);border:1px solid #475569;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font:800 14px/14px 'Roboto Mono',ui-monospace,monospace;color:#e2e8f0;cursor:pointer;user-select:none;" style-active="transform:translateY(1px);box-shadow:inset 0 2px 3px rgba(0,0,0,.7);"></span>
-                            <div data-trilho="{{ r.k }}" style="position:relative;flex:1;min-width:0;height:10px;box-sizing:border-box;padding:2px;border-radius:6px;background:#020407;box-shadow:inset 0 2px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:1px;">
+                          <div aria-hidden="true" data-decor="" data-trilho="{{ r.k }}" style="position:relative;width:100%;height:10px;box-sizing:border-box;padding:2px;border-radius:6px;background:#020407;box-shadow:inset 0 2px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:1px;">
                             <sc-for list="{{ r.leds }}" as="ld" hint-placeholder-count="15"><span data-led="{{ ld.z }}" style="display:block;border-radius:2px;background:linear-gradient(180deg,rgba(255,255,255,.55) 0%,{{ ld.c }} 38%,{{ ld.c }} 100%);opacity:{{ ld.op }};box-shadow:{{ ld.halo }};"></span></sc-for>
                             <span data-pino="" style="position:absolute;top:-4px;left:{{ r.pino }};width:6px;height:18px;margin-left:-3px;border-radius:3px;background:linear-gradient(90deg,#64748b 0%,#f8fafc 45%,#94a3b8 100%);box-shadow:0 1px 2px rgba(0,0,0,.8);opacity:{{ r.pinoOp }};transition:left 180ms ease-out;"></span>
-                            </div>
-                            <span role="button" tabindex="0" data-step-leitura="1" aria-label="{{ r.ariaMais }}" onClick="{{ r.mais }}" onKeyDown="{{ r.maisTecla }}" style="flex:none;width:20px;height:18px;border-radius:5px;background:linear-gradient(180deg,#334155 0%,#1e293b 100%);border:1px solid #475569;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font:800 14px/14px 'Roboto Mono',ui-monospace,monospace;color:#e2e8f0;cursor:pointer;user-select:none;" style-active="transform:translateY(1px);box-shadow:inset 0 2px 3px rgba(0,0,0,.7);"></span>
                           </div>
                         </div>
                       </sc-for>
                     </div>
                   </div>
                   <sc-if value="{{ temDiag }}" hint-placeholder-val="{{ false }}">
-                    <div role="group" aria-label="Diagnóstico das medições" style="flex:none;display:grid;grid-template-columns:{{ dgCols }};gap:6px;padding:0 2px;margin:-4px 0 -2px;">
+                    <!-- PR #64: a faixa fica logo abaixo do visor, mas fora da conta de altura (margem de baixo = −altura − vão): placas e visor ficam na mesma
+                         coordenada Y antes e depois de medir; ela aparece rolando a área da Home, e o resumo já está no cabeçalho de telemetria. -->
+                    <div role="group" aria-label="Diagnóstico das medições" data-diag-fora="" style="flex:none;display:grid;grid-template-columns:{{ dgCols }};gap:6px;padding:0 2px;margin:-4px 0 {{ dgMb }};">
                       <sc-for list="{{ diags }}" as="dg" hint-placeholder-count="1">
                         <button type="button" data-diagnostico="" aria-label="{{ dg.aria }}" onClick="{{ dg.acao }}" style="min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:14px;background:transparent;display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
                           <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ dgPadD }} 0 10px;border-radius:14px;background:var(--gp-reading);border:2px solid var(--gp-dock-ring);box-shadow:var(--gp-reading-shadow);display:flex;align-items:center;gap:8px;">
@@ -1984,16 +1981,7 @@ class Component extends DCLogic {
     if (r.tipo === 'ok') { this.setState({ licBusy: false, licId: '' }); return this.aplicarCracha(r.cracha); }
     this.setState({ licBusy: false, licMsg: r.tipo === 'erro' ? r.codigo : r.tipo === 'sem-servidor' ? 'SEM_SERVIDOR' : 'FALHA_SERVIDOR' });
   }
-  // PR #60: teclas [-] [+] do visor da Home. PSI de 2 em 2, kΩ de 0,5 em 0,5, °C de 1 em 1; campo vazio parte do início da faixa do fluido,
-  // do 1º nominal NTC da marca ou de 20 °C. Micro-bip seco de multímetro (2400 Hz, 35 ms), mudo com prefers-reduced-motion ou sem AudioContext.
-  passoLeitura(k, d) {
-    const C = { psi: ['ptP', 2], ntc: ['ntcR', 0.5], sh: ['ptT', 1] }[k]; if (!C) return;
-    const [campo, inc] = C, atual = med(this.state[campo]);
-    const base = atual !== null ? atual : k === 'psi' ? Number((POCO_PSI[this.state.sel.fluido] || POCO_PSI.R410A).split('–')[0]) : k === 'ntc' ? parseFloat(String(POCO_NTC[this.state.sel.marca] || '10K').replace(',', '.')) || 10 : 20;
-    const v = Math.max(0, Math.round((base + (atual !== null ? d * inc : 0)) * 10) / 10);
-    this.setState({ [campo]: String(v).replace('.', ',') });
-    this.bip();
-  }
+  // Micro-bip seco de multímetro (2400 Hz, 35 ms) ao tocar num canal do visor; mudo com prefers-reduced-motion ou sem AudioContext.
   bip() {
     try {
       if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -2909,10 +2897,10 @@ class Component extends DCLogic {
     // Home 3C (PR #28, revista no PR #30): a chave Sintomas | Medições e Testes ocupa o lugar do título do visor (que segue para leitor de tela).
     // Abaixo dela, uma área só (placas ou medições, poços de Leituras e faixas de diagnóstico) que rola em tela baixa: nada some da tela e a placa
     // nunca fica abaixo de 48 px (alvo de toque do G-L7, com as 2 linhas de nome e 6 px de folga).
-    // PR #58: Sintomas e Medições e Testes no mesmo ritmo de 8 px (gavetas, gavetas → grade 3×2 e grade 3×3); só a tela baixa com faixa de
-    // diagnóstico (ou de até 640 px) aperta para 6 px. Com a faixa de atendimento aberta, a grade 3×2 garante cartões de 54 px: a PlacaSintoma
+    // PR #58: Sintomas e Medições e Testes no mesmo ritmo de 8 px (gavetas, gavetas → grade 3×2 e grade 3×3); tela de até 640 px aperta
+    // para 6 px. PR #64: o vão não depende mais da faixa de diagnóstico (medir não mexe na grade). Com a faixa de atendimento aberta, a grade 3×2 garante cartões de 54 px: a PlacaSintoma
     // mostra o ícone compacto (18 a 22 px) de 48 px para cima, e a área rola como antes.
-    const abaMed = st.abaHome === 'medicoes', cw = faceW - 38, gapG = (diags.length && H < 700) || H <= 640 ? 6 : 8;
+    const abaMed = st.abaHome === 'medicoes', cw = faceW - 38, gapG = H <= 640 ? 6 : 8;
     const larg = (t, fs, peso) => { if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d'); this._ctx.font = `${peso || 700} ${fs}px Roboto`; return this._ctx.measureText(t).width; };
     // Atalhos: módulo bônus com cadeado no plano de 90 dias abre o convite de upgrade, como no dock.
     const atalhoMod = (k, tela, foco) => () => lock ? this.vazio('upg', { modK: k }) : this.abrir(tela, { modK: k, foco: foco || null });
@@ -3297,7 +3285,9 @@ class Component extends DCLogic {
       avisoCats: AVISO_CATS.map(([k, l]) => ({ k, ...pilula(avCat === k, `${l} (${k === 'todos' ? avisos.length : avisos.filter(a => a.cat === k).length})`, () => this.setState({ avisoCat: k })) })),
       avisoItens: avLista.map(a => ({ k: a.k, cat: a.cat, catTag: TG(...(AVISO_TAG[a.cat] || ['sem-ref', ''])), em: String(a.em), quando: dataHora(a.em), t: a.t, ico: a.ico, cor: AVISO_COR[a.cat], chips: a.chips || [], temChips: !!(a.chips && a.chips.length),
         novo: (st.avisosNovos || []).includes(a.k), temAcoes: a.acoes.length > 0, acoes: a.acoes, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)' })),
-      temAtendAtivo: rascunhoComDono(F) || lMedL.length > 0,
+      // PR #64: só com orçamento em andamento (rascunho com cliente ou item). Medir não abre mais a faixa: ela empurrava a Home ~90 px para baixo
+      // logo depois da 1ª medição e o 2º toque caía no botão errado.
+      temAtendAtivo: rascunhoComDono(F),
       atendAtivoT: `Atendimento em andamento: ${F && String(F.cliNome || '').trim() ? String(F.cliNome).trim() : 'cliente não informado'} · ${(st.selOrc || st.sel).marca} ${(st.selOrc || st.sel).btu} BTU/h${lMedL.length ? ` · ${lMedL.length} ${lMedL.length === 1 ? 'medição' : 'medições'}` : ''}`,
       temAtendContinuar: rascunhoComDono(F), atendCols: rascunhoComDono(F) ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
       atendContinuarT: `Continuar atendimento de ${F && String(F.cliNome || '').trim() ? String(F.cliNome).trim() : 'orçamento aberto'}`, atendContinuar: () => this.abrirFech(),
@@ -3311,6 +3301,7 @@ class Component extends DCLogic {
         // Na linha inteira (ícone, valor, veredito e seta): a variante mais longa do veredito que cabe ao lado do valor, sem reticências.
         const linW = cw - 82 - larg(d.val, 16) - 6 - 2, ls = ['· ' + d.ver, '· ' + d.verCurto, '· ' + vs[1]], lt = ls.find(v => larg(v, 16) <= linW) || ls[2];
         return { ...d, verTxt: diagLado ? curto : lt, verFs: this.fit(diagLado ? curto : lt, 16, diagLado ? dgW : linW, 14) + 'px', verCor: d.cor || 'var(--gp-on-reading-unit)' }; }), temDiag: diags.length > 0,
+      dgMb: `${-((diagLado ? 1 : diags.length) * 48 + (diagLado ? 0 : Math.max(0, diags.length - 1) * 6) + 8)}px`,
       dgCols: diagLado ? `repeat(${diags.length},minmax(0,1fr))` : 'minmax(0,1fr)', dgDir: diagLado ? 'column' : 'row', dgAlinha: diagLado ? 'flex-start' : 'baseline', dgLinha: !diagLado, dgPadD: diagLado ? '10px' : '6px',
       // Tela baixa com diagnóstico: o título do visor sai da vista (continua para leitor de tela) e a altura vai para as placas.
       gradeGap: gapG + 'px',
@@ -3318,7 +3309,8 @@ class Component extends DCLogic {
       homeTitulo: abaMed ? 'Medições e Testes' : 'O que o aparelho apresenta?',
       abaH: H < 640 ? '30px' : '34px', abaM: H < 640 ? '-9px' : '-7px', abaSintomas: !abaMed, abaMedicoes: abaMed,
       abasHome: [['sintomas', 'Sintomas'], ['medicoes', 'Medições e Testes']].map(([k, t]) => { const pl = pilula((st.abaHome || 'sintomas') === k, t, () => this.setState({ abaHome: k })); return { ...pl, k, fs: this.fit(t, 16, (cw - 4 - 6) / 2 - 16, 14) + 'px' }; }),
-      gradeMin: `${3 * 66 + 2 * gapG}px`, gradeMedMin: `${2 * 54 + gapG}px`, cartaoMax: Math.floor(cartW * 1.25) + 'px',
+      // PR #64: as duas abas têm a mesma altura mínima (a maior entre a grade 3×3 e gavetas + 3×2): trocar de aba não move o visor.
+      gradeMin: `${Math.max(3 * 66 + 2 * gapG, 2 * 50 + 3 * gapG + 2 * 54)}px`, gradeMedMin: `${2 * 54 + gapG}px`, cartaoMax: Math.floor(cartW * 1.25) + 'px',
       gavetasMed: [
         gaveta('ipm', 'lucide-cpu', ['Placa Inverter e IPM'], ['~310 V CC · P / N / U / V / W', '~310 V CC · P/N/U/V/W', '~310 V · P/N/U/V/W', '~310 V CC'],
           'Placa Inverter e IPM: cerca de 310 V CC no barramento, bornes P, N, U, V e W. Abre o Inverter no barramento', atalhoMod('inv', 'inv', '[data-inv-id="tensao_pn"]')),
@@ -3377,7 +3369,7 @@ class Component extends DCLogic {
       // Da 2ª pergunta em diante as cenas ficam com a altura toda. A pergunta atual fica no histórico: o Voltar do cabeçalho devolve o técnico a ela.
       temAtalhoVet: st.tela === 'etapa' && !E.tec && !st.hist.length && !!(PC && PC.tecInicio && PC.etapas[PC.tecInicio]),
       atalhoVet: () => PC && PC.tecInicio && this.setState(x => ({ etapa: PC.tecInicio, hist: [...x.hist, x.etapa], pk: null, dica: false })),
-      telemetriaTxt: `TELEMETRIA · ${st.sel.marca} ${st.sel.btu} · ${st.sel.fluido}`,
+      telemetriaTxt: diags.length ? `TELEMETRIA · ${diags.map(d => `${d.val} ${d.verCurto}`).join(' · ')}` : `TELEMETRIA · ${st.sel.marca} ${st.sel.btu} · ${st.sel.fluido}`,
       leituras: [
         { un: 'PSI', v: tsat !== null ? st.ptP.trim() : '—', o: tsat !== null ? 'Informada' : st.ptP.trim() ? 'Valor inválido' : 'Sem medição', faixa: `Sucção, ${st.sel.fluido}`, aria: tsat !== null ? `Pressão de sucção ${st.ptP.trim()} psig, ${st.sel.fluido}. Toque para abrir o PT/SH` : `Pressão, ${st.sel.fluido}: sem medição válida. Toque para lançar`, onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
@@ -3389,11 +3381,10 @@ class Component extends DCLogic {
         const refTxt = ref ? ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1] : '';
         // PR #60: trilho de 15 LEDs (4 azuis abaixo, 7 verdes na faixa, 4 vermelhos acima) e pino pelo desvio z (−1 a 1 = dentro da faixa).
         const k = r.un === 'PSI' ? 'psi' : r.un === 'kΩ' ? 'ntc' : 'sh', z = zLeitura(k), pos = z === null ? 7.5 : Math.max(0.5, Math.min(14.5, 7.5 + z * 3.5)), aceso = Math.floor(pos);
-        const passo = (d) => () => this.passoLeitura(k, d), tecla = (d) => (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.passoLeitura(k, d); } };
         return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px',
           aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: z === null ? '.45' : '1',
           leds: LEDS.map((c, i) => ({ c, z: i < 4 ? 'baixo' : i < 11 ? 'faixa' : 'alto', op: z !== null && i === aceso ? '1' : '.32', halo: z !== null && i === aceso ? `0 0 6px 1px ${c}` : 'none' })),
-          menos: passo(-1), mais: passo(1), menosTecla: tecla(-1), maisTecla: tecla(1), ariaMenos: `Diminuir ${r.un}`, ariaMais: `Aumentar ${r.un}` };
+          onClick: () => { this.bip(); r.onClick(); } };
       }),
       linhas: E.ops.map((o, i, a) => a.length > 2 && i === a.length - 1 ? 'minmax(min-content,auto)' : 'minmax(min-content,1fr)').join(' '),
       etapaId: E.id || '',
