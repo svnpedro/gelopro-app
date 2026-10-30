@@ -18,7 +18,8 @@ const COR = {
   sucesso: ['var(--gp-success-container)', 'var(--gp-on-success-container)', 'var(--gp-success)'],
   erro: ['var(--gp-error-container)', 'var(--gp-on-error-container)', 'var(--gp-error)'],
   aviso: ['var(--gp-warning-container)', 'var(--gp-on-warning-container)', 'var(--gp-warning-outline)'],
-  neutro: ['transparent', 'var(--gp-on-surface-variant)', 'var(--gp-outline)'],
+  // PR #58 (G-L10): o neutro ganha fundo próprio (tinta .tag-sem-ref) e não fica mais com a mesma cara do texto de apoio ao redor.
+  neutro: ['var(--gp-tg-semref-bg)', 'var(--gp-tg-semref)', 'var(--gp-outline)'],
 };
 class Component extends DCLogic {
   renderVals() {

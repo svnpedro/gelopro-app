@@ -1,4 +1,4 @@
-/* Portão de legibilidade do GeloPro (G-L1 a G-L9). Regras: CLAUDE.md e design-system/gelopro/hierarquia-cor.md (paleta 2c, 25/10/2026). Contraste AA: 4,5:1 até 24 px, 3:1 acima.
+/* Portão de legibilidade do GeloPro (G-L1 a G-L10). Regras: CLAUDE.md e design-system/gelopro/hierarquia-cor.md (paleta 2c, 25/10/2026). Contraste AA: 4,5:1 até 24 px, 3:1 acima.
    Uso: abrir a tela com ?portao=1, ou chamar GeloProPortao.rodar() no console. Resultado em window.__portao. */
 (function () {
   const pc = (s) => { const n = (String(s).match(/[\d.]+/g) || []).map(Number); return n.length < 3 ? null : [n[0], n[1], n[2], n.length > 3 ? n[3] : 1]; };
@@ -121,8 +121,64 @@
         if (d < 0.06) A.push({ g: 'G-L9 daltonismo', txt: `${tok[i][0]} × ${tok[j][0]}`, msg: `quase iguais em ${t} (ΔOKLab ${d.toFixed(3)}); exige palavra ou ícone junto` });
       }
     }
+    antiMonocromia(root, falha);
     const res = { ok: F.length === 0, falhas: F, alertas: A, quando: new Date().toISOString(), largura: innerWidth, tema: tema ? tema.getAttribute('data-tema') : '' };
     window.__portao = res; return res;
+  }
+  // G-L10 (PR #58, Anti-Monocromia e Diferenciação Semântica). Chip = etiqueta de metadado: [data-selo], .tag, ou <span> em caixa (fundo ou borda
+  // próprios, até 40 px de altura, até 32 letras, menor que 70 % da largura do botão/cartão onde está) dentro de [data-fichas], [data-central-avisos],
+  // [data-cofre-card], [data-vis] ou de um diálogo. Token semântico = classe .tag-<natureza> (medida, modo, ok, alerta, falha, marca, fonte, fluido...)
+  // ou o componente Selo ([data-selo] sem .tag, cor pelo tipo).
+  // G-L10a: chip fora de token com a mesma cor de texto do título do seu item, ou qualquer chip com o mesmo par cor + fundo do título, reprova.
+  // G-L10b: chips irmãos (mesma linha) de natureza distinta com o mesmo par cor + fundo reprovam (ex.: "4 RÁPIDAS" e "4 TÉCNICAS" iguais).
+  // Natureza: data-natureza, senão a classe .tag-<x>. Contador (chip com número) em classe genérica (estado, data, custo, sem-ref) ou sem token:
+  // a classe + as palavras sem números, assim "4 RÁPIDAS" ≠ "4 TÉCNICAS"; já DESLIGADO e DESCARREGADO (estados sem número) são a mesma natureza.
+  const ESCOPO = '[data-fichas],[data-central-avisos],[data-cofre-card],[data-vis],[role="dialog"]';
+  const GENERICO = new Set(['estado', 'data', 'custo', 'sem-ref', 'neutro']);
+  const NAO_TOKEN = new Set(['l', 'inline', 'canto', 'fonte-canto']);
+  // Legenda da foto (.faixa-foto.erro vermelha com ✗ / .certo verde com ✓) também é token semântico (falha/ok sobre a cena).
+  const tokenDe = (el) => { if (el.classList.contains('faixa-foto')) return el.classList.contains('erro') ? 'falha' : 'ok'; const c = [...el.classList].filter(k => /^tag-/.test(k)).map(k => k.slice(4)).filter(k => !NAO_TOKEN.has(k)); return c[0] || (el.matches('[data-selo]') && !el.classList.contains('tag') ? 'selo' : null); };
+  const caixa = (el, cs) => { const bg = pc(cs.backgroundColor); const bw = parseFloat(cs.borderTopWidth), bc = pc(cs.borderTopColor); return (bg && bg[3] > 0.05) || /gradient/.test(cs.backgroundImage) || (bw >= 1 && cs.borderTopStyle !== 'none' && bc && bc[3] > 0.05); };
+  const textoDe = (el) => (el.textContent || '').replace(/\s+/g, ' ').trim();
+  function ehChip(el) {
+    if (!el.getClientRects().length || isento(el) || el.closest('svg') || el.matches('button,input,textarea,select,[role="button"]')) return false;
+    const t = textoDe(el); if (!t || t.length > 32) return false;
+    if (el.matches('.tag,[data-selo]')) return !el.classList.contains('tag-inline') && !el.closest('.tag:not(:scope)');
+    if (el.tagName !== 'SPAN' || !el.closest(ESCOPO) || el.querySelector('button,input,textarea,select,img,[data-campo]')) return false;
+    const cs = getComputedStyle(el), r = el.getBoundingClientRect(); if (!caixa(el, cs) || r.height > 40) return false;
+    const dono = el.closest('button,[role="button"],[data-cofre-card],[data-ficha-tecnica]'); if (dono && r.width >= dono.getBoundingClientRect().width * 0.7) return false;
+    return !el.parentElement.closest('.tag,[data-selo]');
+  }
+  const naturezaDe = (el) => { if (el.dataset.natureza) return el.dataset.natureza; const k = tokenDe(el) || 'texto'; return (GENERICO.has(k) || k === 'texto') && /\d/.test(textoDe(el)) ? k + ':' + textoDe(el).toUpperCase().replace(/[^A-ZÀ-Ü ]+/g, ' ').replace(/\s+/g, ' ').trim() : k; };
+  const par = (el) => [pc(getComputedStyle(el).color), fundo(el)[0]];
+  const igual = (a, b) => !!a && !!b && dist(a, b) < 0.03;
+  function tituloDe(el) {
+    const item = el.closest('button,[role="button"],[data-ficha-tecnica],[data-cofre-card],[data-aviso],li') || (el.parentElement && el.parentElement.parentElement);
+    if (!item) return null;
+    for (const n of item.querySelectorAll('*')) {
+      if (n === el || n.contains(el) || el.contains(n) || n.closest('.tag,[data-selo]') || n.closest('svg') || !n.getClientRects().length) continue;
+      const own = [...n.childNodes].some(c => (c.nodeType === 3 && c.textContent.trim()) || (c.nodeType === 1 && c.classList.contains('sc-interp') && c.textContent.trim()));
+      if (!own || n.classList.contains('sc-interp')) continue;
+      const cs = getComputedStyle(n); if ((parseInt(cs.fontWeight, 10) || 400) >= 600 && parseFloat(cs.fontSize) >= 16) return n;
+    }
+    return null;
+  }
+  function antiMonocromia(root, falha) {
+    const chips = [...root.querySelectorAll('.tag,[data-selo],span')].filter(ehChip);
+    for (const el of chips) {
+      const tt = tituloDe(el); if (!tt) continue;
+      const [cf, cb] = par(el), [tf, tb] = par(tt), tok = tokenDe(el);
+      if (igual(cf, tf) && (igual(cb, tb) || !tok)) falha('G-L10a monocromia', el, `chip "${textoDe(el)}" com a cor do título "${textoDe(tt).slice(0, 24)}" (${hx(cf)}${igual(cb, tb) ? ' sobre ' + hx(cb) : ''}); use um token .tag-<natureza>`);
+    }
+    const vistos = new Set();
+    for (const el of chips) {
+      const linha = el.closest('.tags') || el.parentElement; if (!linha || vistos.has(linha)) continue; vistos.add(linha);
+      const irmas = chips.filter(c => (c.closest('.tags') || c.parentElement) === linha);
+      for (let i = 0; i < irmas.length; i++) for (let j = i + 1; j < irmas.length; j++) {
+        const a = irmas[i], b = irmas[j], [af, ab] = par(a), [bf, bb] = par(b);
+        if (igual(af, bf) && igual(ab, bb) && naturezaDe(a) !== naturezaDe(b)) falha('G-L10b pílulas iguais', a, `"${textoDe(a)}" e "${textoDe(b)}" têm naturezas distintas e a mesma cor (${hx(af)} sobre ${hx(ab)})`);
+      }
+    }
   }
   function painel(res) {
     res = res || rodar();

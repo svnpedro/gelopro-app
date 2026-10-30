@@ -379,6 +379,13 @@ const PECAS = {
   sol: { ...MOLDE, '--gp-mold-selected': 'linear-gradient(var(--gp-accent-fill),var(--gp-accent-fill)) padding-box,linear-gradient(var(--gp-accent-fill),var(--gp-accent-fill)) border-box', '--gp-mold-shadow': '0 2px 0 #091e42', '--gp-mold-shadow-pressed': 'inset 0 2px 0 #091e42', '--gp-feature-shadow': 'none', '--gp-well-shadow': '0 0 0 1px #091e42', '--gp-paper-inset': 'inset 0 2px 5px rgba(2,6,13,.14)', '--gp-key-glow': 'rgba(9,30,66,.25)' },
 };
 
+// PR #58 (Papel Técnico): um contêiner dentro do app com data-tema próprio (ex.: o Fechamento e os formulários de Laudo, PMOC e Recibo com
+// data-tema="claro" quando o tema global é titânio) recebe a paleta inteira daquele tema por esta regra, gerada dos mesmos TEMAS e PECAS.
+// Só vale para [data-tema] dentro de outro [data-tema]: o topo continua com as variáveis inline do componente.
+const ANINHADO = Object.keys(TEMAS).map(t => `[data-tema] [data-tema=${t}]{color:var(--gp-on-surface);` + Object.entries(Object.assign({}, aliases(), TEMAS[t], PECAS[t])).map(([k, v]) => `${k}:${v};`).join('') + '}').join('\n');
+// O template interpola texto em <span>, então a regra entra uma vez no <head> por um <style id="gp-tema-aninhado"> (CSS local, sem CDN).
+if (typeof document !== 'undefined' && !document.getElementById('gp-tema-aninhado')) { const el = document.createElement('style'); el.id = 'gp-tema-aninhado'; el.textContent = ANINHADO; document.head.appendChild(el); }
+
 class Component extends DCLogic {
   static TEMAS = TEMAS;
   renderVals() {

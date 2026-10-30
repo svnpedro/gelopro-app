@@ -37,11 +37,15 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 [data-tema=sol] [data-chassi]{background:var(--gp-chassis);}
 [data-vis] :focus-visible,[data-vis] [data-campo]:focus-within{outline-color:var(--gp-focus);}
 [data-chanfro] :focus-visible{outline-color:var(--gp-focus-key);outline-offset:-5px;}
+/* PR #58: portão com 3 teclas (Ativar, Ver planos, Amostra): a 1ª ocupa a linha inteira e as outras dividem a de baixo. */
+[data-teclas="3"] > :first-child{grid-column:1 / -1;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
-   espelhada na borda da cena (scaleY(-1) em cima e embaixo, scaleX(-1) nas laterais), com desfoque sutil de superfície e um esmaecer
-   para o fundo da cena (#f8fafc) longe da junção. Nada é esticado. No topo o espelho morre em 3 px: o selo começa a 12 px de 640 e não pode
+   espelhada na borda da cena (scaleY(-1) em cima e embaixo), com desfoque sutil de superfície e um esmaecer para o fundo da cena (#f8fafc)
+   longe da junção. Laterais (PR #58): sem espelho (o scaleX(-1) duplicava meio multímetro, meio capacitor e texto ao contrário quando o quadro
+   é mais largo que alto). A faixa lateral estica só uma coluna da cena, 3 px de tela para dentro da borda (background-size 2000× na
+   horizontal; 3 px × 2000 = o deslocamento de 6000 px, igual em qualquer tamanho de cena), e a junção continua o tom da borda, sem degrau e o ::after funde esse tom no fundo de estúdio #f8fafc entre 5 e 24 px da junção. Nenhum objeto nem letra se repete. Nada é esticado. No topo o espelho morre em 3 px: o selo começa a 12 px de 640 e não pode
    aparecer refletido (o topo de todas as cenas é o mesmo fundo claro #f8fafc).
    Medido nas 102 cenas: base e topo não têm moldura; 78 traziam 2 a 3 px claros numa lateral (sobra do divisor), aparados na própria arte
    (processar-cenas-25d.py --aparar). Por isso a cena só tem máscara no topo (0,8–1,9 %; o selo começa a 12 px de 640): base e laterais vão
@@ -49,11 +53,14 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
    --dentro = quanto a faixa entra sob a cena (escondido pela cena opaca). --l = lado da cena. */
 [data-borda]{position:absolute;display:block;background-repeat:no-repeat;--l:min(100cqw,100cqh);--dentro:calc(var(--l)*.03 + 6px);background-size:var(--l) var(--l);filter:blur(var(--desfoque));--desfoque:1px;}
 [data-borda=t],[data-borda=b]{left:calc(50% - var(--l)/2);width:var(--l);transform:scaleY(-1);}
-[data-borda=e],[data-borda=d]{top:calc(50% - var(--l)/2);height:var(--l);transform:scaleX(-1);--desfoque:0px;}
+[data-borda=e],[data-borda=d]{top:calc(50% - var(--l)/2);height:var(--l);--desfoque:0px;background-size:calc(var(--l)*2000) var(--l);}
+[data-borda=e]::after,[data-borda=d]::after{content:'';position:absolute;inset:0;pointer-events:none;}
 [data-borda=t]{top:-20px;bottom:calc(50% + var(--l)/2 - var(--dentro));background-position:center top var(--dentro);-webkit-mask-image:linear-gradient(to bottom,black calc(var(--dentro) + 1px),transparent calc(var(--dentro) + 3px));mask-image:linear-gradient(to bottom,black calc(var(--dentro) + 1px),transparent calc(var(--dentro) + 3px));}
 [data-borda=b]{bottom:-20px;top:calc(50% + var(--l)/2 - var(--dentro));background-position:center bottom var(--dentro);-webkit-mask-image:linear-gradient(to top,black calc(var(--dentro) + 5px),rgba(0,0,0,.5) calc(var(--dentro) + 32px));mask-image:linear-gradient(to top,black calc(var(--dentro) + 5px),rgba(0,0,0,.5) calc(var(--dentro) + 32px));}
-[data-borda=e]{left:-20px;right:calc(50% + var(--l)/2 - var(--dentro));background-position:left var(--dentro) center;-webkit-mask-image:linear-gradient(to right,black calc(var(--dentro) + 5px),rgba(0,0,0,.4) calc(var(--dentro) + 40px));mask-image:linear-gradient(to right,black calc(var(--dentro) + 5px),rgba(0,0,0,.4) calc(var(--dentro) + 40px));}
-[data-borda=d]{right:-20px;left:calc(50% + var(--l)/2 - var(--dentro));background-position:right var(--dentro) center;-webkit-mask-image:linear-gradient(to left,black calc(var(--dentro) + 5px),rgba(0,0,0,.4) calc(var(--dentro) + 40px));mask-image:linear-gradient(to left,black calc(var(--dentro) + 5px),rgba(0,0,0,.4) calc(var(--dentro) + 40px));}
+[data-borda=e]{left:-20px;right:calc(50% + var(--l)/2 - var(--dentro));background-position:left -6000px center;}
+[data-borda=e]::after{background:linear-gradient(to left,rgba(248,250,252,0) calc(var(--dentro) + 5px),rgba(248,250,252,.7) calc(var(--dentro) + 13px),#f8fafc calc(var(--dentro) + 24px));}
+[data-borda=d]{right:-20px;left:calc(50% + var(--l)/2 - var(--dentro));background-position:right -6000px center;}
+[data-borda=d]::after{background:linear-gradient(to right,rgba(248,250,252,0) calc(var(--dentro) + 5px),rgba(248,250,252,.7) calc(var(--dentro) + 13px),#f8fafc calc(var(--dentro) + 24px));}
 /* Costura lateral: com sobra nas laterais, a junção cena/espelho cai em fração de pixel (ex.: 21,75 px em 375×667). [data-costura] funde só
    essa costura (±9 px, desfoque de 2,5 px do que está atrás); sem sobra lateral (--cx = 0), não existe. A base nunca é desfocada. */
 [data-costura]{position:absolute;inset:0;pointer-events:none;--l:min(100cqw,100cqh);--cx:clamp(0px,calc((100cqw - var(--l))*100),9px);--x0:calc(50% - var(--l)/2);--x1:calc(50% + var(--l)/2);-webkit-backdrop-filter:blur(2.5px);backdrop-filter:blur(2.5px);--mc:linear-gradient(to right,transparent calc(var(--x0) - var(--cx)),black calc(var(--x0) - var(--cx)*.6),black calc(var(--x0) + var(--cx)*.6),transparent calc(var(--x0) + var(--cx)),transparent calc(var(--x1) - var(--cx)),black calc(var(--x1) - var(--cx)*.6),black calc(var(--x1) + var(--cx)*.6),transparent calc(var(--x1) + var(--cx)));-webkit-mask-image:var(--mc);mask-image:var(--mc);}
@@ -89,10 +96,14 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 .tag-estado{background:var(--gp-tg-neutro-bg);color:var(--gp-tg-estado);border-color:var(--gp-tg-estado-borda);}
 .tag-perigo{background:#fbbf24;color:#1c1400;}
 .tag-perigo.vermelho{background:#dc2626;color:#ffffff;}
-.tag-ok,.tag-prazo.ok{background:var(--gp-tg-ok-bg);color:var(--gp-tg-ok);}
+.tag-ok{background:var(--gp-tg-ok-bg);color:var(--gp-tg-ok);}
+/* PR #58 (G-L10b): prazo vigente fica no ciano do prazo com o ✓; o verde é do dinheiro (.tag-valor) e do veredito (.tag-ok), que dividem o cartão do Cofre. */
+.tag-prazo.ok{background:var(--gp-tg-prazo-bg);color:var(--gp-tg-prazo);}
 .tag-alerta,.tag-prazo.alerta{background:var(--gp-tg-alerta-bg);color:var(--gp-tg-alerta);}
 .tag-falha,.tag-prazo.falha{background:var(--gp-tg-falha-bg);color:var(--gp-tg-falha);}
-.tag-sem-ref,.tag-prazo.encerrado{background:var(--gp-tg-semref-bg);color:var(--gp-tg-semref);}
+.tag-sem-ref{background:var(--gp-tg-semref-bg);color:var(--gp-tg-semref);}
+/* PR #58 (G-L10b): garantia vencida em vermelho (lei Zero-Leitura: prazo vencido = vermelho); no Claro e no Sol o cinza dela era igual ao da data de emissão ao lado. */
+.tag-prazo.encerrado{background:var(--gp-tg-falha-bg);color:var(--gp-tg-falha);}
 .tag-data{background:var(--gp-tg-neutro-bg);color:var(--gp-tg-data);font-weight:700;}
 .tag-prazo{background:var(--gp-tg-prazo-bg);color:var(--gp-tg-prazo);}
 .tag-doc{background:#e2e7ee;color:#19365c;font-weight:700;}
@@ -180,6 +191,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 <script src="marca-gelopro.js"></script>
 <script src="portao-gelopro.js"></script>
 <script src="pdf-gelopro.js"></script>
+<script src="licenca-gelopro.js"></script>
 </helmet>
 <dc-import name="TemaGeloPro" tema="{{ temaAttr }}" extra="{{ vars }}" hint-size="100%,100vh">
 <div data-mesa="" style="min-height:100vh;box-sizing:border-box;padding:24px 12px;display:flex;justify-content:center;align-items:flex-start;background:var(--gp-desk);font-family:'Roboto',sans-serif;">
@@ -258,6 +270,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </sc-if>
 
         <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:{{ aroR }};background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
+          <!-- PR #58 (Papel Técnico): Laudo, PMOC e Recibo avulso abrem o visor na superfície clara do TemaGeloPro quando o tema global é titânio
+               (data-tema aninhado: a paleta vem da regra que o próprio TemaGeloPro gera para [data-tema] [data-tema=claro|titanio|sol]). -->
+          <div data-tema="{{ temaVisor }}" style="display:contents;">
           <div data-vis="" style="position:relative;height:100%;box-sizing:border-box;padding:{{ visPad }};border-radius:{{ visR }};overflow:hidden;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);display:flex;flex-direction:column;gap:8px;">
 
             
@@ -296,7 +311,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </sc-if>
                   <sc-if value="{{ abaMedicoes }}" hint-placeholder-val="{{ false }}">
                   <div data-home-medicoes="" role="tabpanel" aria-label="Medições e Testes" style="flex:1 1 0;display:flex;flex-direction:column;gap:{{ gradeGap }};">
-                    <div data-gavetas-medicao="" style="flex:none;display:flex;flex-direction:column;gap:8px;padding:0 2px;">
+                    <div data-gavetas-medicao="" style="flex:none;display:flex;flex-direction:column;gap:{{ gradeGap }};padding:0 2px;">
                       <sc-for list="{{ gavetasMed }}" as="g" hint-placeholder-count="2">
                         <button type="button" data-atalho-medicao="{{ g.k }}" aria-label="{{ g.aria }}" onClick="{{ g.acao }}" style="flex:none;width:100%;height:50px;box-sizing:border-box;padding:0 8px 0 6px;border-radius:16px;border:var(--gp-tile-border);background:var(--gp-tile);box-shadow:var(--gp-tile-relief);display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-active="transform:translateY(2px);">
                           <span aria-hidden="true" style="flex:none;width:34px;height:34px;border-radius:50%;background:var(--gp-medalhao);display:flex;align-items:center;justify-content:center;color:var(--gp-on-tile-icon);"><dc-import name="IconeGP" nome="{{ g.ico }}" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
@@ -320,9 +335,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <div role="group" aria-label="Leituras" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 2px;margin:-2px 0;">
                     <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
                       <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:999px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
-                        <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 6px;border-radius:999px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow);display:flex;align-items:center;justify-content:center;gap:5px;animation:{{ r.anim }};">
+                        <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:999px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
                           <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
                           <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
+                          <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span data-poco-ref="{{ r.refK }}" style="flex:0 0 100%;min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--gp-on-reading-unit);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
                         </span>
                       </button>
                     </sc-for>
@@ -350,7 +366,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaEtapa }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;animation:gpIn 180ms ease-out;">
                   <sc-if value="{{ dicaVis }}" hint-placeholder-val="{{ false }}"><p style="flex:none;margin:0;padding:2px 4px 0;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ dica }}</p></sc-if>
-                  <sc-if value="{{ temCola }}" hint-placeholder-val="{{ false }}"><div data-cola-instrumento="{{ colaK }}" style="flex:none;box-sizing:border-box;padding:0 6px 0 10px;border-radius:10px;background:var(--gp-card-info);box-shadow:inset 3px 0 0 var(--gp-dock-ring);display:flex;flex-direction:column;justify-content:center;font:600 16px/19px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">
+                  <sc-if value="{{ temCola }}" hint-placeholder-val="{{ false }}"><div data-cola-instrumento="{{ colaK }}" style="flex:none;box-sizing:border-box;padding:0 8px 0 12px;border-radius:16px;background:var(--gp-card-info);box-shadow:inset 3px 0 0 var(--gp-dock-ring);display:flex;flex-direction:column;justify-content:center;font:600 16px/19px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">
                     <span><strong style="font-weight:700;">{{ colaRot }}</strong> {{ colaL1a }}<span class="{{ colaL1c }}" data-selo="" data-rotulo="">{{ colaL1b }}</span></span>
                     <span>{{ colaL2 }}</span>
                   </div></sc-if>
@@ -797,6 +813,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
             <div style="position:absolute;inset:0;pointer-events:none;background:var(--gp-visor-glare);"></div>
           </div>
+          </div>
         </div>
 
         <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
@@ -867,14 +884,14 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <sc-for list="{{ fichaFiltros }}" as="fc" hint-placeholder-count="5"><button type="button" aria-pressed="{{ fc.on }}" onClick="{{ fc.acao }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:0 14px;border-radius:999px;border:{{ fc.borda }};background:{{ fc.fundo }};color:{{ fc.cor }};font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ fc.l }}</button></sc-for>
               </div>
               <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fichasInfo }}</span>
-              <span data-selo-atualizacao="{{ seloMes }}" style="align-self:flex-start;max-width:100%;box-sizing:border-box;padding:4px 12px 4px 8px;border-radius:999px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:inline-flex;align-items:center;gap:6px;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
+              <span data-selo-atualizacao="{{ seloMes }}" class="tag tag-fonte tag-l" data-rotulo="" style="align-self:flex-start;padding:4px 12px 4px 8px;"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
               <div data-formato="C" style="display:flex;flex-direction:column;gap:8px;">
                 <sc-for list="{{ fichaSecoes }}" as="sc" hint-placeholder-count="4">
                   <div style="border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-card-action);box-shadow:var(--gp-mold-shadow);overflow:hidden;">
                     <button type="button" aria-expanded="{{ sc.exp }}" onClick="{{ sc.acao }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:0 8px 0 12px;border:0;background:transparent;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;color:var(--gp-on-surface);" style-active="background:var(--gp-state-pressed);">
                       <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="{{ sc.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
                       <span style="flex:1;min-width:0;font:700 16px/20px 'Roboto',sans-serif;">{{ sc.t }}</span>
-                      <span style="flex:none;min-width:28px;height:24px;box-sizing:border-box;padding:0 8px;border-radius:999px;background:var(--gp-medal);display:inline-flex;align-items:center;justify-content:center;font:700 14px/16px 'Roboto',sans-serif;color:var(--gp-on-tile-icon);">{{ sc.n }}</span>
+                      <span class="tag tag-medida" data-selo="" data-rotulo="" style="flex:none;min-width:32px;justify-content:center;">{{ sc.n }}</span>
                       <span aria-hidden="true" style="flex:none;display:inline-flex;transform:{{ sc.seta }};color:var(--gp-on-surface-variant);"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
                     </button>
                     <sc-for list="{{ sc.itens }}" as="f" hint-placeholder-count="0">
@@ -883,7 +900,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                         <span style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px;">
                           <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:normal;">{{ f.t }}</span>
                           <sc-if value="{{ f.temTags }}" hint-placeholder-val="{{ false }}"><span class="tags"><sc-for list="{{ f.tags }}" as="tg" hint-placeholder-count="1"><span class="{{ tg.c }}" data-selo="" data-rotulo="">{{ tg.t }}</span></sc-for></span></sc-if>
-                          <sc-if value="{{ f.nota }}" hint-placeholder-val="{{ false }}"><span data-nota="" style="font:500 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ f.nota }}</span></sc-if>
+                          <sc-if value="{{ f.nota }}" hint-placeholder-val="{{ false }}"><span data-nota="" class="tag tag-alerta tag-l" data-rotulo="">{{ f.nota }}</span></sc-if>
                         </span>
                         <span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-variant);"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
                       </button></sc-if>
@@ -920,7 +937,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
           <sc-if value="{{ dAvisos }}" hint-placeholder-val="{{ false }}">
             <div data-central-avisos="{{ avisoCatK }}" style="display:flex;flex-direction:column;gap:12px;">
-              <span data-selo-atualizacao="{{ seloMes }}" style="align-self:flex-start;max-width:100%;box-sizing:border-box;padding:4px 12px 4px 8px;border-radius:999px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:inline-flex;align-items:center;gap:6px;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
+              <span data-selo-atualizacao="{{ seloMes }}" class="tag tag-fonte tag-l" data-rotulo="" style="align-self:flex-start;padding:4px 12px 4px 8px;"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
               <div data-avisos-categorias="" role="group" aria-label="Categorias de avisos" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                 <sc-for list="{{ avisoCats }}" as="ac" hint-placeholder-count="4"><button type="button" data-aviso-categoria="{{ ac.k }}" aria-pressed="{{ ac.on }}" onClick="{{ ac.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:{{ ac.borda }};background:{{ ac.fundo }};color:{{ ac.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ ac.t }}</button></sc-for>
               </div>
@@ -947,6 +964,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
 
     <sc-if value="{{ fAberto }}" hint-placeholder-val="{{ false }}">
+    <!-- PR #58 (Papel Técnico): Fechamento/Orçamento (passos 1 a 4, catálogo, garantia e assinatura) na superfície clara quando o tema global é titânio. -->
+    <div data-tema="{{ temaPapel }}" style="display:contents;">
     <div ref="{{ fRef }}" role="dialog" aria-modal="true" aria-label="{{ fTitulo }}" style="position:absolute;inset:0;z-index:27;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));background:var(--gp-chassis);background-blend-mode:overlay,normal;display:flex;flex-direction:column;gap:12px;">
       <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:8px;padding:0 4px;">
         <button type="button" aria-label="Sair do fechamento" onClick="{{ fSair }}" style="width:48px;height:48px;flex:none;border:0;border-radius:var(--gp-r-tecla, 999px);display:flex;align-items:center;justify-content:center;color:var(--gp-on-sec-accent);background:var(--gp-sec-key);border:1px solid var(--gp-sec-edge);box-shadow:var(--gp-sec-raise);cursor:pointer;" style-active="transform:translateY(2px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
@@ -1021,7 +1040,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <div data-catalogo="" role="group" aria-label="Tabela de peças e serviços" style="display:flex;flex-direction:column;gap:8px;">
                   <div data-catalogo-abas="{{ fCatAba }}" role="group" aria-label="Categorias da tabela de peças e serviços" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><sc-for list="{{ fCatAbas }}" as="ca" hint-placeholder-count="5"><button type="button" data-catalogo-aba="{{ ca.k }}" aria-pressed="{{ ca.on }}" onClick="{{ ca.acao }}" style="grid-column:{{ ca.col }};min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:var(--gp-r-chip, 999px);border:{{ ca.borda }};background:{{ ca.fundo }};color:{{ ca.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ ca.t }}</button></sc-for></div>
                   <span data-porte="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fCatPorte }}</span>
-                  <span data-selo-atualizacao="{{ seloMes }}" style="align-self:flex-start;max-width:100%;box-sizing:border-box;padding:4px 12px 4px 8px;border-radius:999px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:inline-flex;align-items:center;gap:6px;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
+                  <span data-selo-atualizacao="{{ seloMes }}" class="tag tag-fonte tag-l" data-rotulo="" style="align-self:flex-start;padding:4px 12px 4px 8px;"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-surface-accent);"><dc-import name="IconeGP" nome="calendario" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span><span style="min-width:0;">{{ seloBase }}</span></span>
                   <sc-if value="{{ fCatAbaVazia }}" hint-placeholder-val="{{ false }}"><span data-catalogo-vazio="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ fCatAbaVaziaTxt }}</span></sc-if>
                   <sc-for list="{{ fCat }}" as="c" hint-placeholder-count="3">
                     <div data-cat-item="{{ c.id }}" style="box-sizing:border-box;border-radius:16px;border:{{ c.borda }};background:var(--gp-card-action);display:flex;flex-direction:column;overflow:hidden;">
@@ -1203,6 +1222,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </sc-for>
       </div>
     </div>
+    </div>
     </sc-if>
     <sc-if value="{{ portao }}" hint-placeholder-val="{{ false }}">
     <div ref="{{ pRef }}" tabindex="-1" role="dialog" aria-modal="true" aria-label="{{ pTitulo }}" style="position:absolute;inset:0;z-index:28;outline:none;box-sizing:border-box;padding:calc(env(safe-area-inset-top) + 30px) 12px calc(16px + env(safe-area-inset-bottom));background:var(--gp-chassis);background-blend-mode:overlay,normal;display:flex;flex-direction:column;gap:12px;">
@@ -1213,6 +1233,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
       <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:24px;background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
         <div data-vis="" style="height:100%;box-sizing:border-box;padding:16px;border-radius:21px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
           <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ pTexto }}</span>
+          <sc-if value="{{ pCompra }}" hint-placeholder-val="{{ false }}"><div data-licenca-compra="" style="flex:none;"><dc-import name="CampoTexto" rotulo="CPF ou WhatsApp da compra" valor="{{ licId }}" aoDigitar="{{ setLicId }}" placeholder="Somente números ou o e-mail" estado="{{ licIdE }}" erroMsg="informe o CPF ou o WhatsApp" ajuda="WhatsApp com DDD. Sem senha." modo="text" style="display:block;" hint-size="100%,96px"></dc-import></div></sc-if>
           <sc-if value="{{ pForm }}" hint-placeholder-val="{{ false }}">
             <sc-for list="{{ campos }}" as="f" hint-placeholder-count="4">
               <dc-import name="CampoTexto" rotulo="{{ f.r }}" valor="{{ f.v }}" aoDigitar="{{ f.set }}" placeholder="{{ f.ph }}" estado="{{ f.e }}" erroMsg="{{ f.err }}" ajuda="{{ f.aj }}" modo="{{ f.modo }}" style="display:block;flex:none;" hint-size="100%,96px"></dc-import>
@@ -1223,10 +1244,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <dc-import name="CampoTexto" rotulo="{{ f.r }}" valor="{{ f.v }}" estado="somente-leitura" ajudaRO="" style="display:block;flex:none;" hint-size="100%,96px"></dc-import>
             </sc-for>
           </sc-if>
-          <sc-if value="{{ pAviso }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ pAvisoTipo }}" titulo="{{ pAvisoT }}" texto="{{ pAvisoX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
+          <sc-if value="{{ pAviso }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ pAvisoTipo }}" titulo="{{ pAvisoT }}" texto="{{ pAvisoX }}" fixo="{{ pAvisoFixo }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
         </div>
       </div>
-      <div style="flex:none;display:grid;grid-template-columns:{{ pCols }};gap:8px;">
+      <div data-teclas="{{ pN }}" style="flex:none;display:grid;grid-template-columns:{{ pCols }};gap:8px;">
         <sc-for list="{{ pKeys }}" as="k" hint-placeholder-count="1">
           <dc-import name="TeclaResposta" rotulo="{{ k.l }}" primaria="{{ k.pri }}" estado="{{ k.e }}" aria="{{ k.aria }}" acao="{{ k.acao }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
         </sc-for>
@@ -1438,8 +1459,8 @@ const invVisual = (e) => {
   const comp = uni ? [] : [...e.referencia.matchAll(/([A-Z][A-Z0-9]{6,})\s+([\d,]+)\s*Ω/g)].map(m => ({ m: m[1], o: m[2] + ' Ω' }));
   const pag = (e.referencia.match(/pág\.\s*(\d+)/) || [])[1];
   return { pre, temPre: pre.length > 0, pontas: pontas.map(([v, p]) => ({ v, p })), temPontas: pontas.length > 0, inverter: /pontas invertidas/i.test(t),
-    temAlvo: !!a.alvo, alvo: a.alvo || '', temCond: !!a.cond, cond: TG('medida', a.cond || ''), vereditos: [a.ok && TG('ok', a.ok), a.falha && TG('falha', a.falha)].filter(Boolean),
-    medidas: (a.medidas || []).map(x => TG('medida', x)), temMeta: !!(a.alvo || a.ok || a.medidas || comp.length), comp, temComp: comp.length > 0,
+    temAlvo: !!a.alvo, alvo: a.alvo || '', temCond: !!a.cond, cond: TG('alerta', a.cond || ''), vereditos: [a.ok && TG('ok', a.ok), a.falha && TG('falha', a.falha)].filter(Boolean),
+    medidas: (a.medidas || []).map(x => TG('modo', x)), temMeta: !!(a.alvo || a.ok || a.medidas || comp.length), comp, temComp: comp.length > 0,
     fonteTag: TG('fonte', uni ? 'Base GeloPro' : `${e.fonte_id}${pag ? ' · pág. ' + pag : ''}`), ...faixaFoto(id) };
 };
 const RC_OPS = ['Dinheiro', 'Cartão', 'Transferência', 'Pix'];
@@ -1807,6 +1828,16 @@ const TG = (k, t, x) => ({ ...(x || {}), c: `tag tag-${k}${x && x.cls ? ' ' + x.
 // que deixe ao menos 2 palavras na peça: "Capacitor de partida" | "do compressor ou ventilador com capacitância baixa (µF)".
 const LIGA = /\s(?:do|da|dos|das|por|com|na|no|nas|nos|sem|fora|abrindo|elevando|vibrando|encostando|obstruída|bloqueando|descalibrado|danificado|aberto)\s|,\s|\s\(/g;
 const pecaDe = (t) => { for (const m of String(t).matchAll(LIGA)) { const p = t.slice(0, m.index).trim(); if (p.split(/\s+/).length >= 2) return [p, t.slice(m.index).replace(/^,\s*/, '').trim()]; } return [String(t), '']; };
+// Referência viva dos 3 poços da Home (PR #58), enquanto não há medição na sessão. Valores aprovados pelo Pedro no pedido do PR #58
+// (30/10/2026) como referência de campo: faixa de sucção por fluido, nominais NTC a 25 °C por marca e alvo de superaquecimento. vs = variantes,
+// da mais completa para a mais curta (a 1ª que cabe na largura do poço; o texto completo vai sempre no aria-label).
+const POCO_PSI = { R410A: '118–135', R32: '120–140', R22: '60–75' };
+const POCO_NTC = { LG: '5K/10K/200K', TCL: '10K/5K', Agratto: '15K/20K/50K', Samsung: '10K/49,1K', Daikin: '10K/20K', Midea: '10K/54,9K', Springer: '10K/54,9K', Carrier: '10K/54,9K', Gree: '15K/20K/50K' };
+const POCO_REF = {
+  PSI: (sel) => { const f = POCO_PSI[sel.fluido] || POCO_PSI.R410A; return { k: 'psi', vs: [`${f} psi`, f], aria: `Referência de campo de sucção ${sel.fluido}: ${f} psi` }; },
+  'kΩ': (sel) => { const n = POCO_NTC[sel.marca] || '5K–50K'; return { k: 'ntc', vs: [n, n.replace(/K\//g, '/')], aria: `Nominais NTC de referência ${sel.marca}: ${n}` }; },
+  '°C': (sel) => { const el = sel.marca === 'Elgin' && sel.fluido === 'R410A', t = el ? 'Alvo 7–11 °C' : 'SH 7–11 °C'; return { k: 'sh', vs: el ? [t, 'Alvo 7–11', '7–11 °C'] : [t, 'SH 7–11'], aria: `Referência de campo de superaquecimento: ${t.replace('SH', 'superaquecimento')}` }; },
+};
 const COLA_ETAPA = { t_ng04: 'capacitor', t_gp04: 'capacitor', t_ng03: 'tensao', t_gp03: 'tensao', t_de03: 'tensao', t_nl01: 'tensao' };
 // Carga adicional pela linha excedente (PR #24): gramas por metro no porte 1 e do porte 2 em diante; o técnico confere na balança.
 const TUBO_G_M = { 1: 15, 2: 25 };
@@ -1843,7 +1874,7 @@ const RESET = { tela: 'inicio', sint: null, etapa: 0, hist: [], resp: {}, res: n
 const ATEND0 = (fat) => ({ ...RESET, dica: false, fech: null, fechGuardado: null, selOrc: null, fOpen: false, printDoc: null, printDados: null, pdfPronto: null, btu: { area: '', pes: '1', w: '', sol: 'Sombra/manhã', f1: '600', f2: '800', f3: '600', ...(fat ? { f1: fat.f1, f2: fat.f2, f3: fat.f3 } : {}) }, laudo: { cli: '', cons: '', conc: '', tentou: false }, inv: {}, pmoc: PM0(), reca: { cli: '', val: '', ref: '', forma: '', tentou: false }, scMsg: null, cofreSel: null, alertaOff: {}, avisosLidos: {}, avisosNovos: [], avisoCat: 'todos', cofreFiltro: 'todos', cod: '', codExp: null, ptP: '', ptT: '', ntcS: null, ntcNom: null, ntcT: '', ntcR: '', drawer: null, busca: '', fichaSel: null, oemPlat: null, sel: { marca: 'LG', btu: '12.000', fluido: 'R410A' } });
 
 class Component extends DCLogic {
-  state = { ...ATEND0(), fech: lerRascunho(), lic: lerObj(K_LIC), tit: lerObj(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null, abaHome: 'sintomas', marcaLivre: '', cofreMsg: null };
+  state = { ...ATEND0(), fech: lerRascunho(), lic: lerObj(K_LIC), tit: lerObj(K_TIT), titSim: null, cad: { nome: '', doc: '', pix: '', cidade: '', passo: 'form', tentou: false }, pMsg: null, base: null, baseErro: null, tema: null, pk: null, cenas: {}, pecasFalta: null, amostra: false, licAm: null, licId: '', licMsg: null, licBusy: false, licBloq: false, licExp: false, abaHome: 'sintomas', marcaLivre: '', cofreMsg: null };
 
   componentDidMount() {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
@@ -1857,6 +1888,7 @@ class Component extends DCLogic {
     this.precarregarPecas();
     this.listaCenas();
     this.ativarPelaUrl();
+    this.iniciarLicenca();
     let n = 0; this._fp = setInterval(() => { n++; const el = this.pRef.current; if (el && el.querySelector('input,button')) { this.focarPortao(); clearInterval(this._fp); } else if (n > 40 || (!el && n > 10)) clearInterval(this._fp); }, 150);
   }
   entrarAmostra() { this.setState({ amostra: true, fech: null, fechGuardado: null, licAm: { plano: 'LIFETIME_6', ativadoEm: Date.now(), bumps: [] }, pMsg: null }); }
@@ -1870,15 +1902,48 @@ class Component extends DCLogic {
     if (plano) this.ativar(plano, (q.get('bumps') || '').split(',').filter(Boolean));
     try { window.history.replaceState({}, document.title, window.location.pathname + window.location.hash); } catch (e) {}
   }
-  ativar(plano, bumps) {
+  ativar(plano, bumps, desde) {
     const atual = this.state.lic;
-    const lic = { plano, ativadoEm: atual && atual.plano === 'BASE_90' && plano === 'BASE_90' ? atual.ativadoEm : Date.now(), bumps: [...new Set([...(atual && atual.bumps) || [], ...(bumps || [])])] };
+    const lic = { plano, ativadoEm: atual && atual.plano === 'BASE_90' && plano === 'BASE_90' ? atual.ativadoEm : desde || Date.now(), bumps: [...new Set([...(atual && atual.bumps) || [], ...(bumps || [])])] };
     gravar(K_LIC, lic); this.setState({ lic });
   }
+  // Licença por compra (PR #58, licenca-gelopro.js). Crachá do servidor vale offline por tempo indeterminado; com sinal, checagem silenciosa
+  // na abertura e a cada volta da conexão. Sem crachá do servidor (link ?ativar= ou Amostra), nada é chamado: zero requisição na abertura.
+  iniciarLicenca() {
+    const L = window.GeloProLicenca;
+    if (!L) { this._licPronta = () => this.iniciarLicenca(); window.addEventListener('gelopro:licenca-pronta', this._licPronta, { once: true }); return; }
+    this._online = () => this.checarLicenca(); window.addEventListener('online', this._online);
+    const c = L.cracha();
+    if (c) this.aplicarCracha(c);
+    L.restaurar().then(r => { if (r) this.aplicarCracha(r); this.checarLicenca(); });
+  }
+  checarLicenca() { const L = window.GeloProLicenca; if (L) L.checar().then(r => { if (r && r.cracha) this.aplicarCracha(r.cracha); }); }
+  // Crachá → licença e titular do app. Bloqueado (reembolso/cancelamento) apaga a licença deste aparelho e volta à tela bloqueada.
+  aplicarCracha(c) {
+    if (!c || c.fonte !== 'servidor') return;
+    if (c.bloqueado) { try { localStorage.removeItem(K_LIC); } catch (e) {} return this.setState({ lic: null, licBloq: true, licMsg: null }); }
+    this.ativar(c.plano, c.bumps || [], c.ativadoEm);
+    this.setState({ licBloq: false, licExp: !!c.expirado });
+    // 2º aparelho: titular vem do comprador, preenchido e travado (PDF e QR Pix no nome e na conta dele).
+    const t = c.titular, d = t ? dig(t.doc) : '', pT = t ? pixTipo(t.pix) : null;
+    if (t && t.nome && pT && pT[0] !== 'inválida' && !this.state.tit) this.confirmarTitular({ nome: limparTxt(t.nome).trim(), doc: d, docFmt: fmtDoc(d), docTipo: d.length === 14 ? 'CNPJ' : 'CPF', pix: pT[1], pixTipo: pT[0], cidade: limparTxt(t.cidade || '').trim(), travadoEm: Date.now(), daCompra: true }, true);
+  }
+  async ativarCompra() {
+    const L = window.GeloProLicenca, id = limparTxt(this.state.licId).trim();
+    if (!id) return this.setState({ licMsg: 'DADOS_INCOMPLETOS' });
+    if (!L || this.state.licBusy) return;
+    this.setState({ licBusy: true, licMsg: null });
+    const r = await L.ativar(id);
+    if (r.tipo === 'ok') { this.setState({ licBusy: false, licId: '' }); return this.aplicarCracha(r.cracha); }
+    this.setState({ licBusy: false, licMsg: r.tipo === 'erro' ? r.codigo : r.tipo === 'sem-servidor' ? 'SEM_SERVIDOR' : 'FALHA_SERVIDOR' });
+  }
   abrirUrl(u, msg) { if (u) window.open(u, '_blank', 'noopener'); else this.setState({ pMsg: msg }); }
-  confirmarTitular(t) {
+  confirmarTitular(t, daCompra) {
     if ((this.props.simular || 'real') === 'cadastro') return this.setState({ titSim: t });
     gravar(K_TIT, t); this.setState({ tit: t });
+    // 1º aparelho com licença do servidor: o titular sobe junto da compra (sem sinal, fica pendente e sobe na próxima checagem).
+    const L = window.GeloProLicenca, c = L && L.cracha();
+    if (!daCompra && c && c.fonte === 'servidor' && c.exigeCadastroTitular) L.enviarTitular({ nome: t.nome, doc: t.doc, cidade: t.cidade, pix: t.pix });
   }
   async carregar() {
     const get = (f) => fetch(BASE + f).then(r => { if (!r.ok) throw new Error(f); return r.text(); }).then(csv);
@@ -2047,7 +2112,7 @@ class Component extends DCLogic {
     this.precarregarModulo(tela);
     this.setState(st => ({ ...(extra && extra.sel && !st.selOrc && rascunhoComDono(st.fech) ? { selOrc: st.sel } : {}), prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, foco: null, ...extra }));
   }
-  componentWillUnmount() { window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('beforeprint', this._antesImpressao); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._focoT); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
+  componentWillUnmount() { window.removeEventListener('online', this._online); window.removeEventListener('gelopro:licenca-pronta', this._licPronta); window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('beforeprint', this._antesImpressao); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._focoT); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
   pRef = React.createRef();
   focarPortao() {
     const fe = this.fRef.current;
@@ -2143,7 +2208,8 @@ class Component extends DCLogic {
     const par = (n) => { const e = st.cenas[n + '_erro'], c = st.cenas[n + '_certo']; return { temPar: !!(e && c), parErro: e && c ? `url('${e}')` : 'none', parCerto: e && c ? `url('${c}')` : 'none' }; };
     const plano = lic ? lic.plano : null;
     const fim90 = lic && plano === 'BASE_90' ? lic.ativadoEm + 90 * DIA : null;
-    const vencido = fim90 !== null && Date.now() > fim90;
+    // PR #58: o servidor também pode dizer que os 90 dias acabaram (PLANO_EXPIRADO_90D na checagem com sinal).
+    const vencido = (fim90 !== null && Date.now() > fim90) || (!!st.licExp && !st.amostra && sim === 'real' && plano === 'BASE_90');
     const lock = plano === 'BASE_90';
     const cad = st.cad, setCad = (k) => (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ cad: { ...x.cad, [k]: v } })); };
     const dDoc = dig(cad.doc), pT = pixTipo(cad.pix);
@@ -2155,15 +2221,35 @@ class Component extends DCLogic {
     };
     const okCad = !erros.nome && !erros.doc && !erros.pix && !erros.cidade;
     const novoTit = okCad ? { nome: cad.nome.trim(), doc: dDoc, docFmt: fmtDoc(dDoc), docTipo: dDoc.length === 14 ? 'CNPJ' : 'CPF', pix: pT[1], pixTipo: pT[0], cidade: cad.cidade.trim(), travadoEm: Date.now() } : null;
-    const gk = st.pecasFalta ? 'pecas' : !lic ? 'sem' : vencido ? 'vencido' : !tit ? (cad.passo === 'conf' && okCad ? 'conf' : 'form') : null;
+    const gk = st.pecasFalta ? 'pecas' : !lic ? (st.licBloq ? 'bloq' : 'sem') : vencido ? 'vencido' : !tit ? (cad.passo === 'conf' && okCad ? 'conf' : 'form') : null;
+    // Mensagens da ativação por código (PR #58): texto curto, profissional e com a próxima ação. Nunca a palavra proibida pelo JARGAO_TELA.
+    const LIC_AV = {
+      DADOS_INCOMPLETOS: ['aviso', 'Falta o CPF ou WhatsApp', 'Digite o CPF ou o WhatsApp com DDD usado na compra.'],
+      NAO_ENCONTRADA: ['aviso', 'Compra não localizada', 'Confira os dígitos do CPF ou do WhatsApp com DDD e toque em Ativar de novo. Compra recém-feita pode levar alguns segundos para aparecer.'],
+      LIMITE_APARELHOS: ['erro', 'Limite de 2 aparelhos atingido', 'Esta compra já está ativa em 2 aparelhos. Para trocar de celular, fale com o suporte pelo WhatsApp da compra e peça para liberar o aparelho antigo.'],
+      PLANO_EXPIRADO_90D: ['aviso', 'Seus 90 dias terminaram', 'Toque em Vitalício para fazer o upgrade. Os documentos já gerados continuam disponíveis.'],
+      LICENCA_BLOQUEADA: ['erro', 'Licença desativada', 'A compra foi reembolsada ou cancelada. Para voltar a usar, faça uma nova compra em Ver planos.'],
+      SEM_SERVIDOR: ['info', 'Ativação pela conexão indisponível agora', 'Abra o link de ativação que chegou depois da compra, neste mesmo aparelho, ou toque em Amostra para conhecer o app.'],
+      FALHA_SERVIDOR: ['aviso', 'Servidor de licenças sem resposta', 'Tente de novo em alguns minutos. Nada foi perdido neste aparelho.'],
+    };
+    const licAv = st.licMsg ? LIC_AV[st.licMsg] || null : null;
+    const compraKeys = [
+      { l: st.licBusy ? 'Ativando…' : 'Ativar', pri: true, aria: 'Ativar a licença com o CPF ou WhatsApp da compra', acao: () => this.ativarCompra() },
+      st.licMsg === 'PLANO_EXPIRADO_90D' ? { l: 'Vitalício', pri: false, aria: 'Passar para o plano vitalício', acao: () => this.abrirUrl(CFG.upgrade, 'O endereço do upgrade ainda não foi definido.') }
+        : { l: 'Ver planos', pri: false, acao: () => this.abrirUrl(CFG.vendas, 'O endereço da página de vendas ainda não foi definido.') },
+      { l: 'Amostra', pri: false, aria: 'Abrir o app em modo Amostra, sem gravar licença', acao: () => this.entrarAmostra() },
+    ];
     const PORT = {
       pecas: { k: 'Carregamento', t: 'Parte do app não carregou', x: `Faltam: ${(st.pecasFalta || []).join(', ')}. Sem elas, seletores, garantia ou documentos ficariam vazios.`,
         keys: [{ l: 'Tentar de novo', pri: true, aria: 'Buscar de novo as partes que faltam', acao: () => { this.setState({ pecasFalta: null }); this.precarregarPecas(); } }],
         av: ['aviso', 'Confira a conexão', 'Tentar de novo busca só o que falta, sem recarregar a página. O atendimento em andamento continua.'] },
-      sem: { k: 'Licença', t: 'Licença não encontrada neste aparelho', x: 'Abra o link de ativação que chegou depois da compra, neste mesmo aparelho.',
-        keys: [{ l: 'Ver planos', pri: true, acao: () => this.abrirUrl(CFG.vendas, 'O endereço da página de vendas ainda não foi definido.') }, { l: 'Amostra', pri: false, aria: 'Abrir o app em modo Amostra, sem gravar licença', acao: () => this.entrarAmostra() }],
-        av: st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.vendas.' : ''] : !TESTE ? null : ['info', 'Protótipo', 'Amostra abre o app só nesta sessão: não grava licença nem titular, e os documentos de teste ficam num Cofre separado, com número AMOSTRA-. Os links reais entram quando os endereços de compra estiverem definidos.'] },
-      vencido: { k: 'Plano de 90 dias', t: fim90 ? `Seus 90 dias terminaram em ${dataBR(fim90)}` : '', x: 'Os documentos já gerados continuam disponíveis para leitura e exportação.',
+      // PR #58: primeiro acesso pelo CPF ou WhatsApp da compra (sem senha). O link ?ativar= e a Amostra seguem como ponte.
+      sem: { k: 'Licença', t: 'Licença não encontrada neste aparelho', x: 'Digite o CPF ou o WhatsApp com DDD usado na compra e toque em Ativar. Sem senha.',
+        keys: compraKeys,
+        av: licAv ? licAv : st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.vendas.' : ''] : !TESTE ? null : ['info', 'Protótipo', 'Amostra abre o app só nesta sessão: não grava licença nem titular, e os documentos de teste ficam num Cofre separado, com número AMOSTRA-. Os links reais entram quando os endereços de compra estiverem definidos.'] },
+      bloq: { k: 'Licença', t: 'Licença desativada neste aparelho', x: 'A compra foi reembolsada ou cancelada. Para voltar a usar, faça uma nova compra em Ver planos ou ative outra compra com o CPF ou WhatsApp dela.',
+        keys: compraKeys, av: licAv || ['erro', 'Acesso bloqueado pela loja', 'O bloqueio vale a partir desta conexão. Nenhum dado do aparelho foi apagado.'] },
+      vencido: { k: 'Plano de 90 dias', t: fim90 && Date.now() > fim90 ? `Seus 90 dias terminaram em ${dataBR(fim90)}` : 'Seus 90 dias terminaram', x: 'Os documentos já gerados continuam disponíveis para leitura e exportação.',
         keys: [{ l: 'Vitalício', pri: true, aria: 'Passar para o plano vitalício', acao: () => this.abrirUrl(CFG.upgrade, 'O endereço do upgrade ainda não foi definido.') }],
         av: st.pMsg ? ['aviso', st.pMsg, TESTE ? 'Defina o endereço em CFG.upgrade.' : ''] : ['info', 'O upgrade libera os seis bônus', 'Inclusive o Cofre, com os documentos já emitidos neste aparelho.'] },
       form: { k: 'Primeiro acesso, passo 1 de 2', t: 'Quem emite os documentos', x: 'Preencha uma vez. Estes dados saem no topo e no rodapé de todo orçamento, garantia e recibo.',
@@ -2670,7 +2756,7 @@ class Component extends DCLogic {
       SINTOMAS.filter(x => x.id !== 'codigo' && x.id !== 'led').forEach(x => {
         const pc = B.perc[x.id]; if (!pc) return;
         const et = Object.values(pc.etapas), nr = et.filter(e => !e.tec).length, nt = et.filter(e => e.tec).length;
-        catF.push({ cat: 'sint', tipo: 'Sintoma', ico: x.i, t: x.nome, sub: 'Percurso guiado, do mais barato ao mais caro', chave: `${nr} rápidas + ${nt} técnicas`, tags: [TG('estado', `${nr} RÁPIDAS`), TG('estado', `${nt} TÉCNICAS`)], abrir: () => iniciar(x.id) });
+        catF.push({ cat: 'sint', tipo: 'Sintoma', ico: x.i, t: x.nome, sub: 'Percurso guiado, do mais barato ao mais caro', chave: `${nr} rápidas + ${nt} técnicas`, tags: [TG('medida', `${nr} RÁPIDAS`), TG('modo', `${nt} TÉCNICAS`)], abrir: () => iniciar(x.id) });
       });
       // Etapa técnica (PR #27, achado 2 do Raio-X): "Não gela" e "Gela pouco" repetem as mesmas 4 checagens (t_ng01–04 = t_gp01–04). A ficha sai
       // 1 vez só, pela pergunta + como verificar; cada sintoma vira um botão de entrada dentro dela. Instrumento em .tag-modo e faixa em .tag-medida.
@@ -2683,8 +2769,8 @@ class Component extends DCLogic {
         fichaEt.set(k, f); catF.push(f);
       }); });
       const porMarca = (rows) => { const g = new Map(); rows.forEach(r => { const b = brand(r.marca); if (b) g.set(r.marca, [...(g.get(r.marca) || []), r]); }); return [...g.entries()]; };
-      porMarca(B.cod).forEach(([m, rs]) => { const b = brand(m); catF.push({ cat: 'cod', logo: b, tipo: 'Código', ico: 'codigo', t: `Códigos de erro ${m.replace(/\//g, ' / ')}`, sub: comMarca(b, 'Tabela oficial por marca'), chave: `${rs.length} códigos`, tags: [TG('estado', `${rs.length} CÓDIGOS`)], abrir: () => this.abrir('codigo', { sint: 'codigo', cod: '', sel: { ...st.sel, marca: b } }) }); });
-      porMarca(B.pisc || []).forEach(([m, rs]) => { const b = brand(m); catF.push({ cat: 'cod', logo: b, tipo: 'LED', ico: 'led', t: `Piscadas de LED ${m.replace(/\//g, ' / ')}`, sub: comMarca(b, 'Tabela de piscadas'), chave: `${rs.length} padrões`, tags: [TG('estado', `${rs.length} PADRÕES`)], abrir: () => this.abrir('codigo', { sint: 'led', cod: '', sel: { ...st.sel, marca: b } }) }); });
+      porMarca(B.cod).forEach(([m, rs]) => { const b = brand(m); catF.push({ cat: 'cod', logo: b, tipo: 'Código', ico: 'codigo', t: `Códigos de erro ${m.replace(/\//g, ' / ')}`, sub: comMarca(b, 'Tabela oficial por marca'), chave: `${rs.length} códigos`, tags: [TG('medida', `${rs.length} CÓDIGOS`)], abrir: () => this.abrir('codigo', { sint: 'codigo', cod: '', sel: { ...st.sel, marca: b } }) }); });
+      porMarca(B.pisc || []).forEach(([m, rs]) => { const b = brand(m); catF.push({ cat: 'cod', logo: b, tipo: 'LED', ico: 'led', t: `Piscadas de LED ${m.replace(/\//g, ' / ')}`, sub: comMarca(b, 'Tabela de piscadas'), chave: `${rs.length} padrões`, tags: [TG('medida', `${rs.length} PADRÕES`)], abrir: () => this.abrir('codigo', { sint: 'led', cod: '', sel: { ...st.sel, marca: b } }) }); });
       OPTS.fluido.list.forEach(f => {
         const col = f.toLowerCase() + '_psig', r = B.pt.map(x => [num(x.temp_c), num(x[col])]).filter(x => x[0] !== null && x[1] !== null).sort((a, b) => Math.abs(a[0] - 4.44) - Math.abs(b[0] - 4.44))[0];
         catF.push({ cat: 'gas', tipo: 'Tabela PT', ico: 'pt-sh', t: `Saturação e superaquecimento ${f}`, sub: f !== st.sel.fluido ? `PT/SH · abre com o fluido ${f}` : 'PT/SH com a tabela de vapor', chave: r ? `${f}: ${f1(r[0])} °C = ${Math.round(r[1])} psig` : '', tags: [TG('modo', 'MANÔMETRO'), TG('fluido', f), ...(r ? [TG('medida', `${f1(r[0])} °C = ${Math.round(r[1])} psig`)] : [])], abrir: lock ? upg('ptsh') : () => this.abrir('ptsh', { modK: 'ptsh', sel: { ...st.sel, fluido: f } }) });
@@ -2694,10 +2780,11 @@ class Component extends DCLogic {
         catF.push({ cat: 'gas', logo: b, tipo: 'Sensor NTC', ico: 'sensor-ntc', t: `Curva NTC ${r.marca.split(/[\/;]/)[0]} ${String(r.r25_kohm).replace('.', ',')}K`, sub: comMarca(b, r.sensor), chave: `25 °C = ${String(r.r25_kohm).replace('.', ',')} kΩ${tol ? ` · ±${tol.r25_tol_pct} %` : ''}`, tags: [TG('modo', 'MULTÍMETRO'), TG('medida', `25 °C = ${String(r.r25_kohm).replace('.', ',')} kΩ`), ...(tol ? [TG('sem-ref', `±${tol.r25_tol_pct} %`)] : [])], abrir: lock ? upg('ntc') : () => this.abrir('ntc', { modK: 'ntc', ntcS: r.sensor, sel: { ...st.sel, marca: b } }) });
       });
       [...new Map((B.inv || []).map(r => [r.familia, r])).values()].forEach(r => { const b = brand(r.marca_escopo), n = B.inv.filter(x => x.familia === r.familia).length, fam = r.familia.split('_').map(w => w.replace(/^\w/, c => c.toUpperCase())).join(' ').replace('3d', '3D');
-        catF.push({ cat: 'inv', logo: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel.marca : b, tipo: 'Inverter', ico: 'placa-ipm', t: `Checklist Inverter ${fam}`, sub: r.marca_escopo.split('/').includes(st.sel.marca) ? 'Placa e IPM, com cena de cada teste' : `Placa e IPM · abre com a marca ${b}`, chave: r.familia === 'universal' ? `${n} testes · ${r.marca_escopo.split('/').length} marcas sem família própria` : `${n} testes · ${r.marca_escopo.replace(/\//g, ', ')}`, abrir: lock ? upg('inv') : () => this.abrir('inv', { modK: 'inv', sel: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel : { ...st.sel, marca: b } }) });
+        catF.push({ cat: 'inv', logo: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel.marca : b, tipo: 'Inverter', ico: 'placa-ipm', t: `Checklist Inverter ${fam}`, sub: r.marca_escopo.split('/').includes(st.sel.marca) ? 'Placa e IPM, com cena de cada teste' : `Placa e IPM · abre com a marca ${b}`, chave: r.familia === 'universal' ? `${n} testes · ${r.marca_escopo.split('/').length} marcas sem família própria` : `${n} testes · ${r.marca_escopo.replace(/\//g, ', ')}`,
+          tags: [TG('modo', 'MULTÍMETRO'), TG('medida', `${n} TESTES`), r.familia === 'universal' ? TG('estado', `${r.marca_escopo.split('/').length} MARCAS`) : TG('marca', b || r.marca_escopo.split('/')[0])], abrir: lock ? upg('inv') : () => this.abrir('inv', { modK: 'inv', sel: r.marca_escopo.split('/').includes(st.sel.marca) ? st.sel : { ...st.sel, marca: b } }) });
       });
       if ((B.pmoc || []).length) { const temP = (lic && Array.isArray(lic.bumps) ? lic.bumps : []).includes('pmoc'), ng = new Set(B.pmoc.map(r => r.grupo)).size;
-        catF.push({ cat: 'inv', tipo: 'PMOC', ico: 'calendario', t: 'Checklist PMOC simplificado', sub: temP ? 'Modelo editável com PDF' : 'Adicional de Docs · veja em Docs', chave: `${B.pmoc.length} atividades em ${ng} grupos`, abrir: () => temP ? this.abrir('pmoc', { modK: 'docs' }) : this.abrir('docs', { modK: 'docs' }) });
+        catF.push({ cat: 'inv', tipo: 'PMOC', ico: 'calendario', t: 'Checklist PMOC simplificado', sub: temP ? 'Modelo editável com PDF' : 'Adicional de Docs · veja em Docs', chave: `${B.pmoc.length} atividades em ${ng} grupos`, tags: [TG('medida', `${B.pmoc.length} ATIVIDADES`), TG('estado', `${ng} GRUPOS`)], abrir: () => temP ? this.abrir('pmoc', { modK: 'docs' }) : this.abrir('docs', { modK: 'docs' }) });
       }
     }
     // Ficha que troca a marca ou o fluido do atendimento avisa antes, na própria linha.
@@ -2744,7 +2831,10 @@ class Component extends DCLogic {
     // Home 3C (PR #28, revista no PR #30): a chave Sintomas | Medições e Testes ocupa o lugar do título do visor (que segue para leitor de tela).
     // Abaixo dela, uma área só (placas ou medições, poços de Leituras e faixas de diagnóstico) que rola em tela baixa: nada some da tela e a placa
     // nunca fica abaixo de 48 px (alvo de toque do G-L7, com as 2 linhas de nome e 6 px de folga).
-    const abaMed = st.abaHome === 'medicoes', cw = faceW - 38, gapG = (diags.length && H < 700) || H <= 640 ? 6 : 10;
+    // PR #58: Sintomas e Medições e Testes no mesmo ritmo de 8 px (gavetas, gavetas → grade 3×2 e grade 3×3); só a tela baixa com faixa de
+    // diagnóstico (ou de até 640 px) aperta para 6 px. Com a faixa de atendimento aberta, a grade 3×2 garante cartões de 54 px: a PlacaSintoma
+    // mostra o ícone compacto (18 a 22 px) de 48 px para cima, e a área rola como antes.
+    const abaMed = st.abaHome === 'medicoes', cw = faceW - 38, gapG = (diags.length && H < 700) || H <= 640 ? 6 : 8;
     const larg = (t, fs, peso) => { if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d'); this._ctx.font = `${peso || 700} ${fs}px Roboto`; return this._ctx.measureText(t).width; };
     // Atalhos: módulo bônus com cadeado no plano de 90 dias abre o convite de upgrade, como no dock.
     const atalhoMod = (k, tela, foco) => () => lock ? this.vazio('upg', { modK: k }) : this.abrir(tela, { modK: k, foco: foco || null });
@@ -3049,8 +3139,8 @@ class Component extends DCLogic {
       dTemFoto: !!F && (pd === 'orc' || pd === 'gar') && !!F.fotoUrl, dFotoBg: F && F.fotoUrl ? `url("${F.fotoUrl}")` : 'none',
       dTemAssin: !!F && pd !== 'rec' && !AVULSO.includes(pd) && !!F.assin, dAssinBg: F && F.assinUrl ? `url("${F.assinUrl}")` : 'none', dAssinLeg: F ? `Assinatura do cliente: ${F.cliNome}` : '',
       dicaVis: !!st.dica, dicaExp: st.dica ? 'true' : 'false', dicaToggle: () => this.setState(x => ({ dica: !x.dica })), portao: !!PG, pRef: this.pRef, inerte: PG || (st.fOpen && st.fech) ? '' : undefined, fundoOculto: PG || (st.fOpen && st.fech) ? 'true' : undefined, pKicker: PG ? PG.k : '', pTitulo: PG ? PG.t : '', pTexto: PG ? PG.x : '',
-      pForm: gk === 'form', pConf: gk === 'conf', pAviso: !!(PG && PG.av), pAvisoTipo: PG && PG.av ? PG.av[0] : 'info', pAvisoT: PG && PG.av ? PG.av[1] : '', pAvisoX: PG && PG.av ? PG.av[2] : '',
-      pKeys: PG ? PG.keys.map(k => ({ ...k, e: 'normal', aria: k.aria || k.l })) : [], pCols: PG && PG.keys.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
+      pForm: gk === 'form', pConf: gk === 'conf', pCompra: gk === 'sem' || gk === 'bloq', licId: st.licId, setLicId: (e) => this.setState({ licId: limparTxt(e.target.value).slice(0, 120), licMsg: null }), licIdE: st.licMsg === 'DADOS_INCOMPLETOS' ? 'erro' : 'normal', pAviso: !!(PG && PG.av), pAvisoTipo: PG && PG.av ? PG.av[0] : 'info', pAvisoT: PG && PG.av ? PG.av[1] : '', pAvisoX: PG && PG.av ? PG.av[2] : '', pAvisoFixo: !!licAv && (gk === 'sem' || gk === 'bloq'),
+      pKeys: PG ? PG.keys.map(k => ({ ...k, e: 'normal', aria: k.aria || k.l })) : [], pN: PG ? String(PG.keys.length) : '0', pCols: PG && PG.keys.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
       campos: [
         { r: 'Nome da assistência ou do técnico', v: cad.nome, set: setCad('nome'), ph: 'Como sai no topo do PDF', e: campoE('nome'), err: erros.nome, aj: '', modo: 'text' },
         { r: 'CPF ou CNPJ', v: cad.doc, set: setCad('doc'), ph: 'Somente números', e: campoE('doc'), err: erros.doc, aj: dDoc.length === 11 || dDoc.length === 14 ? (erros.doc ? '' : fmtDoc(dDoc) + ' confere') : '', modo: 'numeric' },
@@ -3149,7 +3239,7 @@ class Component extends DCLogic {
       homeTitulo: abaMed ? 'Medições e Testes' : 'O que o aparelho apresenta?',
       abaH: H < 640 ? '30px' : '34px', abaM: H < 640 ? '-9px' : '-7px', abaSintomas: !abaMed, abaMedicoes: abaMed,
       abasHome: [['sintomas', 'Sintomas'], ['medicoes', 'Medições e Testes']].map(([k, t]) => { const pl = pilula((st.abaHome || 'sintomas') === k, t, () => this.setState({ abaHome: k })); return { ...pl, k, fs: this.fit(t, 16, (cw - 4 - 6) / 2 - 16, 14) + 'px' }; }),
-      gradeMin: `${3 * 66 + 2 * gapG}px`, gradeMedMin: `${2 * 48 + gapG}px`, cartaoMax: Math.floor(cartW * 1.25) + 'px',
+      gradeMin: `${3 * 66 + 2 * gapG}px`, gradeMedMin: `${2 * 54 + gapG}px`, cartaoMax: Math.floor(cartW * 1.25) + 'px',
       gavetasMed: [
         gaveta('ipm', 'lucide-cpu', ['Placa Inverter e IPM'], ['~310 V CC · P / N / U / V / W', '~310 V CC · P/N/U/V/W', '~310 V · P/N/U/V/W', '~310 V CC'],
           'Placa Inverter e IPM: cerca de 310 V CC no barramento, bornes P, N, U, V e W. Abre o Inverter no barramento', atalhoMod('inv', 'inv', '[data-inv-id="tensao_pn"]')),
@@ -3199,6 +3289,9 @@ class Component extends DCLogic {
         onClick: () => iniciar(x.id),
       })),
       pergunta: E.q, dica: E.d.replace('{F}', st.sel.fluido) + (CAP_ETAPAS.includes(E.id) ? ' ' + CAP_INV_TXT : ''), temaAttr: tema,
+      // PR #58 (Papel Técnico): no titânio, o Fechamento/Orçamento e os formulários de Laudo, PMOC e Recibo saem do visor escuro para a superfície
+      // clara do próprio TemaGeloPro (cinza-gelo #eef2f6, cartões #ffffff, texto #091e42/#19365c, avanço #00b100). Claro e sol ficam como estão.
+      temaPapel: tema === 'titanio' ? 'claro' : tema, temaVisor: tema === 'titanio' && ['laudo', 'pmoc', 'scripts'].includes(st.tela) ? 'claro' : tema,
       // Cola de instrumento (PR #24) nas etapas de capacímetro e de tensão sob carga; nas outras etapas não ocupa altura.
       temCola: st.tela === 'etapa' && !!COLA_ETAPA[E.id], colaK: COLA_ETAPA[E.id] || '', colaRot: cola ? cola.rot : '', colaL1a: cola ? cola.l1a : '', colaL1b: cola ? cola.l1b : '', colaL1c: cola ? `tag tag-${cola.tg} tag-inline` : '', colaL2: cola ? cola.l2 : '',
       // Atalho do veterano (PR #21): na 1ª pergunta da checagem rápida (decisão do Pedro, 27/10), pula direto para a medição com instrumento.
@@ -3209,7 +3302,14 @@ class Component extends DCLogic {
         { un: 'PSI', v: tsat !== null ? st.ptP.trim() : '—', o: tsat !== null ? 'Informada' : st.ptP.trim() ? 'Valor inválido' : 'Sem medição', faixa: `Sucção, ${st.sel.fluido}`, aria: tsat !== null ? `Pressão de sucção ${st.ptP.trim()} psig, ${st.sel.fluido}. Toque para abrir o PT/SH` : `Pressão, ${st.sel.fluido}: sem medição válida. Toque para lançar`, onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
         { un: '°C', v: Tt !== null && !ptTErro ? st.ptT.trim() : '—', o: Tt !== null && !ptTErro ? 'Informada' : st.ptT.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Tubo de sucção', aria: Tt !== null && !ptTErro ? `Temperatura do tubo ${st.ptT.trim()} °C. Toque para abrir o PT/SH` : 'Temperatura: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
-      ].map(r => ({ ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio') })),
+      ].map(r => {
+        // PR #58: poço sem medição nunca fica mudo. Embaixo de "— PSI", "— kΩ" e "— °C" entra a referência viva do aparelho do topo
+        // ([data-poco-ref]); com medição real, o valor medido volta a ocupar o poço sozinho. Em tela estreita, a variante mais longa que cabe.
+        const ref = r.v === '—' ? POCO_REF[r.un](st.sel) : null, refW = (cw - 4 - 20) / 3 - 4 - 4 - 8; // borda, respiro e a curva da pílula
+        const refTxt = ref ? ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1] : '';
+        return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px',
+          aria: ref ? `${r.aria}. ${ref.aria}` : r.aria };
+      }),
       linhas: E.ops.map((o, i, a) => a.length > 2 && i === a.length - 1 ? 'minmax(min-content,auto)' : 'minmax(min-content,1fr)').join(' '),
       etapaId: E.id || '',
       opcoes: E.ops.map((o, i, arr) => {
@@ -3223,7 +3323,9 @@ class Component extends DCLogic {
         const sozinho = n > 2 && i === n - 1, capInv = o.inc && CAP_ETAPAS.includes(E.id), leg = capInv ? CAP_INV : E.tec && !temCena ? '' : o.c;
         return { bgc, saude: sd || undefined, gcol: sozinho ? '1 / -1' : 'auto', temBand: !sozinho, cenaBg: temCena ? `url('${st.cenas[cn]}')` : 'none', band: temCena ? 'var(--gp-scene-bg)' : 'var(--gp-display)', legCor: temCena ? '#ffffff' : 'var(--gp-on-surface)', cena: temCena ? st.cenas[cn] : '', temCena, cont: temCena ? 'size' : 'normal', semCena: !temCena, temLeg: !!leg, bg: tom,
           // Com quadro: imagem à esquerda e coluna de resposta à direita, em camadas (ícone e rótulo; legenda). Sem quadro ("Não sei"): barra cheia de 56 px.
-          cartaoDir: sozinho ? 'column' : 'row', barDir: sozinho ? 'row' : 'column', barFlex: sozinho ? 'none' : `0 0 ${COL_RESPOSTA}px`, barW: sozinho ? '100%' : COL_RESPOSTA + 'px',
+          // PR #58: a barra do "Sem teste"/"Não sei" cresce com a linha (flex 1 1 auto), sem sobra escura do cartão abaixo ou acima dela; a cola do
+          // instrumento usa o mesmo raio (16 px) e o mesmo alinhamento lateral dos cartões de cima.
+          cartaoDir: sozinho ? 'column' : 'row', barDir: sozinho ? 'row' : 'column', barFlex: sozinho ? '1 1 auto' : `0 0 ${COL_RESPOSTA}px`, barW: sozinho ? '100%' : COL_RESPOSTA + 'px',
           barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M9 9a3 3 0 1 1 4 2.8c-.6.3-1 .8-1 1.5V14M12 17.5v.5' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: leg, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}${capInv ? '. ' + CAP_INV_TXT : ''}` };
       }),
       resTitulo: r ? (r.banc ? 'Causas prováveis para medição e orçamento' : r.t) : '',

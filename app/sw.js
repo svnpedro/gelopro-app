@@ -18,6 +18,8 @@ const NUCLEO = [
   'LeituraPoco.dc.html', 'LinhaFicha.dc.html', 'LinhaOrcamento.dc.html', 'LogoMarca.dc.html', 'OpcaoLista.dc.html', 'PlacaSintoma.dc.html',
   'QRPix.dc.html', 'SeletorChip.dc.html', 'SeletorPrazo.dc.html', 'Selo.dc.html', 'TeclaDock.dc.html', 'TeclaResposta.dc.html', 'TemaGeloPro.dc.html',
   'gelopro-pix.js', 'marca-gelopro.js', 'offline-gelopro.js', 'pdf-gelopro.js', 'portao-gelopro.js',
+  // PR #58: licença por compra (POST /api/licenca). O script entra no núcleo; a resposta de /api/* nunca é guardada (ver guardavel).
+  'licenca-gelopro.js',
   'vendor/react-18.3.1.production.min.js', 'vendor/react-dom-18.3.1.production.min.js', 'vendor/qrcode-generator-1.4.4.js',
   'fontes/roboto-latin-wght-normal.woff2', 'fontes/roboto-latin-ext-wght-normal.woff2', 'fontes/roboto-mono-latin-wght-normal.woff2',
   'fontes/roboto-mono-latin-ext-wght-normal.woff2', 'fontes/figtree-latin-wght-normal.woff2', 'fontes/figtree-latin-ext-wght-normal.woff2',
@@ -41,7 +43,8 @@ const NUCLEO = [
   // ligado à tela de código no display. ntc_elgin_boletim.csv segue só no pré-cache (fonte de terceiros, janela de 20 a 30 °C).
   '../base-tecnica/ntc_tcl.csv', '../base-tecnica/ntc_agratto.csv', '../base-tecnica/ntc_elgin_boletim.csv', '../base-tecnica/codigos_erro_conferidos.csv',
 ];
-const guardavel = (u) => /^https?:/.test(u) && !/\/__|chrome-extension:/.test(u);
+// /api/* (licença, webhook) nunca entra no cache: a checagem da licença precisa da resposta viva do servidor, ou nenhuma.
+const guardavel = (u) => /^https?:/.test(u) && !/\/__|chrome-extension:/.test(u) && !/^\/api\//.test(new URL(u).pathname);
 const buscar = async (url) => {
   const mesmo = new URL(url).origin === self.location.origin;
   try { const r = await fetch(url, { mode: mesmo ? 'same-origin' : 'cors', credentials: 'omit' }); if (r.ok) return r; } catch (e) { /* tenta sem CORS */ }
