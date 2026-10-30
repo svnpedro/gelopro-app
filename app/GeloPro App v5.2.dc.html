@@ -555,15 +555,14 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaPT }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <sc-if value="{{ ptTemAlerta }}" hint-placeholder-val="{{ false }}">
-                  <div data-bandeja="" style="flex:none;clip-path:inset(0 round 16px);border-radius:16px;">
-        <div data-alerta-diamante="{{ ptAlerta.k }}" data-tom="{{ ptAlerta.tom }}" role="alert" style="box-sizing:border-box;padding:8px 8px 10px 16px;border-radius:16px;background:{{ ptAlerta.fundo }};box-shadow:inset 6px 0 0 {{ ptAlerta.viva }};display:flex;flex-direction:column;gap:8px;animation:gpBandeja 120ms ease-out;">
-          <div style="display:flex;align-items:flex-start;gap:8px;">
-            <span aria-hidden="true" style="flex:none;display:inline-flex;padding-top:13px;color:{{ ptAlerta.viva }};"><dc-import name="IconeGP" nome="{{ ptAlerta.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
-            <span data-alerta-titulo="" style="flex:1;min-width:0;padding-top:13px;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ ptAlerta.t }}</span>
-            <sc-if value="{{ ptAlerta.temCont }}" hint-placeholder-val="{{ false }}"><button type="button" data-alerta-contador="{{ ptAlerta.n }}" aria-label="{{ ptAlerta.contAria }}" onClick="{{ ptAlerta.abrirTodos }}" style="flex:none;min-width:48px;height:48px;box-sizing:border-box;padding:0 8px;border-radius:14px;border:2px solid var(--gp-on-lucro, #ffffff);background:transparent;color:var(--gp-on-lucro, #ffffff);font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ ptAlerta.cont }}</button></sc-if>
-            <button type="button" data-alerta-fechar="" aria-label="Dispensar o alerta" onClick="{{ ptAlerta.fechar }}" style="flex:none;width:48px;height:48px;box-sizing:border-box;border-radius:14px;border:2px solid var(--gp-on-lucro, #ffffff);background:transparent;color:var(--gp-on-lucro, #ffffff);display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></button>
-          </div>
-          <sc-if value="{{ ptAlerta.temAcoes }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:{{ ptAlerta.cols }};gap:8px;"><sc-for list="{{ ptAlerta.acoes }}" as="a" hint-placeholder-count="2"><button type="button" data-alerta-acao="{{ a.k }}" onClick="{{ a.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:var(--gp-r-tecla, 999px);border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-active="transform:translateY(1px);">{{ a.l }}</button></sc-for></div></sc-if>
+                  <!-- PR #74: no PT/SH a bandeja é uma faixa clara e enxuta (âmbar no lembrete de fluido): sem coluna de ícone, o × flutua à direita e o
+                       texto completo usa a largura toda (16 px, contraste ≥ 7:1). Seletores e texto iguais aos de antes ([data-alerta-diamante], título, ×). -->
+                  <div data-bandeja="" style="flex:none;clip-path:inset(0 round 12px);border-radius:12px;">
+        <div data-alerta-diamante="{{ ptAlerta.k }}" data-tom="{{ ptAlerta.tom }}" data-compacto="" role="alert" style="display:flow-root;box-sizing:border-box;padding:4px 4px 6px 12px;border-radius:12px;background:{{ ptAlerta.cBg }};border:1.5px solid {{ ptAlerta.cBd }};box-shadow:inset 4px 0 0 {{ ptAlerta.cBd }};animation:gpBandeja 120ms ease-out;">
+            <button type="button" data-alerta-fechar="" aria-label="Dispensar o alerta" onClick="{{ ptAlerta.fechar }}" style="float:right;margin:0 0 2px 8px;width:48px;height:48px;box-sizing:border-box;border-radius:12px;border:1.5px solid {{ ptAlerta.cTx }};background:transparent;color:{{ ptAlerta.cTx }};display:flex;align-items:center;justify-content:center;cursor:pointer;" style-active="transform:translateY(1px);"><dc-import name="IconeGP" nome="fechar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></button>
+            <sc-if value="{{ ptAlerta.temCont }}" hint-placeholder-val="{{ false }}"><button type="button" data-alerta-contador="{{ ptAlerta.n }}" aria-label="{{ ptAlerta.contAria }}" onClick="{{ ptAlerta.abrirTodos }}" style="float:right;margin:0 0 2px 8px;min-width:48px;height:48px;box-sizing:border-box;padding:0 8px;border-radius:12px;border:1.5px solid {{ ptAlerta.cTx }};background:transparent;color:{{ ptAlerta.cTx }};font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;" style-active="transform:translateY(1px);">{{ ptAlerta.cont }}</button></sc-if>
+            <span data-alerta-titulo="" style="display:block;padding-top:4px;font:500 16px/20px 'Roboto',sans-serif;color:{{ ptAlerta.cTx }};text-wrap:pretty;"><span style="font-weight:700;">{{ ptAlerta.tA }}</span>{{ ptAlerta.tB }}</span>
+          <sc-if value="{{ ptAlerta.temAcoes }}" hint-placeholder-val="{{ false }}"><div style="clear:both;padding:6px 0 0;display:grid;grid-template-columns:{{ ptAlerta.cols }};gap:8px;"><sc-for list="{{ ptAlerta.acoes }}" as="a" hint-placeholder-count="2"><button type="button" data-alerta-acao="{{ a.k }}" onClick="{{ a.acao }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:var(--gp-r-tecla, 999px);border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-active="transform:translateY(1px);">{{ a.l }}</button></sc-for></div></sc-if>
         </div>
       </div>
                   </sc-if>
@@ -575,7 +574,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-for list="{{ ptOut }}" as="o" hint-placeholder-count="2">
                       <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                         <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);">{{ o.rot }}</span>
-                        <span style="display:inline-block;font-family:'Roboto',sans-serif;font-size:24px;line-height:28px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:var(--gp-on-reading-unit);">{{ o.un }}</span></span>
+                        <span data-poco-tom="{{ o.tomP }}" style="display:block;box-sizing:border-box;padding:4px 10px;border-radius:12px;background:{{ o.fundoP }};border:1.5px solid {{ o.bordaP }};color:{{ o.corN }};font-family:'Roboto',sans-serif;font-size:24px;line-height:28px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:{{ o.corU }};">{{ o.un }}</span></span>
                       </div>
                     </sc-for>
                   </div>
@@ -610,7 +609,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <sc-for list="{{ ntcOut }}" as="o" hint-placeholder-count="3">
                         <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                           <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ o.rot }}</span>
-                          <span style="display:inline-block;font-family:'Roboto',sans-serif;font-size:18px;line-height:24px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:var(--gp-on-reading-unit);">{{ o.un }}</span></span>
+                          <span data-poco-tom="{{ o.tomP }}" style="display:block;box-sizing:border-box;padding:4px 6px;border-radius:10px;background:{{ o.fundoP }};border:1.5px solid {{ o.bordaP }};color:{{ o.corN }};font-family:'Roboto',sans-serif;font-size:18px;line-height:24px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:{{ o.corU }};">{{ o.un }}</span></span>
                         </div>
                       </sc-for>
                     </div>
@@ -637,7 +636,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-for list="{{ bOut }}" as="o" hint-placeholder-count="3">
                       <div style="min-width:0;display:flex;flex-direction:column;gap:2px;">
                         <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-display-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ o.rot }}</span>
-                        <span style="display:inline-block;font-family:'Roboto',sans-serif;font-size:18px;line-height:24px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:var(--gp-on-reading-unit);">{{ o.un }}</span></span>
+                        <span data-poco-tom="{{ o.tomP }}" style="display:block;box-sizing:border-box;padding:4px 6px;border-radius:10px;background:{{ o.fundoP }};border:1.5px solid {{ o.bordaP }};color:{{ o.corN }};font-family:'Roboto',sans-serif;font-size:18px;line-height:24px;font-variant-numeric:tabular-nums;transform-origin:left center;animation:{{ o.anim }};"><span style="font-weight:{{ o.pesoN }};color:{{ o.corN }};white-space:nowrap;">{{ o.num }}</span><span style="font-weight:600;color:{{ o.corU }};">{{ o.un }}</span></span>
                       </div>
                     </sc-for>
                   </div>
@@ -1790,6 +1789,14 @@ const FLUIDO_ALERTA = {
   R32: { tom: 'ambar', ico: 'cilindro-fluido', t: 'Lembrete R32 (Classe A2L): exigir vácuo profundo e jamais pressurizar com ar comprimido ou oxigênio.' },
 };
 // Mesma paleta do Painel de Lucro: fundo escuro fixo e texto branco (≥ 9:1 nos 3 temas); a faixa lateral leva a cor viva.
+// PR #74: cada mostrador de resultado (PT/SH, NTC, carga térmica) ganha poço com identidade própria: [número/unidade, fundo, borda].
+// Grandezas fixas (Saturação, Esperado, Estimativa, Aparelho) têm cor própria; os veredictos (SH, Diferença/Equivale, Folga) mudam ao vivo.
+const POCO_TOM = {
+  azul: ['#0369a1', '#f0f9ff', '#38bdf8'], verde: ['#15803d', '#ecfdf5', '#22c55e'], ambar: ['#b45309', '#fffbeb', '#f59e0b'],
+  vermelho: ['#b91c1c', '#fef2f2', '#ef4444'], indigo: ['#4338ca', '#eef2ff', '#818cf8'], espera: ['#475569', '#f8fafc', '#cbd5e1'],
+};
+// PR #74: a bandeja da tela PT/SH vira faixa clara e enxuta: [texto, fundo, borda] por tom; o lembrete de fluido sai sempre em âmbar.
+const ALERTA_CLARO = { ambar: ['#78350f', '#fffbeb', '#f59e0b'], verde: ['#065f46', '#ecfdf5', '#22c55e'], vermelho: ['#7f1d1d', '#fef2f2', '#ef4444'], neutro: ['#0c4a6e', '#f0f9ff', '#38bdf8'] };
 const ALERTA_TOM = {
   vermelho: ['var(--gp-lucro-vermelho, #7f1d1d)', 'var(--gp-lucro-ambar-viva, #f59e0b)'], verde: ['var(--gp-lucro-verde, #064e3b)', 'var(--gp-lucro-ambar-viva, #f59e0b)'],
   ambar: ['var(--gp-lucro-ambar, #78350f)', 'var(--gp-lucro-ambar-viva, #f59e0b)'], neutro: ['var(--gp-lucro-neutro, #1e293b)', 'var(--gp-lucro-verde-viva, #22c55e)'],
@@ -2371,9 +2378,10 @@ class Component extends DCLogic {
   }
   // Mostrador de resultado: "12,3 °C" vira número (neutro em destaque, 700) e unidade (ciano técnico, 600); "—" fica no tom de espera.
   // O espaço vai no início da unidade: se a coluna for estreita, a unidade desce para a linha de baixo e o número nunca parte.
-  mostrador(id, v, visivel) {
-    const i = v.lastIndexOf(' '), tem = v !== '—';
-    return { num: tem && i > 0 ? v.slice(0, i) : v, un: tem && i > 0 ? v.slice(i) : '', corN: tem ? 'var(--gp-on-reading-val)' : 'var(--gp-on-reading-idle)', pesoN: tem ? 700 : 500, anim: this.pulso(id, v, visivel) };
+  // PR #74: tom = chave de POCO_TOM (grandeza ou veredito); sem valor, o poço fica no tom de espera. Número e unidade na mesma cor do poço.
+  mostrador(id, v, visivel, tom) {
+    const i = v.lastIndexOf(' '), tem = v !== '—', T = POCO_TOM[tem ? tom || 'azul' : 'espera'] || POCO_TOM.azul;
+    return { num: tem && i > 0 ? v.slice(0, i) : v, un: tem && i > 0 ? v.slice(i) : '', corN: T[0], corU: T[0], fundoP: T[1], bordaP: T[2], tomP: tem ? tom || 'azul' : 'espera', pesoN: tem ? 700 : 500, anim: this.pulso(id, v, visivel) };
   }
   // Pílula de leitura da inicial (regra do Pedro, 26/10): aro neon --gp-dock-ring e unidade em --gp-on-reading-unit (peso 600) SEMPRE,
   // com ou sem medição. Só o traço "—" fica no tom de espera; com medição, o número fica em destaque (neutro, 700).
@@ -2756,9 +2764,9 @@ class Component extends DCLogic {
     ].filter(Boolean);
     const alertaF = filaF[0] || null;
     const alertaPT = st.tela === 'ptsh' ? alertaFluido() : null;
-    const vistaAlerta = (a, n = 1) => a ? { ...a, fundo: ALERTA_TOM[a.tom][0], viva: ALERTA_TOM[a.tom][1], temAcoes: a.acoes.length > 0, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
+    const vistaAlerta = (a, n = 1) => a ? { ...a, fundo: ALERTA_TOM[a.tom][0], viva: ALERTA_TOM[a.tom][1], ...((C, i) => ({ cTx: C[0], cBg: C[1], cBd: C[2], tA: i > 0 ? a.t.slice(0, i + 1) : '', tB: i > 0 ? a.t.slice(i + 1) : a.t }))(ALERTA_CLARO[a.k === 'fluido' ? 'ambar' : a.tom] || ALERTA_CLARO.ambar, a.t.indexOf(':')), temAcoes: a.acoes.length > 0, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
       n: String(n), temCont: n > 1, cont: `1 de ${n}`, contAria: `Alerta 1 de ${n}: ver todos na Central de Avisos`, abrirTodos: () => abrirAvisos() }
-      : { k: '', tom: '', ico: 'info', t: '', fundo: 'none', viva: 'none', temAcoes: false, cols: 'none', acoes: [], fechar: null, n: '0', temCont: false, cont: '', contAria: '', abrirTodos: null };
+      : { k: '', tom: '', ico: 'info', t: '', tA: '', tB: '', cTx: 'none', cBg: 'none', cBd: 'none', fundo: 'none', viva: 'none', temAcoes: false, cols: 'none', acoes: [], fechar: null, n: '0', temCont: false, cont: '', contAria: '', abrirTodos: null };
     // Caixa de entrega do PDF (PR #25): aparece onde o documento foi emitido (passo 4, laudo, PMOC, recibo avulso ou atendimento aberto no Cofre).
     const PP = st.pdfPronto;
     const pdfVals = { pdfTipo: PP ? PP.tipo : '', pdfNome: PP ? PP.nome : '', pdfOk: !!PP && !PP.gerando && !PP.erro,
@@ -3020,6 +3028,10 @@ class Component extends DCLogic {
     const shFx = shCrit && shCrit.match(/(\d+(?:[.,]\d+)?)\s*a\s*(\d+(?:[.,]\d+)?)/);
     // Vereditos com cor (PR #27, Lei Zero-Leitura): SH na faixa oficial Elgin; desvio do NTC ≤ ±5 % verde, até ±10 % âmbar, acima vermelho.
     const shVer = sh === null ? null : !shFx ? 'semref' : sh < num(shFx[1]) ? 'baixo' : sh > num(shFx[2]) ? 'alto' : 'ok';
+    // PR #74: cor do poço do SH ao vivo. Com faixa oficial (shFx), a dela; sem ela, só a cor usa a referência de campo do 3º poço da Home
+    // (PR #70, aprovada pelo Pedro: R410A/R32 7–11 °C, R22 6–10 °C). A etiqueta de veredicto segue a regra de sempre (sem faixa = medir e orçar).
+    const shCampo = shFx ? [num(shFx[1]), num(shFx[2])] : st.sel.fluido === 'R22' ? [6, 10] : [7, 11];
+    const shCor = sh === null ? 'azul' : sh < shCampo[0] ? 'ambar' : sh > shCampo[1] ? 'vermelho' : 'verde';
     const ntcVer = dif === null ? null : Math.abs(dif) <= 5 ? 'ok' : Math.abs(dif) <= 10 ? 'alerta' : 'falha';
     const shTag = !shVer ? null : shVer === 'ok' ? TG('ok', `✓ DENTRO ${shFx[1]}–${shFx[2]} °C`) : shVer === 'alto' ? TG('alerta', '▲ ALTO → PROVÁVEL FALTA DE FLUIDO') : shVer === 'baixo' ? TG('alerta', '▼ BAIXO → PROVÁVEL EXCESSO DE FLUIDO') : TG('sem-ref', MEDIR_ORCAR);
     const ntcTag = !ntcVer ? null : ntcVer === 'ok' ? TG('ok', '✓ DESVIO ≤ ±5 %') : ntcVer === 'alerta' ? TG('alerta', `${dif > 0 ? '▲' : '▼'} DESVIO ATÉ ±10 %`) : TG('falha', '✗ DESVIO > ±10 %');
@@ -3140,7 +3152,7 @@ class Component extends DCLogic {
       bArea: B2.area, bPes: B2.pes, bW: B2.w, bSetArea: sB('area'), bSetPes: sB('pes'), bSetW: sB('w'), bF1: B2.f1, bF2: B2.f2, bF3: B2.f3, bSetF1: sB('f1'), bSetF2: sB('f2'), bSetF3: sB('f3'),
       bE: Object.fromEntries(Object.entries(bErr).map(([k, v]) => [k, v ? 'erro' : 'normal'])), bM: bErr,
       bSolOps: ['Sombra/manhã', 'Sol da tarde'], bSol: B2.sol, bSetSol: (v) => this.setState(x => ({ btu: { ...x.btu, sol: v } })),
-      bOut: [['Estimativa', bEst ? fmtBTU(bEst) : '—'], ['Aparelho', bAp ? fmtBTU(bAp) : '—'], ['Folga', bDif === null ? '—' : (bDif > 0 ? '+' : '') + f1(bDif) + ' %']].map(([rot, v]) => { const m = this.mostrador('btu-' + rot, v, st.tela === 'btu'); return { rot, ...m, un: m.un.replace(/^ /, '\u00a0') }; }), // PR #66: "BTU/h" nunca quebra sozinho
+      bOut: [['Estimativa', bEst ? fmtBTU(bEst) : '—'], ['Aparelho', bAp ? fmtBTU(bAp) : '—'], ['Folga', bDif === null ? '—' : (bDif > 0 ? '+' : '') + f1(bDif) + ' %']].map(([rot, v]) => { const m = this.mostrador('btu-' + rot, v, st.tela === 'btu', rot === 'Estimativa' ? 'azul' : rot === 'Aparelho' ? 'indigo' : bDif !== null && bDif < 0 ? 'vermelho' : 'verde'); return { rot, ...m, un: m.un.replace(/^ /, '\u00a0') }; }), // PR #66: "BTU/h" nunca quebra sozinho
       bVerTag: bDif === null ? TG('sem-ref', '') : bDif < 0 ? TG('falha', '✗ NÃO COBRE') : TG('ok', '✓ COBRE'), bVerK: bDif === null ? '' : bDif < 0 ? 'nao-cobre' : 'cobre',
       bAcima: bEst !== null && bEst > BTU_SPLIT, bAcimaT: `Acima de ${BTU_SPLIT.toLocaleString('pt-BR')} BTU/h — exige múltiplos aparelhos ou dimensionamento de projeto.`,
       // Recomendação comercial (PR #20): menor capacidade da lista que cobre a estimativa, com as faixas Piso-Teto/Cassete de 48.000 e 60.000 BTU/h.
@@ -3394,7 +3406,7 @@ class Component extends DCLogic {
       codVazioT: !mCod.length ? `Sem tabela de ${ePisc ? 'piscadas' : 'códigos'} para ${marca}` : `Nenhum código “${st.cod}” para ${marca}`,
       codVazioX: !mCod.length ? `Marcas na base: ${codMarcas.join(', ')}. Troque em Marca.` : 'Confira o que o display mostra e a linha do aparelho.',
       ptP: st.ptP, ptT: st.ptT, ptPM: medErro(st.ptP), ptTM: ptTErro, ptPE: medErro(st.ptP) ? 'erro' : 'normal', ptTE: ptTErro ? 'erro' : 'normal', setPtP: (e) => this.setState({ ptP: e.target.value }), setPtT: (e) => this.setState({ ptT: e.target.value }),
-      ptSatRot: `Saturação ${st.sel.fluido}`, ptOut: [{ rot: `Saturação ${st.sel.fluido}`, ...this.mostrador('pt-sat', tsat === null ? '—' : f1(tsat) + ' °C', st.tela === 'ptsh') }, { rot: 'Superaquecimento', ...this.mostrador('pt-sh', sh === null ? '—' : f1(sh) + ' °C', st.tela === 'ptsh') }],
+      ptSatRot: `Saturação ${st.sel.fluido}`, ptOut: [{ rot: `Saturação ${st.sel.fluido}`, ...this.mostrador('pt-sat', tsat === null ? '—' : f1(tsat) + ' °C', st.tela === 'ptsh', 'azul') }, { rot: 'Superaquecimento', ...this.mostrador('pt-sh', sh === null ? '—' : f1(sh) + ' °C', st.tela === 'ptsh', shCor) }],
       // Anti-cilada (PR #35): SH alto pede fluido, mas filtro sujo e vazamento na flange também sobem o SH. Lembrete antes de completar a carga.
       ptAlto: shVer === 'alto', ptTemVer: !!shTag, ptVer: shVer || '', ptVerTag: shTag || TG('sem-ref', ''), ptR410: st.sel.fluido === 'R410A',
       ptFalta: P === null || Tt === null, ptFora: P !== null && ptRows.length > 0 && tsat === null,
@@ -3420,7 +3432,7 @@ class Component extends DCLogic {
         ['Esperado', rexp === null ? '—' : fk(rexp) + ' kΩ'],
         ['Diferença', dif === null ? '—' : (dif > 0 ? '+' : '') + f1(dif) + ' %'],
         ['Equivale a', teq !== null ? f1(teq) + ' °C' : noLimite ? `limite da curva (${f1(ponta[0])} °C)` : '—'],
-      ].map(([rot, v]) => ({ rot, ...this.mostrador('ntc-' + rot, v, st.tela === 'ntc') })),
+      ].map(([rot, v]) => ({ rot, ...this.mostrador('ntc-' + rot, v, st.tela === 'ntc', rot === 'Esperado' ? 'ambar' : rot === 'Equivale a' && teq === null && noLimite ? 'vermelho' : ntcVer === 'ok' ? 'verde' : ntcVer === 'alerta' ? 'ambar' : ntcVer === 'falha' ? 'vermelho' : 'ambar') })),
       ntcTemVer: !!ntcTag, ntcVer: ntcVer || '', ntcVerTag: ntcTag || TG('sem-ref', ''), ntcRefUni: !!(sn && sn.universal),
       ntcGlobal: !!sn && !sn.universal && /^Midea/.test(sn.marca), // Rodapé do NTC (PR #27, achado 4): nunca o nome do arquivo interno (.csv); a fonte vira .tag-fonte com o documento humano ("F03 · Manual LG").
       ntcFonte: sn && sn.universal ? `${marca}: tabela ${uniR}K de referência da base (${sn.ref.marca.split('/')[0]}), interpolada. Confirme a resistência nominal na etiqueta do sensor; a tabela do fabricante prevalece.` : sn ? 'Valores interpolados na curva do fabricante, sem fórmula Beta.' : '',
