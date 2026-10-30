@@ -10,9 +10,9 @@ document.head.appendChild(s);
 const ocioso = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 if (document.readyState === 'complete') ocioso(libsPix); else window.addEventListener('load', () => ocioso(libsPix));
 const LEGADO = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
-if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v92')) {
+if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v93')) {
 const st = document.createElement('style');
-st.id = 'gp-cores-global-v92';
+st.id = 'gp-cores-global-v93';
 st.textContent = `
       /* FIX 1: O campo Nome do cliente NUNCA pode sumir enquanto o usuário digita */
       [data-chapa][data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"],
@@ -24,8 +24,7 @@ st.textContent = `
         display: none !important;
       }
 
-      /* FIX 2: No Passo 1 enxuto, manter o botão da tabela de peças ([data-catalogo-botao]) e o catálogo aberto ([data-catalogo]) visíveis
-         para o técnico nunca ficar travado sem conseguir trocar ou adicionar peça da tabela */
+      /* FIX 2: No Passo 1 enxuto, manter o botão da tabela de peças ([data-catalogo-botao]) e o catálogo aberto ([data-catalogo]) visíveis */
       [data-video-enxuto="1"] [data-catalogo-botao] {
         display: flex !important;
         min-height: 48px !important;
@@ -49,7 +48,31 @@ st.textContent = `
       [data-item-qtd] { gap: 6px !important; align-items: center !important; }
       [data-campos-linha], [data-campos-carga] { align-items: end !important; }
     ` + (!LEGADO ? `
-      /* FIX 4: Cores semânticas globais e fim dos cartões brancos com texto azul chapado */
+      /* FIX 4 (PR #93): Arrancar do Orçamento e das telas os avisos escolásticos/sistema que atrapalham o técnico:
+         - Bandeja "Lembrete R410A (Blend): carregar exclusivamente na fase líquida..." e "Lembrete R32..." fora do Orçamento e do PT/SH
+         - Avisos de sistema ("sis-*") e de fluido ("fluido-*") fora do Sininho (Central de Avisos) e a pílula "Sistema" oculta
+         - Aviso burocrático do CDC no topo do Passo 2 da Garantia oculto
+         - Aviso genérico "Código aponta o circuito, não a peça" no topo de Código no display oculto */
+      [data-bandeja]:has([data-alerta-diamante="fluido"]),
+      [data-alerta-diamante="fluido"] {
+        display: none !important;
+      }
+      [data-central-avisos] [data-aviso-item^="sis-"],
+      [data-central-avisos] [data-aviso-item^="feed-"],
+      [data-central-avisos] [data-aviso-item^="fluido-"],
+      [data-central-avisos] [data-aviso-categoria="sis"],
+      [data-central-avisos] [data-aviso-categoria="tecnico"],
+      [data-central-avisos] [data-selo-atualizacao] {
+        display: none !important;
+      }
+      [data-chapa] [data-passo-in] > [data-sc-name="Aviso"]:first-child {
+        display: none !important;
+      }
+      [data-codigo-tela] > [data-sc-name="Aviso"] {
+        display: none !important;
+      }
+
+      /* FIX 5: Cores semânticas globais e fim dos cartões brancos com texto azul chapado */
       [data-res-rolagem]:has([data-res-instrumentos]) > div:has([data-res-fonte]) { display: none !important; }
       [data-res-rolagem] > div:has([data-res-fonte]) { background: #fffbeb !important; border: 1.5px solid #f59e0b !important; }
       [data-res-rolagem] > div:has([data-res-fonte]) [data-res-fonte] { display: none !important; }
@@ -92,6 +115,13 @@ try {
 const lg = acharComp();
 if (!lg) return;
 const st = lg.state;
+const off = st.alertaOff || {}, lidos = st.avisosLidos || {};
+if (!off.fluido || !lidos['fluido-R410A'] || !lidos['fluido-R32'] || !lidos['sis-diamante'] || !lidos['sis-v52']) {
+lg.setState(x => ({
+alertaOff: { ...(x.alertaOff || {}), fluido: true },
+avisosLidos: { ...(x.avisosLidos || {}), 'fluido-R410A': 1, 'fluido-R32': 1, 'sis-diamante': 1, 'sis-v52': 1 }
+}));
+}
 if (!restaurouMem) {
 restaurouMem = true;
 const salvo = JSON.parse(sessionStorage.getItem(K_MEM) || 'null');
