@@ -59,8 +59,23 @@ class Component extends DCLogic {
     for (const t of this.tracos) for (let i = 1; i < t.length; i++) d += Math.hypot((t[i][0] - t[i - 1][0]) * r.width, (t[i][1] - t[i - 1][1]) * r.height);
     return d;
   }
+  // PR #61 (EXT-S1-4b): além dos 25 px, algum traço precisa ter amplitude real na caixa delimitadora (largura ≥ 16 px ou altura ≥ 6 px) com pelo
+  // menos 4 movimentos contínuos (trechos de 1 px ou mais) no mesmo traço. Assim 4 toques pontuais de 7 px não somam uma assinatura falsa.
+  amplo() {
+    const c = this._c; if (!c) return false;
+    const r = c.getBoundingClientRect();
+    return this.tracos.some((t) => {
+      let mov = 0, x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+      t.forEach(([x, y], i) => {
+        const px = x * r.width, py = y * r.height;
+        x0 = Math.min(x0, px); x1 = Math.max(x1, px); y0 = Math.min(y0, py); y1 = Math.max(y1, py);
+        if (i && Math.hypot((x - t[i - 1][0]) * r.width, (y - t[i - 1][1]) * r.height) >= 1) mov++;
+      });
+      return mov >= 4 && (x1 - x0 >= 16 || y1 - y0 >= 6);
+    });
+  }
   emitir() {
-    const tem = this.tracos.length > 0, valida = tem && this.percurso() >= 25;
+    const tem = this.tracos.length > 0, valida = tem && this.percurso() >= 25 && this.amplo();
     if (tem !== this.state.traco || valida !== this.state.valida) this.setState({ traco: tem, valida });
     if (this.props.aoMudar) this.props.aoMudar(valida ? this._c.toDataURL('image/png') : null);
   }
