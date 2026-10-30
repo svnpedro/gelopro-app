@@ -39,6 +39,10 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 [data-chanfro] :focus-visible{outline-color:var(--gp-focus-key);outline-offset:-5px;}
 /* PR #58: portão com 3 teclas (Ativar, Ver planos, Amostra): a 1ª ocupa a linha inteira e as outras dividem a de baixo. */
 [data-teclas="3"] > :first-child{grid-column:1 / -1;}
+/* PR #60: dígitos fantasma do visor e sinais das teclas [-] [+] por ::before (fora do innerText dos poços). */
+[data-fantasma]::before{content:'888.8';}
+[data-step-leitura="-1"]::before{content:'\2212';}
+[data-step-leitura="1"]::before{content:'+';}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -332,16 +336,37 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </div>
                   </div>
                   </sc-if>
-                  <div role="group" aria-label="Leituras" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 2px;margin:-2px 0;">
-                    <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
-                      <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:999px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
-                        <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:999px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
-                          <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
-                          <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
-                          <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span data-poco-ref="{{ r.refK }}" style="flex:0 0 100%;min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--gp-on-reading-unit);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
-                        </span>
-                      </button>
-                    </sc-for>
+                  <!-- PR #60: Visor Digital Industrial B+C. Carcaça de manifold usinada (chanfro 3D, vidro fumê rebaixado), cabeçalho de telemetria e, por
+                       canal, a janela digital (o mesmo button > span de sempre: valor, unidade e [data-poco-ref]), o trilho de 15 LEDs com o pino e as
+                       teclas [-] [+]. Tudo o que é decoração fica em aria-hidden + data-decor, fora do button > span; dígitos fantasma e sinais das
+                       teclas vêm de ::before (fora do innerText lido pelos testes). -->
+                  <div data-telemetria="" style="flex:none;box-sizing:border-box;margin:-2px 0;padding:3px 5px 4px;border-radius:16px;background:linear-gradient(180deg,#1c2738 0%,#0d1522 100%);border:1px solid #3b4a60;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -2px 0 rgba(0,0,0,.55),0 2px 4px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:2px;">
+                    <div aria-hidden="true" data-decor="" data-telemetria-cab="" style="display:flex;align-items:center;gap:6px;min-width:0;padding:0 4px;font:700 11px/12px 'Roboto Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94a3b8;white-space:nowrap;overflow:hidden;">
+                      <span style="flex:none;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#bbf7d0 0%,#22c55e 45%,#15803d 100%);box-shadow:0 0 6px 1px rgba(34,197,94,.85);"></span>
+                      <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;">{{ telemetriaTxt }}</span>
+                    </div>
+                    <div role="group" aria-label="Leituras" style="box-sizing:border-box;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:3px;border-radius:12px;background:#05090f;box-shadow:inset 0 3px 8px rgba(0,0,0,0.75);">
+                      <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
+                        <div data-canal="{{ r.k }}" style="min-width:0;display:flex;flex-direction:column;gap:3px;">
+                          <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="position:relative;min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:12px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
+                            <div aria-hidden="true" data-decor="" data-fantasma="" style="position:absolute;left:0;right:0;top:4px;text-align:center;font:700 18px/20px 'Roboto Mono',ui-monospace,monospace;color:var(--gp-on-reading);opacity:.07;pointer-events:none;"></div>
+                            <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--gp-reading);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
+                              <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
+                              <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
+                              <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span data-poco-ref="{{ r.refK }}" style="flex:0 0 100%;min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--gp-on-reading-unit);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
+                            </span>
+                          </button>
+                          <div aria-hidden="true" data-decor="" style="display:flex;align-items:center;gap:3px;">
+                            <span role="button" tabindex="0" data-step-leitura="-1" aria-label="{{ r.ariaMenos }}" onClick="{{ r.menos }}" onKeyDown="{{ r.menosTecla }}" style="flex:none;width:20px;height:18px;border-radius:5px;background:linear-gradient(180deg,#334155 0%,#1e293b 100%);border:1px solid #475569;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font:800 14px/14px 'Roboto Mono',ui-monospace,monospace;color:#e2e8f0;cursor:pointer;user-select:none;" style-active="transform:translateY(1px);box-shadow:inset 0 2px 3px rgba(0,0,0,.7);"></span>
+                            <div data-trilho="{{ r.k }}" style="position:relative;flex:1;min-width:0;height:10px;box-sizing:border-box;padding:2px;border-radius:6px;background:#020407;box-shadow:inset 0 2px 3px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08);display:grid;grid-template-columns:repeat(15,minmax(0,1fr));gap:1px;">
+                            <sc-for list="{{ r.leds }}" as="ld" hint-placeholder-count="15"><span data-led="{{ ld.z }}" style="display:block;border-radius:2px;background:linear-gradient(180deg,rgba(255,255,255,.55) 0%,{{ ld.c }} 38%,{{ ld.c }} 100%);opacity:{{ ld.op }};box-shadow:{{ ld.halo }};"></span></sc-for>
+                            <span data-pino="" style="position:absolute;top:-4px;left:{{ r.pino }};width:6px;height:18px;margin-left:-3px;border-radius:3px;background:linear-gradient(90deg,#64748b 0%,#f8fafc 45%,#94a3b8 100%);box-shadow:0 1px 2px rgba(0,0,0,.8);opacity:{{ r.pinoOp }};transition:left 180ms ease-out;"></span>
+                            </div>
+                            <span role="button" tabindex="0" data-step-leitura="1" aria-label="{{ r.ariaMais }}" onClick="{{ r.mais }}" onKeyDown="{{ r.maisTecla }}" style="flex:none;width:20px;height:18px;border-radius:5px;background:linear-gradient(180deg,#334155 0%,#1e293b 100%);border:1px solid #475569;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 1px 2px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font:800 14px/14px 'Roboto Mono',ui-monospace,monospace;color:#e2e8f0;cursor:pointer;user-select:none;" style-active="transform:translateY(1px);box-shadow:inset 0 2px 3px rgba(0,0,0,.7);"></span>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
                   </div>
                   <sc-if value="{{ temDiag }}" hint-placeholder-val="{{ false }}">
                     <div role="group" aria-label="Diagnóstico das medições" style="flex:none;display:grid;grid-template-columns:{{ dgCols }};gap:6px;padding:0 2px;margin:-4px 0 -2px;">
@@ -1791,6 +1816,8 @@ const facaDe = (c, normal) => (c.faca || '').trim() || (normal && FACA_NORMAL[c.
 const servicosDoCodigo = (c, normal) => {
   if (normal) return ['higienizacao', 'limpeza_simples'];
   const t = norm(`${c.descricao || ''} ${c.causa || ''}`);
+  // PR #60: Samsung WindFree C122/C123 (F35, "Erro no permutador de calor da unidade interna") = sensor do trocador da evaporadora.
+  if (/samsung/i.test(c.marca || '') && /^C12[23]$/.test(String(c.codigo || '').trim())) return ['sensor_ntc'];
   if (/sensor|termistor|ntc/.test(t)) return ['sensor_ntc'];
   if (/comunica|borne|tens[aã]o|disjuntor|alimenta|fusivel/.test(t)) return ['fusivel_eletrica', 'reparo_placa'];
   if (/ventilador|turbina|motor/.test(t)) return ['motor_vent'];
@@ -1833,6 +1860,8 @@ const pecaDe = (t) => { for (const m of String(t).matchAll(LIGA)) { const p = t.
 // da mais completa para a mais curta (a 1ª que cabe na largura do poço; o texto completo vai sempre no aria-label).
 const POCO_PSI = { R410A: '118–135', R32: '120–140', R22: '60–75' };
 const POCO_NTC = { LG: '5K/10K/200K', TCL: '10K/5K', Agratto: '15K/20K/50K', Samsung: '10K/49,1K', Daikin: '10K/20K', Midea: '10K/54,9K', Springer: '10K/54,9K', Carrier: '10K/54,9K', Gree: '15K/20K/50K' };
+// PR #60: cores do trilho de 15 LEDs do visor (4 azuis abaixo da faixa, 7 verdes na faixa, 4 vermelhos acima).
+const LEDS = [...Array(4).fill('#3b82f6'), ...Array(7).fill('#22c55e'), ...Array(4).fill('#ef4444')];
 const POCO_REF = {
   PSI: (sel) => { const f = POCO_PSI[sel.fluido] || POCO_PSI.R410A; return { k: 'psi', vs: [`${f} psi`, f], aria: `Referência de campo de sucção ${sel.fluido}: ${f} psi` }; },
   'kΩ': (sel) => { const n = POCO_NTC[sel.marca] || '5K–50K'; return { k: 'ntc', vs: [n, n.replace(/K\//g, '/')], aria: `Nominais NTC de referência ${sel.marca}: ${n}` }; },
@@ -1936,6 +1965,25 @@ class Component extends DCLogic {
     const r = await L.ativar(id);
     if (r.tipo === 'ok') { this.setState({ licBusy: false, licId: '' }); return this.aplicarCracha(r.cracha); }
     this.setState({ licBusy: false, licMsg: r.tipo === 'erro' ? r.codigo : r.tipo === 'sem-servidor' ? 'SEM_SERVIDOR' : 'FALHA_SERVIDOR' });
+  }
+  // PR #60: teclas [-] [+] do visor da Home. PSI de 2 em 2, kΩ de 0,5 em 0,5, °C de 1 em 1; campo vazio parte do início da faixa do fluido,
+  // do 1º nominal NTC da marca ou de 20 °C. Micro-bip seco de multímetro (2400 Hz, 35 ms), mudo com prefers-reduced-motion ou sem AudioContext.
+  passoLeitura(k, d) {
+    const C = { psi: ['ptP', 2], ntc: ['ntcR', 0.5], sh: ['ptT', 1] }[k]; if (!C) return;
+    const [campo, inc] = C, atual = med(this.state[campo]);
+    const base = atual !== null ? atual : k === 'psi' ? Number((POCO_PSI[this.state.sel.fluido] || POCO_PSI.R410A).split('–')[0]) : k === 'ntc' ? parseFloat(String(POCO_NTC[this.state.sel.marca] || '10K').replace(',', '.')) || 10 : 20;
+    const v = Math.max(0, Math.round((base + (atual !== null ? d * inc : 0)) * 10) / 10);
+    this.setState({ [campo]: String(v).replace('.', ',') });
+    this.bip();
+  }
+  bip() {
+    try {
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+      const ac = this._ac || (this._ac = new AC()), o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+      o.type = 'square'; o.frequency.value = 2400; g.gain.setValueAtTime(0.06, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.035);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 0.035);
+    } catch (e) { /* sem áudio: segue mudo */ }
   }
   abrirUrl(u, msg) { if (u) window.open(u, '_blank', 'noopener'); else this.setState({ pMsg: msg }); }
   confirmarTitular(t, daCompra) {
@@ -2738,6 +2786,14 @@ class Component extends DCLogic {
     const invTxt = invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return r.r ? `${i + 1}. ${e.titulo}: ${r.r.toLowerCase()}${r.v ? ' (' + r.v + ')' : ''}` : null; }).filter(Boolean).join('\n');
     const tolBand = rexp !== null ? tolEm(Tn) : null;
     const dentro = tolBand && Rn !== null ? Rn >= tolBand[0] && Rn <= tolBand[1] : null;
+    // PR #60: desvio de cada canal do visor (z de −1 a 1 = dentro da faixa; null = sem medição, pino no centro e apagado).
+    // PSI: faixa de sucção do fluido (POCO_PSI); °C: superaquecimento contra o alvo 7–11 °C (só com pressão e tubo); kΩ: veredito da tolerância.
+    const zLeitura = (k) => {
+      if (k === 'psi') { const P0 = med(st.ptP), f = (POCO_PSI[st.sel.fluido] || POCO_PSI.R410A).split('–').map(Number); return P0 === null ? null : (P0 - (f[0] + f[1]) / 2) / ((f[1] - f[0]) / 2); }
+      if (k === 'sh') return sh === null || !Number.isFinite(sh) ? null : (sh - 9) / 2;
+      if (rZero) return -2;
+      return dentro === null ? null : dentro ? 0 : dif !== null && dif < 0 ? -1.6 : 1.6;
+    };
     const faixaTxt = tolBand ? `${fk(tolBand[0])}–${fk(tolBand[1])} kΩ` : '';
     const PM = st.pmoc, pmS = (k) => (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ pmoc: { ...x.pmoc, [k]: v } })); };
     const pmG = []; ((B && B.pmoc) || []).forEach(r => { let g = pmG.find(x => x.t === r.grupo); if (!g) pmG.push(g = { t: r.grupo, ativ: [] }); g.ativ.push(r.atividade); });
@@ -3298,6 +3354,7 @@ class Component extends DCLogic {
       // Da 2ª pergunta em diante as cenas ficam com a altura toda. A pergunta atual fica no histórico: o Voltar do cabeçalho devolve o técnico a ela.
       temAtalhoVet: st.tela === 'etapa' && !E.tec && !st.hist.length && !!(PC && PC.tecInicio && PC.etapas[PC.tecInicio]),
       atalhoVet: () => PC && PC.tecInicio && this.setState(x => ({ etapa: PC.tecInicio, hist: [...x.hist, x.etapa], pk: null, dica: false })),
+      telemetriaTxt: `TELEMETRIA · ${st.sel.marca} ${st.sel.btu} · ${st.sel.fluido}`,
       leituras: [
         { un: 'PSI', v: tsat !== null ? st.ptP.trim() : '—', o: tsat !== null ? 'Informada' : st.ptP.trim() ? 'Valor inválido' : 'Sem medição', faixa: `Sucção, ${st.sel.fluido}`, aria: tsat !== null ? `Pressão de sucção ${st.ptP.trim()} psig, ${st.sel.fluido}. Toque para abrir o PT/SH` : `Pressão, ${st.sel.fluido}: sem medição válida. Toque para lançar`, onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
@@ -3307,8 +3364,13 @@ class Component extends DCLogic {
         // ([data-poco-ref]); com medição real, o valor medido volta a ocupar o poço sozinho. Em tela estreita, a variante mais longa que cabe.
         const ref = r.v === '—' ? POCO_REF[r.un](st.sel) : null, refW = (cw - 4 - 20) / 3 - 4 - 4 - 8; // borda, respiro e a curva da pílula
         const refTxt = ref ? ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1] : '';
+        // PR #60: trilho de 15 LEDs (4 azuis abaixo, 7 verdes na faixa, 4 vermelhos acima) e pino pelo desvio z (−1 a 1 = dentro da faixa).
+        const k = r.un === 'PSI' ? 'psi' : r.un === 'kΩ' ? 'ntc' : 'sh', z = zLeitura(k), pos = z === null ? 7.5 : Math.max(0.5, Math.min(14.5, 7.5 + z * 3.5)), aceso = Math.floor(pos);
+        const passo = (d) => () => this.passoLeitura(k, d), tecla = (d) => (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.passoLeitura(k, d); } };
         return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px',
-          aria: ref ? `${r.aria}. ${ref.aria}` : r.aria };
+          aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: z === null ? '.45' : '1',
+          leds: LEDS.map((c, i) => ({ c, z: i < 4 ? 'baixo' : i < 11 ? 'faixa' : 'alto', op: z !== null && i === aceso ? '1' : '.32', halo: z !== null && i === aceso ? `0 0 6px 1px ${c}` : 'none' })),
+          menos: passo(-1), mais: passo(1), menosTecla: tecla(-1), maisTecla: tecla(1), ariaMenos: `Diminuir ${r.un}`, ariaMais: `Aumentar ${r.un}` };
       }),
       linhas: E.ops.map((o, i, a) => a.length > 2 && i === a.length - 1 ? 'minmax(min-content,auto)' : 'minmax(min-content,1fr)').join(' '),
       etapaId: E.id || '',
