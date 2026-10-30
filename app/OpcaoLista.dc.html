@@ -43,7 +43,8 @@ class Component extends DCLogic {
     return {
       // Subtítulo opcional (PR #27: marca do nominal do NTC, "10K" + Midea · Springer · Carrier), desenhado pelo CSS do app
       // ([data-opcao-sub]::after): o texto do botão e o nome acessível seguem só o nominal ("10K"), como o pr23.js e o pr24.js leem.
-      subTxt: this.props.sub || undefined, subPad: this.props.sub ? '6px 0' : '0', aria: this.props.sub ? rotulo : undefined,
+      // PR #57: aria explícito quando dois botões têm o mesmo nominal (TCL 10K RT, 10K IPT e 10K OAT/OPT).
+      subTxt: this.props.sub || undefined, subPad: this.props.sub ? '6px 0' : '0', aria: this.props.aria || (this.props.sub ? rotulo : undefined),
       ref: this.ref, rotulo, sel, temLogo: !!logo, logo, selLogo: sel && !!logo, selTexto: sel && !logo && !this.props.sub, padE: logo || this.props.sub ? '10px' : '16px', selTxt: sel ? 'true' : 'false', acao: this.props.acao, fs: fs + 'px', des, ariaDes: des ? 'true' : undefined,
       foco: e === 'foco' ? '1' : undefined, peso: sel ? 700 : 600,
       // Selecionada: aro neon --gp-dock-ring (o mesmo da tecla ativa do dock) e check em --gp-on-sel-mark.

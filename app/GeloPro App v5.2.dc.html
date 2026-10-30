@@ -432,6 +432,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                           <span style="grid-column:{{ c.descCol }};grid-row:{{ c.descRow }};font:700 16px/20px 'Roboto',sans-serif;text-wrap:pretty;">{{ c.descricao }}</span>
                           <span aria-hidden="true" style="width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;transform:{{ c.seta }};"><dc-import name="IconeGP" nome="abrir" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
                           <sc-if value="{{ c.temLeds }}" hint-placeholder-val="{{ false }}"><span data-led-painel="" class="tags" style="grid-column:1 / -1;"><sc-for list="{{ c.leds }}" as="ld" hint-placeholder-count="2"><span class="tag tag-led" data-selo="" data-rotulo="" data-led-estado="{{ ld.k }}"><span class="led-rot">{{ ld.rot }}</span><span class="{{ ld.c }}"><span class="led-dot" role="img" aria-label="{{ ld.aria }}"></span>{{ ld.n }}</span></span></sc-for></span></sc-if>
+                          <sc-if value="{{ c.temEscopo }}" hint-placeholder-val="{{ false }}"><span class="tags" style="grid-column:1 / -1;"><span class="tag tag-medida tag-l" data-selo="" data-rotulo="" data-cod-escopo="">{{ c.escopoTxt }}</span></span></sc-if>
                           <sc-if value="{{ c.temNormal }}" hint-placeholder-val="{{ false }}"><span class="tags" style="grid-column:1 / -1;"><span class="tag tag-ok" data-selo="" data-rotulo="" data-tag-nao-defeito="">✓ NÃO É DEFEITO</span></span></sc-if>
                           <sc-if value="{{ c.aberto }}" hint-placeholder-val="{{ false }}">
                             <span data-cod-aberto="" style="grid-column:1 / -1;display:flex;flex-direction:column;align-items:stretch;gap:10px;">
@@ -510,12 +511,12 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ ntcTem }}" hint-placeholder-val="{{ false }}">
                     <div role="listbox" aria-label="{{ ntcSensRot }}" data-ntc-uni="{{ ntcUni }}" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
                       <sc-for list="{{ ntcSens }}" as="n" hint-placeholder-count="3">
-                        <dc-import name="OpcaoLista" rotulo="{{ n.r }}" sub="{{ n.sub }}" sel="{{ n.sel }}" acao="{{ n.acao }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
+                        <dc-import name="OpcaoLista" rotulo="{{ n.r }}" sub="{{ n.sub }}" aria="{{ n.aria }}" sel="{{ n.sel }}" acao="{{ n.acao }}" style="display:block;min-width:0;" hint-size="100%,56px"></dc-import>
                       </sc-for>
                     </div>
                     <span style="flex:none;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ ntcDesc }}</span>
                     <div style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-                      <dc-import name="CampoTexto" rotulo="No sensor (°C)" valor="{{ ntcT }}" estado="{{ ntcTE }}" erroMsg="{{ ntcTM }}" aoDigitar="{{ setNtcT }}" placeholder="Ex.: 25" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
+                      <dc-import name="CampoTexto" rotulo="No sensor (°C)" valor="{{ ntcT }}" estado="{{ ntcTE }}" erroMsg="{{ ntcTM }}" ajuda="{{ ntcTA }}" aoDigitar="{{ setNtcT }}" placeholder="Ex.: 25" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                       <dc-import name="CampoTexto" rotulo="Medido (kΩ)" valor="{{ ntcR }}" estado="{{ ntcRE }}" erroMsg="{{ ntcRM }}" aoDigitar="{{ setNtcR }}" placeholder="Ex.: 10,2" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                     </div>
                     <div role="status" aria-live="polite" style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;background:var(--gp-display);box-shadow:inset 0 3px 6px var(--gp-key-shadow);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;">
@@ -1509,8 +1510,10 @@ const med = (v) => { const t = String(v ?? '').trim(); return /^[+-]?(?:\d+(?:[.
 const medErro = (v) => String(v ?? '').trim() && med(v) === null ? 'use só números, com vírgula ou ponto' : '';
 const f1 = (v) => v.toFixed(1).replace('.', ',').replace('-', '−');
 const fk = (v) => (v < 100 ? v.toFixed(2) : v.toFixed(1)).replace('.', ',');
-const ST_COD = { OFICIAL: ['Oficial', 'info'], OFICIAL_COM_CONFLITO: ['Fonte em conflito', 'aviso'], OFICIAL_PARCIAL: ['Fonte parcial', 'aviso'], OFICIAL_OUTRO_PAIS: ['Outro país', 'aviso'], OFICIAL_SEM_DETALHE: ['Sem detalhe', 'neutro'], OFICIAL_BOLETIM_COPIA_TERCEIRO: ['Cópia de terceiro', 'aviso'] };
-const ST_NTC = { CURVA_OFICIAL: 'curva oficial', CURVA_FABRICANTE_GLOBAL_CONFERIDA: 'curva global do fabricante, conferida no manual de serviço', CURVA_OFICIAL_REDE_AUTORIZADA: 'curva da rede autorizada', CURVA_MANUAL_SERVICO: 'curva do manual de serviço (fonte única)', PENDENTE: 'pendente na base técnica', PENDENTE_PRIORIDADE: 'pendente (prioridade) na base técnica', SEM_FONTE_PUBLICA: 'sem fonte pública localizada', NAO_COLETADO: 'ainda não coletada' };
+const ST_COD = { OFICIAL: ['Oficial', 'info'], OFICIAL_COM_CONFLITO: ['Fonte em conflito', 'aviso'], OFICIAL_PARCIAL: ['Fonte parcial', 'aviso'], OFICIAL_OUTRO_PAIS: ['Outro país', 'aviso'], OFICIAL_SEM_DETALHE: ['Sem detalhe', 'neutro'], OFICIAL_BOLETIM_COPIA_TERCEIRO: ['Cópia de terceiro', 'aviso'], OFICIAL_COPIA_TERCEIRO: ['Cópia de terceiro', 'aviso'] };
+// Escopo da linha dos códigos conferidos (PR #57, codigos_erro_conferidos.csv): o código vale só para a linha/modelo do manual de onde saiu.
+const ESCOPO_COD = { SPLIT_HI_WALL: 'Hi Wall', CASSETE_TETO_VRF: 'Cassete/Teto (VRF)', CASSETE_PISO_TETO: 'Cassete/Piso-Teto' };
+const ST_NTC = { CURVA_OFICIAL: 'curva oficial', CURVA_FABRICANTE_GLOBAL_CONFERIDA: 'curva global do fabricante, conferida no manual de serviço', CURVA_OFICIAL_REDE_AUTORIZADA: 'curva da rede autorizada', CURVA_MANUAL_SERVICO: 'curva do manual de serviço (fonte única)', CURVA_MANUAL_SERVICO_CONFERIDA_PDF: 'curva do manual de serviço, conferida por script contra o PDF', PENDENTE: 'pendente na base técnica', PENDENTE_PRIORIDADE: 'pendente (prioridade) na base técnica', SEM_FONTE_PUBLICA: 'sem fonte pública localizada', NAO_COLETADO: 'ainda não coletada' };
 const SKIP = { gree_15k_kohm: [20], lg_5k_kohm: [85] };
 // Curva de referência NTC (PR #23) para marca que não tem tabela própria na base: o técnico escolhe a resistência nominal a 25 °C e o app usa a tabela já
 // conferida da base com o mesmo nominal (Regra 2 do README da base: nada de fórmula Beta sem conferência). É nível 2 (curva escolhida pelo
@@ -1883,9 +1886,10 @@ class Component extends DCLogic {
       const [cod, fon, pt, ntc, crit] = await Promise.all(['codigos_erro.csv', 'FONTES.csv', 'pt_r410a_r32_r22.csv', 'ntc_resumo.csv', 'criterios_operacionais.csv'].map(get));
       const arqs = [...new Set(ntc.map(r => r.arquivo_curva).filter(Boolean))];
       const cv = await Promise.all(arqs.map(get));
-      const opc = await Promise.all(['inverter_checklist.csv', 'ntc_tolerancias.csv', 'pmoc_atividades.csv', 'percursos_etapas.csv', 'percursos_resultados.csv', 'piscadas.csv', 'codigos_erro_novos.csv', 'FONTES_novas.csv', 'percursos_tecnico_etapas.csv', 'percursos_tecnico_resultados.csv', 'FONTES_tecnico.csv', 'precos_regionais_2026.csv'].map(f => get(f).catch(() => [])));
+      const opc = await Promise.all(['inverter_checklist.csv', 'ntc_tolerancias.csv', 'pmoc_atividades.csv', 'percursos_etapas.csv', 'percursos_resultados.csv', 'piscadas.csv', 'codigos_erro_novos.csv', 'FONTES_novas.csv', 'percursos_tecnico_etapas.csv', 'percursos_tecnico_resultados.csv', 'FONTES_tecnico.csv', 'precos_regionais_2026.csv', 'codigos_erro_conferidos.csv'].map(f => get(f).catch(() => [])));
       const perc = ligarTecnico(montarPercursos(opc[3], opc[4]), montarPercursos(opc[8], opc[9]));
-      this.setState({ base: { cod: [...cod, ...opc[6]], pisc: opc[5], perc, fon: Object.fromEntries([...fon, ...opc[7], ...opc[10]].map(f => [f.id, f])), pt, ntc, crit, curvas: Object.fromEntries(arqs.map((a, i) => [a, cv[i]])), inv: opc[0], tol: opc[1], pmoc: opc[2], cat: montarCatalogo(opc[11]) } });
+      // PR #57: os 218 códigos conferidos contra o PDF (F29 a F33) entram depois dos já existentes, cada um com a linha e o escopo do manual.
+      this.setState({ base: { cod: [...cod, ...opc[6], ...opc[12]], pisc: opc[5], perc, fon: Object.fromEntries([...fon, ...opc[7], ...opc[10]].map(f => [f.id, f])), pt, ntc, crit, curvas: Object.fromEntries(arqs.map((a, i) => [a, cv[i]])), inv: opc[0], tol: opc[1], pmoc: opc[2], cat: montarCatalogo(opc[11]) } });
       // Abertura leve: só as cenas da primeira pergunta de cada sintoma com percurso (Código no display e LED piscando abrem a tabela).
       this.precarregarCenas(cenasDe(SINTOMAS.filter(x => x.id !== 'codigo' && x.id !== 'led').map(x => perc[x.id] && perc[x.id].inicio).filter(Boolean)));
     } catch (e) { this.setState({ baseErro: String(e.message || e) }); }
@@ -2240,7 +2244,8 @@ class Component extends DCLogic {
     // Carrier e Springer entram pela linha Midea/Springer/Carrier da base (curva 10K, Beta 4100).
     const nm = B ? B.ntc.filter(r => daMarca(r.marca, marca)) : [];
     const sensP = nm.filter(r => r.arquivo_curva);
-    // Curva de referência (PR #23): marca sem tabela própria na base (Samsung, Daikin, Fujitsu, Elgin, Consul, Electrolux, Philco, TCL, Agratto)
+    // Curva de referência (PR #23): marca sem tabela própria na base (Fujitsu, Elgin, Consul, Electrolux, Philco e as marcas do Modo Universal; PR #48
+    // tirou Samsung e Daikin e o PR #57 tirou TCL e Agratto, que ganharam curva do manual de serviço conferida contra o PDF)
     // escolhe a resistência nominal do sensor a 25 °C (NTC_REF). Sem escolha, nada é calculado: o nominal tem de vir da etiqueta ou do manual.
     const ntcUni = !!B && !sensP.length, uniR = ntcUni && st.ntcNom && st.ntcNom.marca === marca ? st.ntcNom.r : null;
     const refUni = uniR ? B.ntc.find(r => r.marca === NTC_REF[uniR] && num(r.r25_kohm) === uniR && r.arquivo_curva) : null;
@@ -2248,7 +2253,8 @@ class Component extends DCLogic {
     const sn = sens.find(r => r.sensor === st.ntcS) || sens[0];
     let pts = [], key = null;
     if (sn && B.curvas[sn.arquivo_curva]) {
-      const rows = B.curvas[sn.arquivo_curva]; key = Object.keys(rows[0] || {}).find(k => k.includes('_' + sn.r25_kohm + 'k') && !/_(min|max)_kohm$/.test(k));
+      // PR #57: coluna explícita (coluna_curva do ntc_resumo.csv) quando o arquivo tem mais de uma curva de mesmo nominal (TCL: RT, IPT e OAT/OPT, todas 10K).
+      const rows = B.curvas[sn.arquivo_curva]; key = sn.coluna_curva && sn.coluna_curva in (rows[0] || {}) ? sn.coluna_curva : Object.keys(rows[0] || {}).find(k => k.includes('_' + sn.r25_kohm + 'k') && !/_(min|max)_kohm$/.test(k));
       let last = Infinity;
       pts = rows.map(r => [num(r.temp_c), num(r[key])]).filter(p => p[0] !== null && p[1] !== null && !(SKIP[key] || []).includes(p[0])).filter(p => { if (p[1] < last) { last = p[1]; return true; } return false; });
     }
@@ -2302,7 +2308,10 @@ class Component extends DCLogic {
     const teq = Rn !== null && pts.length ? interp(pts.map(p => p[1]), pts.map(p => p[0]), Rn) : null;
     const pontaTxt = ponta ? `${Rlido > rCurva[1] ? 'acima de' : 'abaixo de'} ${fk(ponta[1])} kΩ, ponta de ${f1(ponta[0])} °C da tabela` : '';
     const dif = rexp !== null && Rn !== null ? (Rn - rexp) / rexp * 100 : null;
-    const ntcTErro = medErro(st.ntcT) || (tFora ? `fora da faixa desta tabela: ${f1(tCurva[0])} a ${f1(tCurva[1])} °C` : '');
+    // S3-a (PR #57): temperatura só fora da faixa da tabela não é erro de digitação. O campo °C mostra "Fora da faixa desta tabela: X a Y °C"
+    // como ajuda, sem o prefixo "Erro:" e sem borda de erro; "Erro:" fica para entrada inválida de verdade. O valor digitado segue para o laudo.
+    const ntcTFaixa = tFora ? `${f1(tCurva[0])} a ${f1(tCurva[1])} °C` : '';
+    const ntcTErro = medErro(st.ntcT), ntcTAjuda = !ntcTErro && tFora ? `Fora da faixa desta tabela: ${ntcTFaixa}` : '';
     const ntcRErro = medErro(st.ntcR) || (Rlido !== null && Rlido < 0 ? 'resistência não pode ser negativa' : rFora ? `fora da curva: ${fk(rCurva[0])} a ${fk(rCurva[1])} kΩ; meça de novo e, se repetir, orce a troca do sensor` : '');
     const ntcReg = Rn !== null || rZero, ntcTReg = Tn !== null && !ntcTErro;
     const vUpg = st.tela === 'vazio' && st.modo === 'upg';
@@ -2490,7 +2499,7 @@ class Component extends DCLogic {
     const bDif = bEst && bAp ? (bAp - bEst) / bEst * 100 : null;
     const fmtBTU = (v) => Math.round(v).toLocaleString('pt-BR') + ' BTU/h';
     const capRec = bEst ? OPTS.btu.list.map(btuNum).find(v => v >= bEst) || null : null;
-    const LD = st.laudo, lMedL = [ptOk ? `Sucção ${st.ptP.trim()} psig, tubo ${st.ptT.trim()} °C (${selA.fluido})` : '', ntcReg ? `Sensor NTC: ${st.ntcR.trim()} kΩ a ${ntcTReg ? st.ntcT.trim() : '—'} °C${rZero ? ' (zero: fora do cálculo)' : ''}` : '', bEst ? `Carga térmica estimada: ${fmtBTU(bEst)} para aparelho de ${selA.btu} BTU/h` : ''].filter(Boolean);
+    const LD = st.laudo, lMedL = [ptOk ? `Sucção ${st.ptP.trim()} psig, tubo ${st.ptT.trim()} °C (${selA.fluido})` : '', ntcReg ? `Sensor NTC: ${st.ntcR.trim()} kΩ a ${ntcTReg ? st.ntcT.trim() : '—'} °C${rZero ? ' (zero: fora do cálculo)' : ntcTReg && tFora ? ` (temperatura fora da faixa desta tabela: ${ntcTFaixa})` : ''}` : '', bEst ? `Carga térmica estimada: ${fmtBTU(bEst)} para aparelho de ${selA.btu} BTU/h` : ''].filter(Boolean);
     // Medições no laudo (PR #43, EXT-MIX-3): as leituras da sessão (PT/SH, NTC, carga térmica) só entram com a confirmação do técnico para este
     // cliente. Trocou o cliente do laudo, a confirmação cai: a medição de um atendimento nunca vai sozinha para o laudo do seguinte.
     const lMedQuais = [ptOk ? 'PT/SH' : '', ntcReg ? 'Sensor NTC' : '', bEst ? 'carga térmica' : ''].filter(Boolean);
@@ -3060,7 +3069,10 @@ class Component extends DCLogic {
         return { aberto: ab, exp: ab ? 'true' : 'false', seta: ab ? 'rotate(180deg)' : 'none', abrir: () => this.setState({ codExp: ab ? null : k }), codigo: c.codigo, descricao: c.descricao,
           // Código largo ("F1/F2/F4", "EH00/EH0A"): o resumo desce para a linha inteira; ao lado do código, a coluna de 320 px partia a palavra.
           descCol: c.codigo.length > 5 ? '1 / -1' : 'auto', descRow: c.codigo.length > 5 ? '2' : 'auto',
-          meta: `${c.led ? 'LED: ' + c.led + '. ' : ''}${c.linha}`, fonte: fonteTag(c.fonte_id), selo: (ST_COD[c.status] || [c.status])[0], seloTipo: (ST_COD[c.status] || [0, 'neutro'])[1],
+          // PR #57: código com escopo (conferido contra o PDF) mostra a linha, o tipo de aparelho e a página do manual; a observação da fonte
+          // (L8 e L9 da Elgin com dois significados impressos) vai junto, sem esconder o conflito.
+          meta: `${c.led ? 'LED: ' + c.led + '. ' : ''}${c.linha}${c.escopo ? ` · ${ESCOPO_COD[c.escopo] || c.escopo}` : ''}${c.pagina ? ` · p. ${c.pagina}` : ''}${c.observacao ? `. ${c.observacao}` : ''}`,
+          temEscopo: !!c.escopo, escopoTxt: c.escopo ? `Só ${ESCOPO_COD[c.escopo] || c.escopo} · ${c.linha.split(/ [-(]|,/)[0].trim()}` : '', fonte: fonteTag(c.fonte_id), selo: (ST_COD[c.status] || [c.status])[0], seloTipo: (ST_COD[c.status] || [0, 'neutro'])[1],
           temNormal: normal, naoTrocar: !normal, causa: causaDe(c), faca: facaDe(c, normal), leds, temLeds: leds.length > 0,
           orcarTxt: normal ? 'Orçar preventiva / higienização' : 'Orçar reparo / peça deste código', orcar: () => this.abrirFech(servicosDoCodigo(c, normal), true) }; }),
       // Marca universal sem registro próprio e sem plataforma escolhida: no lugar do "sem tabela", o aviso do Modo Universal com os 3 botões OEM.
@@ -3088,9 +3100,11 @@ class Component extends DCLogic {
       orcarPtsh: () => this.abrirFech(['carga_fluido'], true), orcarNtc: () => this.abrirFech(['sensor_ntc'], true),
       ntcTem: sensP.length > 0 || ntcUni, ntcUni,
       ntcSensRot: ntcUni ? `Resistência nominal do sensor (25 °C) · ${marca}` : 'Sensor',
-      ntcSens: ntcUni ? NTC_UNI.map(r => ({ r: r + 'K', sub: NTC_SUB[r], sel: uniR === r, acao: () => this.setState({ ntcNom: { marca, r }, ntcS: null }) })) : sens.map(r => ({ r: String(r.r25_kohm).replace('.', ',') + 'K', sel: r === sn, acao: () => this.setState({ ntcS: r.sensor }) })),
+      ntcSens: ntcUni ? NTC_UNI.map(r => ({ r: r + 'K', sub: NTC_SUB[r], sel: uniR === r, acao: () => this.setState({ ntcNom: { marca, r }, ntcS: null }) })) : sens.map(r => { const nm = String(r.r25_kohm).replace('.', ',') + 'K';
+        // PR #57: rótulo da placa (TCL: RT, IPT, OAT/OPT, ODT; Agratto: Ambiente, Bobina, Descarga, Anexo) como subtítulo e no nome acessível.
+        return { r: nm, sub: r.rotulo || undefined, aria: r.rotulo ? `${nm} ${r.rotulo}` : undefined, sel: r === sn, acao: () => this.setState({ ntcS: r.sensor }) }; }),
       ntcDesc: sn && sn.universal ? `${sn.sensor}. ${ORIENTA_NTC} ${ORIENTA_NTC_CTA}` : sn ? `${sn.sensor}, ${ST_NTC[sn.status] || sn.status}` : ntcUni ? `Toque na resistência nominal gravada na etiqueta do sensor (na base: 10K Midea/Springer/Carrier; 5K LG; 15K, 20K e 50K Gree). ${ORIENTA_NTC} ${ORIENTA_NTC_CTA}` : '',
-      ntcT: st.ntcT, ntcR: st.ntcR, ntcTM: ntcTErro, ntcRM: ntcRErro, ntcTE: ntcTErro ? 'erro' : 'normal', ntcRE: ntcRErro ? 'erro' : 'normal', setNtcT: (e) => this.setState({ ntcT: e.target.value }), setNtcR: (e) => this.setState({ ntcR: e.target.value }),
+      ntcT: st.ntcT, ntcR: st.ntcR, ntcTM: ntcTErro, ntcTA: ntcTAjuda, ntcRM: ntcRErro, ntcTE: ntcTErro ? 'erro' : 'normal', ntcRE: ntcRErro ? 'erro' : 'normal', setNtcT: (e) => this.setState({ ntcT: e.target.value }), setNtcR: (e) => this.setState({ ntcR: e.target.value }),
       ntcOut: [
         ['Esperado', rexp === null ? '—' : fk(rexp) + ' kΩ'],
         ['Diferença', dif === null ? '—' : (dif > 0 ? '+' : '') + f1(dif) + ' %'],

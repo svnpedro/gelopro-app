@@ -3,3 +3,11 @@ Midea/Springer/Carrier,"T1 ambiente, T2 evaporador, T3 condensador, T4 externo",
 Midea/Springer/Carrier,TP descarga,3,3950,,Declarado para o sensor de descarga TP: R(90 C) = 5 kOhm +-3% e B(25/50) = 3950 K; tolerancia de B nao declarada,F16,TOLERANCIA_FABRICANTE_GLOBAL,90
 Daikin,interno (evaporadora Wall Mounted) 10K,1,,,"Faixa Rmin a Rmax da Table 2 ponto a ponto (em 25 C: 9,90 a 10,10 kOhm)",F24,TOLERANCIA_TABELA_FABRICANTE,25
 Samsung,"ambiente, trocador interno, externo e degelo 10K",2,,,Erro dos dados de +-2% declarado no manual de servico (E121/E122),F26,TOLERANCIA_FABRICANTE_GLOBAL,25
+TCL,"RT ar ambiente interno 10K",1,4100,,"Faixa Rmin a Rmax do manual ponto a ponto (em 25 C: 9,90 a 10,10 kOhm); tolerancia de B nao declarada",F27,TOLERANCIA_TABELA_FABRICANTE,25
+TCL,"IPT serpentina do evaporador 10K",1,4100,,"Faixa Rmin a Rmax do manual ponto a ponto (em 25 C: 9,90 a 10,10 kOhm); tolerancia de B nao declarada",F27,TOLERANCIA_TABELA_FABRICANTE,25
+TCL,"OAT ambiente externo e OPT serpentina do condensador 10K",1,,,"Faixa Rmin a Rmax do manual ponto a ponto (em 25 C: 9,90 a 10,10 kOhm); tolerancia de B nao declarada",F27,TOLERANCIA_TABELA_FABRICANTE,25
+TCL,"ODT descarga do compressor 5K",2,3470,,"Faixa Rmin a Rmax do manual ponto a ponto (em 25 C: 4,90 a 5,10 kOhm); tolerancia de B nao declarada",F27,TOLERANCIA_TABELA_FABRICANTE,25
+Agratto,"ICS ambiente interno e externo 15K",3,3950,,"Faixa MIN a MAX do manual ponto a ponto (em 25 C: 14,55 a 15,45 kOhm); tolerancia de B nao declarada",F28,TOLERANCIA_TABELA_FABRICANTE,25
+Agratto,"ICS bobina interna (evaporador) e externa (condensador) 20K",3,3950,,"Faixa MIN a MAX do manual ponto a ponto (em 25 C: 19,40 a 20,60 kOhm); tolerancia de B nao declarada",F28,TOLERANCIA_TABELA_FABRICANTE,25
+Agratto,"ICS descarga do compressor 50K",2,3950,,"Faixa MIN a MAX do manual ponto a ponto (em 25 C: 49 a 51 kOhm); tolerancia de B nao declarada",F28,TOLERANCIA_TABELA_FABRICANTE,25
+Agratto,"Anexo 10K: ambiente e evaporador internos; defrost, ambiente e succao externos",3,,,"Faixa Minimo a Maximo do manual ponto a ponto (em 25 C: 9,70 a 10,30 kOhm); tolerancia de B nao declarada",F28,TOLERANCIA_TABELA_FABRICANTE,25
