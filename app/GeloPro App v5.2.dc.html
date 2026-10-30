@@ -89,6 +89,9 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 /* PR #77: modo vídeo (?demo=viral ou ?amostra=1&video=1) com o Passo 1 enxuto: placar, itens (descrição + valor) e Continuar na 1ª dobra.
    Os blocos secundários só somem da tela (display:none); seguem no DOM para os testes e voltam no botão "Opções e custos do orçamento ▾". */
 [data-video-enxuto="1"] :is([data-equip-orc],[data-item-qtd],[data-item-subtotal],[data-tubo-carga],[data-bastidor],[data-custo-peca],[data-dica],[data-evita],[data-economia],[data-editar-item],[data-editor-item],[data-desconto-orcamento],[data-validade-proposta],[data-anti-pechincha],[data-bonificar-visita],[data-visita-valor],[data-combo-sugestao],[data-custo-interno],[data-cli-tel],[data-add-item],[data-catalogo-botao],[data-catalogo],[data-cliente-bloco][data-cli-ok="1"]){display:none !important;}
+/* PR #84 (opção 2 aprovada pelo Pedro): no Passo 1 enxuto, as armas comerciais viram 1 faixa de chips de 1 toque ([data-atalhos-lucro-p1], 48 px),
+   logo acima do "Opções e custos ▾"; os blocos originais seguem recolhidos (Passo 1 dentro dos 750 px do real-v80.js). */
+[data-atalhos-lucro-p1]::-webkit-scrollbar{display:none;}
 /* PR #83: notas e referências técnicas recolhidas no uso real (PT/SH, NTC e Inverter); os nós seguem no DOM e abrem no botão do rodapé. */
 [data-notas-tec="0"] :is([data-nota-tecnica="1"],[data-ntc-fonte]){display:none !important;}
 /* PR #80: assistente do Inverter (uso real): só o cartão do passo atual aparece; "Ver todos os passos" volta à lista completa. */
@@ -1193,6 +1196,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </div></sc-if>
                 </div>
               </sc-for>
+              <sc-if value="{{ fChipsTem }}" hint-placeholder-val="{{ false }}"><div data-atalhos-lucro-p1="" role="group" aria-label="Lucro em 1 toque" style="flex:none;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;align-items:center;">
+                <sc-if value="{{ fChipEstTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-estoque="" aria-pressed="{{ fChipEstOn }}" onClick="{{ fChipEst }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid {{ fChipEstBd }};background:{{ fChipEstBg }};color:{{ fChipEstCor }};">{{ fChipEstTxt }}</button></sc-if>
+                <sc-if value="{{ fChipComboTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-combo="" aria-label="{{ fChipComboAria }}" onClick="{{ fChipCombo }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid #f59e0b;background:#fffbeb;color:#78350f;">{{ fChipComboTxt }}</button></sc-if>
+                <sc-if value="{{ fChipVisTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-visita="" aria-pressed="{{ fChipVisOn }}" onClick="{{ fBonifToggle }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid {{ fChipVisBd }};background:{{ fChipVisBg }};color:{{ fChipVisCor }};">{{ fChipVisTxt }}</button></sc-if>
+              </div></sc-if>
               <sc-if value="{{ fVideoModo }}" hint-placeholder-val="{{ false }}"><button type="button" data-mais-opcoes="" aria-expanded="{{ fMaisExp }}" onClick="{{ fMaisToggle }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:1.5px dashed var(--gp-outline);background:transparent;color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;">{{ fMaisTxt }}</button></sc-if>
               <button type="button" data-add-item="" onClick="{{ fAddItem }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>Adicionar item</button>
               <button type="button" data-catalogo-botao="" aria-expanded="{{ fCatExp }}" onClick="{{ fCatToggle }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/22px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ fCatTxt }}</button>
@@ -2562,6 +2570,11 @@ class Component extends DCLogic {
     const capFora = CAP_ETAPAS.some(k => st.hist.includes(k) && (st.resp || {})[k] === 'sim');
     const capInv = !!r && r.banc && !capOk && !capFora && st.sel.fluido === 'R32' && r.serv.includes('cap_partida');
     const rServ = r ? (capOk || capInv ? r.serv.filter(id => id !== 'cap_partida') : r.serv) : [];
+    // PR #84 (uso real): o "Medir com instrumento" do rodapé do Resultado nunca volta a uma pergunta visual. Some onde os instrumentos já estão no
+    // topo (ng/gp/ge_inc) ou onde o destino real é o próprio resultado (pi/ba_inc); nos demais, leva ao destino do atalho real (ATALHO_REAL).
+    const resMedir = (() => { if (!(PC && PC.tecInicio && r && !r.tec)) return 'nenhum'; if (LEGADO_TESTES) return 'legado'; const A = ATALHO_REAL[st.sint];
+      if (r.banc && /^(ng|gp|ge)_inc$/.test(st.res || '') || !A) return 'some'; if (A[0] === 'res') return A[1] === st.res || !PC.res[A[1]] ? 'some' : 'real';
+      return PC.etapas[A[1]] && FERR_INSTR.includes(PC.etapas[A[1]].ferr) ? 'real' : 'some'; })();
     const CAT = (st.base && st.base.cat) || [], resServ = r ? CAT.find(c => c.id === rServ[0]) || null : null;
     const mod = DK.find(k => k.id === st.modK);
     // Entrada única por sintoma: tela inicial e fichas abrem o mesmo percurso da base técnica.
@@ -3398,6 +3411,20 @@ class Component extends DCLogic {
         borda: sug ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)', det, detExp: det ? 'true' : 'false', detAria: `Detalhes: ${c.t}`,
         detToggle: () => this.fSet(f => ({ catDet: f.catDet === c.id ? null : c.id })), temDica: !!c.dica, dica: ponto(c.dica), temEco: !!c.eco, eco: ponto(c.eco),
         acao: () => addCat(c) }; }),
+      // PR #84: chips de 1 toque do Passo 1 enxuto (estoque no 1º item, 1º combo ou higienização, visita grátis hoje). Fora do modo cliente.
+      ...(() => { const i0 = fi[0], c0 = i0 ? catDe(i0) : null, cm0 = c0 ? custoPorte(c0, i0.btu || st.sel.btu).cmed : 0, est0 = !!c0 && cm0 > 0 && reais(String(i0.custo ?? '')) === 0;
+        const cb0 = combos[0], higNoOrc = !!F && F.itens.some(x => x.sid === 'higienizacao' || /higieniza/i.test(String(x.d || ''))), cH = (st.base && st.base.cat || []).find(c => c.id === 'higienizacao');
+        const curto = (t) => /higieniza/i.test(t) ? 'Higienização' : t.split(/[(+–-]/)[0].trim().split(' ').slice(0, 3).join(' ');
+        const temEst = !!c0 && cm0 > 0, temCombo = !!cb0 || (!!cH && !higNoOrc), temVis = !!F && (podeBonif || !!F.bonif), visOn = !!(F && F.bonif);
+        const on = (b) => b ? ['#dcfce7', '#15803d', '#86efac'] : ['#ffffff', '#19365c', '#94a3b8'];
+        return { fChipsTem: fp === 1 && !discreto && !LEGADO_TESTES && !!F && !F.maisOpcoes && (temEst || temCombo || temVis),
+          fChipEstTem: temEst, fChipEstOn: est0 ? 'true' : 'false', fChipEstTxt: est0 ? '✓ Peça do estoque (R$ 0)' : 'Peça do estoque (R$ 0)',
+          fChipEstBg: on(est0)[0], fChipEstCor: on(est0)[1], fChipEstBd: on(est0)[2],
+          fChipEst: () => temEst && this.fSet(f => ({ itens: f.itens.map((y, j) => j === 0 ? { ...y, custo: est0 ? cm0 : 0 } : y) })),
+          fChipComboTem: temCombo, fChipComboTxt: `+ ${curto(cb0 ? cb0.t : 'Higienização')}`, fChipComboAria: cb0 ? `Incluir ${cb0.t}` : 'Incluir Higienização Técnica Completa',
+          fChipCombo: () => cb0 ? addCat(cb0) : cH && addCat(cH),
+          fChipVisTem: temVis, fChipVisOn: visOn ? 'true' : 'false', fChipVisTxt: visOn ? '✓ Visita grátis hoje' : 'Visita grátis hoje', fChipVisBg: on(visOn)[0], fChipVisCor: on(visOn)[1], fChipVisBd: on(visOn)[2] };
+      })(),
       fTemCombo: fp === 1 && combos.length > 0 && !discreto, fCombos: combos.map(c => { const l = R0(Math.max(0, (tipDe(c, st.sel.btu) || 0) - custoPorte(c, st.sel.btu).cmed)); return { id: c.id, lucro: TG('lucro', `+${l}`), nome: c.t, aria: `Incluir ${c.t}: +${l} de lucro líquido`, acao: () => addCat(c) }; }),
       // Modo cliente ao lado e visita bonificada (PR #20), com o mesmo desenho de chave do detalhamento técnico.
       fDiscreto: discreto, fVerCusto: !discreto, fDiscretoOn: discreto ? 'true' : 'false', fDiscretoToggle: () => { this._virarN = (this._virarN || 0) + 1; this.fSet(f => ({ discreto: !f.discreto, catDet: null })); },
@@ -3702,7 +3729,7 @@ class Component extends DCLogic {
           // PR #58: a barra do "Sem teste"/"Não sei" cresce com a linha (flex 1 1 auto), sem sobra escura do cartão abaixo ou acima dela; a cola do
           // instrumento usa o mesmo raio (16 px) e o mesmo alinhamento lateral dos cartões de cima.
           cartaoDir: sozinho ? 'column' : 'row', barDir: sozinho ? 'row' : 'column', barFlex: sozinho ? '1 1 auto' : `0 0 ${COL_RESPOSTA}px`, barW: sozinho ? '100%' : COL_RESPOSTA + 'px',
-          barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M5 12h14M13 6l6 6-6 6' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.l, pri: i === 0, onClick: go(o), c: leg, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}${capInv ? '. ' + CAP_INV_TXT : ''}` };
+          barH: sozinho ? '56px' : '0', barPad: sozinho ? '6px 12px' : '8px', barLuz: sozinho ? 'inset 0 1px 0 rgba(255,255,255,.22)' : 'inset 1px 0 0 rgba(255,255,255,.22)', d: o.inc ? 'M5 12h14M13 6l6 6-6 6' : tom === 'var(--gp-answer-yes)' ? 'M20 6 9 17l-5-5' : tom === 'var(--gp-answer-no)' ? 'M18 6 6 18M6 6l12 12' : 'M5 12h14M13 6l6 6-6 6', l: o.inc && !LEGADO_TESTES && E.tec && FERR_INSTR.includes(E.ferr) ? 'Pular medição e ver causas' : o.l, pri: i === 0, onClick: go(o), c: leg, visual: o.v && VIS[o.v] ? VIS[o.v]() : E.tec ? visTxt(o.c || o.l) : visGen(o.inc ? 'inc' : o.sim), aria: `${o.l}: ${o.c}${capInv ? '. ' + CAP_INV_TXT : ''}` };
       }),
       resTitulo: r ? (r.banc ? 'Causas prováveis para medição e orçamento' : r.t) : '',
       // Sem código interno (PED01, T02, D11) nem nome de outro fabricante na tela (PR #22): a fonte vira o rótulo do aparelho do topo.
@@ -3733,12 +3760,13 @@ class Component extends DCLogic {
       })(),
       // Todo resultado abre o orçamento (com a peça/serviço sugerido); na checagem rápida, o outro botão leva aos testes com instrumento.
       // "Medir com instrumento" não cabe em meia tecla a 16 px: com ele, as duas teclas ficam empilhadas (Montar orçamento embaixo, perto do polegar).
-      resCols: PC && PC.tecInicio && r && !r.tec ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))',
+      resCols: resMedir === 'some' || !(PC && PC.tecInicio && r && !r.tec) ? (resMedir === 'some' ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))') : 'minmax(0,1fr)',
       resKeys: [
-        PC && PC.tecInicio && r && !r.tec ? { l: 'Medir com instrumento', aria: 'Medir com instrumento: abrir a checagem de técnico', pri: false, amarelo: true, onClick: () => this.setState(x => ({ tela: 'etapa', etapa: PC.tecInicio, res: null, pk: null, dica: false })) }
+        resMedir === 'some' ? null : resMedir === 'real' ? { l: 'Medir com instrumento', aria: 'Medir com instrumento', pri: false, amarelo: true, onClick: () => this.setState(ATALHO_REAL[st.sint][0] === 'res' ? { tela: 'resultado', res: ATALHO_REAL[st.sint][1], pk: null, dica: false } : { tela: 'etapa', etapa: ATALHO_REAL[st.sint][1], res: null, pk: null, dica: false }) }
+          : resMedir === 'legado' ? { l: 'Medir com instrumento', aria: 'Medir com instrumento: abrir a checagem de técnico', pri: false, amarelo: true, onClick: () => this.setState(x => ({ tela: 'etapa', etapa: PC.tecInicio, res: null, pk: null, dica: false })) }
           : { l: 'Refazer', aria: 'Refazer', pri: false, onClick: () => this.setState({ ...RESET }) },
         { l: 'Montar orçamento', aria: 'Montar orçamento com a peça ou serviço sugerido', pri: true, verde: true, onClick: () => this.abrirFech(rServ, false, null, true) },
-      ],
+      ].filter(Boolean),
       vIconeNome: m ? m.i : 'info', vTitulo: m ? m.vt : '', vTexto: m ? m.vx : '',
       
       dock: DK.map(k => {
