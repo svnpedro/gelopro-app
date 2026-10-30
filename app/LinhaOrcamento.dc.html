@@ -13,9 +13,9 @@
     <span data-campo="1" data-foco="{{ focoD }}" style="flex:1 1 100%;min-width:0;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:var(--gp-r-campo, 14px);border:{{ bordaD }};background:{{ fundo }};box-shadow:{{ rec }};display:flex;align-items:center;">
       <textarea aria-label="{{ ariaD }}" rows="1" value="{{ descricao }}" onInput="{{ aoDescricao }}" placeholder="{{ phD }}" disabled="{{ des }}" aria-invalid="{{ invD }}" style="flex:1;min-width:0;min-height:24px;box-sizing:content-box;padding:0;border:0;outline:none;resize:none;overflow:hidden;field-sizing:content;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:{{ corTxt }};--gp-on-surface-variant:{{ corPh }};"></textarea>
     </span>
-    <span data-campo="1" style="flex:1 1 96px;min-width:0;height:56px;box-sizing:border-box;padding:0 12px;border-radius:var(--gp-r-campo, 14px);border:{{ bordaV }};background:{{ fundo }};box-shadow:{{ rec }};display:flex;align-items:center;gap:6px;">
-      <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:{{ corVar }};">R$</span>
-      <input aria-label="{{ ariaV }}" inputMode="decimal" value="{{ valor }}" onInput="{{ aoValor }}" placeholder="0,00" disabled="{{ des }}" aria-invalid="{{ invV }}" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;text-align:right;font:500 16px/24px 'Roboto',sans-serif;color:{{ corTxt }};--gp-on-surface-variant:{{ corPh }};font-variant-numeric:tabular-nums;">
+    <span data-campo="1" style="flex:1 1 96px;min-width:0;height:56px;box-sizing:border-box;padding:0 12px;border-radius:var(--gp-r-campo, 14px);border:{{ bordaV }};background:{{ fundo }};box-shadow:{{ recV }};display:flex;align-items:center;gap:6px;">
+      <span data-moeda="1" style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:{{ corMoeda }};font-variant-numeric:tabular-nums;">R$</span>
+      <input aria-label="{{ ariaV }}" inputMode="decimal" value="{{ valor }}" onInput="{{ aoValor }}" placeholder="0,00" disabled="{{ des }}" aria-invalid="{{ invV }}" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;text-align:right;font:700 16px/24px 'Roboto',sans-serif;color:{{ corTxt }};--gp-on-surface-variant:{{ corPh }};font-variant-numeric:tabular-nums;letter-spacing:0.01em;">
     </span>
     <button type="button" aria-label="{{ ariaRem }}" onClick="{{ aoRemover }}" disabled="{{ des }}" style="flex:none;width:56px;height:56px;box-sizing:border-box;border-radius:16px;border:{{ bordaB }};background:{{ fundoB }};box-shadow:{{ sombraB }};color:{{ corIco }};display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:{{ pe }};transition:transform 120ms ease-out,box-shadow 180ms ease-out;" style-hover="box-shadow:var(--gp-mold-shadow),inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);background:var(--gp-mold-sunken);box-shadow:var(--gp-mold-shadow-pressed);"><span aria-hidden="true" style="display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="lixeira" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span></button>
   </div>
@@ -25,7 +25,7 @@
 <sc-if value="{{ ro }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-height:44px;box-sizing:border-box;padding:12px 0;border-bottom:1px solid var(--gp-outline-variant);">
   <span style="flex:1;min-width:0;font:500 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ descricaoTxt }}</span>
-  <span style="flex:none;font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">{{ valorFmt }}</span>
+  <span style="flex:none;font:700 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);font-variant-numeric:tabular-nums;">{{ valorFmt }}</span>
 </div>
 </sc-if>
 </x-dc>
@@ -38,6 +38,8 @@ class Component extends DCLogic {
     const des = e === 'desabilitado', ro = e === 'somente-leitura', erro = e === 'erro';
     const campo = this.props.campoErro || 'valor';
     const rec = des ? 'none' : 'var(--gp-well-shadow)';
+    // PR #62: poço do valor com chanfro nítido (luz de 1 px no alto, sombra de 2 px embaixo) sobre o poço do tema; R$ em 700 na cor de dinheiro das etiquetas.
+    const recV = des ? 'none' : 'var(--gp-well-shadow), inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 0 rgba(9,30,66,0.12)';
     const bN = '1px solid transparent', bE = '2px solid var(--gp-error)', bD = '1px dashed var(--gp-outline-variant)';
     const v = num(this.props.valor);
     const d = this.props.descricao ?? '';
@@ -48,9 +50,9 @@ class Component extends DCLogic {
       phD: this.props.placeholder || 'Descreva o item', ariaD: 'Descrição do item ' + (this.props.n || ''), ariaV: 'Valor do item ' + (this.props.n || '') + ' em reais', ariaRem: 'Remover item ' + (this.props.n || ''),
       focoD: e === 'foco' ? '1' : undefined, invD: erro && campo === 'descricao' ? 'true' : undefined, invV: erro && campo === 'valor' ? 'true' : undefined,
       bordaD: des ? bD : erro && campo === 'descricao' ? bE : bN, bordaV: des ? bD : erro && campo === 'valor' ? bE : bN,
-      fundo: des ? 'var(--gp-disabled)' : 'var(--gp-well)', rec,
+      fundo: des ? 'var(--gp-disabled)' : 'var(--gp-well)', rec, recV,
       bordaB: des ? bD : '1px solid transparent', fundoB: des ? 'var(--gp-disabled)' : 'var(--gp-mold-raised)', sombraB: des ? 'none' : 'var(--gp-mold-shadow)',
-      corTxt: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', corPh: des ? 'var(--gp-on-disabled)' : 'var(--gp-placeholder)', corVar: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface-variant)', corIco: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', pe: des ? 'none' : 'auto',
+      corTxt: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', corPh: des ? 'var(--gp-on-disabled)' : 'var(--gp-placeholder)', corMoeda: des ? 'var(--gp-on-disabled)' : 'var(--gp-tg-dinheiro, var(--gp-on-surface-variant))', corIco: des ? 'var(--gp-on-disabled)' : 'var(--gp-on-surface)', pe: des ? 'none' : 'auto',
     };
   }
 }

@@ -11,7 +11,7 @@
   <sc-if value="{{ temRotulo }}" hint-placeholder-val="{{ true }}"><span style="font:600 16px/22px 'Roboto',sans-serif;color:{{ corRotulo }};">{{ rotulo }}</span></sc-if>
   <span data-foco="{{ foco }}" data-campo="1" style="height:56px;box-sizing:border-box;padding:0 12px 0 14px;border-radius:var(--gp-r-campo, 14px);border:{{ borda }};background:{{ fundo }};box-shadow:{{ sombra }};display:flex;align-items:center;gap:10px;color:{{ corIcone }};--peca-hover:{{ hov }};" style-hover="box-shadow:var(--peca-hover);">
     <sc-if value="{{ eBusca }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="busca" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span></sc-if>
-    <input aria-label="{{ ariaRot }}" value="{{ valor }}" onInput="{{ aoDigitar }}" placeholder="{{ placeholder }}" readOnly="{{ ro }}" disabled="{{ des }}" aria-invalid="{{ inval }}" aria-busy="{{ busy }}" aria-describedby="{{ descId }}" inputMode="{{ modo }}" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:{{ corTexto }};--gp-on-surface-variant:{{ corPh }};font-variant-numeric:tabular-nums;">
+    <input aria-label="{{ ariaRot }}" value="{{ valor }}" onInput="{{ aoDigitar }}" placeholder="{{ placeholder }}" readOnly="{{ ro }}" disabled="{{ des }}" aria-invalid="{{ inval }}" aria-busy="{{ busy }}" aria-describedby="{{ descId }}" inputMode="{{ modo }}" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;font:600 16px/24px 'Roboto',sans-serif;font-variant-numeric:tabular-nums;color:{{ corTexto }};--gp-on-surface-variant:{{ corPh }};font-variant-numeric:tabular-nums;">
     <sc-if value="{{ car }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="carregando" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span></sc-if>
     <sc-if value="{{ ro }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="cadeado" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span></sc-if>
     <sc-if value="{{ erro }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="flex:none;color:var(--gp-error);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="erro" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span></sc-if>
@@ -27,7 +27,8 @@ class Component extends DCLogic {
     const e = this.props.estado || 'normal';
     const erro = e === 'erro', ro = e === 'somente-leitura', des = e === 'desabilitado', car = e === 'carregando';
     const ajuda = erro ? (this.props.erroMsg || 'Valor inválido') : ro ? (this.props.ajudaRO ?? 'Somente leitura') : (this.props.ajuda || '');
-    const rec = 'var(--gp-well-shadow)';
+    // PR #62: o mesmo chanfro nítido do poço de valor da LinhaOrcamento (luz de 1 px no alto, sombra de 2 px embaixo) sobre o poço do tema.
+    const rec = 'var(--gp-well-shadow), inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 0 rgba(9,30,66,0.12)';
     return {
       ariaRot: this.props.aria, rotulo: this.props.rotulo ?? '', temRotulo: !!this.props.rotulo, valor: this.props.valor ?? '', placeholder: this.props.placeholder ?? '',
       aoDigitar: this.props.aoDigitar, modo: this.props.modo, eBusca: this.props.icone === 'busca',
