@@ -495,6 +495,19 @@ html[data-uso-real="1"] [data-res-rolagem] ol .destaque{font-weight:800 !importa
 html[data-uso-real="1"] [data-res-servico]{background:#f0fdf4 !important;border:2px solid #16a34a !important;border-radius:14px !important;box-shadow:0 3px 0 #14532d,0 6px 14px rgba(20,83,45,0.2) !important;}
 /* PR #128: Passo 2 com os 4 opcionais recolhidos (uso real, gaveta [data-mais-p2] fechada). */
 html[data-uso-real="1"] [data-p2-opcionais][data-aberto="0"]{display:none !important;}
+/* PR #130: chapa usinada padrão Testo (uso real, Titânio). Só box-shadow, fundos e pseudo-elemento: nenhum x, y, largura ou altura muda
+   (impressão digital igual ao PR #129). Chanfro perimetral nas carcaças; berço CNC da Home no ::before da moldura (o [data-vis] da Home segue
+   transparente e o 1º fundo acima dele continua sendo o chassi acetinado, como o real-v80 confere), com 3 a 5 px de respiro em volta de abas,
+   grade, telemetria e gêmeos; aro metálico na moldura das telas internas; soquete usinado nas teclas (grade, gêmeos, trio e dock, a ativa com
+   o anel ciano); rebordo de encaixe nas janelas escuras; sulco fresado no meio do vão de 13 px entre os gêmeos e o dock. */
+html[data-uso-real="1"] [data-tema="titanio"] :is([data-chassi],[data-chapa]){box-shadow:inset 0 0 0 2px #7c8798,inset 0 2px 0 rgba(255,255,255,0.82),inset 0 -2px 5px rgba(9,30,66,0.32) !important;}
+html[data-uso-real="1"] [data-tema="titanio"] div:has(> [data-tema] > [data-vis] [data-home-rolagem]){position:relative;isolation:isolate;}
+html[data-uso-real="1"] [data-tema="titanio"] div:has(> [data-tema] > [data-vis] [data-home-rolagem])::before{content:"";position:absolute;z-index:-1;top:1px;right:10px;bottom:0;left:10px;border-radius:26px;background:rgba(15,30,56,0.055);box-shadow:inset 0 2px 5px rgba(9,30,66,0.25),inset 0 0 0 1px rgba(9,30,66,0.16),0 1px 0 rgba(255,255,255,0.85);pointer-events:none;}
+html[data-uso-real="1"] [data-tema="titanio"] [data-chassi] div:has(> [data-tema] > [data-vis]):not(:has([data-home-rolagem])){box-shadow:inset 0 1px 0 rgba(255,255,255,0.8),0 0 0 1.5px #64748b,0 2px 5px rgba(9,30,66,0.22) !important;}
+html[data-uso-real="1"] [data-tema="titanio"] :is([data-grade-sintomas] button,[data-grade-medicoes] [data-atalho-medicao] button,[data-fichas-sala],[data-atalhos] > [data-sc-name="AtalhoTecla"] button[data-verde="1"] > span,[data-atalhos] > [data-atendimento-ativo] > button,nav[aria-label="Módulos"] button:not([aria-current="page"]) [data-tecla]){box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.32),inset 0 -2px 0 rgba(0,0,0,0.48),0 0 0 1.5px #0b182e,0 2px 0 rgba(255,255,255,0.72),0 4px 7px rgba(9,30,66,0.28) !important;}
+html[data-uso-real="1"] [data-tema="titanio"] nav[aria-label="Módulos"] button[aria-current="page"] [data-tecla]{box-shadow:0 0 12px #38bdf8,inset 0 0 6px rgba(103,198,255,0.5),0 0 0 1.5px #0b182e,0 2px 0 rgba(255,255,255,0.72) !important;}
+html[data-uso-real="1"] [data-tema="titanio"] :is([role="group"][aria-label="Equipamento"],[data-home-modo],[data-telemetria],[data-visor-total],[data-lucro-painel],[data-mostrador-calc],[data-inv-meta],[data-cofre-mostrador],[data-doc-faixa],[data-ref-comunicacao]){box-shadow:inset 0 2px 5px rgba(0,0,0,0.55),0 0 0 1px #475569,0 1.5px 0 rgba(255,255,255,0.82) !important;}
+html[data-uso-real="1"] [data-tema="titanio"] [data-dock-barra]{box-shadow:0 -5px 0 -4px #7c8798,inset 0 1px 0 rgba(255,255,255,0.85) !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),

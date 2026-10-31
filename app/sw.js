@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'gelopro-offline-v129';
+const CACHE = 'gelopro-offline-v130';
 const REDE_MS = 3000;
 const NUCLEO = [
 'GeloPro App v5.2.dc.html', 'support.js', 'manifest.json',
