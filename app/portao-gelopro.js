@@ -28,10 +28,14 @@ const bc = pc(cs.backgroundColor); if (bc && bc[3] > 0) L.push([bc]);
 return L;
 }
 const cache = new Map();
+const PASTILHA = [[29, 78, 216, 1]];
 function fundo(el) {
 if (cache.has(el)) return cache.get(el);
-const st = [];
-for (let n = el; n && n.nodeType === 1; n = n.parentElement) for (const l of camadas(n)) { st.push(l); if (l.every(c => c[3] >= 1)) return guardar(el, st); }
+const st = [], fluido = document.documentElement.getAttribute('data-gp-fluido') === '1';
+for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+if (fluido && n.matches('[data-home-modo] > [data-aba-home][aria-selected="true"]') && getComputedStyle(n.parentElement, '::before').content !== 'none') { st.push(PASTILHA); return guardar(el, st); }
+for (const l of camadas(n)) { st.push(l); if (l.every(c => c[3] >= 1)) return guardar(el, st); }
+}
 st.push([[201, 202, 206, 1]]); return guardar(el, st);
 }
 function guardar(el, st) {
@@ -159,6 +163,13 @@ const t = document.querySelector('[data-telemetria]'); if (t && visivel(t)) { co
 const nb = [...document.querySelectorAll('nav[aria-label="Módulos"] button')].find(visivel); if (nb) { const v2 = nb.getBoundingClientRect().top - ra.bottom; if (Math.abs(v - v2) > 2) falha('G-L17 carrossel', at, `vãos desiguais acima e abaixo dos botões da base: ${Math.round(v)} px × ${Math.round(v2)} px (diferença máxima 2)`); }
 const eq = document.querySelector('[role="group"][aria-label="Equipamento"]'), ab = document.querySelector('[data-home-modo]'); if (eq && ab && visivel(eq) && visivel(ab)) { const vt = ab.getBoundingClientRect().top - eq.getBoundingClientRect().bottom; if (Math.abs(vt - v) > 3) falha('G-L17 carrossel', ab, `vão do topo ${Math.round(vt)} px × vão dos gêmeos ${Math.round(v)} px (diferença máxima 3)`); } } });
 if (document.documentElement.getAttribute('data-gp-fluido') === '1') dentro('[data-aba-home] > span').forEach(e => { const bg = getComputedStyle(e).backgroundColor; if (bg !== 'rgba(0, 0, 0, 0)') falha('G-L17 carrossel', e, `fundo ${bg} no span da aba (no modo fluido só a pastilha pinta)`); });
+const H = document.documentElement; let reduz = false; try { reduz = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { }
+if (H.getAttribute('data-gp-fluido') === '1' && H.getAttribute('data-uso-real') === '1' && !reduz) {
+const est = document.getElementById('gp-fluidez-manteiga');
+if (!est || est.disabled || !est.sheet || !/gpSanfonaIn/.test(est.textContent) || !/grid-template-rows/.test(est.textContent)) falha('G-L19 fluidez e imagens', document.body, 'estilo #gp-fluidez-manteiga ausente, desligado ou sem a sanfona 0fr → 1fr');
+document.querySelectorAll('[data-p2-opcionais], [data-p4-opcionais]').forEach(g => { const c = getComputedStyle(g); if (c.display !== 'grid' || !/grid-template-rows/.test(c.transitionProperty) || !(Math.max(...c.transitionDuration.split(',').map(parseFloat)) > 0)) falha('G-L19 fluidez e imagens', g, `gaveta sem sanfona (display ${c.display}, transição ${c.transitionProperty} ${c.transitionDuration})`); });
+if (!(window.__gpImgsPreloaded instanceof Set)) falha('G-L19 fluidez e imagens', document.body, 'window.__gpImgsPreloaded ausente (pré-decodificação de imagens desligada)');
+}
 }
 const ESCOPO = '[data-fichas],[data-central-avisos],[data-cofre-card],[data-vis],[role="dialog"]';
 const GENERICO = new Set(['estado', 'data', 'custo', 'sem-ref', 'neutro']);
