@@ -137,6 +137,9 @@ const h = t.map(e => e.getBoundingClientRect().height); if (Math.abs(h[0] - h[1]
 dentro('[data-atendimento-ativo]').forEach(g => ['play', 'pause', 'plus'].forEach(k => { const e = g.querySelector(`svg[data-trio-ico="${k}"]`); if (!e || !visivel(e)) falha('G-L16 semiótica SVG', g, `trio do atendimento sem o ícone ${k}`); }));
 dentro('[data-docs-tab="zap"], [data-script-zap]').forEach(b => { if (!b.querySelector('svg[data-zap-oficial]')) falha('G-L16 semiótica SVG', b, 'WhatsApp sem o ícone oficial [data-zap-oficial]'); });
 dentro('[data-home-carrossel]').forEach(c => { const t = c.querySelector('[data-carrossel-trilho]'); if (!t || getComputedStyle(t).display !== 'flex') falha('G-L17 carrossel', c, `trilho ${t ? 'em display ' + getComputedStyle(t).display : 'ausente'} (precisa ser flex)`); });
+dentro('[data-home-carrossel]').forEach(c => { const a = c.querySelector('[data-grade-sintomas] button'), m = c.querySelector('[data-grade-medicoes] button'); if (!a || !m) return;
+const ha = a.getBoundingClientRect().height, hm = m.getBoundingClientRect().height; if (Math.abs(ha - hm) > 1.5) falha('G-L17 carrossel', c, `quadrado de Sintomas com ${Math.round(ha)} px e de Medições com ${Math.round(hm)} px (máximo 1,5 px de diferença)`); });
+dentro('[data-atalhos]').forEach(e => { const h = e.getBoundingClientRect().height; if (h > 52) falha('G-L17 carrossel', e, `rodapé da Home com ${Math.round(h)} px (máximo 52, 1 linha nas 2 abas)`); });
 if (document.documentElement.getAttribute('data-gp-fluido') === '1') dentro('[data-aba-home] > span').forEach(e => { const bg = getComputedStyle(e).backgroundColor; if (bg !== 'rgba(0, 0, 0, 0)') falha('G-L17 carrossel', e, `fundo ${bg} no span da aba (no modo fluido só a pastilha pinta)`); });
 }
 const ESCOPO = '[data-fichas],[data-central-avisos],[data-cofre-card],[data-vis],[role="dialog"]';

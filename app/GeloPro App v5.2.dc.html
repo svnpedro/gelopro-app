@@ -193,7 +193,9 @@ html[data-uso-real="1"] [data-inv-anterior]:disabled{opacity:.55 !important;}
    sem transbordar o cartão e trio da quantidade (−, campo, +) sempre na mesma linha. */
 html[data-uso-real="1"] [data-tema-icones]{display:none !important;}
 html[data-uso-real="1"] button[aria-label="Tema Sol"]{padding:0 !important;gap:0 !important;}
-html[data-uso-real="1"] [data-atalhos][data-aba="medicoes"] > :first-child{display:none !important;}
+/* PR #123: a barra "Consultar fichas" sai do rodapé nas 2 abas (uso real): rodapé sempre de 48 px, sem o salto de 54 px da grade e da
+   telemetria ao trocar Sintomas | Medições. As fichas seguem no 9º quadrado de Medições e Testes; o legado não muda. */
+html[data-uso-real="1"] [data-atalhos] > :first-child{display:none !important;}
 [data-ntc-uni]{align-items:stretch !important;}
 [data-ntc-uni] > *,[data-ntc-uni] [role="option"]{height:100%;box-sizing:border-box;}
 .tag.tag-l{max-width:100%;overflow-wrap:break-word;}
@@ -327,7 +329,11 @@ html[data-uso-real="1"] [data-home-modo] > [data-aba-home][aria-selected="true"]
 html[data-uso-real="1"] [data-tema="sol"] [data-home-modo]{background:#ffffff;box-shadow:inset 0 0 0 2px #091e42;}
 html[data-uso-real="1"] [data-tema="sol"] [data-home-modo] > [data-aba-home] > span{color:#091e42 !important;}
 html[data-uso-real="1"] [data-tema="sol"] [data-home-modo] > [data-aba-home][aria-selected="true"] > span{color:#ffffff !important;}
-html[data-uso-real="1"] [data-grade-medicoes] [data-atalho-medicao] button{border:1.5px solid #64748b !important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.28),inset 0 -2px 0 rgba(0,0,0,0.45),0 3px 6px rgba(9,30,66,0.28) !important;}
+/* PR #123: simetria 1:1 entre as 2 grades da Home (uso real): mesma geometria 3×3 (colunas e linhas 1fr, padding 0 2px, mesmo gap e altura)
+   e o mesmo chanfro metálico 3D nos 18 quadrados no Titânio; borda #091e42 firme no Sol. */
+html[data-uso-real="1"] :is([data-grade-sintomas],[data-grade-medicoes]){grid-template-columns:repeat(3,minmax(0,1fr)) !important;grid-template-rows:repeat(3,minmax(0,1fr)) !important;grid-auto-rows:minmax(0,1fr) !important;padding:0 2px !important;}
+html[data-uso-real="1"] :is([data-grade-sintomas] button,[data-grade-medicoes] [data-atalho-medicao] button){border:1.5px solid #64748b !important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.28),inset 0 -2px 0 rgba(0,0,0,0.45),0 3px 6px rgba(9,30,66,0.28) !important;}
+html[data-uso-real="1"] [data-tema="sol"] :is([data-grade-sintomas] button,[data-grade-medicoes] [data-atalho-medicao] button){border:1.5px solid #091e42 !important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.6),0 2px 0 rgba(9,30,66,0.28) !important;}
 /* PR #114: Inverter na 1ª dobra (uso real). Aviso de segurança em 1 linha (texto completo em sr-only), número/selo do teste em sr-only
    (o "Teste N de 5" da navegação já diz); fotos certo/errado, pontas, etiquetas de condição (repetem o Como medir) e "Anotar resultados"
    descem para baixo dos botões ✓ Normal / ✗ Defeito. */
