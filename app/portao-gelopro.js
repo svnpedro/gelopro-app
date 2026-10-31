@@ -33,7 +33,7 @@ function fundo(el) {
 if (cache.has(el)) return cache.get(el);
 const st = [], fluido = document.documentElement.getAttribute('data-gp-fluido') === '1';
 for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
-if (fluido && n.matches('[data-home-modo] > [data-aba-home][aria-selected="true"]') && getComputedStyle(n.parentElement, '::before').content !== 'none') { st.push(PASTILHA); return guardar(el, st); }
+if (fluido && n.matches('[data-home-modo] > [data-aba-home][aria-selected="true"],[data-docs-abas] > [data-docs-tab][aria-selected="true"]') && getComputedStyle(n.parentElement, '::before').content !== 'none') { st.push(PASTILHA); return guardar(el, st); }
 for (const l of camadas(n)) { st.push(l); if (l.every(c => c[3] >= 1)) return guardar(el, st); }
 }
 st.push([[201, 202, 206, 1]]); return guardar(el, st);
