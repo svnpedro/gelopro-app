@@ -690,7 +690,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <!-- PR #85: no uso real o Inverter começa direto no 1º teste real da placa (tensao_pn, ≈ 310 V CC). A descarga dos capacitores é aviso de
                        segurança de 1 faixa, não pergunta Normal/Defeito; navegação e respostas ficam dentro do cartão do teste atual. -->
                   <sc-if value="{{ invWizTem }}" hint-placeholder-val="{{ false }}"><div data-inv-topo-real="" style="flex:none;display:flex;flex-direction:column;gap:8px;">
-                    <sc-if value="{{ invSegTem }}" hint-placeholder-val="{{ false }}"><div data-inv-seguranca="" role="note" style="box-sizing:border-box;padding:6px 12px;border-radius:12px;background:#fffbeb;border:1.5px solid #f59e0b;color:#78350f;font:700 16px/20px 'Roboto',sans-serif;text-wrap:pretty;">⚠ Segurança: desligue a energia e descarregue os capacitores até ~0 V CC antes de medir</div></sc-if>
+                    <sc-if value="{{ invSegTem }}" hint-placeholder-val="{{ false }}"><div data-inv-seguranca="" role="note" style="box-sizing:border-box;padding:6px 12px;border-radius:12px;background:#fffbeb;border:1.5px solid #f59e0b;color:#78350f;font:700 16px/20px 'Roboto',sans-serif;text-wrap:pretty;">{{ invSegTxt }}</div></sc-if>
                     <sc-if value="{{ invTemDefeito }}" hint-placeholder-val="{{ false }}"><div data-orcar-inverter="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Orçar reparo / placa Inverter →" verde="{{ true }}" icone="garantia" acao="{{ invOrcar }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
                     <sc-if value="{{ invTudoOk }}" hint-placeholder-val="{{ false }}"><div data-inv-tudo-ok="" role="status" style="box-sizing:border-box;padding:10px 14px;border-radius:14px;background:#dcfce7;border:1.5px solid #86efac;color:#15803d;font:800 16px/22px 'Roboto',sans-serif;text-wrap:pretty;">{{ invTudoOkTxt }}</div></sc-if>
                   </div></sc-if>
@@ -932,7 +932,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
           <div data-atalhos="" style="flex:none;display:flex;flex-direction:column;gap:6px;padding:0 2px;">
             <dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Consultar fichas" icone="prancheta" acao="{{ abrirFichas }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
-            <dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="Orçamento e garantia" icone="garantia" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
+            <sc-if value="{{ semAtendRodape }}" hint-placeholder-val="{{ true }}"><dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="Orçamento e garantia" icone="garantia" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import></sc-if>
+            <sc-if value="{{ atendRodape }}" hint-placeholder-val="{{ false }}"><div data-atendimento-ativo="" role="group" aria-label="{{ atendAtivoT }}" style="flex:none;height:48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
+              <button type="button" data-atendimento-continuar="" data-verde="1" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:2px solid #007a00;background:linear-gradient(180deg,#00c400 0%,#00a000 100%);color:#ffffff;font:800 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;" style-active="transform:translateY(1px);">Continuar atendimento</button>
+              <button type="button" data-novo-atendimento="" aria-label="Novo atendimento (limpar anterior)" onClick="{{ novoAtend }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;">Novo atendimento</button>
+            </div></sc-if>
           </div>
         </sc-if>
       </div>
@@ -3027,10 +3031,15 @@ class Component extends DCLogic {
     // abre o procedimento de bancada em modo guia; o registro (Conforme / Fora / Não medido e leitura) entra com 1 toque em "Anotar resultados".
     const invUni = invEt.length > 0 && invEt[0].familia === 'universal';
     const invReg = !invUni || !!IV._reg || invEt.some(e => { const r = IV[e.etapa_id] || {}; return !!(r.r || r.v); });
-    const invWiz = (() => { const RE = invEt.filter(z => z.etapa_id !== 'seguranca'), N = RE.length, k = Math.max(0, Math.min(N - 1, Number(IV._passo) || 0)), e = RE[k], rr = e ? (IV[e.etapa_id] || {}).r : '';
+    // PR #99: aberto por "Compressor UVW", o 1º teste é o dos enrolamentos UVW (desligado, conector solto, base PED02); a faixa de segurança
+    // muda com o teste atual, só com o texto da base (seguranca: desligar e descarregar até ~0 V CC; tensao_pn: medido com o aparelho energizado).
+    const invComp = st.tela === 'inv' && !!st.atalho && st.atalho.tela === 'inv' && st.atalho.t === 'Compressor UVW';
+    const invWiz = (() => { const RE0 = invEt.filter(z => z.etapa_id !== 'seguranca'), RE = invComp ? [...RE0.filter(z => z.etapa_id === 'compressor'), ...RE0.filter(z => z.etapa_id !== 'compressor')] : RE0, N = RE.length, k = Math.max(0, Math.min(N - 1, Number(IV._passo) || 0)), e = RE[k], rr = e ? (IV[e.etapa_id] || {}).r : '';
       const marcar = (val, prox) => () => e && this.setState(x => ({ inv: { ...x.inv, [e.etapa_id]: { ...(x.inv[e.etapa_id] || {}), r: val }, _passo: prox ? Math.min(N - 1, k + 1) : k } }));
       const ok = N > 0 && RE.every(z => (IV[z.etapa_id] || {}).r === 'Conforme'), wiz = !LEGADO_TESTES && N > 0;
-      return { invWizTem: wiz, invWizAttr: wiz && !IV._todos ? '1' : '0', invSegTem: wiz && invEt.some(z => z.etapa_id === 'seguranca'), invPassoTxt: `Teste ${k + 1} de ${N}`, invAtualId: wiz && e ? e.etapa_id : '',
+      const energ = !!e && /energizado/i.test(e.como_verificar || '');
+      return { invOrdem: RE.map(z => z.etapa_id), invSegTxt: energ ? '⚠ Segurança: este teste é com o aparelho energizado. Depois dele, desligue a energia e descarregue os capacitores até perto de 0 V CC antes de tocar na placa.' : '⚠ Segurança: desligue a energia e descarregue os capacitores até perto de 0 V CC antes de tocar na placa (resistor de cerca de 100 Ω, 40 W).',
+        invWizTem: wiz, invWizAttr: wiz && !IV._todos ? '1' : '0', invSegTem: wiz && invEt.some(z => z.etapa_id === 'seguranca'), invPassoTxt: `Teste ${k + 1} de ${N}`, invAtualId: wiz && e ? e.etapa_id : '',
         invAntOff: k === 0, invAnterior: () => this.setState(x => ({ inv: { ...x.inv, _passo: Math.max(0, k - 1) } })), invTodosOn: IV._todos ? 'true' : 'false', invTodosTxt: IV._todos ? 'Voltar ao teste atual' : 'Ver todos',
         invToggleTodos: () => this.setState(x => ({ inv: { ...x.inv, _todos: !x.inv._todos } })),
         invNormal: marcar('Conforme', true), invDefeito: marcar('Fora', false), invRespOk: rr === 'Conforme' ? 'true' : 'false', invRespDef: rr === 'Fora' ? 'true' : 'false',
@@ -3211,7 +3220,7 @@ class Component extends DCLogic {
       // PR #85: assistente do Inverter (uso real) só com os testes reais da placa: a descarga dos capacitores (seguranca) vira aviso de topo.
       // ✓ Normal grava "Conforme" e avança; ✗ Defeito grava "Fora" e acende o orçamento da placa no topo. As fotos certo/erro respondem igual.
       ...invWiz,
-      invEtapas: invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return { atual: e.etapa_id === invWiz.invAtualId ? '1' : '0', nTxt: !invWiz.invWizTem ? String(i + 1) : e.etapa_id === 'seguranca' ? '⚠' : String(invEt.filter(z => z.etapa_id !== 'seguranca').findIndex(z => z.etapa_id === e.etapa_id) + 1), wiz: e.etapa_id === invWiz.invAtualId, fotoRole: e.etapa_id === invWiz.invAtualId ? 'button' : undefined, fotoCursor: e.etapa_id === invWiz.invAtualId ? 'pointer' : 'auto',
+      invEtapas: invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return { atual: e.etapa_id === invWiz.invAtualId ? '1' : '0', nTxt: !invWiz.invWizTem ? String(i + 1) : e.etapa_id === 'seguranca' ? '⚠' : String(invWiz.invOrdem.indexOf(e.etapa_id) + 1), wiz: e.etapa_id === invWiz.invAtualId, fotoRole: e.etapa_id === invWiz.invAtualId ? 'button' : undefined, fotoCursor: e.etapa_id === invWiz.invAtualId ? 'pointer' : 'auto',
         fotoOk: e.etapa_id === invWiz.invAtualId ? invWiz.invNormal : null, fotoErro: e.etapa_id === invWiz.invAtualId ? invWiz.invDefeito : null, fotoOkAria: e.etapa_id === invWiz.invAtualId ? 'Foto do certo: marcar Normal' : undefined, fotoErroAria: e.etapa_id === invWiz.invAtualId ? 'Foto do erro: marcar Defeito' : undefined, n: i + 1, id: e.etapa_id, t: e.titulo, como: e.como_verificar, ref: e.referencia, r: r.r || '', v: r.v || '', setR: invSet(e.etapa_id, 'r'), setV: invSet(e.etapa_id, 'v'), ph: INV_PH[e.etapa_id] || '', selo: r.r || 'Pendente', seloTipo: INV_SELO[r.r] || 'neutro', ntc: e.etapa_id === 'sensores', reg: invReg, ...par('inv_' + e.etapa_id), ...invVisual(e) }; }),
       invNtc: () => this.abrir('ntc', { modK: 'ntc' }),
       // Orçar direto do checklist (PR #35): reparo da placa no orçamento e placa nova em "Indicados"; compressor marcado "Fora" entra junto.
@@ -3608,7 +3617,10 @@ class Component extends DCLogic {
         novo: (st.avisosNovos || []).includes(a.k), temAcoes: a.acoes.length > 0, acoes: a.acoes, cols: a.acoes.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)' })),
       // PR #64: só com orçamento em andamento (rascunho com cliente ou item). Medir não abre mais a faixa: ela empurrava a Home ~90 px para baixo
       // logo depois da 1ª medição e o 2º toque caía no botão errado.
-      temAtendAtivo: rascunhoComDono(F),
+      // PR #99 (uso real): a faixa de atendimento no topo empurrava a Home ~120 px e o toque caía em outro botão. Agora o atendimento ativo ocupa
+      // o lugar do "Orçamento e garantia" no rodapé, com a mesma altura fixa de 48 px (Continuar atendimento + Novo atendimento): nada se move.
+      // O "Continuar" e o "Orçamento e garantia" abrem o mesmo orçamento (abrirFech). Legado: a faixa do topo segue igual.
+      temAtendAtivo: LEGADO_TESTES && rascunhoComDono(F), atendRodape: !LEGADO_TESTES && rascunhoComDono(F), semAtendRodape: !(!LEGADO_TESTES && rascunhoComDono(F)),
       atendAtivoT: `Atendimento em andamento: ${F && String(F.cliNome || '').trim() ? String(F.cliNome).trim() : 'cliente não informado'} · ${(st.selOrc || st.sel).marca} ${(st.selOrc || st.sel).btu} BTU/h${lMedL.length ? ` · ${lMedL.length} ${lMedL.length === 1 ? 'medição' : 'medições'}` : ''}`,
       temAtendContinuar: rascunhoComDono(F), atendCols: rascunhoComDono(F) ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
       atendContinuarT: `Continuar atendimento de ${F && String(F.cliNome || '').trim() ? String(F.cliNome).trim() : 'orçamento aberto'}`, atendContinuar: () => this.abrirFech(),
@@ -3634,10 +3646,10 @@ class Component extends DCLogic {
       gradeMin: `${Math.max(3 * 66 + 2 * gapG, 2 * 50 + 3 * gapG + 2 * 54)}px`,
       codRefCom: st.tela === 'codigo' && !!(st.atalho && st.atalho.tela === 'codigo' && /^Comunicação/.test(st.atalho.t || '')),
       cartoesMed: [
-        { k: 'ipm', t: nomeMed('Placa Inverter e IPM', 'Inverter e IPM'), ico: 'lucide-cpu', acao: atalhoMod('inv', 'inv', '[data-inv-id="tensao_pn"]', 'Placa Inverter e IPM') },
+        { k: 'ipm', t: nomeMed('Placa Inverter e IPM', 'Inverter e IPM'), ico: 'lucide-cpu', acao: () => { this.setState(x => ({ inv: { ...x.inv, _passo: 0, _todos: false } })); atalhoMod('inv', 'inv', '[data-inv-id="tensao_pn"]', 'Placa Inverter e IPM')(); } },
         { k: 'comunicacao', t: nomeMed('Comunicação', 'Comuni\u00adcação'), ico: 'lucide-cable', acao: () => this.abrir('codigo', { sint: 'codigo', cod: temCom ? 'comunicação' : '', atalho: { t: 'Comunicação (Borne S)', tela: 'codigo' } }) },
         { k: 'ntc', t: 'Sensores NTC', ico: 'lucide-thermometer-sun', acao: atalhoMod('ntc', 'ntc', null, 'Sensores NTC') },
-        { k: 'compressor', t: 'Compressor UVW', ico: 'lucide-activity', acao: atalhoMod('inv', 'inv', '[data-inv-id="compressor"]', 'Compressor UVW') },
+        { k: 'compressor', t: 'Compressor UVW', ico: 'lucide-activity', acao: () => { this.setState(x => ({ inv: { ...x.inv, _passo: 0, _todos: false } })); atalhoMod('inv', 'inv', '[data-inv-id="compressor"]', 'Compressor UVW')(); } },
         { k: 'capacitor', t: 'Capacitor e motor', ico: 'lucide-battery-charging', acao: () => { iniciar('naogela', 't_ng04'); this.setState({ atalho: { t: 'Capacitor e motor', tela: 'etapa', etapa: 't_ng04' } }); } },
         { k: 'sh', t: 'Pressão e SH', ico: 'lucide-gauge', acao: atalhoMod('ptsh', 'ptsh', null, 'Pressão e SH') },
         { k: 'vacuo', t: 'Vácuo e carga', ico: 'lucide-botija', acao: atalhoMod('ptsh', 'ptsh', '[data-orcar-ptsh]', 'Vácuo e carga') },
