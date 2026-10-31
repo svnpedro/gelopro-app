@@ -4139,7 +4139,9 @@ class Component extends DCLogic {
       cartoesMed: [
         { k: 'ipm', t: nomeMed('Placa Inverter e IPM', 'Inverter e IPM'), ico: 'lucide-cpu', acao: () => { this.setState(x => ({ inv: { ...x.inv, _passo: 0, _todos: false } })); atalhoMod('inv', 'inv', '[data-inv-id="tensao_pn"]', 'Placa Inverter e IPM')(); } },
         { k: 'comunicacao', t: nomeMed('Comunicação', 'Comuni\u00adcação'), ico: 'lucide-cable', acao: () => this.abrir('codigo', { sint: 'codigo', cod: temCom ? 'comunicação' : '', atalho: { t: 'Comunicação (Borne S)', tela: 'codigo' } }) },
-        { k: 'ntc', t: 'Sensores NTC', ico: 'lucide-thermometer-sun', acao: atalhoMod('ntc', 'ntc', null, 'Sensores NTC') },
+        // PR #117 (uso real): "Sensores NTC" com o ícone próprio sensor-ntc (bulbo com 2 terminais), distinto do termômetro-sol de "Não gela";
+        // o legado mantém lucide-thermometer-sun (pr30.js confere os 9 traçados).
+        { k: 'ntc', t: 'Sensores NTC', ico: LEGADO_TESTES ? 'lucide-thermometer-sun' : 'sensor-ntc', acao: atalhoMod('ntc', 'ntc', null, 'Sensores NTC') },
         { k: 'compressor', t: 'Compressor UVW', ico: 'lucide-activity', acao: () => { this.setState(x => ({ inv: { ...x.inv, _passo: 0, _todos: false } })); atalhoMod('inv', 'inv', '[data-inv-id="compressor"]', 'Compressor UVW')(); } },
         { k: 'capacitor', t: 'Capacitor e motor', ico: 'lucide-battery-charging', acao: () => {
           if (LEGADO_TESTES) { iniciar('naogela', 't_ng04'); return this.setState({ atalho: { t: 'Capacitor e motor', tela: 'etapa', etapa: 't_ng04' } }); }

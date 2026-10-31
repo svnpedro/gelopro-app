@@ -72,7 +72,7 @@ try { window.dispatchEvent(new Event('gelopro:licenca-pronta')); } catch (e) { }
 try {
 if (typeof document !== 'undefined' && !document.querySelector('script[src*="offline-gelopro.js"]')) {
 const s = document.createElement('script');
-s.src = 'offline-gelopro.js?v=116';
+s.src = 'offline-gelopro.js?v=117';
 document.head.appendChild(s);
 }
 } catch (e) { }
