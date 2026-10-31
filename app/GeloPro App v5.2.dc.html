@@ -522,7 +522,9 @@ html[data-uso-real="1"] :is([data-tema="titanio"],[data-tema="claro"]) [data-doc
   /* PR #139: solda das extremidades. html e chassi terminam em #d4d4d4 (a cor que o iOS pinta atrás do relógio e da cápsula do Safari): véu de
      28 px no topo e 24 px na base sobre a textura acetinada, que no topo vai de #cacaca a #f7f7f7 na diagonal e na base escurece até #adadad.
      Só fundo: nenhum x, y, largura ou altura muda. */
-  html[data-uso-real="1"]:not(:has([data-tema="sol"])),html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-chassi].gp-acetinado-sedoso{background:linear-gradient(180deg,#d4d4d4 0px,rgba(212,212,212,0) 28px,rgba(212,212,212,0) calc(100% - 24px),#d4d4d4 100%),url("ref/acetinado-sedoso.svg") center / 100% 100% no-repeat #d4d4d4 !important;}
+  /* PR #140 (todos os celulares): véu de solda só nos 28 px do topo; na base a textura desce pura até 100% sobre #b5b5b5 (tom real do pé da
+     chapa), contínua atrás da barra/cápsula inferior do navegador, sem faixa clara abaixo do dock. */
+  html[data-uso-real="1"]:not(:has([data-tema="sol"])),html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-chassi].gp-acetinado-sedoso{background:linear-gradient(180deg,#d4d4d4 0px,rgba(212,212,212,0) 28px),url("ref/acetinado-sedoso.svg") center / 100% 100% no-repeat #b5b5b5 !important;background-color:#b5b5b5 !important;}
   html[data-uso-real="1"] :is([data-topo],[data-microfaixa]){background:none !important;border:0 !important;box-shadow:none !important;}
   html[data-uso-real="1"]:not(:has([data-tema="sol"])) body,html[data-uso-real="1"] [data-mesa]{background:transparent !important;}
   html[data-uso-real="1"] [data-chassi]{margin:0 !important;border:0 !important;border-radius:0 !important;width:100% !important;min-height:100dvh;box-sizing:border-box;padding:0 env(safe-area-inset-right, 0px) 0 env(safe-area-inset-left, 0px);}
