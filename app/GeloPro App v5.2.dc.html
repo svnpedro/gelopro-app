@@ -433,6 +433,15 @@ html[data-uso-real="1"] :is([data-doc-gerar],[data-script-zap]) > span{color:#ff
 html[data-uso-real="1"] [data-modo-discreto]{width:auto !important;height:48px !important;padding:0 10px 0 8px !important;gap:6px;border-radius:999px !important;background:#f8fafc !important;border:1.5px solid #334155 !important;box-shadow:0 2px 0 rgba(9,30,66,0.18) !important;color:#091e42 !important;}
 html[data-uso-real="1"] [data-modo-discreto] [data-discreto-txt]{display:flex;flex-direction:column;align-items:flex-start;font:800 15px/18px 'Roboto',sans-serif;white-space:nowrap;}
 html[data-uso-real="1"] [data-modo-discreto] [data-discreto-txt] > span{color:#091e42 !important;}
+/* PR #122: telas documentais (Laudo, PMOC, Recibo avulso) com faixa de instrumento no topo: mostrador escuro #1d2430 em 2 colunas, crachá
+   ciano da função à esquerda e a saída em #4ade80 à direita. O título "Recibo avulso" e a fonte do PMOC seguem no DOM em sr-only. */
+html[data-uso-real="1"] [data-doc-faixa]{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;box-sizing:border-box;padding:8px 12px;border-radius:14px;background:#1d2430;border:1.5px solid #334155;box-shadow:inset 0 2px 5px rgba(0,0,0,0.45);}
+html[data-uso-real="1"] [data-faixa-funcao]{display:inline-flex;align-items:center;height:26px;box-sizing:border-box;padding:0 10px;border-radius:999px;background:#cffafe;border:1px solid #0891b2;color:#155e75 !important;font:800 14px/1 'Roboto',sans-serif;letter-spacing:.02em;white-space:nowrap;}
+html[data-uso-real="1"] [data-faixa-saida]{font:800 15px/18px 'Roboto',sans-serif;color:#4ade80 !important;letter-spacing:.02em;white-space:nowrap;text-align:right;}
+/* PR #122: cartão "PDF pronto" como veredito concluído (Orçamento, Laudo, PMOC e Recibo): verde claro com borda #16a34a e cabeçalho #14532d 800. */
+html[data-uso-real="1"] [data-pdf-pronto]{background:#f0fdf4 !important;border:2px solid #16a34a !important;border-radius:14px !important;box-shadow:0 3px 0 #14532d,0 6px 14px rgba(20,83,45,0.25) !important;}
+html[data-uso-real="1"] [data-pdf-pronto] > span:first-child,html[data-uso-real="1"] [data-pdf-pronto] > span:first-child *{color:#14532d !important;font-weight:800 !important;}
+html[data-uso-real="1"] [data-pdf-pronto] :is([data-pdf-arquivo],[data-pdf-msg]){color:#1f2937 !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -1142,6 +1151,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
               <sc-if value="{{ telaLaudo }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
+                  <!-- PR #122 (uso real): faixa de instrumento no topo das telas documentais (função | saída). -->
+                  <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><div data-doc-faixa="laudo"><span data-faixa-funcao="" data-rotulo="">LAUDO TÉCNICO</span><span data-faixa-saida="" data-rotulo="">GERA PDF + ZAP</span></div></sc-if>
                   <dc-import name="CampoTexto" rotulo="Cliente" valor="{{ lCli }}" aoDigitar="{{ lSetCli }}" placeholder="Nome do cliente" estado="{{ lCliE }}" erroMsg="informe o cliente" style="display:block;flex:none;" hint-size="100%,74px"></dc-import>
                   <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:4px;">
                     <span style="font:600 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">Equipamento e medições registradas</span>
@@ -1171,6 +1182,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
               <sc-if value="{{ telaPmoc }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
+                  <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><div data-doc-faixa="pmoc"><span data-faixa-funcao="" data-rotulo="">PLANO PMOC</span><span data-faixa-saida="" data-rotulo="">GERA PDF + ZAP</span></div></sc-if>
                   <dc-import name="Aviso" tipo="info" titulo="Modelo oficial do PMOC" texto="Prédio de uso coletivo com ar precisa de PMOC. Acima de 60.000 BTU/h, precisa de responsável técnico." style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">1. Ambiente climatizado</span>
                   <dc-import name="CampoTexto" rotulo="Nome do edifício ou entidade" valor="{{ pmAmb }}" aoDigitar="{{ pmSet.amb }}" estado="{{ pmAmbE }}" erroMsg="informe o ambiente" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import>
@@ -1204,7 +1216,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <sc-if value="{{ pdfOk }}" hint-placeholder-val="{{ true }}"><div data-pdf-baixar="" style="flex:none;"><dc-import name="AtalhoTecla" rotulo="Baixar arquivo PDF" icone="documento" acao="{{ pdfBaixar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-compartilhar="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Compartilhar PDF no WhatsApp / Celular" icone="mensagem" acao="{{ pdfCompartilhar }}" style="display:block;" hint-size="100%,60px"></dc-import></div><div data-pdf-copiar-resumo="" style="flex:none;"><button type="button" onClick="{{ pdfCopiarResumo }}" style="width:100%;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;text-wrap:pretty;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="copiar" tamanho="{{ 18 }}" hint-size="18px,18px"></dc-import></span>Copiar resumo do documento</button></div></sc-if>
                       <sc-if value="{{ pdfTemMsg }}" hint-placeholder-val="{{ false }}"><span data-pdf-msg="{{ pdfMsgTipo }}" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:pretty;overflow-wrap:anywhere;">{{ pdfMsg }}</span></sc-if>
                     </div></sc-if>
-                  <span style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ pmFonte }}</span>
+                  <span class="{{ srReal }}" data-pm-fonte="" style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">{{ pmFonte }}</span>
                 </div>
               </sc-if>
 
@@ -1224,7 +1236,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   </sc-for>
                   <sc-if value="{{ scTemMsg }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ scMsgTipo }}" titulo="{{ scMsgT }}" texto="{{ scMsgX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   </sc-if>
-                  <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Recibo avulso</span>
+                  <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><div data-doc-faixa="reca"><span data-faixa-funcao="" data-rotulo="">RECIBO AVULSO</span><span data-faixa-saida="" data-rotulo="">COMPROVANTE PDF</span></div></sc-if>
+                  <span class="{{ srReal }}" style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Recibo avulso</span>
                   <dc-import name="CampoTexto" rotulo="Recebi de" valor="{{ rcCli }}" aoDigitar="{{ rcSet.cli }}" placeholder="Nome do cliente" estado="{{ rcCliE }}" erroMsg="informe o cliente" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import>
                   <div data-rec-linha="" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><dc-import name="CampoTexto" rotulo="Valor (R$)" valor="{{ rcVal }}" aoDigitar="{{ rcSet.val }}" placeholder="0,00" modo="decimal" estado="{{ rcValE }}" erroMsg="{{ rcValM }}" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import><dc-import name="CampoTexto" rotulo="Referente a" valor="{{ rcRef }}" aoDigitar="{{ rcSet.ref }}" placeholder="Serviço" estado="{{ rcRefE }}" erroMsg="descreva" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import></div>
                   <dc-import name="SeletorPrazo" rotulo="Forma de pagamento" opcoes="{{ rcOps }}" valor="{{ rcForma }}" estado="{{ rcFormaE }}" erroMsg="escolha a forma" acao="{{ rcSetForma }}" style="display:block;flex:none;" hint-size="100%,104px"></dc-import>

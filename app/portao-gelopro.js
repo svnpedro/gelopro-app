@@ -122,6 +122,22 @@ dentro('[data-lucro-painel]').forEach(box => { const cs = []; textuais(box).forE
 dentro('[data-sc-name="LinhaOrcamento"]').forEach(l => { const m = l.querySelector('[data-moeda]'), a = m && m.closest('[data-campo]'), b = l.querySelector('button[aria-label^="Remover"]'); if (!a || !b || !visivel(a) || !visivel(b)) return;
 const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); if (Math.abs(ra.top - rb.top) > 2 || Math.abs(ra.height - rb.height) > 2) falha('G-L13 alinhamento de linha de item', b, `preço ${Math.round(ra.top)}/${Math.round(ra.height)} px × remover ${Math.round(rb.top)}/${Math.round(rb.height)} px (top/altura, tolerância 2 px)`); });
 dentro('[data-lucro-painel], [data-cofre-card], [data-sc-name="LinhaOrcamento"]').forEach(box => textuais(box).forEach(e => { const own = [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(''); if (/R\$/.test(own) && /mono|courier/i.test(getComputedStyle(e).fontFamily)) falha('G-L18 R$ em fonte mono', e, `"${own.trim().slice(0, 20)}" em ${getComputedStyle(e).fontFamily.split(',')[0]}`); }));
+const vh = innerHeight;
+const rolador = (e) => { for (let x = e.parentElement; x && x !== document.body; x = x.parentElement) { const c = getComputedStyle(x); if (/auto|scroll/.test(c.overflowY) && x.scrollHeight > x.clientHeight + 1) return x; } return null; };
+const dobra = (e, rot) => { const r = e.getBoundingClientRect(), sc = rolador(e), lim = Math.min(vh, sc ? sc.getBoundingClientRect().bottom : vh); if (r.bottom > lim + 1) falha('G-L14 1ª dobra', e, `${rot}: base em ${Math.round(r.bottom)} px, área visível até ${Math.round(lim)} px (precisa rolar)`); };
+dentro('[data-passo-avancar], button[aria-label="Continuar para a garantia"]').forEach(b => dobra(b, 'ação principal do Passo 1'));
+if (vh >= 700) {
+dentro('[data-mostrador-calc]').filter(e => !e.closest('[role="dialog"]')).forEach(e => dobra(e, 'visor da calculadora'));
+const dicaAberta = [...document.querySelectorAll('[data-detalhes-tecnicos-toggle][aria-expanded="true"]')].some(visivel);
+if (!dicaAberta) dentro('[data-inv-respostas]').forEach(e => dobra(e, 'respostas do Inverter'));
+}
+dentro('[data-etapa-cab]').forEach(cab => ['[data-cab-sintoma]', '[data-cab-passo]'].forEach(sel => { const e = cab.querySelector(sel); if (!e || !visivel(e)) falha('G-L15 cabeçalho da pergunta', cab, `falta ${sel} visível no cabeçalho da Etapa`); }));
+dentro('[data-home-modo], [data-docs-abas]').forEach(box => { const t = [...box.querySelectorAll(':scope > [data-aba-home], :scope > [data-docs-tab]')].filter(visivel); if (t.length !== 2) return;
+const h = t.map(e => e.getBoundingClientRect().height); if (Math.abs(h[0] - h[1]) > 2) falha('G-L15 simetria das abas', box, `abas com ${Math.round(h[0])} e ${Math.round(h[1])} px de altura (máximo 2 px de diferença)`); });
+dentro('[data-atendimento-ativo]').forEach(g => ['play', 'pause', 'plus'].forEach(k => { const e = g.querySelector(`svg[data-trio-ico="${k}"]`); if (!e || !visivel(e)) falha('G-L16 semiótica SVG', g, `trio do atendimento sem o ícone ${k}`); }));
+dentro('[data-docs-tab="zap"], [data-script-zap]').forEach(b => { if (!b.querySelector('svg[data-zap-oficial]')) falha('G-L16 semiótica SVG', b, 'WhatsApp sem o ícone oficial [data-zap-oficial]'); });
+dentro('[data-home-carrossel]').forEach(c => { const t = c.querySelector('[data-carrossel-trilho]'); if (!t || getComputedStyle(t).display !== 'flex') falha('G-L17 carrossel', c, `trilho ${t ? 'em display ' + getComputedStyle(t).display : 'ausente'} (precisa ser flex)`); });
+if (document.documentElement.getAttribute('data-gp-fluido') === '1') dentro('[data-aba-home] > span').forEach(e => { const bg = getComputedStyle(e).backgroundColor; if (bg !== 'rgba(0, 0, 0, 0)') falha('G-L17 carrossel', e, `fundo ${bg} no span da aba (no modo fluido só a pastilha pinta)`); });
 }
 const ESCOPO = '[data-fichas],[data-central-avisos],[data-cofre-card],[data-vis],[role="dialog"]';
 const GENERICO = new Set(['estado', 'data', 'custo', 'sem-ref', 'neutro']);
