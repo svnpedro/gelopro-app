@@ -169,6 +169,17 @@ html[data-uso-real="1"] [data-sino-rotulo]{display:none !important;}
 html[data-uso-real="1"] :is(button,[role="button"]){text-decoration:none !important;}
 html[data-uso-real="1"] :is([data-detalhes-tecnicos-toggle],[data-forcar-orcar-ptsh],[data-forcar-orcar-ntc],[data-mais-opcoes],[data-editar-item],[data-inv-toggle-todos],[data-inv-anterior]){min-height:48px !important;box-sizing:border-box !important;padding:6px 16px !important;border-radius:999px !important;background:#e2e8f0 !important;border:1.5px solid #19365c !important;box-shadow:0 2px 0 rgba(9,30,66,0.18) !important;color:#091e42 !important;font-size:16px !important;line-height:20px !important;font-weight:700 !important;text-decoration:none !important;}
 html[data-uso-real="1"] [data-inv-anterior]:disabled{opacity:.55 !important;}
+/* PR #106: varredura anti-remendo. Uso real: chavinha sem os ícones de lua/sol pendurados (sino e chavinha no mesmo eixo); na aba Medições
+   a barra "Consultar fichas" sai (Fichas técnicas já é o 9º quadrado da grade). Geral: NTC universal com linhas de mesma altura, etiqueta longa
+   sem transbordar o cartão e trio da quantidade (−, campo, +) sempre na mesma linha. */
+html[data-uso-real="1"] [data-tema-icones]{display:none !important;}
+html[data-uso-real="1"] button[aria-label="Tema Sol"]{padding:0 !important;gap:0 !important;}
+html[data-uso-real="1"] [data-atalhos][data-aba="medicoes"] > :first-child{display:none !important;}
+[data-ntc-uni]{align-items:stretch !important;}
+[data-ntc-uni] > *,[data-ntc-uni] [role="option"]{height:100%;box-sizing:border-box;}
+.tag.tag-l{max-width:100%;overflow-wrap:break-word;}
+.tags-texto > .tag{max-width:100%;white-space:normal;overflow-wrap:break-word;}
+[data-qtd-trio]{flex-wrap:nowrap !important;gap:6px !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -1002,7 +1013,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         </div>
 
         <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
-          <div data-atalhos="" style="flex:none;display:flex;flex-direction:column;gap:6px;padding:0 2px;">
+          <div data-atalhos="" data-aba="{{ abaHomeK }}" style="flex:none;display:flex;flex-direction:column;gap:6px;padding:0 2px;">
             <dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Consultar fichas" icone="prancheta" acao="{{ abrirFichas }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
             <sc-if value="{{ semAtendRodape }}" hint-placeholder-val="{{ true }}"><dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="Orçamento e garantia" icone="{{ icoOrcHome }}" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import></sc-if>
             <sc-if value="{{ atendRodape }}" hint-placeholder-val="{{ false }}"><div data-atendimento-ativo="" role="group" aria-label="{{ atendAtivoT }}" style="flex:none;height:48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
@@ -3775,7 +3786,7 @@ class Component extends DCLogic {
       gradeGap: gapG + 'px',
       h2Estilo: 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;',
       homeTitulo: abaMed ? 'Medições e Testes' : 'O que o aparelho apresenta?',
-      abaH: H < 640 ? '30px' : '34px', abaM: H < 640 ? '-9px' : '-7px', abaSintomas: !abaMed, abaMedicoes: abaMed,
+      abaH: H < 640 ? '30px' : '34px', abaM: H < 640 ? '-9px' : '-7px', abaSintomas: !abaMed, abaMedicoes: abaMed, abaHomeK: abaMed ? 'medicoes' : 'sintomas',
       abasHome: [['sintomas', 'Sintomas'], ['medicoes', 'Medições e Testes']].map(([k, t]) => { const pl = pilula((st.abaHome || 'sintomas') === k, t, () => this.setState({ abaHome: k })); return { ...pl, k, fs: this.fit(t, 16, (cw - 4 - 6) / 2 - 16, 14) + 'px' }; }),
       // PR #64: as duas abas têm a mesma altura mínima (a maior entre a grade 3×3 e gavetas + 3×2): trocar de aba não move o visor.
       gradeMin: `${Math.max(3 * 66 + 2 * gapG, 2 * 50 + 3 * gapG + 2 * 54)}px`,
