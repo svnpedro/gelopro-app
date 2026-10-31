@@ -790,14 +790,14 @@ html[data-uso-real="1"]:not(:has([data-tema="sol"])) :is([role="group"][aria-lab
 html[data-uso-real="1"]:not(:has([data-tema="sol"])) :is(div:has(> [data-tema] > [data-vis]):not(:has([data-home-rolagem])),[data-chapa] > div:has(> [data-vis])){background:transparent !important;padding:0 !important;box-shadow:none !important;}
 html[data-uso-real="1"]:not(:has([data-tema="sol"])) :is(div:has(> [data-tema] > [data-vis]):not(:has([data-home-rolagem])) > [data-tema] > [data-vis],[data-chapa] > div > [data-vis]){border:2px solid #091e42 !important;box-shadow:inset 0 2px 5px rgba(9,30,66,0.18),0 1px 0 rgba(255,255,255,0.75) !important;}
 /* PR #147, Tarefa 3: pílula Equipamento sem a pastilha da logo (só o texto da marca; a gaveta de escolher marca segue com as 14 pastilhas) e,
-   no Titânio e no Claro, valores e setinhas em verde display #4ade80 (9,29:1 sobre o fundo #1d2430 da pílula) e rótulos em #cbd5e1. O Sol
+   no Titânio e no Claro (PR #148): títulos e setinhas em azul-ciano #67c6ff e valores em branco #ffffff 800, sem brilho. O Sol
    mantém #091e42 sobre branco. O corpo do valor segue o ajuste do app (17 px sempre que cabe, até 14 px): as 14 marcas da lista, os BTU/h e os
    fluidos cabem a 800 17 px (a maior, Electrolux, ~76 px em 105–110 px úteis); só a marca universal digitada livre pode ser mais longa, e com
    17 px fixo ela seria cortada. */
 html[data-uso-real="1"] [role="group"][aria-label="Equipamento"] :is([data-pilula-logo],[data-sc-name="LogoMarca"]){display:none !important;}
-html[data-uso-real="1"]:not(:has([data-tema="sol"])) [role="group"][aria-label="Equipamento"] > button > span:first-child{color:#cbd5e1 !important;font-weight:700 !important;}
-html[data-uso-real="1"]:not(:has([data-tema="sol"])) [role="group"][aria-label="Equipamento"] > button > span:first-child > span{color:#4ade80 !important;}
-html[data-uso-real="1"]:not(:has([data-tema="sol"])) [role="group"][aria-label="Equipamento"] [data-pilula-valor]{color:#4ade80 !important;font-weight:800 !important;text-shadow:0 0 10px rgba(74,222,128,0.28) !important;}
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) [role="group"][aria-label="Equipamento"] > button > span:first-child{color:#67c6ff !important;font-weight:700 !important;}
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) [role="group"][aria-label="Equipamento"] > button > span:first-child > span{color:#67c6ff !important;}
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) [role="group"][aria-label="Equipamento"] [data-pilula-valor]{color:#ffffff !important;font-weight:800 !important;text-shadow:none !important;}
 </style>
 <script src="offline-gelopro.js"></script>
 <script src="marca-gelopro.js"></script>
