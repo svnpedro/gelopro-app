@@ -400,6 +400,22 @@ html[data-uso-real="1"] [data-etapa-crachas] .tag{min-height:0 !important;border
 html[data-uso-real="1"] [data-etapa-crachas] [data-cab-sintoma]{background:#19365c !important;border:1px solid #19365c !important;color:#ffffff !important;}
 html[data-uso-real="1"] [data-etapa-crachas] [data-cab-passo]{background:#0c1d36 !important;border:1px solid #38bdf8 !important;color:#67c6ff !important;}
 html[data-uso-real="1"] [data-etapa-crachas] [data-etapa-modo]{font:700 14px/18px 'Roboto',sans-serif !important;}
+/* PR #119: Docs em 2 abas (uso real). Trilho "Documentos (PDF)" | "Scripts WhatsApp"; cartões brancos com borda #334155, nome #091e42 17px 800,
+   crachá ciano de função, botão direto "Gerar documento" (marinho) e, nos scripts, título 16px 800 + prévia de 1 linha + "Copiar / Enviar" verde. */
+html[data-uso-real="1"] [data-docs-abas]{flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:3px;border-radius:999px;background:#ffffff;border:1.5px solid #334155;box-shadow:inset 0 1px 2px rgba(9,30,66,0.12);}
+html[data-uso-real="1"] [data-docs-tab]{min-width:0;height:48px;box-sizing:border-box;padding:0 6px;border-radius:999px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;gap:5px;font:800 15px/18px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;}
+html[data-uso-real="1"] [data-docs-tab] > span{color:#091e42 !important;}
+html[data-uso-real="1"] [data-docs-tab][aria-selected="true"]{background:#1d4ed8;box-shadow:inset 0 0 0 1px #60a5fa,inset 0 1px 0 rgba(255,255,255,0.35);}
+html[data-uso-real="1"] [data-docs-tab][aria-selected="true"] > span{color:#ffffff !important;}
+html[data-uso-real="1"] :is([data-doc-card],[data-script-card]){flex:none;box-sizing:border-box;padding:10px 12px;border-radius:14px;background:#ffffff;border:1.5px solid #334155;box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),0 2px 4px rgba(9,30,66,0.12);display:flex;flex-direction:column;gap:6px;}
+html[data-uso-real="1"] [data-doc-topo]{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;}
+html[data-uso-real="1"] [data-doc-nome]{font:800 17px/22px 'Roboto',sans-serif;color:#091e42 !important;}
+html[data-uso-real="1"] [data-doc-cracha]{display:inline-flex;align-items:center;height:24px;box-sizing:border-box;padding:0 8px;border-radius:999px;font:800 14px/1 'Roboto',sans-serif;letter-spacing:.02em;white-space:nowrap;}
+html[data-uso-real="1"] :is([data-doc-sub],[data-script-previa]){font:500 16px/22px 'Roboto',sans-serif;color:#334155 !important;}
+html[data-uso-real="1"] [data-script-titulo]{font:800 16px/20px 'Roboto',sans-serif;color:#091e42 !important;}
+html[data-uso-real="1"] :is([data-doc-gerar],[data-script-card] > [data-script-zap]){width:100%;height:48px;box-sizing:border-box;padding:0 14px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:800 16px/20px 'Roboto',sans-serif;cursor:pointer;}
+html[data-uso-real="1"] [data-doc-gerar]{border:1.5px solid #091e42;background:#19365c;box-shadow:0 2px 0 rgba(9,30,66,0.25);}
+html[data-uso-real="1"] :is([data-doc-gerar],[data-script-zap]) > span{color:#ffffff !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -1053,6 +1069,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-if>
 
               <sc-if value="{{ telaDocs }}" hint-placeholder-val="{{ false }}">
+                <sc-if value="{{ usoLegado }}" hint-placeholder-val="{{ true }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <sc-for list="{{ docsHub }}" as="d" hint-placeholder-count="3">
                     <dc-import name="LinhaFicha" tipo="{{ d.tipo }}" titulo="{{ d.t }}" sub="{{ d.s }}" acao="{{ d.acao }}" style="display:block;flex:none;" hint-size="100%,88px"></dc-import>
@@ -1070,6 +1087,40 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </sc-for>
                   </sc-if>
                 </div>
+                </sc-if>
+                <!-- PR #119 (uso real): Docs em 2 abas. "Documentos (PDF)" com cartões de ação direta e "Scripts WhatsApp" com prévia de 1 linha e
+                     botão verde Copiar / Enviar. O legado (pr17/pr30) segue com a lista clássica acima. -->
+                <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><div data-docs="" data-docs-aba="{{ docsAbaK }}" style="flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
+                  <div data-docs-abas="" role="tablist" aria-label="Seções de Docs">
+                    <button type="button" role="tab" data-docs-tab="pdf" aria-selected="{{ docsPdfSel }}" onClick="{{ docsIrPdf }}"><svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ docsIcoPdf }}" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>Documentos (PDF)</span></button>
+                    <button type="button" role="tab" data-docs-tab="zap" aria-selected="{{ docsZapSel }}" onClick="{{ docsIrZap }}"><svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ docsIcoZap }}" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Scripts WhatsApp</span></button>
+                  </div>
+                  <div data-docs-lista="" role="tabpanel" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:10px;">
+                    <sc-if value="{{ docsAbaPdf }}" hint-placeholder-val="{{ true }}">
+                      <sc-for list="{{ docsCards }}" as="d" hint-placeholder-count="4">
+                        <div data-doc-card="{{ d.k }}">
+                          <div data-doc-topo=""><span data-doc-nome="">{{ d.t }}</span><span data-doc-cracha="" data-rotulo="" style="background:{{ d.crFundo }};color:{{ d.crCor }};border:1px solid {{ d.crBorda }};">{{ d.cracha }}</span></div>
+                          <span data-doc-sub="">{{ d.s }}</span>
+                          <sc-if value="{{ d.temAcao }}" hint-placeholder-val="{{ true }}"><button type="button" data-doc-gerar="{{ d.k }}" aria-label="{{ d.aria }}" onClick="{{ d.acao }}" style-active="transform:translateY(1px);"><svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>{{ d.btn }}</span></button></sc-if>
+                        </div>
+                      </sc-for>
+                    </sc-if>
+                    <sc-if value="{{ docsAbaZap }}" hint-placeholder-val="{{ false }}">
+                      <dc-import name="Aviso" tipo="info" titulo="Textos prontos para editar" texto="{{ scDados }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
+                      <sc-if value="{{ scTemMsg }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ scMsgTipo }}" titulo="{{ scMsgT }}" texto="{{ scMsgX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
+                      <sc-if value="{{ scLiberado }}" hint-placeholder-val="{{ true }}">
+                        <sc-for list="{{ scripts }}" as="c" hint-placeholder-count="3">
+                          <div data-script-card="">
+                            <span data-script-titulo="">{{ c.t }}</span>
+                            <span data-script-previa="" aria-hidden="true">{{ c.previa }}</span><span class="sr-only">{{ c.x }}</span>
+                            <button type="button" data-verde="1" data-script-zap="" aria-label="{{ c.ariaE }}" onClick="{{ c.envia }}" style-active="transform:translateY(1px);"><svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span>Copiar / Enviar</span></button>
+                          </div>
+                        </sc-for>
+                      </sc-if>
+                      <sc-if value="{{ scBloq }}" hint-placeholder-val="{{ false }}"><div data-script-card="" data-script-bloq=""><div data-doc-topo=""><span data-doc-nome="">Kit de scripts e recibos</span><span data-doc-cracha="" data-rotulo="" style="background:#e2e8f0;color:#334155;border:1px solid #64748b;">NÃO COMPRADO</span></div><span data-doc-sub="">Mensagens de aprovação e cobrança prontas. Adicional da compra.</span></div></sc-if>
+                    </sc-if>
+                  </div>
+                </div></sc-if>
               </sc-if>
 
               <sc-if value="{{ telaLaudo }}" hint-placeholder-val="{{ false }}">
@@ -1142,6 +1193,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
               <sc-if value="{{ telaScripts }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
+                  <sc-if value="{{ usoLegado }}" hint-placeholder-val="{{ true }}">
                   <dc-import name="Aviso" tipo="info" titulo="Textos prontos para editar" texto="{{ scDados }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import>
                   <sc-for list="{{ scripts }}" as="c" hint-placeholder-count="3">
                     <div style="flex:none;box-sizing:border-box;padding:12px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);display:flex;flex-direction:column;gap:8px;">
@@ -1154,6 +1206,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     </div>
                   </sc-for>
                   <sc-if value="{{ scTemMsg }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ scMsgTipo }}" titulo="{{ scMsgT }}" texto="{{ scMsgX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
+                  </sc-if>
                   <span style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Recibo avulso</span>
                   <dc-import name="CampoTexto" rotulo="Recebi de" valor="{{ rcCli }}" aoDigitar="{{ rcSet.cli }}" placeholder="Nome do cliente" estado="{{ rcCliE }}" erroMsg="informe o cliente" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import>
                   <div data-rec-linha="" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><dc-import name="CampoTexto" rotulo="Valor (R$)" valor="{{ rcVal }}" aoDigitar="{{ rcSet.val }}" placeholder="0,00" modo="decimal" estado="{{ rcValE }}" erroMsg="{{ rcValM }}" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import><dc-import name="CampoTexto" rotulo="Referente a" valor="{{ rcRef }}" aoDigitar="{{ rcSet.ref }}" placeholder="Serviço" estado="{{ rcRefE }}" erroMsg="descreva" style="display:block;flex:none;min-width:0;" hint-size="100%,74px"></dc-import></div>
@@ -1969,6 +2022,9 @@ const SCRIPTS = [
   ['Pedido de indicação', v => `Olá, ${v.cli}. Se gostou do atendimento, pode me indicar para alguém? Atendo em [bairros ou cidade]. Obrigado! ${v.tit}`],
   ['Lembrete de manutenção', v => `Olá, ${v.cli}. Já faz [tempo] desde a última manutenção do seu ar-condicionado. Quer agendar a limpeza? ${v.tit}`],
 ];
+// PR #119 (uso real): prévia de 1 linha do script na aba Scripts WhatsApp. É texto curto cortado na palavra (sem reticência/line-clamp de CSS,
+// que o G-L8 reprova) e sem o "Olá, [cliente]." do começo; o texto inteiro segue no DOM (sr-only) e vai inteiro no Copiar / Enviar.
+const previaDe = (x, n = 32) => { const t = String(x).replace(/\s+/g, ' ').trim().replace(/^Olá,\s*[^.!?]+[.!?]\s*/, ''); if (t.length <= n) return t; const c = t.slice(0, n + 1), sp = c.lastIndexOf(' '); return (sp > 12 ? c.slice(0, sp) : c.slice(0, n)).replace(/[\s,.;:]+$/, '') + '…'; };
 const PM0 = () => ({ amb: '', end: '', cid: '', tel: '', prop: '', propDoc: '', propCont: '', rt: '', reg: '', art: '', ambs: '', emerg: '', per: {}, tentou: false });
 // Fechamento veterano (PR #21): desconto de 1 toque sobre o subtotal, validade curta da proposta e valor da visita no preço de cada bairro.
 const DESCONTOS = [['nenhum', 'Sem desconto', 0], ['pix5', '-5% no Pix', 0.05], ['pacote10', '-10% no pacote', 0.10], ['livre', 'Valor livre (-R$)', 0]];
@@ -3745,6 +3801,8 @@ class Component extends DCLogic {
       pmFonte: `${fonteTxt('F22')}; ${fonteTxt('F23')}. A NBR 13971, citada pela Portaria, não foi conferida.`,
       scDados: F && F.cliNome.trim() ? `Preenchido com o atendimento de ${F.cliNome.trim()}${F.numero ? ', orçamento nº ' + F.numero : ''}. Complete os trechos entre colchetes no WhatsApp.` : 'Abra um orçamento para preencher cliente, número e valor. Complete os trechos entre colchetes no WhatsApp.',
       scripts: SCRIPTS.map(([t, fn]) => { const x = fn(SV); return { t, x, ariaC: `Copiar: ${t}`, ariaZ: `Enviar no WhatsApp: ${t}`,
+        previa: previaDe(x), ariaE: `Copiar e enviar no WhatsApp: ${t}`,
+        envia: () => { try { if (navigator.clipboard) navigator.clipboard.writeText(x).catch(() => {}); } catch (e) {} zap(F ? F.cliTel : '', x); scMsg(['sucesso', 'Texto copiado e aberto no WhatsApp', 'Complete os trechos entre colchetes antes de enviar.']); },
         copiar: () => { const ok = () => scMsg(['sucesso', 'Texto copiado', t]); const no = () => scMsg(['aviso', 'Não deu para copiar', 'Use o botão WhatsApp ou selecione o texto.']); if (navigator.clipboard) navigator.clipboard.writeText(x).then(ok, no); else no(); },
         zap: () => { zap(F ? F.cliTel : '', x); scMsg(['sucesso', 'Mensagem aberta no WhatsApp', 'Complete os trechos entre colchetes antes de enviar.']); } }; }),
       scTemMsg: !!st.scMsg, scMsgTipo: st.scMsg ? st.scMsg[0] : 'info', scMsgT: st.scMsg ? st.scMsg[1] : '', scMsgX: st.scMsg ? st.scMsg[2] : '',
@@ -3786,6 +3844,27 @@ class Component extends DCLogic {
         { tipo: lock ? 'Bônus bloqueado' : 'Bônus', t: 'Laudo de inviabilidade', s: 'PDF com constatações, medições e conclusão', acao: () => lock ? this.vazio('upg', { modK: 'docs' }) : this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cli: x.laudo.cli || (x.fech ? x.fech.cliNome : '') } })) },
         { tipo: 'Cofre', t: 'Documentos emitidos', s: `${Object.keys(porNum).length} neste aparelho`, acao: () => lock ? this.vazio('upg', { modK: 'cofre' }) : this.setState({ tela: 'cofre', modK: 'cofre' }) },
       ],
+      // PR #119 (uso real): Docs em 2 abas. Cartões com nome, crachá ciano de função e botão direto que dispara a MESMA ação do hub clássico
+      // (abrirFech, laudo, recibo avulso, PMOC, Cofre). Adicional não comprado mostra o crachá cinza e o que é, sem botão (como antes).
+      ...(() => { if (LEGADO_TESTES) return { docsCards: [], scLiberado: false, scBloq: false };
+        const aba = st.docsAba === 'zap' ? 'zap' : 'pdf', temS = bumps.includes('scripts'), temP = bumps.includes('pmoc'), temT = bumps.includes('tabela');
+        const card = (k, t, cracha, sub, acao, btn, livre = true) => ({ k, t, cracha, s: sub, acao, temAcao: !!acao, btn: btn || 'Gerar documento', aria: `${btn || 'Gerar documento'}: ${t}`,
+          crFundo: livre ? '#cffafe' : '#e2e8f0', crCor: livre ? '#155e75' : '#334155', crBorda: livre ? '#0891b2' : '#64748b' });
+        const nDocs = Object.keys(porNum).length;
+        return { docsAbaK: aba, docsAbaPdf: aba === 'pdf', docsAbaZap: aba === 'zap', docsPdfSel: aba === 'pdf' ? 'true' : 'false', docsZapSel: aba === 'zap' ? 'true' : 'false',
+          docsIcoPdf: aba === 'pdf' ? '#ffffff' : '#091e42', docsIcoZap: aba === 'zap' ? '#ffffff' : '#091e42',
+          docsIrPdf: () => this.setState({ docsAba: 'pdf' }), docsIrZap: () => this.setState({ docsAba: 'zap' }), scLiberado: temS, scBloq: !temS,
+          docsCards: [
+            card('orc', 'Orçamento e termo de garantia', 'COM ASSINATURA', 'Itens, termo de entrega e garantia, assinatura do cliente, Pix e PDF', () => this.abrirFech()),
+            card('laudo', 'Laudo de inviabilidade', lock ? 'BÔNUS BLOQUEADO' : 'LAUDO · GERA PDF', 'PDF com constatações, medições e conclusão',
+              () => lock ? this.vazio('upg', { modK: 'docs' }) : this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cli: x.laudo.cli || (x.fech ? x.fech.cliNome : '') } })), lock ? 'Ver como liberar' : '', !lock),
+            card('reca', 'Recibo avulso', temS ? 'GERA PDF' : 'NÃO COMPRADO', temS ? 'Recibo com valor, forma de pagamento e PDF para o cliente' : 'Faz parte do Kit de scripts e recibos. Adicional da compra.',
+              temS ? () => this.setState({ tela: 'scripts', modK: 'docs' }) : null, '', temS),
+            card('pmoc', 'PMOC', temP ? 'MODELO OFICIAL' : 'NÃO COMPRADO', temP ? 'Contrato e checklist de manutenção mensal com PDF' : 'Contrato e checklist PMOC simplificado. Adicional da compra.',
+              temP ? () => this.setState({ tela: 'pmoc', modK: 'docs' }) : null, '', temP),
+            card('cofre', 'Documentos emitidos', 'COFRE', `${nDocs} neste aparelho`, () => lock ? this.vazio('upg', { modK: 'cofre' }) : this.setState({ tela: 'cofre', modK: 'cofre' }), 'Abrir Cofre'),
+            card('tabela', BUMPS[0][1], temT ? 'EM PESQUISA' : 'NÃO COMPRADO', BUMPS[0][2] + (temT ? '. Conteúdo em pesquisa, entra na próxima versão.' : '. Adicional da compra.'), null, '', false),
+          ] }; })(),
       temAdic: true, adic: BUMPS.map(([id, t, x]) => { const tem = bumps.includes(id), pronto = id !== 'tabela'; return { t, x: tem && !pronto ? x + '. Conteúdo em pesquisa, entra na próxima versão.' : x + '.', selo: tem ? (pronto ? 'Liberado' : 'Em pesquisa') : 'Não comprado', tipo: tem ? (pronto ? 'sucesso' : 'aviso') : 'neutro', abre: tem && pronto, fecha: !(tem && pronto), acao: () => this.setState({ tela: id === 'pmoc' ? 'pmoc' : 'scripts', modK: 'docs' }) }; }),
       lCli: LD.cli, lSetCli: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, cli: v } })); }, lCliE: LD.tentou && LD.cli.trim().length < 2 ? 'erro' : 'normal',
       lConst: LD.cons, lSetConst: (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ laudo: { ...x.laudo, cons: v } })); },
