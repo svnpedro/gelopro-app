@@ -140,20 +140,23 @@ html[data-uso-real="1"] [data-tema="sol"] [data-telemetria]{background:#ffffff !
 html[data-uso-real="1"] [data-telemetria] :is([data-telemetria-cab],[data-trilho],[data-poco-marca]){display:none !important;}
 html[data-uso-real="1"] [data-telemetria] > [role="group"]{padding:0 !important;gap:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;}
 html[data-uso-real="1"] [data-telemetria] [data-canal]{gap:0 !important;}
-html[data-uso-real="1"] [data-telemetria] [data-canal]:not(:first-child){border-left:1px solid rgba(255,255,255,0.16) !important;}
-html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal]:not(:first-child){border-left-color:#091e42 !important;}
+/* PR #105: filetes recuados (top/bottom 10 px), iguais aos de Marca | BTU/h | Fluido do topo, no lugar do border-left de ponta a ponta. */
+html[data-uso-real="1"] [data-telemetria] [data-canal]{position:relative !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal]:not(:first-child)::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:1px;background:rgba(255,255,255,0.16);pointer-events:none;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal]:not(:first-child)::before{background:#091e42;}
 html[data-uso-real="1"] [data-telemetria] [data-canal] > button{height:52px !important;padding:0 !important;border:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;}
 html[data-uso-real="1"] [data-telemetria] [data-canal] > button:active{transform:none !important;filter:brightness(1.15) !important;}
 html[data-uso-real="1"] [data-telemetria] [data-canal-visor]{height:52px !important;padding:0 4px !important;border:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;row-gap:0 !important;}
 html[data-uso-real="1"] [data-telemetria] [data-canal-visor][data-alerta="1"]{background:linear-gradient(#f87171,#f87171) center bottom 4px / 36% 3px no-repeat !important;}
 html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-visor][data-alerta="1"]{background:linear-gradient(#b91c1c,#b91c1c) center bottom 4px / 36% 3px no-repeat !important;}
 html[data-uso-real="1"] [data-telemetria], html[data-uso-real="1"] [data-telemetria] *{animation:none !important;transition:none !important;}
-html[data-uso-real="1"] [data-telemetria] [data-canal-valor]{font-size:19px !important;line-height:22px !important;font-weight:800 !important;font-variant-numeric:tabular-nums !important;color:#ffffff !important;overflow:visible !important;text-overflow:clip !important;}
-html[data-uso-real="1"] [data-telemetria] [data-canal-visor][data-medido="0"] [data-canal-valor]{color:#94a3b8 !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-valor]{font-size:20px !important;line-height:22px !important;font-weight:800 !important;font-variant-numeric:tabular-nums !important;color:#ffffff !important;overflow:visible !important;text-overflow:clip !important;}
+/* PR #105: sem medição, o "—" sai da vista (o nó segue no DOM e no textContent para os testes); fica a unidade limpa e, embaixo, a faixa. */
+html[data-uso-real="1"] [data-telemetria] [data-canal-visor][data-medido="0"] [data-canal-valor]{display:none !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-visor][data-medido="0"] [data-canal-un]{font-size:16px !important;line-height:18px !important;}
 html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-valor]{color:#091e42 !important;}
-html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-visor][data-medido="0"] [data-canal-valor]{color:#475569 !important;}
 html[data-uso-real="1"] [data-telemetria] [data-canal-un]{font-size:19px !important;line-height:22px !important;font-weight:800 !important;color:var(--cv-un) !important;}
-html[data-uso-real="1"] [data-telemetria] [data-poco-ref]{padding:0 !important;border:0 !important;border-radius:0 !important;background:transparent !important;font:700 14px/17px 'Roboto',sans-serif !important;font-variant-numeric:tabular-nums !important;color:#dbeafe !important;}
+html[data-uso-real="1"] [data-telemetria] [data-poco-ref]{padding:0 !important;border:0 !important;border-radius:0 !important;background:transparent !important;font:800 15px/18px 'Roboto',sans-serif !important;font-variant-numeric:tabular-nums !important;color:#ffffff !important;}
 html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-poco-ref]{color:#091e42 !important;}
 /* PR #104: topo no uso real. Nome do titular com a base na linha da base do urso de 46 px; "Avisos" some da vista (aria-label segue "Avisos")
    e o sino fica no centro vertical da chavinha. No legado, slogan e coluna voltam ao desenho original (home.js). */
@@ -3856,7 +3859,7 @@ class Component extends DCLogic {
         // PR #58: poço sem medição nunca fica mudo. Embaixo de "— PSI", "— kΩ" e "— °C" entra a referência viva do aparelho do topo
         // ([data-poco-ref]); com medição real, o valor medido volta a ocupar o poço sozinho. Em tela estreita, a variante mais longa que cabe.
         const ref = r.v === '—' ? POCO_REF[r.un](st.sel, W) : null, refW = (cw - 4 - 2 * gapG) / 3 - 18; // largura do canal menos aro (4), respiro (4) e cápsula (padding 4 + borda 1 de cada lado)
-        const refReal = (cw - 4 - 2 * gapG) / 3 - 12, refTxt = !ref ? '' : !LEGADO_TESTES ? ref.vs.find(v => larg(v, 14, 700) <= refReal) || ref.vs[ref.vs.length - 1] : ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1];
+        const refReal = (cw - 4 - 2 * gapG) / 3 - 12, refTxt = !ref ? '' : !LEGADO_TESTES ? ref.vs.find(v => larg(v, 15, 800) <= refReal) || ref.vs[ref.vs.length - 1] : ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1];
         // PR #60: trilho de 15 LEDs (4 azuis abaixo, 7 verdes na faixa, 4 vermelhos acima) e pino pelo desvio z (−1 a 1 = dentro da faixa).
         const k = r.un === 'PSI' ? 'psi' : r.un === 'kΩ' ? 'ntc' : 'sh', z = zLeitura(k), pos = z === null ? 7.5 : Math.max(0.5, Math.min(14.5, 7.5 + z * 3.5)), aceso = Math.floor(pos);
         // PR #73: a insígnia da marca só entra na 1ª linha ("— PSI [marca]") quando cabe no poço (traço + unidade + 2 vãos de 5 px + insígnia de 16 px).
