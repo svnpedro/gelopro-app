@@ -369,28 +369,31 @@ html[data-uso-real="1"] [data-sc-name="LinhaOrcamento"] button[aria-label^="Remo
 /* PR #116: carrossel físico da Home (uso real). As 2 grades ficam lado a lado num trilho de 200% que desliza −50% (opacidade sempre 1);
    a grade fora da vista fica visibility:hidden (sem foco nem leitura). No legado o invólucro é display:contents (DOM e layout de sempre).
    Movimento só com [data-gp-fluido="1"]; no webdriver sem ?fluido=1 a troca é instantânea. */
-html[data-uso-real="1"] [data-home-carrossel]{display:block !important;flex:1 1 0;min-height:var(--gp-grade-min,0px);contain:paint;}
-html[data-uso-real="1"] [data-carrossel-trilho]{display:flex !important;width:200%;height:100%;transform:translate3d(0,0,0);}
+html[data-uso-real="1"] [data-home-carrossel]{display:block !important;position:relative !important;width:100% !important;flex:1 1 0;min-height:var(--gp-grade-min,0px);contain:paint;clip-path:inset(0);}
+html[data-uso-real="1"] [data-carrossel-trilho]{display:flex !important;width:200% !important;height:100%;transform:translate3d(0,0,0);will-change:transform;}
 html[data-uso-real="1"] [data-home-carrossel][data-aba="medicoes"] [data-carrossel-trilho]{transform:translate3d(-50%,0,0);}
 html[data-uso-real="1"] [data-carrossel-trilho] > :is([data-grade-sintomas],[data-home-medicoes]){flex:none !important;width:50% !important;height:100%;box-sizing:border-box;animation:none !important;opacity:1 !important;}
 html[data-uso-real="1"] [data-carrossel-trilho] > [data-grade-sintomas]{padding:0 2px;}
-html[data-uso-real="1"] [data-home-carrossel][data-aba="medicoes"] [data-grade-sintomas],html[data-uso-real="1"] [data-home-carrossel][data-aba="sintomas"] [data-home-medicoes]{visibility:hidden;}
+html[data-uso-real="1"] [data-home-carrossel][data-aba="medicoes"] [data-grade-sintomas],html[data-uso-real="1"] [data-home-carrossel][data-aba="sintomas"] [data-home-medicoes]{visibility:hidden;pointer-events:none;}
 html[data-uso-real="1"] [data-carrossel-trilho] [data-grade-medicoes]{animation:none !important;}
 /* PR #118: o deslize não depende de prefers-reduced-motion (Windows com "efeitos de animação" desligados zerava a transição = corte seco);
    só [data-gp-fluido="1"] liga o movimento, e o !important vence o "transition-duration:1ms" global do modo reduzido. */
-html[data-uso-real="1"][data-gp-fluido="1"] [data-carrossel-trilho]{transition:transform 200ms cubic-bezier(.25,1,.5,1) !important;}
-html[data-uso-real="1"][data-gp-fluido="1"] [data-carrossel-trilho] > *{transition:visibility 0s linear 200ms !important;}
+/* PR #121: 240 ms; a grade que sai segue 100% visível durante o deslize e só vira visibility:hidden ao fim (atraso de 240 ms). */
+html[data-uso-real="1"][data-gp-fluido="1"] [data-carrossel-trilho]{transition:transform 240ms cubic-bezier(0.22,1,0.36,1) !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-carrossel-trilho] > *{transition:visibility 0s linear 240ms !important;}
 html[data-uso-real="1"][data-gp-fluido="1"] [data-home-carrossel][data-aba="sintomas"] [data-grade-sintomas],html[data-uso-real="1"][data-gp-fluido="1"] [data-home-carrossel][data-aba="medicoes"] [data-home-medicoes]{transition:none !important;}
 /* PR #116: pastilha azul desliza no trilho (::before, 50% da largura). O fundo sólido da aba ativa entra ao fim do deslize (atraso de 180 ms no
    modo fluido; instantâneo no webdriver), para o portão medir o contraste sobre o fundo real. */
 html[data-uso-real="1"] [data-home-modo]{position:relative;}
-html[data-uso-real="1"] [data-home-modo]::before{content:"";position:absolute;top:0;left:0;width:50%;height:100%;border-radius:999px;background:#1d4ed8;box-shadow:inset 0 0 0 1px #60a5fa,inset 0 1px 0 rgba(255,255,255,0.35);transform:translateX(0);pointer-events:none;}
+html[data-uso-real="1"] [data-home-modo]::before{content:"";position:absolute;z-index:0;top:0;left:0;width:50%;height:100%;box-sizing:border-box;border-radius:999px;background:linear-gradient(180deg,#2563eb 0%,#1d4ed8 100%);border:1px solid #60a5fa;box-shadow:inset 0 1px 0 rgba(255,255,255,0.35),0 2px 4px rgba(0,0,0,0.35);transform:translate3d(0,0,0);will-change:transform;pointer-events:none;}
 html[data-uso-real="1"] [data-home-modo][data-aba="medicoes"]::before{transform:translate3d(100%,0,0);}
 html[data-uso-real="1"] [data-home-modo] > [data-aba-home]{position:relative;z-index:1;}
 html[data-uso-real="1"] [data-home-modo] > [data-aba-home][aria-selected="true"] > span{background:#1d4ed8 !important;background-image:none !important;}
-html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo]::before{transition:transform 180ms cubic-bezier(.25,1,.5,1) !important;}
-html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo] > [data-aba-home][aria-selected="true"] > span{transition:background-color 0s linear 180ms,border-color 0s linear 180ms,box-shadow 0s linear 180ms !important;}
-html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo] > [data-aba-home][aria-selected="false"] > span{transition:none !important;}
+/* PR #121: no modo fluido (humano, ou ?fluido=1) o fundo azul ativo é SÓ do ::before, que desliza 240 ms; o span das 2 abas fica 100% transparente
+   (antes o span ativo pintava o azul estático com atraso e o inativo apagava na hora: no celular lia como corte seco). No webdriver sem ?fluido=1
+   o span ativo segue com #1d4ed8 para o portão medir o contraste do texto branco. */
+html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo]::before{transition:transform 240ms cubic-bezier(0.22,1,0.36,1) !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo] > [data-aba-home][aria-selected] > span{background:transparent !important;background-image:none !important;border-color:transparent !important;box-shadow:none !important;transition:color 240ms cubic-bezier(0.22,1,0.36,1) !important;}
 /* PR #116: cabeçalho da pergunta (uso real). Crachá do sintoma (marinho) + crachá de progresso "PASSO k DE n" (visor), sem espaços soltos;
    a pergunta num cartão branco com borda #334155. "Gela pouco  Pergunta 1" segue no DOM em sr-only (f07/pr17). */
 html[data-uso-real="1"] [data-etapa-cab]{background:#ffffff !important;border:1.5px solid #334155 !important;border-radius:14px !important;padding:6px 10px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),0 2px 4px rgba(9,30,66,0.12) !important;gap:2px !important;}
@@ -402,11 +405,20 @@ html[data-uso-real="1"] [data-etapa-crachas] [data-cab-passo]{background:#0c1d36
 html[data-uso-real="1"] [data-etapa-crachas] [data-etapa-modo]{font:700 14px/18px 'Roboto',sans-serif !important;}
 /* PR #119: Docs em 2 abas (uso real). Trilho "Documentos (PDF)" | "Scripts WhatsApp"; cartões brancos com borda #334155, nome #091e42 17px 800,
    crachá ciano de função, botão direto "Gerar documento" (marinho) e, nos scripts, título 16px 800 + prévia de 1 linha + "Copiar / Enviar" verde. */
-html[data-uso-real="1"] [data-docs-abas]{flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:3px;border-radius:999px;background:#ffffff;border:1.5px solid #334155;box-shadow:inset 0 1px 2px rgba(9,30,66,0.12);}
+html[data-uso-real="1"] [data-docs-abas]{position:relative;flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;padding:3px;border-radius:999px;background:#ffffff;border:1.5px solid #334155;box-shadow:inset 0 1px 2px rgba(9,30,66,0.12);}
 html[data-uso-real="1"] [data-docs-tab]{min-width:0;height:48px;box-sizing:border-box;padding:0 6px;border-radius:999px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;gap:5px;font:800 15px/18px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;}
 html[data-uso-real="1"] [data-docs-tab] > span{color:#091e42 !important;}
 html[data-uso-real="1"] [data-docs-tab][aria-selected="true"]{background:#1d4ed8;box-shadow:inset 0 0 0 1px #60a5fa,inset 0 1px 0 rgba(255,255,255,0.35);}
 html[data-uso-real="1"] [data-docs-tab][aria-selected="true"] > span{color:#ffffff !important;}
+/* PR #121: pastilha azul deslizante nas abas de Docs (igual à Home): ::before de meia largura, 0% → 100% em 240 ms no modo fluido, com os
+   botões transparentes por cima (z-index 1). No webdriver sem ?fluido=1 o botão ativo segue pintado (portão mede o contraste). */
+html[data-uso-real="1"] [data-docs-abas]::before{content:"";position:absolute;z-index:0;top:3px;left:3px;width:calc(50% - 3px);height:calc(100% - 6px);box-sizing:border-box;border-radius:999px;background:linear-gradient(180deg,#2563eb 0%,#1d4ed8 100%);border:1px solid #60a5fa;box-shadow:inset 0 1px 0 rgba(255,255,255,0.35),0 2px 4px rgba(0,0,0,0.25);transform:translate3d(0,0,0);will-change:transform;pointer-events:none;}
+html[data-uso-real="1"] [data-docs][data-docs-aba="zap"] [data-docs-abas]::before{transform:translate3d(100%,0,0);}
+html[data-uso-real="1"] [data-docs-tab]{position:relative;z-index:1;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-docs-abas]::before{transition:transform 240ms cubic-bezier(0.22,1,0.36,1) !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-docs-tab][aria-selected]{background:transparent !important;box-shadow:none !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-docs-tab] > span{transition:color 240ms cubic-bezier(0.22,1,0.36,1) !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-docs-tab] > svg{transition:fill 240ms cubic-bezier(0.22,1,0.36,1),stroke 240ms cubic-bezier(0.22,1,0.36,1) !important;}
 html[data-uso-real="1"] :is([data-doc-card],[data-script-card]){flex:none;box-sizing:border-box;padding:10px 12px;border-radius:14px;background:#ffffff;border:1.5px solid #334155;box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),0 2px 4px rgba(9,30,66,0.12);display:flex;flex-direction:column;gap:6px;}
 html[data-uso-real="1"] [data-doc-topo]{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;}
 html[data-uso-real="1"] [data-doc-nome]{font:800 17px/22px 'Roboto',sans-serif;color:#091e42 !important;}
@@ -2876,11 +2888,12 @@ class Component extends DCLogic {
     // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #cfd5df no Titânio e no Claro.
     const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
     if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#cfd5df'; if (tc.content !== cor) tc.content = cor; if (this._fundoCor !== cor) { this._fundoCor = cor; document.documentElement.style.backgroundColor = cor; document.body.style.backgroundColor = cor; } }
-    // PR #101 (uso real): toda troca de tela, sintoma, etapa, resultado, módulo, aba da Home, gaveta, ficha aberta ou passo do Orçamento
+    // PR #101 (uso real): toda troca de tela, sintoma, etapa, resultado, módulo, gaveta, ficha aberta ou passo do Orçamento
+    // (PR #121: a aba da Home saiu da chave: trocar Sintomas | Medições não zera a rolagem no meio do deslize do carrossel)
     // abre no topo: zera na hora (instantâneo) todos os containers roláveis e a página; um 2º ajuste no próximo quadro só roda se o
     // usuário não tocou na tela (toque, clique ou roda cancelam).
     if (!LEGADO_TESTES) {
-      const s0 = this.state, kTopo = [s0.tela, s0.sint, s0.etapa, s0.res, s0.modK, s0.modo, s0.abaHome, s0.drawer, s0.fichaSel ? (s0.fichaSel.t || '1') : '', s0.fOpen && s0.fech ? s0.fech.passo : '', s0.fOpen ? 'f' : '', this.state.portao ? 'p' : ''].join('|');
+      const s0 = this.state, kTopo = [s0.tela, s0.sint, s0.etapa, s0.res, s0.modK, s0.modo, s0.drawer, s0.fichaSel ? (s0.fichaSel.t || '1') : '', s0.fOpen && s0.fech ? s0.fech.passo : '', s0.fOpen ? 'f' : '', this.state.portao ? 'p' : ''].join('|');
       if (kTopo !== this._topoK) { this._topoK = kTopo; this.topoGeral(); }
     }
     // Fechamento (PR #22): avançar ou voltar de passo abre o visor no topo (Aprovação e Pix nunca começam no meio da rolagem).
