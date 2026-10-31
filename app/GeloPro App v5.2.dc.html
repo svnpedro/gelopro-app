@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#cfd5df">
+<meta name="theme-color" content="#dedede">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
-<style id="gp-anti-fouc">html,body{margin:0;background-color:#cfd5df;}</style>
+<style id="gp-anti-fouc">html,body{margin:0;background-color:#dedede;}</style>
 <script>try{if(!navigator.webdriver||/[?&]fluido=1\b/.test(location.search))document.documentElement.setAttribute('data-gp-fluido','1');}catch(e){}</script>
 <style id="gp-fluidez-manteiga">
 @keyframes gpEntradaSuave{from{opacity:0;transform:translate3d(0,4px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
@@ -45,7 +45,7 @@
 </style>
 <link href="ref/acetinado-sedoso.css" rel="stylesheet">
 <style>
-html,body{margin:0;background:#cfd5df;}
+html,body{margin:0;background:#dedede;}
 a{color:var(--gp-primary);}a:hover{color:var(--gp-on-primary-container);}
 button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 :focus-visible,[data-foco="1"]{outline:3px solid var(--gp-focus);outline-offset:2px;}
@@ -507,7 +507,21 @@ html[data-uso-real="1"] [data-tema="titanio"] [data-chassi] div:has(> [data-tema
 html[data-uso-real="1"] [data-tema="titanio"] :is([data-grade-sintomas] button,[data-grade-medicoes] [data-atalho-medicao] button,[data-fichas-sala],[data-atalhos] > [data-sc-name="AtalhoTecla"] button[data-verde="1"] > span,[data-atalhos] > [data-atendimento-ativo] > button,nav[aria-label="Módulos"] button:not([aria-current="page"]) [data-tecla]){box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.32),inset 0 -2px 0 rgba(0,0,0,0.48),0 0 0 1.5px #0b182e,0 2px 0 rgba(255,255,255,0.72),0 4px 7px rgba(9,30,66,0.28) !important;}
 html[data-uso-real="1"] [data-tema="titanio"] nav[aria-label="Módulos"] button[aria-current="page"] [data-tecla]{box-shadow:0 0 12px #38bdf8,inset 0 0 6px rgba(103,198,255,0.5),0 0 0 1.5px #0b182e,0 2px 0 rgba(255,255,255,0.72) !important;}
 html[data-uso-real="1"] [data-tema="titanio"] :is([role="group"][aria-label="Equipamento"],[data-home-modo],[data-telemetria],[data-visor-total],[data-lucro-painel],[data-mostrador-calc],[data-inv-meta],[data-cofre-mostrador],[data-doc-faixa],[data-ref-comunicacao]){box-shadow:inset 0 2px 5px rgba(0,0,0,0.55),0 0 0 1px #475569,0 1.5px 0 rgba(255,255,255,0.82) !important;}
-html[data-uso-real="1"] [data-tema="titanio"] [data-dock-barra]{box-shadow:0 -5px 0 -4px #7c8798,inset 0 1px 0 rgba(255,255,255,0.85) !important;}
+/* PR #137: o sulco de 1 px acima do dock (0 -5px 0 -4px, largura total) lia como um corte na tela no iPhone: sai. Fica só o realce interno da
+   própria barra, sem nada passando para fora dela e sem mudar a altura do dock. */
+html[data-uso-real="1"] [data-tema="titanio"] [data-dock-barra]{box-shadow:inset 0 1px 0 rgba(255,255,255,0.6) !important;}
+/* PR #137 (chassi tela cheia contínuo no celular, uso real): até 600 px, ou toque (pointer: coarse) no layout de tela cheia (até 767,98 px),
+   a página inteira (html, body e a mesa) usa a mesma chapa acetinada do chassi (textura + cor de reserva #c1c0c1), inclusive no rebote do
+   iOS; o chassi não tem margem, borda, raio nem o anel do chanfro do PR #130 (o chanfro fica só na moldura de mesa, acima de 600 px). As
+   faixas seguras de cima e de baixo continuam dentro do chassi (microfaixa e dock já somam env(safe-area-inset-top/bottom)); o chassi soma só
+   as laterais (iPhone deitado). Toque longo na grade, telemetria, abas, gêmeos e dock não seleciona texto nem abre o balão do iOS. */
+@media (max-width:600px),(pointer:coarse) and (max-width:767.98px){
+  html[data-uso-real="1"]:not(:has([data-tema="sol"])){background:#c1c0c1 url("ref/acetinado-sedoso.svg") center / 100% 100% no-repeat !important;background-color:#c1c0c1 !important;}
+  html[data-uso-real="1"]:not(:has([data-tema="sol"])) body,html[data-uso-real="1"] [data-mesa]{background:transparent !important;}
+  html[data-uso-real="1"] [data-chassi]{margin:0 !important;border:0 !important;border-radius:0 !important;width:100% !important;min-height:100dvh;box-sizing:border-box;padding:0 env(safe-area-inset-right, 0px) 0 env(safe-area-inset-left, 0px);}
+  html[data-uso-real="1"] [data-tema="titanio"] :is([data-chassi],[data-chapa]){box-shadow:none !important;}
+}
+html[data-uso-real="1"] :is([data-grade-sintomas],[data-grade-medicoes],[data-telemetria],[data-home-modo],[data-atalhos],[data-dock-barra],[data-dock-barra] *){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
 /* PR #133: Passo 4 com os controles secundários recolhidos (uso real, gaveta [data-mais-p4] fechada). */
 html[data-uso-real="1"] [data-p4-opcionais][data-aberto="0"]{display:none !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
@@ -3136,9 +3150,10 @@ class Component extends DCLogic {
     if (this.state.fOpen && this.state.selOrc) this.setState({ sel: this.state.selOrc, selOrc: null });
     if (this.state.fech !== this._fechGravado) { this._fechGravado = this.state.fech; this._fechEm = Date.now(); if (!this.state.amostra && (this.props.simular || 'real') === 'real') gravarRascunho(this.state.fech); }
     if (prev.tema !== this.props.tema && this.state.tema !== null) this.setState({ tema: null });
-    // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #cfd5df no Titânio e no Claro.
+    // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #dedede no Titânio e no Claro (PR #137: tom medido no topo da
+    // chapa acetinada no iPhone; o #cfd5df azulado deixava uma faixa atrás da barra de status).
     const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
-    if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#cfd5df'; if (tc.content !== cor) tc.content = cor; if (this._fundoCor !== cor) { this._fundoCor = cor; document.documentElement.style.backgroundColor = cor; document.body.style.backgroundColor = cor; } }
+    if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#dedede'; if (tc.content !== cor) tc.content = cor; if (this._fundoCor !== cor) { this._fundoCor = cor; document.documentElement.style.backgroundColor = cor; document.body.style.backgroundColor = cor; } }
     // PR #101 (uso real): toda troca de tela, sintoma, etapa, resultado, módulo, gaveta, ficha aberta ou passo do Orçamento
     // (PR #121: a aba da Home saiu da chave: trocar Sintomas | Medições não zera a rolagem no meio do deslize do carrossel)
     // abre no topo: zera na hora (instantâneo) todos os containers roláveis e a página; um 2º ajuste no próximo quadro só roda se o
