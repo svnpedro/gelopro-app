@@ -752,6 +752,42 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @container gp-topo (max-width:335.98px){[data-topo-linha]{margin-bottom:13px;}[data-topo-slogan]{position:absolute;left:0;top:calc(100% + 2px);width:calc(100% + 104px);max-width:none !important;pointer-events:none;font-size:clamp(8.5px, calc((100cqw + 156px) / 21.15), 11px);}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition-duration:1ms !important;}}
 @media print{@page{size:A4;margin:12mm}html,body{background:#fff !important}body *{visibility:hidden !important}[data-print],[data-print] *{visibility:visible !important}[data-print]{position:absolute !important;left:0 !important;top:0 !important;width:100% !important}[data-print],[data-print] *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}[data-print] [data-doc-fechamento],[data-print] [data-doc-foto-bloco],[data-print] [data-doc-assinatura],[data-print] [data-doc-preventiva]{page-break-inside:avoid;break-inside:avoid}}
+/* PR #146 (uso real). Tarefa 1: o Orçamento e as outras telas de chapa ([data-chapa]) usam o mesmo fundo da Home no celular: textura
+   ref/acetinado-sedoso.svg esticada (100% 100%) sobre #d4d4d4, véu de 28 px no topo e rampa de 110 px no pé até #d4d4d4 (a mesma regra do chassi
+   do PR #140/#142), sem aro preso na borda; laterais a 16 px como a borda única da Home (o cabeçalho e a linha de pausa perdem os 4 px próprios
+   para tudo cair na mesma linha). Só Titânio e Claro: o Sol segue em alto contraste. */
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-chapa]{border:0 !important;box-shadow:none !important;padding-left:calc(16px + env(safe-area-inset-left, 0px)) !important;padding-right:calc(16px + env(safe-area-inset-right, 0px)) !important;}
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-chapa] > :is([data-cabecalho],[data-pausar-linha]){padding-left:0 !important;padding-right:0 !important;}
+@media (max-width:600px),(pointer:coarse) and (max-width:767.98px){
+  html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-chapa]{background:linear-gradient(180deg,#d4d4d4 0px,rgba(212,212,212,0) 28px,rgba(212,212,212,0) calc(100% - 110px),#d4d4d4 100%),url("ref/acetinado-sedoso.svg") center / 100% 100% no-repeat #d4d4d4 !important;background-color:#d4d4d4 !important;}
+  html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-chassi] div[role="dialog"][aria-modal="true"]:not([data-chapa]){background:url("ref/acetinado-sedoso.svg") center / 100% 100% no-repeat #d4d4d4 !important;}
+}
+/* PR #146, Tarefa 2 (uso real, celular, Titânio e Sol): fim da faixa morta de 18 px acima da logo (microfaixa de 22 para 4 px) e do vão entre os
+   rótulos do dock e a barra do navegador (dock 4 px em cima e 2 px embaixo); o visor flex:1 recebe a altura liberada. A faixa segura do iPhone
+   (env(safe-area-inset-top/bottom), app instalado com viewport-fit=cover) continua como piso: no Safari ela vale 0 e ficam os 4 px e 2 px.
+   Rodapé do Orçamento (Sair / Continuar): 8 px acima, 6 px abaixo; as laterais de 16 px vêm da própria chapa. */
+@media (max-width:767.98px){
+  html[data-uso-real="1"] [data-microfaixa]{box-sizing:border-box !important;height:max(4px, env(safe-area-inset-top, 0px)) !important;padding-top:0 !important;}
+  html[data-uso-real="1"] [data-dock-barra]{padding-top:4px !important;padding-bottom:max(2px, env(safe-area-inset-bottom, 0px)) !important;margin-bottom:0 !important;}
+  html[data-uso-real="1"] [data-chassi]{padding-bottom:0 !important;}
+  html[data-uso-real="1"] [data-chapa]{padding-bottom:env(safe-area-inset-bottom, 0px) !important;}
+  html[data-uso-real="1"] [data-chapa] > div:last-child:has(> [data-sc-name="TeclaResposta"]){padding:8px 0 6px !important;}
+}
+/* PR #146, Tarefa 3 (Regra 9, uso real, Titânio e Claro): alto-relevo monolítico nas teclas. Os anéis finos empilhados (borda de 1,5 px #64748b +
+   0 0 0 1,5px + 0 2px 0 claro, e o aro de 3 px com drop-shadow de 0,6 px nas teclas de resposta) quebravam nas curvas de 20 e 32 px no iPhone.
+   Agora: 1 borda contínua de 2 px escura + 1 realce interno no topo + base sólida de 4 px + sombra difusa. Nenhum x, y, largura ou altura muda
+   (todas as teclas são border-box). Sol fica como está (alto contraste próprio). Verde: o topo pedido (#00c400) dá 2,36:1 com o texto branco e
+   reprova o G-L3 (mínimo 2,5:1); fica o verde comercial já aprovado #00b100 (PR #26, 2,88:1) descendo até #008800, com a borda e a base #004d00. */
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) :is([data-grade-sintomas] button,[data-grade-medicoes] button,[data-fichas-sala],[data-novo-atendimento],nav[aria-label="Módulos"] button:not([aria-current="page"]) > [data-tecla],[data-sc-name="AtalhoTecla"] > button:not([data-verde="1"]):not([data-amarelo="1"]) > span,[data-sc-name="AtalhoTecla"] [data-chanfro] > button:not([data-verde="1"]):not([data-amarelo="1"])){background:linear-gradient(180deg,#2b5ca8 0%,#1b3d73 100%) !important;border:2px solid #091e42 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,0.32),0 4px 0 #091e42,0 6px 10px rgba(9,30,66,0.28) !important;}
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) :is(nav[aria-label="Módulos"] button[aria-current="page"] > [data-tecla]){background:linear-gradient(180deg,#1e4b8f 0%,#122d59 100%) !important;border:2px solid #67c6ff !important;box-shadow:inset 0 2px 0 rgba(255,255,255,0.28),0 3px 0 #091e42,0 5px 10px rgba(9,30,66,0.32) !important;}
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) :is([data-atalhos] > [data-sc-name="AtalhoTecla"] button[data-verde="1"] > span,[data-sc-name="AtalhoTecla"] > button[data-verde="1"] > span,[data-sc-name="AtalhoTecla"] [data-chanfro] > button[data-verde="1"],[data-atendimento-continuar],[data-sc-name="TeclaResposta"] > button[data-verde="1"]){background:linear-gradient(180deg,#00b100 0%,#008800 100%) !important;border:2px solid #004d00 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,0.35),0 4px 0 #004d00,0 6px 10px rgba(0,40,0,0.28) !important;}
+/* Teclas de resposta (TeclaResposta: Sair, Continuar, Aprovar, Enviar…): o aro de 3 px vira a borda única; a capa ocupa a tecla inteira e
+   mantém a cor da família (a verde ganha o mesmo verde comercial). Ao apertar, a capa desce 3 px dentro da borda (overflow recortado). */
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-sc-name="TeclaResposta"] > button:not([data-amarelo="1"]){padding:0 !important;overflow:hidden !important;filter:none !important;}
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-sc-name="TeclaResposta"] > button:not([data-verde="1"]):not([data-amarelo="1"]){border:2px solid #091e42 !important;box-shadow:inset 0 2px 0 rgba(255,255,255,0.22),0 4px 0 #091e42,0 6px 10px rgba(9,30,66,0.28) !important;}
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) [data-sc-name="TeclaResposta"] > button[data-verde="1"] > span{background:transparent !important;}
+/* Janela Equipamento do topo e visor de telemetria: borda contínua de 2 px sem o anel fino de 1 px por fora. */
+html[data-uso-real="1"]:not(:has([data-tema="sol"])) :is([role="group"][aria-label="Equipamento"],[data-telemetria]){border:2px solid #091e42 !important;box-shadow:inset 0 2px 4px rgba(0,0,0,0.45),0 1px 0 rgba(255,255,255,0.65) !important;}
 </style>
 <script src="offline-gelopro.js"></script>
 <script src="marca-gelopro.js"></script>
