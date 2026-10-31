@@ -97,6 +97,26 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 [data-notas-tec="0"] :is([data-nota-tecnica="1"],[data-ntc-fonte]){display:none !important;}
 /* PR #80: assistente do Inverter (uso real): só o cartão do passo atual aparece; "Ver todos os passos" volta à lista completa. */
 [data-inv-wizard="1"] [data-inv-etapa][data-inv-atual="0"]{display:none !important;}
+/* PR #100: fim do "botão branco sobre fundo branco" nas telas internas claras. No tema claro, --gp-sec-key e --gp-on-tile eram #ffffff, e a
+   tecla do AtalhoTecla saía com texto branco sobre branco. Os tokens são redefinidos no host de cada componente (só dentro de [data-tema="claro"];
+   o titânio da Home não muda); as pílulas nativas e os botões de cabeçalho recebem regras escopadas. Verde e amarelo seguem os próprios tokens. */
+[data-tema="claro"] [data-sc-name="AtalhoTecla"]{--gp-sec-key:linear-gradient(180deg,#24466f 0%,#19365c 100%);--gp-sec-edge:#0b1426;--gp-on-tile:#ffffff;--gp-sec-raise:inset 0 1px 0 rgba(191,219,254,0.35),0 2px 4px rgba(9,30,66,0.28);}
+[data-tema="claro"] [data-sc-name="AtalhoTecla"] [data-chanfro] > button:not([data-verde="1"]):not([data-amarelo="1"]):not(:disabled){background:linear-gradient(180deg,#24466f 0%,#19365c 100%) !important;color:#ffffff !important;border:1px solid #0b1426 !important;box-shadow:inset 0 1px 0 rgba(191,219,254,0.35),0 2px 4px rgba(9,30,66,0.28) !important;}
+[data-tema="claro"] [data-sc-name="TeclaResposta"]{--gp-key-neutral-ring:linear-gradient(180deg,#0f172a 0%,#0f172a 100%);--gp-key-neutral-cap:linear-gradient(180deg,#334155 0%,#1e293b 100%);--gp-on-sec:#ffffff;}
+[data-tema="claro"] [data-cabecalho] > button:is([aria-label="Voltar"],[aria-label="Fechar"],[aria-label="Sair do fechamento"],[aria-label="Como verificar"]),[data-tema="claro"] [role="dialog"] [data-cabecalho] button[aria-label="Fechar"]{background:linear-gradient(180deg,#334155 0%,#1e293b 100%) !important;color:#ffffff !important;border:1px solid #0f172a !important;box-shadow:inset 0 1px 0 rgba(255,255,255,0.18),0 2px 4px rgba(9,30,66,0.28) !important;}
+[data-tema="claro"] [data-sc-name="SeletorPrazo"] button[role="radio"][aria-checked="false"]:not(:disabled),[data-tema="claro"] [data-sc-name="OpcaoLista"] button[role="option"][aria-selected="false"]:not(:disabled),[data-tema="claro"] :is([aria-label="Filtrar fichas por categoria"],[data-validade-proposta],[data-desconto-orcamento],[data-visita-valor],[aria-label="Valor da visita técnica"]) button[aria-pressed="false"]{background:#e2e8f0 !important;border:1.5px solid #19365c !important;box-shadow:0 2px 0 rgba(9,30,66,0.18) !important;color:#091e42 !important;font-weight:700 !important;}
+[data-tema="claro"] [data-chamar-preventiva]{background:linear-gradient(180deg,#00b100 0%,#00b100 55%,#008800 100%) !important;border:2px solid #007a00 !important;color:#ffffff !important;}
+[data-tema="sol"] [data-sc-name="AtalhoTecla"] [data-chanfro] > button:not([data-verde="1"]):not([data-amarelo="1"]):not(:disabled),[data-tema="sol"] [data-cabecalho] > button:is([aria-label="Voltar"],[aria-label="Fechar"],[aria-label="Sair do fechamento"],[aria-label="Como verificar"]),[data-tema="sol"] :is([data-res-instrumentos],[data-res-atalhos]) button{border:2px solid #091e42 !important;box-shadow:0 2px 0 #091e42 !important;}
+[data-tema="claro"] [data-foto][role="button"]{border:1.5px solid #19365c !important;}
+[data-tema="sol"] [data-foto][role="button"]{border:2px solid #091e42 !important;}
+[data-tema="sol"] [data-chamar-preventiva]{background:#00b100 !important;border:2px solid #091e42 !important;color:#ffffff !important;box-shadow:0 2px 0 #091e42 !important;}
+/* PR #100: topo sem slogan (a regra Lato do slogan acima segue intacta, gate A6) e logo em baixo-relevo na chapa (titânio e claro; sol sem filtro). */
+[data-topo-slogan]{display:none !important;}
+[data-topo-coluna]{justify-content:center;align-self:stretch;}
+:is([data-tema="titanio"],[data-tema="claro"]) [data-topo-gravado]{filter:drop-shadow(0 1px 0 rgba(255,255,255,0.85)) drop-shadow(0 -1px 1px rgba(9,30,66,0.5)) brightness(0.96) contrast(1.08) !important;}
+:is([data-tema="titanio"],[data-tema="claro"]) [data-topo-mascote]{filter:drop-shadow(0 1px 0 rgba(255,255,255,0.75)) drop-shadow(0 -1px 0.5px rgba(9,30,66,0.35));}
+:is([data-tema="titanio"],[data-tema="claro"]) [data-topo-nome]{text-shadow:0 1px 0 rgba(255,255,255,0.85) !important;}
+[data-tema="sol"] :is([data-topo-gravado],[data-topo-mascote]){filter:none !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -889,7 +909,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       </button>
                       <sc-if value="{{ c.temPrev }}" hint-placeholder-val="{{ false }}"><div data-preventiva-cofre="" style="display:flex;flex-direction:column;gap:6px;padding:0 0 4px 12px;">
                         <span data-prev-data="" class="{{ c.prevC }}" data-selo="" data-rotulo="" style="align-self:flex-start;">{{ c.prevTxt }}</span>
-                        <button type="button" data-chamar-preventiva="" aria-label="{{ c.prevAria }}" onClick="{{ c.prevZap }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="mensagem" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>Chamar para preventiva no WhatsApp</span></button>
+                        <button type="button" data-chamar-preventiva="" data-verde="1" aria-label="{{ c.prevAria }}" onClick="{{ c.prevZap }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:14px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="mensagem" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>Chamar para preventiva no WhatsApp</span></button>
                       </div></sc-if>
                       <sc-if value="{{ c.aberto }}" hint-placeholder-val="{{ false }}">
                         <div style="display:flex;flex-direction:column;gap:8px;padding:0 0 8px 12px;">
@@ -1190,7 +1210,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               </sc-for>
               <sc-if value="{{ fChipsTem }}" hint-placeholder-val="{{ false }}"><div data-atalhos-lucro-p1="" role="group" aria-label="Lucro em 1 toque" style="flex:none;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;align-items:center;">
                 <sc-if value="{{ fChipEstTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-estoque="" aria-pressed="{{ fChipEstOn }}" onClick="{{ fChipEst }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid {{ fChipEstBd }};background:{{ fChipEstBg }};color:{{ fChipEstCor }};">{{ fChipEstTxt }}</button></sc-if>
-                <sc-if value="{{ fChipComboTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-combo="" aria-label="{{ fChipComboAria }}" onClick="{{ fChipCombo }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid #f59e0b;background:#fffbeb;color:#78350f;">{{ fChipComboTxt }}</button></sc-if>
+                <sc-if value="{{ fChipComboTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-combo="" aria-label="{{ fChipComboAria }}" onClick="{{ fChipCombo }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid #b45309;background:#fffbeb;color:#78350f;">{{ fChipComboTxt }}</button></sc-if>
                 <sc-if value="{{ fChipVisTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-visita="" aria-pressed="{{ fChipVisOn }}" onClick="{{ fBonifToggle }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid {{ fChipVisBd }};background:{{ fChipVisBg }};color:{{ fChipVisCor }};">{{ fChipVisTxt }}</button></sc-if>
               </div></sc-if>
               <sc-if value="{{ fVideoModo }}" hint-placeholder-val="{{ false }}"><button type="button" data-mais-opcoes="" aria-expanded="{{ fMaisExp }}" onClick="{{ fMaisToggle }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:1.5px dashed var(--gp-outline);background:transparent;color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;">{{ fMaisTxt }}</button></sc-if>
@@ -3204,6 +3224,8 @@ class Component extends DCLogic {
       if (ps.some(x => larg(x.replace(/\u00ad/g, ''), fs, 700) > medAvail)) return false; let n = 1, w = 0; for (const x of ps) { const pw = larg(x, fs, 700), sp = larg(' ', fs, 700); if (w && w + sp + pw > medAvail) { n++; w = pw; } else w = w ? w + sp + pw : pw; } return n <= 2; };
     const nomeMed = (...vs) => vs.find(cabe2) || vs[vs.length - 1];
     // PR #98: o mesmo handler abre as fichas pelo botão "Consultar fichas" e pelo 9º quadrado da aba Medições e Testes.
+    // PR #100 (uso real): t_ng04 aberto pelo quadrado "Capacitor e motor" mostra "Capacitor e motor · Medição no capacímetro" no cabeçalho.
+    const capAtalho = !LEGADO_TESTES && st.tela === 'etapa' && st.etapa === 't_ng04' && !st.hist.length && !!st.atalho && st.atalho.t === 'Capacitor e motor';
     const abrirFichas = () => this.setState({ drawer: 'fichas', fichaSel: null, busca: '', fichaCat: 'todos', fichaSec: null });
     const out = {
       invTem: invEt.length > 0, invSem: !invEt.length,
@@ -3431,7 +3453,7 @@ class Component extends DCLogic {
         const cb0 = combos[0], higNoOrc = !!F && F.itens.some(x => x.sid === 'higienizacao' || /higieniza/i.test(String(x.d || ''))), cH = (st.base && st.base.cat || []).find(c => c.id === 'higienizacao');
         const curto = (t) => /higieniza/i.test(t) ? 'Higienização' : t.split(/[(+–-]/)[0].trim().split(' ').slice(0, 3).join(' ');
         const temEst = !!c0 && cm0 > 0, temCombo = !!cb0 || (!!cH && !higNoOrc), temVis = !!F && (podeBonif || !!F.bonif), visOn = !!(F && F.bonif);
-        const on = (b) => b ? ['#dcfce7', '#15803d', '#86efac'] : ['#ffffff', '#19365c', '#94a3b8'];
+        const on = (b) => b ? ['#dcfce7', '#15803d', '#15803d'] : ['#ffffff', '#19365c', '#19365c'];
         return { fChipsTem: fp === 1 && !discreto && !LEGADO_TESTES && !!F && !F.maisOpcoes && (temEst || temCombo || temVis),
           fChipEstTem: temEst, fChipEstOn: est0 ? 'true' : 'false', fChipEstTxt: est0 ? '✓ Peça do estoque (R$ 0)' : 'Peça do estoque (R$ 0)',
           fChipEstBg: on(est0)[0], fChipEstCor: on(est0)[1], fChipEstBd: on(est0)[2],
@@ -3650,7 +3672,13 @@ class Component extends DCLogic {
         { k: 'comunicacao', t: nomeMed('Comunicação', 'Comuni\u00adcação'), ico: 'lucide-cable', acao: () => this.abrir('codigo', { sint: 'codigo', cod: temCom ? 'comunicação' : '', atalho: { t: 'Comunicação (Borne S)', tela: 'codigo' } }) },
         { k: 'ntc', t: 'Sensores NTC', ico: 'lucide-thermometer-sun', acao: atalhoMod('ntc', 'ntc', null, 'Sensores NTC') },
         { k: 'compressor', t: 'Compressor UVW', ico: 'lucide-activity', acao: () => { this.setState(x => ({ inv: { ...x.inv, _passo: 0, _todos: false } })); atalhoMod('inv', 'inv', '[data-inv-id="compressor"]', 'Compressor UVW')(); } },
-        { k: 'capacitor', t: 'Capacitor e motor', ico: 'lucide-battery-charging', acao: () => { iniciar('naogela', 't_ng04'); this.setState({ atalho: { t: 'Capacitor e motor', tela: 'etapa', etapa: 't_ng04' } }); } },
+        { k: 'capacitor', t: 'Capacitor e motor', ico: 'lucide-battery-charging', acao: () => {
+          if (LEGADO_TESTES) { iniciar('naogela', 't_ng04'); return this.setState({ atalho: { t: 'Capacitor e motor', tela: 'etapa', etapa: 't_ng04' } }); }
+          // PR #100 (uso real): abre direto a medição do capacitor, com o percurso que estava aberto empilhado para o "Voltar" devolver o técnico a ele.
+          if (!(st.base && st.base.perc && st.base.perc.naogela && st.base.perc.naogela.etapas.t_ng04)) return iniciar('naogela', 't_ng04');
+          this.precarregarPercurso('naogela');
+          this.setState(x => ({ ...RESET, drawer: null, tela: 'etapa', sint: 'naogela', etapa: 't_ng04', atalho: { t: 'Capacitor e motor', tela: 'etapa', etapa: 't_ng04' }, voltarPara: x.percursoSalvo || null }));
+        } },
         { k: 'sh', t: 'Pressão e SH', ico: 'lucide-gauge', acao: atalhoMod('ptsh', 'ptsh', null, 'Pressão e SH') },
         { k: 'vacuo', t: 'Vácuo e carga', ico: 'lucide-botija', acao: atalhoMod('ptsh', 'ptsh', '[data-orcar-ptsh]', 'Vácuo e carga') },
         { k: 'btu', t: 'Carga térmica', ico: 'lucide-calculator', acao: atalhoMod('ntc', 'btu', null, 'Carga térmica') },
@@ -3674,8 +3702,8 @@ class Component extends DCLogic {
       // Na Etapa o visor e a coluna encolhem o respiro (6 px) para entregar a altura às cenas.
       visPad: st.tela === 'etapa' ? '6px' : '12px 10px 12px', colGap: st.tela === 'etapa' ? '6px' : '8px',
       kicker: st.atalho && st.atalho.tela === st.tela && (!st.atalho.etapa || st.atalho.etapa === st.etapa) ? st.atalho.t : st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? (FERR_INSTR.includes(E.ferr) ? `Medição no ${E.ferr === 'capacimetro' ? 'capacímetro' : E.ferr === 'manometro' ? 'manômetro' : E.ferr === 'termometro' ? 'termômetro' : 'multímetro'}` : 'Inspeção na unidade') : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.banc ? 'Hipótese técnica de bancada' : 'Hipótese pelas respostas') : m ? m.k : '',
-      titulo: st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
-      temSelo: st.tela === 'etapa', seloTxt: `Pergunta ${st.hist.length + 1}`,
+      titulo: capAtalho ? 'Capacitor e motor' : st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
+      temSelo: st.tela === 'etapa', seloTxt: capAtalho ? '' : `Pergunta ${st.hist.length + 1}`,
       // PR #78: a etapa técnica diz o que realmente é: inspeção na unidade (visual/nenhuma) ou medição no instrumento (multímetro/capacímetro).
       etapaModoTem: st.tela === 'etapa' && !!E.tec, etapaModoK: FERR_INSTR.includes(E.ferr) ? 'instrumento' : 'inspecao', etapaModoCor: FERR_INSTR.includes(E.ferr) ? '#b45309' : 'var(--gp-on-pill-label)',
       etapaModo: !E.tec ? '' : FERR_INSTR.includes(E.ferr) ? `· Medição no ${E.ferr === 'capacimetro' ? 'capacímetro' : E.ferr === 'manometro' ? 'manômetro' : E.ferr === 'termometro' ? 'termômetro' : 'multímetro'}` : '· Inspeção na unidade',
@@ -3686,6 +3714,7 @@ class Component extends DCLogic {
         if (MOD.includes(x.tela)) return x.prev && x.prev.tela !== 'inicio' ? { ...x.prev, modo: null, modK: null, prev: null } : { ...RESET };
         if (x.tela === 'resultado') return { tela: 'etapa', etapa: x.hist[x.hist.length - 1], hist: x.hist.slice(0, -1), res: null };
         if (x.tela === 'etapa' && x.hist.length) return { etapa: x.hist[x.hist.length - 1], hist: x.hist.slice(0, -1) };
+        if (x.tela === 'etapa' && x.voltarPara) return { ...RESET, ...x.voltarPara, voltarPara: null, percursoSalvo: null };
         return { ...RESET };
       }),
       telaInicio: st.tela === 'inicio', telaEtapa: st.tela === 'etapa', telaResultado: st.tela === 'resultado', telaVazio: st.tela === 'vazio', telaCodigo: st.tela === 'codigo', telaPT: st.tela === 'ptsh', telaNTC: st.tela === 'ntc',
@@ -3785,7 +3814,8 @@ class Component extends DCLogic {
           rot: k.rot, icone: k.i, ativo, cur: ativo ? 'page' : undefined,
           lock: lock && !!k.b, aria: lock && k.b ? `${k.rot}, função bônus bloqueada` : k.rot,
           cor: ativo ? 'var(--gp-on-key)' : 'var(--gp-on-key-variant)',
-          onClick: () => k.id === 'inicio' ? this.setState({ ...RESET, drawer: null }) : lock && k.b ? this.vazio('upg', { modK: k.id }) : this.abrir(k.id, { modK: k.id }),
+          // PR #100 (uso real): o Início guarda o percurso aberto (etapa ou resultado) para o atalho "Capacitor e motor" empilhar.
+          onClick: () => k.id === 'inicio' ? this.setState(x => ({ ...RESET, drawer: null, ...(!LEGADO_TESTES && (x.tela === 'etapa' || x.tela === 'resultado') ? { percursoSalvo: { tela: x.tela, sint: x.sint, etapa: x.etapa, hist: x.hist, resp: x.resp, res: x.res } } : {}) })) : lock && k.b ? this.vazio('upg', { modK: k.id }) : this.abrir(k.id, { modK: k.id }),
         };
       }),
       dPE: d ? 'auto' : 'none', dVis: d ? 'visible' : 'hidden', dHidden: d ? 'false' : 'true', dOp: d ? 1 : 0,

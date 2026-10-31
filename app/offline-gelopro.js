@@ -10,15 +10,15 @@ document.head.appendChild(s);
 const ocioso = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 if (document.readyState === 'complete') ocioso(libsPix); else window.addEventListener('load', () => ocioso(libsPix));
 const LEGADO = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
-if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v97')) {
+if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v100')) {
 const st = document.createElement('style');
-st.id = 'gp-cores-global-v97';
+st.id = 'gp-cores-global-v100';
 st.textContent = [
 '[data-chapa][data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-cliente-bloco][data-cli-ok="1"] { display: flex !important; }',
 '[data-video-enxuto="1"] [data-cliente-bloco] > span:first-child { display: none !important; }',
 '[data-video-enxuto="1"] [data-catalogo-botao] { display: flex !important; min-height: 48px !important; padding: 6px 12px !important; align-items: center !important; justify-content: center !important; }',
 '[data-video-enxuto="1"] [data-catalogo] { display: flex !important; }',
-'[data-atendimento-ativo] { box-sizing: border-box !important; padding: 8px 10px !important; border-radius: 14px !important; background: #1d2430 !important; border: 1.5px solid #38bdf8 !important; color: #ffffff !important; }',
+'[data-home-inicio] [data-atendimento-ativo] { box-sizing: border-box !important; padding: 8px 10px !important; border-radius: 14px !important; background: #1d2430 !important; border: 1.5px solid #38bdf8 !important; color: #ffffff !important; }',
 '[data-item-qtd] { gap: 6px !important; align-items: center !important; }',
 '[data-campos-linha], [data-campos-carga] { align-items: end !important; }',
 '[data-ntc-uni] [role="option"] { height: 100% !important; box-sizing: border-box !important; }',
