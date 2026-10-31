@@ -268,6 +268,12 @@ html[data-uso-real="1"] [data-pausar-novo]{width:100%;min-height:48px;box-sizing
 html[data-uso-real="1"] [data-atendimento-ativo]{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
 html[data-uso-real="1"] [data-atendimento-ativo] > button{font-size:16px !important;line-height:20px !important;padding:4px 6px !important;}
 html[data-uso-real="1"] [data-atendimento-continuar]{background:#00b100 !important;}
+/* PR #118: trio da Home com símbolo certo em cada botão: ▶ Continuar (verde #00b100), ⏸ Pausar (claro, borda firme), + Novo (marinho #19365c).
+   Ícones em SVG com cor cravada (renderização igual em Android/Windows, sem emoji colorido); o texto técnico segue em sr-only. */
+html[data-uso-real="1"] [data-pausar-novo],html[data-uso-real="1"] [data-atendimento-ativo] > button{display:inline-flex !important;align-items:center;justify-content:center;gap:5px;white-space:nowrap;}
+html[data-uso-real="1"] [data-atendimento-ativo] > [data-atendimento-continuar]{color:#ffffff !important;font-weight:800 !important;}
+html[data-uso-real="1"] [data-atendimento-ativo] > :is([data-atendimento-continuar],[data-novo-atendimento]) > span{color:#ffffff !important;}
+html[data-uso-real="1"] [data-atendimento-ativo] > [data-novo-atendimento]{background:#19365c !important;border:1.5px solid #091e42 !important;color:#ffffff !important;font-weight:800 !important;box-shadow:0 2px 0 rgba(9,30,66,0.25);}
 html[data-uso-real="1"] [data-atendimento-ativo] > [data-pausar-novo]{width:auto;height:48px;min-height:0;padding:4px 6px;font-size:16px;}
 html[data-uso-real="1"] [data-tema="sol"] [data-cofre-mostrador]{background:#ffffff !important;border:2px solid #091e42 !important;box-shadow:none !important;}
 html[data-uso-real="1"] [data-tema="sol"] [data-cofre-mostrador] [data-most-rot]{color:#334155 !important;}
@@ -370,23 +376,21 @@ html[data-uso-real="1"] [data-carrossel-trilho] > :is([data-grade-sintomas],[dat
 html[data-uso-real="1"] [data-carrossel-trilho] > [data-grade-sintomas]{padding:0 2px;}
 html[data-uso-real="1"] [data-home-carrossel][data-aba="medicoes"] [data-grade-sintomas],html[data-uso-real="1"] [data-home-carrossel][data-aba="sintomas"] [data-home-medicoes]{visibility:hidden;}
 html[data-uso-real="1"] [data-carrossel-trilho] [data-grade-medicoes]{animation:none !important;}
-@media (prefers-reduced-motion:no-preference){
-html[data-uso-real="1"][data-gp-fluido="1"] [data-carrossel-trilho]{transition:transform 200ms cubic-bezier(.25,1,.5,1);}
-html[data-uso-real="1"][data-gp-fluido="1"] [data-carrossel-trilho] > *{transition:visibility 0s linear 200ms;}
-html[data-uso-real="1"][data-gp-fluido="1"] [data-home-carrossel][data-aba="sintomas"] [data-grade-sintomas],html[data-uso-real="1"][data-gp-fluido="1"] [data-home-carrossel][data-aba="medicoes"] [data-home-medicoes]{transition:none;}
-}
+/* PR #118: o deslize não depende de prefers-reduced-motion (Windows com "efeitos de animação" desligados zerava a transição = corte seco);
+   só [data-gp-fluido="1"] liga o movimento, e o !important vence o "transition-duration:1ms" global do modo reduzido. */
+html[data-uso-real="1"][data-gp-fluido="1"] [data-carrossel-trilho]{transition:transform 200ms cubic-bezier(.25,1,.5,1) !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-carrossel-trilho] > *{transition:visibility 0s linear 200ms !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-home-carrossel][data-aba="sintomas"] [data-grade-sintomas],html[data-uso-real="1"][data-gp-fluido="1"] [data-home-carrossel][data-aba="medicoes"] [data-home-medicoes]{transition:none !important;}
 /* PR #116: pastilha azul desliza no trilho (::before, 50% da largura). O fundo sólido da aba ativa entra ao fim do deslize (atraso de 180 ms no
    modo fluido; instantâneo no webdriver), para o portão medir o contraste sobre o fundo real. */
 html[data-uso-real="1"] [data-home-modo]{position:relative;}
 html[data-uso-real="1"] [data-home-modo]::before{content:"";position:absolute;top:0;left:0;width:50%;height:100%;border-radius:999px;background:#1d4ed8;box-shadow:inset 0 0 0 1px #60a5fa,inset 0 1px 0 rgba(255,255,255,0.35);transform:translateX(0);pointer-events:none;}
-html[data-uso-real="1"] [data-home-modo][data-aba="medicoes"]::before{transform:translateX(100%);}
+html[data-uso-real="1"] [data-home-modo][data-aba="medicoes"]::before{transform:translate3d(100%,0,0);}
 html[data-uso-real="1"] [data-home-modo] > [data-aba-home]{position:relative;z-index:1;}
 html[data-uso-real="1"] [data-home-modo] > [data-aba-home][aria-selected="true"] > span{background:#1d4ed8 !important;background-image:none !important;}
-@media (prefers-reduced-motion:no-preference){
-html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo]::before{transition:transform 180ms cubic-bezier(.25,1,.5,1);}
-html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo] > [data-aba-home][aria-selected="true"] > span{transition:background-color 0s linear 180ms,border-color 0s linear 180ms,box-shadow 0s linear 180ms;}
-html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo] > [data-aba-home][aria-selected="false"] > span{transition:none;}
-}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo]::before{transition:transform 180ms cubic-bezier(.25,1,.5,1) !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo] > [data-aba-home][aria-selected="true"] > span{transition:background-color 0s linear 180ms,border-color 0s linear 180ms,box-shadow 0s linear 180ms !important;}
+html[data-uso-real="1"][data-gp-fluido="1"] [data-home-modo] > [data-aba-home][aria-selected="false"] > span{transition:none !important;}
 /* PR #116: cabeçalho da pergunta (uso real). Crachá do sintoma (marinho) + crachá de progresso "PASSO k DE n" (visor), sem espaços soltos;
    a pergunta num cartão branco com borda #334155. "Gela pouco  Pergunta 1" segue no DOM em sr-only (f07/pr17). */
 html[data-uso-real="1"] [data-etapa-cab]{background:#ffffff !important;border:1.5px solid #334155 !important;border-radius:14px !important;padding:6px 10px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),0 2px 4px rgba(9,30,66,0.12) !important;gap:2px !important;}
@@ -1254,9 +1258,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Consultar fichas" icone="prancheta" acao="{{ abrirFichas }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
             <sc-if value="{{ semAtendRodape }}" hint-placeholder-val="{{ true }}"><dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="Orçamento e garantia" icone="{{ icoOrcHome }}" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import></sc-if>
             <sc-if value="{{ atendRodape }}" hint-placeholder-val="{{ false }}"><div data-atendimento-ativo="" role="group" aria-label="{{ atendAtivoT }}" style="flex:none;height:48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
-              <button type="button" data-atendimento-continuar="" data-verde="1" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:2px solid #007a00;background:linear-gradient(180deg,#00c400 0%,#00a000 100%);color:#ffffff;font:800 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;" style-active="transform:translateY(1px);">Continuar<span class="sr-only"> atendimento</span></button>
-              <button type="button" data-pausar-novo="" aria-label="+ Pausar / Novo aparelho" onClick="{{ pausarNovo }}">+ Pausar<span class="sr-only"> / Novo aparelho</span></button>
-              <button type="button" data-novo-atendimento="" aria-label="Novo atendimento (limpar anterior)" onClick="{{ novoAtend }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;">Novo<span class="sr-only"> atendimento</span></button>
+              <button type="button" data-atendimento-continuar="" data-verde="1" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:2px solid #007a00;background:linear-gradient(180deg,#00c400 0%,#00a000 100%);color:#ffffff;font:800 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;" style-active="transform:translateY(1px);"><svg data-trio-ico="play" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:none;"><path d="M6.5 3.8v16.4L20.5 12z" fill="#ffffff"/></svg><span>Continuar</span><span class="sr-only"> atendimento</span></button>
+              <button type="button" data-pausar-novo="" aria-label="Pausar / Novo aparelho" onClick="{{ pausarNovo }}"><svg data-trio-ico="pause" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:none;"><path d="M5.5 3.5h5v17h-5zM13.5 3.5h5v17h-5z" fill="#091e42"/></svg><span>Pausar</span><span class="sr-only"> / Novo aparelho</span></button>
+              <button type="button" data-novo-atendimento="" aria-label="Novo atendimento (limpar anterior)" onClick="{{ novoAtend }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;"><svg data-trio-ico="plus" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:none;"><path d="M12 3.5v17M3.5 12h17" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round"/></svg><span>Novo</span><span class="sr-only"> atendimento</span></button>
             </div></sc-if>
           </div>
         </sc-if>
@@ -1421,7 +1425,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         <sc-if value="{{ fNaoP1 }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-cab-vaga="" style="flex:none;width:48px;height:48px;"></span></sc-if>
         <sc-if value="{{ fP1 }}" hint-placeholder-val="{{ false }}"><button type="button" data-modo-discreto=""" aria-pressed="{{ fDiscretoOn }}" aria-label="Ocultar custos/lucro (cliente ao lado)" onClick="{{ fDiscretoToggle }}" style="position:relative;width:48px;height:48px;flex:none;box-sizing:border-box;border-radius:var(--gp-r-tecla, 999px);display:flex;align-items:center;justify-content:center;color:{{ fDiscretoCor }};background:{{ fDiscretoFundo }};border:{{ fDiscretoBorda }};box-shadow:{{ fDiscretoSombra }};cursor:pointer;" style-active="transform:translateY(2px);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 14s1.5-2.5 4-2.5 4 2.5 4 2.5-1.5 2.5-4 2.5-4-2.5-4-2.5Z"></path><circle cx="12" cy="14" r="1"></circle></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;font:600 16px/20px 'Roboto',sans-serif;">Ocultar custos/lucro (cliente ao lado)</span></button></sc-if>
       </div>
-      <sc-if value="{{ fPausarTem }}" hint-placeholder-val="{{ false }}"><div data-pausar-linha="" style="flex:none;padding:0 4px 6px;"><button type="button" data-pausar-novo="" aria-label="+ Pausar / Novo aparelho" onClick="{{ pausarNovo }}">+ Pausar / Novo aparelho</button></div></sc-if>
+      <sc-if value="{{ fPausarTem }}" hint-placeholder-val="{{ false }}"><div data-pausar-linha="" style="flex:none;padding:0 4px 6px;"><button type="button" data-pausar-novo="" aria-label="Pausar atendimento / Novo aparelho" onClick="{{ pausarNovo }}"><svg data-trio-ico="pause" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:none;"><path d="M5.5 3.5h5v17h-5zM13.5 3.5h5v17h-5z" fill="#091e42"/></svg><span>Pausar atendimento</span><span class="sr-only"> / Novo aparelho</span></button></div></sc-if>
       <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:24px;background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
         <div data-vis="" style="height:100%;box-sizing:border-box;padding:16px;border-radius:21px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
 
