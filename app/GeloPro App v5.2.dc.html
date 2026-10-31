@@ -477,6 +477,14 @@ html[data-uso-real="1"] [data-faixa-saida]{font:800 15px/18px 'Roboto',sans-seri
 html[data-uso-real="1"] [data-pdf-pronto]{background:#f0fdf4 !important;border:2px solid #16a34a !important;border-radius:14px !important;box-shadow:0 3px 0 #14532d,0 6px 14px rgba(20,83,45,0.25) !important;}
 html[data-uso-real="1"] [data-pdf-pronto] > span:first-child,html[data-uso-real="1"] [data-pdf-pronto] > span:first-child *{color:#14532d !important;font-weight:800 !important;}
 html[data-uso-real="1"] [data-pdf-pronto] :is([data-pdf-arquivo],[data-pdf-msg]){color:#1f2937 !important;}
+/* PR #127: Comunicação (Borne S) como mostrador escuro compacto no topo da lista de códigos (16 px: texto que informa, G-L1); Resultado com
+   painel industrial (lista branca de borda firme, itens separados, título .destaque #091e42 800) e o cartão "Serviço sugerido" verde em destaque. */
+html[data-uso-real="1"] [data-ref-comunicacao]{display:block;box-sizing:border-box;background:#1d2430;border:1.5px solid #38bdf8;border-radius:14px;padding:8px 12px;color:#67c6ff !important;font:800 16px/20px 'Roboto',sans-serif !important;}
+html[data-uso-real="1"] [data-res-rolagem] > ol{background:#ffffff !important;border:1.5px solid #334155 !important;border-radius:14px !important;box-shadow:0 2px 4px rgba(9,30,66,0.12);}
+html[data-uso-real="1"] [data-res-rolagem] > ol > li{padding:12px !important;border-top:1px solid #cbd5e1 !important;}
+html[data-uso-real="1"] [data-res-rolagem] > ol > li:first-child{border-top:0 !important;}
+html[data-uso-real="1"] [data-res-rolagem] ol .destaque{font-weight:800 !important;}
+html[data-uso-real="1"] [data-res-servico]{background:#f0fdf4 !important;border:2px solid #16a34a !important;border-radius:14px !important;box-shadow:0 3px 0 #14532d,0 6px 14px rgba(20,83,45,0.2) !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -1727,7 +1735,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
           <sc-if value="{{ fP2 }}" hint-placeholder-val="{{ false }}">
             <div data-passo-in="" style="animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);display:flex;flex-direction:column;gap:12px;">
               <sc-if value="{{ fVisorReal }}" hint-placeholder-val="{{ false }}"><div data-visor-total="" role="status"><span style="font:700 16px/20px 'Roboto',sans-serif;">Total do orçamento</span><span data-visor-valor="">{{ fTotalTxt }}</span></div></sc-if>
-              <dc-import name="Aviso" tipo="info" titulo="A garantia legal vale sempre" texto="A garantia legal do Código de Defesa do Consumidor (arts. 24 e 26) existe mesmo sem termo e não pode ser excluída. O prazo abaixo é contratual e complementar a ela." style="display:block;" hint-size="100%,48px"></dc-import>
+              <!-- PR #127 (uso real): o aviso longo do CDC (arts. 24 e 26) sai da vista do Passo 2 e o texto inteiro fica no DOM em sr-only (sem o botão de abrir do Aviso); Total, Garantia contratual
+                   e Prazos rápidos sobem para a 1ª dobra. No legado nada muda. -->
+              <sc-if value="{{ usoLegado }}" hint-placeholder-val="{{ true }}"><dc-import name="Aviso" tipo="info" titulo="A garantia legal vale sempre" texto="A garantia legal do Código de Defesa do Consumidor (arts. 24 e 26) existe mesmo sem termo e não pode ser excluída. O prazo abaixo é contratual e complementar a ela." style="display:block;" hint-size="100%,48px"></dc-import></sc-if>
+              <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><span class="sr-only" data-aviso-cdc="">A garantia legal vale sempre. A garantia legal do Código de Defesa do Consumidor (arts. 24 e 26) existe mesmo sem termo e não pode ser excluída. O prazo abaixo é contratual e complementar a ela.</span></sc-if>
               <dc-import name="SeletorPrazo" rotulo="Garantia contratual" valor="{{ fPrazo }}" estado="{{ fPrazoE }}" erroMsg="escolha um prazo" acao="{{ fSetPrazo }}" style="display:block;" hint-size="100%,104px"></dc-import>
               <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><div data-prazo-rapido="" role="group" aria-label="Prazos rápidos" style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ fPrazoPilulas }}" as="pz" hint-placeholder-count="3"><button type="button" aria-pressed="{{ pz.on }}" onClick="{{ pz.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ pz.borda }};background:{{ pz.fundo }};color:{{ pz.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ pz.t }}</button></sc-for></div></sc-if>
               <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><dc-import name="CampoTexto" rotulo="Prazo e escopo (texto livre)" valor="{{ fPrazoLivre }}" aoDigitar="{{ fSetPrazoLivre }}" placeholder="Ex.: 20 dias para a limpeza" estado="{{ fLivreE }}" erroMsg="descreva o prazo" style="display:block;" hint-size="100%,74px"></dc-import></sc-if>
@@ -4319,10 +4330,10 @@ class Component extends DCLogic {
         { k: 'compressor', t: 'Compressor UVW', ico: 'lucide-activity', acao: () => { this.setState(x => ({ inv: { ...x.inv, _passo: 0, _todos: false } })); atalhoMod('inv', 'inv', '[data-inv-id="compressor"]', 'Compressor UVW')(); } },
         { k: 'capacitor', t: 'Capacitor e motor', ico: 'lucide-battery-charging', acao: () => {
           if (LEGADO_TESTES) { iniciar('naogela', 't_ng04'); return this.setState({ atalho: { t: 'Capacitor e motor', tela: 'etapa', etapa: 't_ng04' } }); }
-          // PR #100 (uso real): abre direto a medição do capacitor, com o percurso que estava aberto empilhado para o "Voltar" devolver o técnico a ele.
+          // PR #100 (uso real): abre direto a medição do capacitor (desde o PR #127 o Voltar devolve à Home na aba Medições, sem empilhar o percurso).
           if (!(st.base && st.base.perc && st.base.perc.naogela && st.base.perc.naogela.etapas.t_ng04)) return iniciar('naogela', 't_ng04');
           this.precarregarPercurso('naogela');
-          this.setState(x => ({ ...RESET, drawer: null, tela: 'etapa', sint: 'naogela', etapa: 't_ng04', atalho: { t: 'Capacitor e motor', tela: 'etapa', etapa: 't_ng04' }, voltarPara: x.percursoSalvo || null }));
+          this.setState(x => ({ ...RESET, drawer: null, tela: 'etapa', sint: 'naogela', etapa: 't_ng04', atalho: { t: 'Capacitor e motor', tela: 'etapa', etapa: 't_ng04' }, voltarPara: null }));
         } },
         { k: 'sh', t: 'Pressão e SH', ico: 'lucide-gauge', acao: atalhoMod('ptsh', 'ptsh', null, 'Pressão e SH') },
         { k: 'vacuo', t: 'Vácuo e carga', ico: 'lucide-botija', acao: atalhoMod('ptsh', 'ptsh', '[data-orcar-ptsh]', 'Vácuo e carga') },
@@ -4366,6 +4377,9 @@ class Component extends DCLogic {
       // Selo da base (PR #24) na gaveta Consultar fichas, no topo do catálogo de peças e serviços e na Central de Avisos.
       seloBase: SELO_BASE, seloMes: BASE_MES,
       voltar: () => this.setState(x => {
+        // PR #127 (uso real): Laudo, PMOC e Recibo avulso voltam SEMPRE para Docs na aba Documentos (PDF); antes o Laudo caía na Home (ele abre
+        // de Docs por setState, sem gravar prev). O legado segue a regra antiga.
+        if (!LEGADO_TESTES && ['laudo', 'pmoc', 'scripts'].includes(x.tela)) return { tela: 'docs', modK: 'docs', docsAba: 'pdf', modo: null, prev: null };
         if (['pmoc', 'scripts'].includes(x.tela)) return { tela: 'docs', modK: 'docs' };
         if (MOD.includes(x.tela)) return x.prev && x.prev.tela !== 'inicio' ? { ...x.prev, modo: null, modK: null, prev: null } : { ...RESET };
         if (x.tela === 'resultado') return { tela: 'etapa', etapa: x.hist[x.hist.length - 1], hist: x.hist.slice(0, -1), res: null };
