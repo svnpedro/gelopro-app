@@ -260,6 +260,29 @@ html[data-uso-real="1"] [data-inv-param]{display:inline-block;white-space:nowrap
 html[data-uso-real="1"] [data-cofre-filtros]{box-sizing:border-box;padding:6px;border:1.5px solid #b0b8c4;border-radius:18px;background:#1d2430;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55);}
 html[data-uso-real="1"] [data-tema="sol"] [data-cofre-filtros]{background:#ffffff;border:2px solid #091e42;box-shadow:none;}
 html[data-uso-real="1"] [data-cofre-dados] .tag-valor{font-family:'Roboto',sans-serif !important;font-weight:800 !important;color:#15803d !important;}
+/* PR #111: Cofre e atendimentos em execução (uso real). .sr-only guarda o texto técnico que os testes leem (rótulo humano na tela). */
+.sr-only{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0,0,0,0) !important;white-space:nowrap !important;border:0 !important;font-size:16px !important;}
+html[data-uso-real="1"] [data-pausar-novo]{width:100%;min-height:48px;box-sizing:border-box;padding:6px 16px;border-radius:999px;background:#e2e8f0;border:1.5px solid #19365c;box-shadow:0 2px 0 rgba(9,30,66,0.18);color:#091e42;font:800 16px/20px 'Roboto',sans-serif;cursor:pointer;}
+html[data-uso-real="1"] [data-atendimento-ativo]{grid-template-columns:repeat(3,minmax(0,1fr)) !important;}
+html[data-uso-real="1"] [data-atendimento-ativo] > button{font-size:16px !important;line-height:20px !important;padding:4px 6px !important;}
+html[data-uso-real="1"] [data-atendimento-continuar]{background:#00b100 !important;}
+html[data-uso-real="1"] [data-atendimento-ativo] > [data-pausar-novo]{width:auto;height:48px;min-height:0;padding:4px 6px;font-size:16px;}
+html[data-uso-real="1"] [data-tema="sol"] [data-cofre-mostrador]{background:#ffffff !important;border:2px solid #091e42 !important;box-shadow:none !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-cofre-mostrador] [data-most-rot]{color:#334155 !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-cofre-mostrador] [data-most-val]{color:#091e42 !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-cofre-mostrador] [data-most-din]{color:#15803d !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-cofre-mostrador] [data-decor]{background:#091e42 !important;}
+html[data-uso-real="1"] [data-cofre-filtros]{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px !important;}
+html[data-uso-real="1"] [data-cofre-filtro]{min-width:0;padding:4px 6px !important;white-space:normal !important;text-wrap:balance;line-height:18px !important;}
+html[data-uso-real="1"] [data-cofre-backup]{order:99;}
+html[data-uso-real="1"] :is([data-cofre-exportar],[data-cofre-importar]) > span[aria-hidden="true"]{display:none !important;}
+html[data-uso-real="1"] [data-cofre-modulo]{box-sizing:border-box;border:1.5px solid #334155;border-radius:16px;background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);box-shadow:0 2px 4px rgba(9,30,66,0.12);gap:0 !important;overflow:hidden;}
+html[data-uso-real="1"] [data-cofre-modulo] [data-cofre-card]{border:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;}
+html[data-uso-real="1"] [data-cofre-modulo] [data-preventiva-cofre]{margin:0 12px 10px 14px;padding:8px 0 0 !important;border-top:1px dashed #cbd5e1;}
+html[data-uso-real="1"] [data-cofre-seta]{width:28px;height:28px;box-sizing:border-box;border-radius:8px;background:#19365c;color:#ffffff !important;justify-content:center;}
+html[data-uso-real="1"] [data-andamento-card]{box-sizing:border-box;padding:10px 12px;border:1.5px solid #b45309;border-radius:16px;background:linear-gradient(180deg,#fffbeb 0%,#ffffff 100%);box-shadow:0 2px 4px rgba(9,30,66,0.12);display:flex;flex-direction:column;align-items:stretch;gap:6px;}
+html[data-uso-real="1"] [data-retomar-andamento]{min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:999px;background:#00b100;border:2px solid #007a00;box-shadow:0 2px 0 #007a00;color:#ffffff;font:800 16px/20px 'Roboto',sans-serif;cursor:pointer;}
+html[data-uso-real="1"] [data-excluir-andamento]{min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:999px;background:#e2e8f0;border:1.5px solid #19365c;box-shadow:0 2px 0 rgba(9,30,66,0.18);color:#091e42;font:800 16px/20px 'Roboto',sans-serif;cursor:pointer;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -527,7 +550,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ temAtendAtivo }}" hint-placeholder-val="{{ false }}"><div data-atendimento-ativo="" role="group" aria-label="Atendimento em andamento" style="flex:none;display:flex;flex-direction:column;gap:4px;box-sizing:border-box;padding:6px 8px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);">
                     <span style="font:600 16px/19px 'Roboto',sans-serif;color:var(--gp-on-surface);overflow-wrap:anywhere;">{{ atendAtivoT }}</span>
                     <div style="display:grid;grid-template-columns:{{ atendCols }};gap:6px;">
-                      <sc-if value="{{ temAtendContinuar }}" hint-placeholder-val="{{ false }}"><button type="button" data-atendimento-continuar="" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">Continuar</button></sc-if>
+                      <sc-if value="{{ temAtendContinuar }}" hint-placeholder-val="{{ false }}"><button type="button" data-atendimento-continuar="" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">Continuar</button>
                       <button type="button" data-novo-atendimento="" aria-label="Novo atendimento (limpar anterior)" onClick="{{ novoAtend }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 10px;border-radius:14px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;">Novo atendimento</button>
                     </div>
                   </div></sc-if>
@@ -1025,10 +1048,24 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 
               <sc-if value="{{ telaCofre }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
+                  <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><div data-cofre-mostrador="" role="status" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));box-sizing:border-box;padding:10px 12px;border-radius:18px;background:#1d2430;border:1.5px solid #b0b8c4;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55);">
+                    <div style="min-width:0;display:flex;flex-direction:column;gap:2px;padding-right:10px;"><span data-most-rot="" data-rotulo="" style="font:700 14px/16px 'Roboto',sans-serif;color:#cbd5e1;letter-spacing:.03em;text-transform:uppercase;">Salvos no Cofre</span><span data-most-val="" style="font:800 22px/26px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cofreNDocs }}</span></div>
+                    <div style="position:relative;min-width:0;display:flex;flex-direction:column;gap:2px;padding-left:12px;"><span aria-hidden="true" data-decor="" style="position:absolute;left:0;top:4px;bottom:4px;width:1px;background:rgba(255,255,255,0.16);"></span><span data-most-rot="" data-rotulo="" style="font:700 14px/16px 'Roboto',sans-serif;color:#cbd5e1;letter-spacing:.03em;text-transform:uppercase;">Total registrado</span><span data-most-val="" data-most-din="" style="font:800 22px/26px 'Roboto',sans-serif;color:#4ade80;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cofreSoma }}</span></div>
+                  </div></sc-if>
+                  <sc-if value="{{ andTem }}" hint-placeholder-val="{{ false }}"><div data-cofre-andamento="" role="group" aria-label="Em execução agora" style="flex:none;display:flex;flex-direction:column;gap:8px;">
+                    <span class="lbl" data-rotulo="" style="font-size:16px;line-height:20px;color:#92400e;">⚡ Em execução agora</span>
+                    <sc-for list="{{ andCards }}" as="ac" hint-placeholder-count="1"><div data-andamento-card="{{ ac.k }}">
+                      <span class="tags"><span class="{{ ac.cracha.c }}" data-selo="" data-rotulo="">{{ ac.cracha.t }}</span><span class="{{ ac.hora.c }}" data-selo="" data-rotulo="">{{ ac.hora.t }}</span></span>
+                      <span class="destaque">{{ ac.cliente }}</span>
+                      <span class="tags"><sc-for list="{{ ac.dados }}" as="ad" hint-placeholder-count="2"><span class="{{ ad.c }}" data-selo="" data-rotulo="">{{ ad.t }}</span></sc-for></span>
+                      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><button type="button" data-retomar-andamento="{{ ac.k }}" data-verde="1" aria-label="{{ ac.ariaR }}" onClick="{{ ac.retomar }}">▶ Retomar</button><button type="button" data-excluir-andamento="{{ ac.k }}" aria-label="{{ ac.ariaE }}" onClick="{{ ac.excluir }}">🗑️ Excluir</button></div>
+                    </div></sc-for>
+                  </div></sc-if>
                   <div data-cofre-backup="" style="flex:none;display:flex;flex-direction:column;gap:8px;">
                     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">
-                      <button type="button" data-cofre-exportar="" disabled="{{ cVazio }}" onClick="{{ cofreExportar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:16px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);display:flex;align-items:center;justify-content:center;gap:8px;font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>Exportar backup (.json)</span></button>
-                      <button type="button" data-cofre-importar="" onClick="{{ cofreImportar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:16px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);display:flex;align-items:center;justify-content:center;gap:8px;font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="cofre" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>Importar backup</span></button>
+                      <button type="button" data-cofre-exportar="" disabled="{{ cVazio }}" onClick="{{ cofreExportar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:16px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);display:flex;align-items:center;justify-content:center;gap:8px;font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span class="{{ srReal }}">Exportar backup (.json)</span><sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><span>☁️ Salvar cópia</span></sc-if></button>
+                      <button type="button" data-cofre-importar="" onClick="{{ cofreImportar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:16px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);display:flex;align-items:center;justify-content:center;gap:8px;font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="cofre" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span class="{{ srReal }}">Importar backup</span><sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><span>📤 Restaurar cópia</span></sc-if></button>
+                      <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><button type="button" data-cofre-csv="" disabled="{{ cVazio }}" onClick="{{ cofreCsv }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:16px;border:1.5px solid #19365c;background:#e2e8f0;color:#091e42;font:800 16px/20px 'Roboto',sans-serif;cursor:pointer;">📊 Planilha Excel</button></sc-if>
                     </div>
                     <input type="file" accept=".json,application/json" data-cofre-arquivo="" aria-label="Arquivo de backup do Cofre" onChange="{{ cofreArquivo }}" style="display:none;">
                     <sc-if value="{{ temCofreMsg }}" hint-placeholder-val="{{ false }}"><div data-cofre-msg="" role="status" aria-live="polite" class="tags"><span class="{{ cofreMsgC }}" data-selo="" data-rotulo="">{{ cofreMsgT }}</span><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">{{ cofreMsgX }}</span></div></sc-if>
@@ -1038,10 +1075,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <button type="button" data-cofre-quar-exportar="" onClick="{{ cofreQuarExportar }}" style="min-width:0;min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:16px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);display:flex;align-items:center;justify-content:center;gap:8px;font:700 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;"><span aria-hidden="true" style="flex:none;display:inline-flex;"><dc-import name="IconeGP" nome="documento" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>Baixar o arquivo bruto de recuperação (.txt)</span></button>
                   </div></sc-if>
                   <sc-if value="{{ cVazio }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="info" titulo="Nenhum documento emitido neste aparelho" texto="Orçamentos, garantias, recibos e laudos aparecem aqui depois do primeiro PDF." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
-                  <sc-if value="{{ temCofreFiltros }}" hint-placeholder-val="{{ false }}"><div data-cofre-filtros="{{ cofreFiltroK }}" role="group" aria-label="Filtrar os atendimentos do Cofre" style="flex:none;display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ cofreFiltros }}" as="cf" hint-placeholder-count="3"><button type="button" data-cofre-filtro="{{ cf.k }}" aria-pressed="{{ cf.on }}" onClick="{{ cf.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ cf.borda }};background:{{ cf.fundo }};color:{{ cf.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ cf.t }}</button></sc-for></div></sc-if>
+                  <sc-if value="{{ temCofreFiltros }}" hint-placeholder-val="{{ false }}"><div data-cofre-filtros="{{ cofreFiltroK }}" role="group" aria-label="Filtrar os atendimentos do Cofre" style="flex:none;display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ cofreFiltros }}" as="cf" hint-placeholder-count="3"><button type="button" data-cofre-filtro="{{ cf.k }}" aria-pressed="{{ cf.on }}" onClick="{{ cf.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ cf.borda }};background:{{ cf.fundo }};color:{{ cf.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span>{{ cf.tA }}</span><span class="{{ cf.srC }}">{{ cf.tB }}</span><span>{{ cf.tC }}</span></button></sc-for></div></sc-if>
                   <sc-if value="{{ cofreFiltroVazio }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="info" titulo="{{ cofreFiltroVazioT }}" texto="Toque em Todos para ver os outros atendimentos." style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-for list="{{ cofre }}" as="c" hint-placeholder-count="0">
-                    <div style="flex:none;display:flex;flex-direction:column;gap:8px;">
+                    <div data-cofre-modulo="" style="flex:none;display:flex;flex-direction:column;gap:8px;">
                       <button type="button" data-cofre-card="{{ c.tipo }}" aria-expanded="{{ c.exp }}" onClick="{{ c.acao }}" style="width:100%;min-width:0;min-height:64px;box-sizing:border-box;padding:12px 8px 12px 14px;border-radius:16px;border:1px solid var(--gp-sec-edge);background:var(--gp-mold-raised);box-shadow:var(--gp-mold-shadow);display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer;" style-hover="box-shadow:var(--gp-mold-shadow),inset 0 0 0 999px var(--gp-state-hover);" style-active="transform:translateY(1px);background:var(--gp-mold-sunken);box-shadow:var(--gp-mold-shadow-pressed);">
                         <span style="flex:1;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:6px;">
                           <span class="tags-linha"><span class="tag tag-doc" data-selo="" data-rotulo="">{{ c.tipo }}</span> <span class="{{ c.tipoDoc.c }}" data-selo="" data-rotulo="">{{ c.tipoDoc.t }}</span></span>
@@ -1049,7 +1086,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                           <sc-if value="{{ c.temAparelho }}" hint-placeholder-val="{{ true }}"><span class="marca-logo-sobre"><sc-if value="{{ c.temLogo }}" hint-placeholder-val="{{ true }}"><span data-logo-marca="" aria-hidden="true"><dc-import name="LogoMarca" marca="{{ c.marca }}" tamanho="{{ 16 }}" hint-size="16px,16px"></dc-import></span></sc-if><span data-ficha-extra="" class="tags-linha"><sc-if value="{{ c.temMarca }}" hint-placeholder-val="{{ true }}"><span class="{{ c.marcaC }}" data-selo="" data-rotulo="">{{ c.marca }}</span></sc-if> <sc-if value="{{ c.temBtu }}" hint-placeholder-val="{{ true }}"><span class="tag tag-capacidade" data-selo="" data-rotulo="">{{ c.btu }}</span></sc-if></span></span></sc-if>
                           <span data-cofre-dados="" class="tags"><sc-for list="{{ c.dados }}" as="dd" hint-placeholder-count="3"><span class="{{ dd.c }}" data-selo="" data-rotulo="">{{ dd.t }}</span></sc-for></span>
                         </span>
-                        <span aria-hidden="true" style="flex:none;color:var(--gp-on-surface-variant);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
+                        <span aria-hidden="true" data-cofre-seta="" style="flex:none;color:var(--gp-on-surface-variant);display:inline-flex;align-items:center;"><dc-import name="IconeGP" nome="avancar" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>
                       </button>
                       <sc-if value="{{ c.temPrev }}" hint-placeholder-val="{{ false }}"><div data-preventiva-cofre="" style="display:flex;flex-direction:column;gap:6px;padding:0 0 4px 12px;">
                         <span data-prev-data="" class="{{ c.prevC }}" data-selo="" data-rotulo="" style="align-self:flex-start;">{{ c.prevTxt }}</span>
@@ -1098,8 +1135,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             <dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Consultar fichas" icone="prancheta" acao="{{ abrirFichas }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
             <sc-if value="{{ semAtendRodape }}" hint-placeholder-val="{{ true }}"><dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="Orçamento e garantia" icone="{{ icoOrcHome }}" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import></sc-if>
             <sc-if value="{{ atendRodape }}" hint-placeholder-val="{{ false }}"><div data-atendimento-ativo="" role="group" aria-label="{{ atendAtivoT }}" style="flex:none;height:48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
-              <button type="button" data-atendimento-continuar="" data-verde="1" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:2px solid #007a00;background:linear-gradient(180deg,#00c400 0%,#00a000 100%);color:#ffffff;font:800 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;" style-active="transform:translateY(1px);">Continuar atendimento</button>
-              <button type="button" data-novo-atendimento="" aria-label="Novo atendimento (limpar anterior)" onClick="{{ novoAtend }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;">Novo atendimento</button>
+              <button type="button" data-atendimento-continuar="" data-verde="1" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:2px solid #007a00;background:linear-gradient(180deg,#00c400 0%,#00a000 100%);color:#ffffff;font:800 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;" style-active="transform:translateY(1px);">Continuar<span class="sr-only"> atendimento</span></button>
+              <button type="button" data-pausar-novo="" aria-label="+ Pausar / Novo aparelho" onClick="{{ pausarNovo }}">+ Pausar<span class="sr-only"> / Novo aparelho</span></button>
+              <button type="button" data-novo-atendimento="" aria-label="Novo atendimento (limpar anterior)" onClick="{{ novoAtend }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;">Novo<span class="sr-only"> atendimento</span></button>
             </div></sc-if>
           </div>
         </sc-if>
@@ -1264,6 +1302,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         <sc-if value="{{ fNaoP1 }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-cab-vaga="" style="flex:none;width:48px;height:48px;"></span></sc-if>
         <sc-if value="{{ fP1 }}" hint-placeholder-val="{{ false }}"><button type="button" data-modo-discreto=""" aria-pressed="{{ fDiscretoOn }}" aria-label="Ocultar custos/lucro (cliente ao lado)" onClick="{{ fDiscretoToggle }}" style="position:relative;width:48px;height:48px;flex:none;box-sizing:border-box;border-radius:var(--gp-r-tecla, 999px);display:flex;align-items:center;justify-content:center;color:{{ fDiscretoCor }};background:{{ fDiscretoFundo }};border:{{ fDiscretoBorda }};box-shadow:{{ fDiscretoSombra }};cursor:pointer;" style-active="transform:translateY(2px);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 14s1.5-2.5 4-2.5 4 2.5 4 2.5-1.5 2.5-4 2.5-4-2.5-4-2.5Z"></path><circle cx="12" cy="14" r="1"></circle></svg><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;font:600 16px/20px 'Roboto',sans-serif;">Ocultar custos/lucro (cliente ao lado)</span></button></sc-if>
       </div>
+      <sc-if value="{{ fPausarTem }}" hint-placeholder-val="{{ false }}"><div data-pausar-linha="" style="flex:none;padding:0 4px 6px;"><button type="button" data-pausar-novo="" aria-label="+ Pausar / Novo aparelho" onClick="{{ pausarNovo }}">+ Pausar / Novo aparelho</button></div></sc-if>
       <div style="flex:1;min-height:0;box-sizing:border-box;padding:3px;border-radius:24px;background:var(--gp-bezel);box-shadow:var(--gp-bezel-ring);">
         <div data-vis="" style="height:100%;box-sizing:border-box;padding:16px;border-radius:21px;background:var(--gp-visor);box-shadow:0 0 0 1px var(--gp-visor-edge),var(--gp-inset-soft);overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:16px;">
 
@@ -1826,6 +1865,15 @@ const lerRascunho = () => {
   return { ...f, foto: null, fotoUrl: null, assin: null, msg: null, tentou: 0, catAberto: false };
 };
 const gravarRascunho = (F) => { try { if (!F || !(F.passo >= 1 && F.passo <= 3)) return localStorage.removeItem(K_RASC); localStorage.setItem(K_RASC, JSON.stringify({ em: Date.now(), fech: Object.fromEntries(Object.entries(F).filter(([k]) => !RASC_FORA.includes(k))) })); } catch (e) {} };
+// PR #111 (uso real): fila de atendimentos em execução (até 10 aparelhos). "+ Pausar / Novo aparelho" guarda o orçamento da bancada aqui
+// (aparelho, cliente, itens, total parcial e hora) e limpa a bancada; o Cofre lista e retoma. Amostra usa chave própria (como docs e seq).
+const K_AND = 'gelopro.em_andamento.v1', AND_MAX = 10;
+const kAnd = (am) => am ? K_AND + '.amostra' : K_AND;
+const lerAnd = (am) => { const l = ler(kAnd(am)); return Array.isArray(l) ? l.filter(x => x && typeof x === 'object' && typeof x.id === 'string' && x.fech && typeof x.fech === 'object' && Array.isArray(x.fech.itens)).slice(0, AND_MAX) : []; };
+const gravarAnd = (am, l) => { try { if (!l.length) localStorage.removeItem(kAnd(am)); else localStorage.setItem(kAnd(am), JSON.stringify(l.slice(0, AND_MAX))); } catch (e) {} };
+const totalParcial = (F) => (F.itens || []).reduce((t, x) => t + (Number(reais(x.v)) || 0) * qtdDe(x), 0);
+const horaMin = (t) => { const d = new Date(t); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+const regAnd = (F, sel) => ({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), em: Date.now(), sel: { marca: sel.marca, btu: sel.btu, fluido: sel.fluido }, cliente: String(F.cliNome || '').trim(), total: totalParcial(F), fech: Object.fromEntries(Object.entries(F).filter(([k]) => !RASC_FORA.includes(k))) });
 // Rascunho com dono (PR #43, EXT-MIX-2): tem cliente ou item preenchido? Então é de um atendimento, e o diagnóstico de outro sintoma não o mistura.
 const rascunhoComDono = (F) => !!F && (String(F.cliNome || '').trim().length > 0 || (F.itens || []).some(x => String(x.d || '').trim() || String(x.v || '').trim()));
 // Assinatura como blob: o data URL tem ';' e o estilo do modelo corta o valor ali, então a imagem não chegava ao PDF.
@@ -2399,9 +2447,9 @@ class Component extends DCLogic {
     }
   }
   // PR #80: toast verde no topo por 3,5 s confirmando que o orçamento foi para o Cofre (fica no <body>, sobrevive à volta para a Home).
-  toastCofre() {
+  toastCofre(txt) {
     try { const ant = document.querySelector('[data-toast-cofre]'); if (ant) ant.remove(); const t = document.createElement('div'); t.setAttribute('data-toast-cofre', ''); t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite');
-      t.textContent = '✓ Orçamento salvo no Cofre'; t.style.cssText = "position:fixed;z-index:2147483646;left:50%;top:calc(env(safe-area-inset-top, 0px) + 12px);transform:translateX(-50%);max-width:calc(100vw - 32px);box-sizing:border-box;padding:12px 20px;border-radius:999px;background:#15803d;border:2px solid #86efac;color:#ffffff;font:800 16px/20px 'Roboto',sans-serif;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;";
+      t.textContent = txt || '✓ Orçamento salvo no Cofre'; t.style.cssText = "position:fixed;z-index:2147483646;left:50%;top:calc(env(safe-area-inset-top, 0px) + 12px);transform:translateX(-50%);max-width:calc(100vw - 32px);box-sizing:border-box;padding:12px 20px;border-radius:999px;background:#15803d;border:2px solid #86efac;color:#ffffff;font:800 16px/20px 'Roboto',sans-serif;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;";
       document.body.appendChild(t); setTimeout(() => t.remove(), 3500); } catch (e) { /* sem DOM */ }
   }
   // Micro-bip seco de multímetro (2400 Hz, 35 ms) ao tocar num canal do visor; mudo com prefers-reduced-motion ou sem AudioContext.
@@ -2616,7 +2664,7 @@ class Component extends DCLogic {
     if (!LEGADO_TESTES) this.autoRange();
     // Rascunho (EXT-RAS): grava quando o fechamento muda; o modo Amostra e a simulação de cadastro nunca gravam.
     if (this.state.fOpen && this.state.selOrc) this.setState({ sel: this.state.selOrc, selOrc: null });
-    if (this.state.fech !== this._fechGravado) { this._fechGravado = this.state.fech; if (!this.state.amostra && (this.props.simular || 'real') === 'real') gravarRascunho(this.state.fech); }
+    if (this.state.fech !== this._fechGravado) { this._fechGravado = this.state.fech; this._fechEm = Date.now(); if (!this.state.amostra && (this.props.simular || 'real') === 'real') gravarRascunho(this.state.fech); }
     if (prev.tema !== this.props.tema && this.state.tema !== null) this.setState({ tema: null });
     // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #c1c0c1 no Titânio e no Claro.
     const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
@@ -2710,6 +2758,22 @@ class Component extends DCLogic {
     try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
     document.querySelectorAll('[data-opcoes], [data-inv-etapa]').forEach(el => { if (el.animate && el.getClientRects().length) el.animate([{ opacity: 0.1, transform: 'translate3d(0,8px,0)' }, { opacity: 1, transform: 'translate3d(0,0,0)' }], { duration: 160, easing: 'cubic-bezier(0.22,1,0.36,1)' }); });
   }
+  // PR #111: pausa o atendimento da bancada (vai para a fila "Em andamento" do Cofre) e deixa a bancada limpa para o próximo aparelho.
+  pausarNovo() {
+    const st = this.state, F = st.fech;
+    if (F && rascunhoComDono(F)) gravarAnd(st.amostra, [regAnd(F, st.selOrc || st.sel), ...lerAnd(st.amostra)]);
+    this.setState(x => ({ ...ATEND0(x.btu), andN: Date.now() }));
+    this.toastCofre(F && rascunhoComDono(F) ? "✓ Guardado em 'Em andamento' no Cofre" : 'Bancada limpa para o próximo aparelho');
+  }
+  // Retoma um atendimento pausado: o da bancada (se houver) troca de lugar com ele na fila; o orçamento abre direto no passo em que parou.
+  retomarAnd(id) {
+    const st = this.state, L = lerAnd(st.amostra), it = L.find(x => x.id === id); if (!it) return;
+    let resto = L.filter(x => x.id !== id); if (st.fech && rascunhoComDono(st.fech)) resto = [regAnd(st.fech, st.selOrc || st.sel), ...resto];
+    gravarAnd(st.amostra, resto);
+    const f = { ...FECH0(), ...limparFundo(it.fech) }, sel = it.sel && it.sel.marca ? { ...st.sel, ...it.sel } : st.sel;
+    this.setState({ fech: { ...f, passo: Math.min(3, Math.max(1, f.passo || 1)), foto: null, fotoUrl: null, assin: null, msg: null, tentou: 0, catAberto: false }, sel, selOrc: null, fechGuardado: null, fOpen: true, drawer: null, andN: Date.now() });
+  }
+  excluirAnd(id) { const am = this.state.amostra; gravarAnd(am, lerAnd(am).filter(x => x.id !== id)); this.setState({ andN: Date.now() }); }
   pulso(id, v, visivel) {
     if (!visivel) return 'none';
     const P = this._pulso || (this._pulso = {}), a = P[id];
@@ -3595,6 +3659,21 @@ class Component extends DCLogic {
           'Monto o orçamento de um aparelho novo com instalação. É só responder por aqui.']));
       },
       cVazio: !cofreL.length,
+      // PR #111 (uso real): mostrador do Cofre, fila "Em execução agora", planilha CSV e rótulos humanos com o texto técnico em sr-only.
+      usoReal: !LEGADO_TESTES, srReal: LEGADO_TESTES ? undefined : 'sr-only', fPausarTem: !LEGADO_TESTES && !!(st.fOpen && F), pausarNovo: () => this.pausarNovo(),
+      cofreNDocs: String(cofreL.reduce((t, c) => t + c.ds.length, 0)), cofreSoma: BRL.format(cofreL.reduce((t, c) => t + (Number(c.base.total) || 0), 0)),
+      ...(() => { if (LEGADO_TESTES) return { andTem: false, andCards: [] };
+        const selB = st.selOrc || st.sel, ativo = F && rascunhoComDono(F) ? [{ id: 'ativo', em: this._fechEm || Date.now(), cliente: String(F.cliNome || '').trim(), sel: selB, total: totalParcial(F), ativo: true }] : [];
+        const andCards = [...ativo, ...lerAnd(st.amostra)].map(x => { const nome = x.cliente || 'Aparelho sem cliente definido', sl = x.sel || {};
+          return { k: x.id, cracha: TG('modo', 'EM ANDAMENTO'), hora: TG('data', horaMin(x.em)), cliente: nome, dados: [sl.marca ? TG('marca', sl.marca) : null, sl.btu ? TG('capacidade', `${sl.btu} BTU/h`) : null, TG('valor', BRL.format(Number(x.total) || 0))].filter(Boolean),
+            ariaR: `Retomar atendimento: ${nome}`, ariaE: `Excluir atendimento: ${nome}`,
+            retomar: x.ativo ? () => this.abrirFech() : () => this.retomarAnd(x.id), excluir: x.ativo ? () => this.setState({ fech: null, fechGuardado: null, selOrc: null, fOpen: false }) : () => this.excluirAnd(x.id) }; });
+        return { andTem: andCards.length > 0, andCards }; })(),
+      cofreCsv: () => { const lista = lerDocs(this.arq().docs), esc = (v) => { const t = String(v ?? ''); return /[";\n\r]/.test(t) ? `"${t.replace(/"/g, '""')}"` : t; };
+        const linhas = [['Número', 'Tipo', 'Data/Hora', 'Cliente', 'Marca', 'BTU/h', 'Valor', 'Garantia'], ...lista.map(d => { const ap = aparelhoPartes(d); return [d.numero, NOMES[d.tipo] || d.tipo, `${dataBR(d.em)} ${horaMin(d.em)}`, d.cliente || '', ap.m, ap.bt.replace(/\s*BTU\/h$/, ''), typeof d.total === 'number' ? d.total.toFixed(2).replace('.', ',') : '', d.garantia || '']; })];
+        const u = URL.createObjectURL(new Blob(['﻿' + linhas.map(l => l.map(esc).join(';')).join('\r\n')], { type: 'text/csv;charset=utf-8' })), a = document.createElement('a');
+        a.href = u; a.download = 'gelopro-cofre.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 5000);
+        this.setState({ cofreMsg: { ok: true, t: '✓ Planilha gerada', x: `${lista.length} ${lista.length === 1 ? 'documento' : 'documentos'} em gelopro-cofre.csv (abre no Excel)` } }); },
       cofre: cofreF.map(c => { const aberto = st.cofreSel === c.k, b = c.base, nome = tit ? tit.nome : '';
         // Convite da preventiva para o aparelho daquele atendimento (Marca + BTU/h); documento antigo sem marca/btu tira os dois do texto do equipamento.
         const prevData = c.prevEm ? b.prevData || dataBR(c.prevEm) : '', aparelho = aparelhoDe(b);
@@ -3608,7 +3687,7 @@ class Component extends DCLogic {
         // a preventiva logo abaixo. Garantia: verde vigente, âmbar a 30 dias do fim, cinza vencida. Preventiva: azul, âmbar a 15 dias ou vencida.
         const ap = aparelhoPartes(b), dd = (t) => { const d = new Date(t); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`; }, ddaa = (t) => dataBR(t).replace(/\/(\d{2})(\d{2})$/, '/$2');
         const tipoP = ['orc', 'laudo', 'rec', 'gar', 'pmoc', 'reca'].find(k => c.ds.some(d => d.tipo === k)) || c.base.tipo, restam = c.venc ? (c.venc - Date.now()) / DIA : null, prevRestam = c.prevEm ? (c.prevEm - Date.now()) / DIA : null;
-        const dados = [b.total ? TG('valor', BRL.format(b.total)) : null, TG('data', `emitido ${dd(c.ult.em)}`),
+        const dados = [b.total ? TG('valor', BRL.format(b.total)) : null, TG('data', `emitido ${dd(c.ult.em)}${LEGADO_TESTES ? '' : ' · ' + horaMin(c.ult.em)}`),
           c.venc ? (restam < 0 ? TG('prazo', `garantia vencida ${ddaa(c.venc)}`, { cls: 'encerrado' }) : restam <= 30 ? TG('prazo', `▲ garantia até ${ddaa(c.venc)}`, { cls: 'alerta' }) : TG('prazo', `✓ garantia até ${ddaa(c.venc)}`, { cls: 'ok' })) : null].filter(Boolean);
         return { tipo: `Nº ${c.n}`, tipoDoc: TG('doc', (NOMES[tipoP] || 'Documento').toUpperCase(), { cls: { orc: 'orc', laudo: 'laudo', rec: 'rec', reca: 'rec', gar: 'gar', pmoc: 'pmoc' }[tipoP] || '' }),
           aparelho, marca: ap.m, temMarca: !!ap.m, temLogo: OPTS.marca.list.includes(ap.m), marcaC: 'tag tag-marca' + (OPTS.marca.list.includes(ap.m) ? ' com-logo' : ''), btu: ap.bt, temBtu: !!ap.bt, temAparelho: !!(ap.m || ap.bt), dados,
@@ -3625,7 +3704,7 @@ class Component extends DCLogic {
       cofreQuarTxt: quarBruto ? `Parte do Cofre deste aparelho estava ilegível (${quarBruto.length.toLocaleString('pt-BR')} caracteres, guardados em ${dataHora(Number(quarUlt.split('.').pop()))}). O conteúdo original ficou intacto em quarentena e não é apagado pelos próximos documentos${quarK.length > 1 ? ` (${quarK.length} cópias; o botão baixa a mais recente)` : ''}. Baixe o arquivo para recuperar os registros.` : '',
       cofreExportar, cofreArquivo, cofreImportar: () => { const i = document.querySelector('[data-cofre-arquivo]'); if (i) i.click(); },
       temCofreMsg: !!st.cofreMsg, cofreMsgT: st.cofreMsg ? st.cofreMsg.t : '', cofreMsgX: st.cofreMsg ? st.cofreMsg.x : '', cofreMsgC: `tag ${st.cofreMsg && !st.cofreMsg.ok ? 'tag-falha' : 'tag-ok'}${st.cofreMsg && String(st.cofreMsg.t).length > 20 ? ' tag-l' : ''}`,
-      cofreFiltros: [['todos', 'Todos', cofreL.length], ['prev', 'Preventiva 6 meses', cofreL.filter(c => c.prevEm).length], ['garantia', 'Garantia ativa', cofreL.filter(garAtiva).length]].map(([k, l, n]) => ({ k, ...pilula(cofreK === k, `${l} (${n})`, () => this.setState({ cofreFiltro: k, cofreSel: null })) })),
+      cofreFiltros: [['todos', 'Todos', cofreL.length], ['prev', 'Preventiva 6 meses', cofreL.filter(c => c.prevEm).length], ['garantia', 'Garantia ativa', cofreL.filter(garAtiva).length]].map(([k, l, n]) => ({ k, ...(LEGADO_TESTES ? { tA: `${l} (${n})`, tB: '', tC: '' } : { tA: l.split(' ')[0], tB: l.slice(l.indexOf(' ') < 0 ? l.length : l.indexOf(' ')), tC: ` (${n})`, srC: 'sr-only' }), ...pilula(cofreK === k, `${l} (${n})`, () => this.setState({ cofreFiltro: k, cofreSel: null })) })),
       cofreFiltroVazio: cofreL.length > 0 && !cofreF.length, cofreFiltroVazioT: cofreK === 'prev' ? 'Nenhum atendimento com preventiva de 6 meses' : 'Nenhuma garantia ativa no Cofre',
       fAberto: !!(st.fOpen && F), fRef: this.fRef, fSair, fKicker: 'Fechamento', fTitulo: PASSOS[fp - 1], fPassoTxt: `Passo ${fp} de 4`,
       fP1: fp === 1, fP2: fp === 2, fP3: fp === 3, fP4: fp === 4,
