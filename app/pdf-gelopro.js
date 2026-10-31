@@ -92,6 +92,17 @@ const bin = atob(u.split(',')[1] || ''), bytes = new Uint8Array(bin.length);
 for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
 return bytes[0] === 0xFF && bytes[1] === 0xD8 ? { bytes, w: c.width, h: c.height } : null;
 }
+const HEX = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => (v / 255).toFixed(3)).join(' '); };
+const C2 = { navy: HEX('#091e42'), filete: HEX('#0f345b'), azul: HEX('#0284c7'), verde: HEX('#16a34a'), verdeT: HEX('#15803d'), ambar: HEX('#d97706'), ambarT: HEX('#b45309'), trilho: HEX('#e2e8f0'),
+borda: HEX('#cbd5e1'), gelo: HEX('#f8fafc'), cinza: HEX('#64748b'), texto2: HEX('#334155'), verdeFundo: HEX('#f0fdf4'), ambarFundo: HEX('#fffbeb'), faixaVerde: HEX('#bbf7d0'), grade: HEX('#eef2f7'), branco: '1 1 1' };
+const rr = (x, yT, w, h, r) => { const X = x, Y = PH - yT - h, k = r * 0.5523; return `${n2(X + r)} ${n2(Y)} m ${n2(X + w - r)} ${n2(Y)} l ${n2(X + w - r + k)} ${n2(Y)} ${n2(X + w)} ${n2(Y + r - k)} ${n2(X + w)} ${n2(Y + r)} c ${n2(X + w)} ${n2(Y + h - r)} l ${n2(X + w)} ${n2(Y + h - r + k)} ${n2(X + w - r + k)} ${n2(Y + h)} ${n2(X + w - r)} ${n2(Y + h)} c ${n2(X + r)} ${n2(Y + h)} l ${n2(X + r - k)} ${n2(Y + h)} ${n2(X)} ${n2(Y + h - r + k)} ${n2(X)} ${n2(Y + h - r)} c ${n2(X)} ${n2(Y + r)} l ${n2(X)} ${n2(Y + r - k)} ${n2(X + r - k)} ${n2(Y)} ${n2(X + r)} ${n2(Y)} c h`; };
+const caixa2 = (x, yT, w, h, fundo, borda, r) => `q ${fundo} rg ${borda} RG 0.8 w ${rr(x, yT, w, h, r || 6)} B Q`;
+const circ = (cx, cy, r) => { const k = r * 0.5523, Y = PH - cy; return `${n2(cx + r)} ${n2(Y)} m ${n2(cx + r)} ${n2(Y + k)} ${n2(cx + k)} ${n2(Y + r)} ${n2(cx)} ${n2(Y + r)} c ${n2(cx - k)} ${n2(Y + r)} ${n2(cx - r)} ${n2(Y + k)} ${n2(cx - r)} ${n2(Y)} c ${n2(cx - r)} ${n2(Y - k)} ${n2(cx - k)} ${n2(Y - r)} ${n2(cx)} ${n2(Y - r)} c ${n2(cx + k)} ${n2(Y - r)} ${n2(cx + r)} ${n2(Y - k)} ${n2(cx + r)} ${n2(Y)} c h`; };
+const poli = (pts, cor, esp, cap) => `q ${cor} RG ${n2(esp)} w ${cap === 0 ? 0 : 1} J 1 j ${pts.map((p, i) => `${n2(p[0])} ${n2(PH - p[1])} ${i ? 'l' : 'm'}`).join(' ')} S Q`;
+const visto = (x, yT, sz, cor) => poli([[x, yT + sz * 0.55], [x + sz * 0.38, yT + sz * 0.92], [x + sz, yT + sz * 0.08]], cor, 1.5);
+const reais = (v) => { try { return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); } catch (e) { return 'R$ ' + v; } };
+const nBR = (v) => String(Math.round(v * 10) / 10).replace('.', ',');
+const OS_LIMPO = { orc: 'ORÇAMENTO TÉCNICO', gar: 'TERMO DE GARANTIA', rec: 'RECIBO', reca: 'RECIBO', laudo: 'LAUDO TÉCNICO', pmoc: 'PMOC' };
 const PRESTADORA = 'PRESTADORA DO SERVIÇO';
 const OS_LINHA = { orc: 'PROPOSTA TÉCNICA', gar: 'TERMO DE GARANTIA', rec: 'RECIBO', reca: 'RECIBO', laudo: 'LAUDO TÉCNICO', pmoc: 'PMOC' };
 function diagramar(d, img) {
@@ -100,7 +111,8 @@ let ops = null, y = 0;
 const tipoTxt = d.titulo || 'Documento', numero = d.numero || '';
 const nova = () => {
 ops = []; pags.push(ops);
-if (pags.length === 1) return cabecalho();
+if (pags.length === 1) return d.limpo ? cabecalhoLimpo() : cabecalho();
+if (d.limpo) { ops.push(retangulo(0, 0, PW, 4, C2.filete), texto(MX, 24, `${tipoTxt} · Nº ${numero} (continuação)`, true, 10.5, C2.navy), linhaH(MX, MX + LARG, 32, C2.borda, 0.8)); y = 46; return; }
 ops.push(retangulo(0, 0, PW, 34, COR.faixa), texto(MX, 22, `${tipoTxt} · Nº ${numero} (continuação)`, true, 10.5, COR.branco));
 y = 34 + 18;
 };
@@ -140,6 +152,23 @@ a = topo + 6; D.forEach(([s, b, tam, lead, cor]) => { if (s) ops.push(texto(xD +
 }
 y = h + 3 + 16;
 }
+function cabecalhoLimpo() {
+const t = d.titular || {}, wD = 182, xD = MX + LARG - wD, wE = LARG - wD - 16, topo = 26, os = OS_LIMPO[d.tipo] || 'DOCUMENTO TÉCNICO';
+ops.push(retangulo(0, 0, PW, 4, C2.filete));
+let a = topo;
+quebrar(String(t.nome || 'Titular não cadastrado').toUpperCase(), true, 15, wE).forEach(s => { ops.push(texto(MX, a + 14, s, true, 15, C2.navy)); a += 19; });
+a += 2;
+[t.doc ? `${t.docTipo || 'CPF/CNPJ'} ${t.doc}` : '', t.cidade || '', t.pix ? `Chave Pix ${t.pix}` : ''].filter(Boolean).forEach(s => quebrar(s, false, 9.5, wE).forEach(l => { ops.push(texto(MX, a + 9, l, false, 9.5, C2.texto2)); a += 13.5; }));
+const sel = d.garSelo || '', rev = (tipoTxt.match(/Revisão \d+/) || [''])[0], hQ = 64 + (sel ? 22 : 0);
+ops.push(caixa2(xD, topo - 4, wD, hQ, C2.gelo, C2.borda, 7));
+let b = topo + 6; ops.push(texto(xD + 12, b + 7, os, true, 7.5, C2.cinza)); b += 12;
+const nTxt = `Nº ${numero}`; let tn = 18; while (tn > 10 && largura(nTxt, true, tn) > wD - 24) tn -= 0.5; ops.push(texto(xD + 12, b + tn * 0.85, nTxt, true, tn, C2.navy)); b += tn + 5;
+const em = [`Emissão ${d.data || ''}`, rev, d.via2 || ''].filter(Boolean).join(' · '); let te = 8.5; while (te > 6.5 && largura(em, false, te) > wD - 24) te -= 0.25; ops.push(texto(xD + 12, b + 8, em, false, te, C2.texto2)); b += 14;
+if (sel) { const ws = largura(sel, true, 7) + 24; ops.push(`q ${C2.verdeFundo} rg ${C2.verde} RG 1 w ${rr(xD + 12, b + 2, ws, 15, 7.5)} B Q`, visto(xD + 18, b + 6, 7, C2.verde), texto(xD + 28, b + 12.4, sel, true, 7, C2.verdeT)); }
+const h = Math.max(a, topo - 4 + hQ) + 10;
+ops.push(linhaH(MX, MX + LARG, h, C2.navy, 1.5));
+y = h + 14;
+}
 const titulo = (s) => [...txtL(s, { b: true, tam: 12, lead: 17, cor: COR.faixa }), esp(3)];
 nova();
 const c = d.cliente || {}, wC = LARG / 2 - 24, xC1 = MX + 12, xC2 = MX + LARG / 2 + 12;
@@ -150,6 +179,50 @@ const EQ = [...rot('EQUIPAMENTO AFERIDO', xC2), ...txtL(c.equip ? (/BTU\/h/.test
 const soma = (A) => A.reduce((t, l) => t + l.h, 0), hCol = Math.max(soma(CL), soma(EQ)), hCL = hCol + 20;
 const colunas = { h: hCol, draw: (yy) => { let k = yy; CL.forEach(l => { l.draw(k); k += l.h; }); k = yy; EQ.forEach(l => { l.draw(k); k += l.h; }); } };
 por([{ h: 10, draw: (yy) => ops.push(retangulo(MX, yy, LARG, hCL, COR.caixa), `q ${COR.regua} RG 0.8 w ${n2(MX)} ${n2(PH - yy - hCL)} ${n2(LARG)} ${n2(hCL)} re S Q`, `q ${COR.regua} RG 0.8 w ${n2(MX + LARG / 2)} ${n2(PH - yy - hCL + 8)} m ${n2(MX + LARG / 2)} ${n2(PH - yy - 8)} l S Q`) }, colunas, esp(10), esp(14)], true);
+if (d.limpo && d.bancada) {
+const B0 = d.bancada, fx = B0.faixa, wC = (LARG - 10) / 2, hC = 128;
+const secT = (s) => ({ h: 18, draw: (yy) => ops.push(texto(MX, yy + 11, s, true, 9, C2.navy), linhaH(MX + largura(s, true, 9) + 8, MX + LARG, yy + 8, C2.borda, 0.8)) });
+const graf = { h: hC + 12, draw: (yy) => {
+const xA = MX, xB = MX + wC + 10;
+ops.push(caixa2(xA, yy, wC, hC, C2.branco, C2.borda, 6), caixa2(xB, yy, wC, hC, C2.branco, C2.borda, 6));
+ops.push(texto(xA + 10, yy + 15, 'PRESSÃO E SUPERAQUECIMENTO', true, 7.5, C2.navy));
+if (fx) {
+const sp = fx[1] - fx[0], vmin = Math.max(0, Math.floor((fx[0] - sp * 1.6) / 10) * 10), vmax = Math.ceil((fx[1] + sp * 1.4) / 10) * 10, cx = xA + 72, cy = yy + 88, r = 46;
+const ang = (v) => 180 - (Math.min(vmax, Math.max(vmin, v)) - vmin) / (vmax - vmin) * 180, P = (a, rr2) => [cx + (rr2 || r) * Math.cos(a * Math.PI / 180), cy - (rr2 || r) * Math.sin(a * Math.PI / 180)];
+const arcoP = (a0, a1) => { const L = []; for (let a = a0; a > a1; a -= 3) L.push(P(a)); L.push(P(a1)); return L; };
+ops.push(texto(xA + 10, yy + 26, `${B0.fluido} · faixa ${fx[0]}–${fx[1]} PSI`, false, 7.5, C2.cinza));
+ops.push(poli(arcoP(180, 0), C2.trilho, 9), poli(arcoP(ang(fx[0]), ang(fx[1])), C2.verde, 9, 0));
+if (B0.psi != null) { const p = P(ang(B0.psi), r - 8); ops.push(poli([[cx, cy], p], C2.navy, 2.2)); }
+ops.push(`q ${C2.navy} rg ${circ(cx, cy, 3.6)} f Q`, texto(cx - r - 8, cy + 11, String(vmin), false, 7, C2.cinza), texto(cx + r - 4, cy + 11, String(vmax), false, 7, C2.cinza));
+const val = B0.psi != null ? `${nBR(B0.psi)} PSI` : `${fx[0]}–${fx[1]} PSI`, sub = B0.sh != null ? `SH ${nBR(B0.sh)} °C` : 'faixa nominal';
+ops.push(texto(cx - largura(val, true, 12) / 2, cy + 23, val, true, 12, C2.navy), texto(cx - largura(sub, true, 8) / 2, cy + 33, sub, true, 8, C2.verdeT));
+const st = B0.psi == null ? 'Referência do fluido' : B0.psi >= fx[0] && B0.psi <= fx[1] ? 'Na faixa do fluido' : 'Fora da faixa do fluido';
+ops.push(texto(xA + 140, yy + 60, st, true, 8, B0.psi != null && (B0.psi < fx[0] || B0.psi > fx[1]) ? C2.ambarT : C2.verdeT));
+if (B0.sh != null) ops.push(texto(xA + 140, yy + 72, `SH medido ${nBR(B0.sh)} °C`, false, 7.5, C2.texto2));
+if (B0.psi == null) ops.push(texto(xA + 140, yy + 72, 'Faixa ideal de sucção', false, 7.5, C2.texto2));
+}
+const r25 = B0.r25 > 0 ? B0.r25 : 10, Rt = (tt) => r25 * Math.exp(4100 * (1 / (tt + 273.15) - 1 / 298.15)), x0 = xB + 32, x1 = xB + wC - 12, y0 = yy + 34, y1 = yy + 100, rmax = Rt(0) * 1.05;
+const X = (tt) => x0 + tt / 60 * (x1 - x0), Y = (v) => y1 - Math.min(v, rmax) / rmax * (y1 - y0);
+ops.push(texto(xB + 10, yy + 15, 'CURVA DO SENSOR NTC', true, 7.5, C2.navy), texto(xB + 10, yy + 26, `${nBR(r25)}K · curva da marca`, false, 7.5, C2.cinza));
+for (let k = 1; k < 6; k++) ops.push(poli([[X(k * 10), y0], [X(k * 10), y1]], C2.grade, 0.6, 0), poli([[x0, y0 + k * (y1 - y0) / 5], [x1, y0 + k * (y1 - y0) / 5]], C2.grade, 0.6, 0));
+ops.push(`q ${C2.borda} RG 0.8 w ${n2(x0)} ${n2(PH - y1)} ${n2(x1 - x0)} ${n2(y1 - y0)} re S Q`);
+ops.push(poli(Array.from({ length: 31 }, (_, i) => [X(i * 2), Y(Rt(i * 2))]), C2.azul, 1.8));
+const med = B0.ntcR != null && B0.ntcT != null && B0.ntcT >= 0 && B0.ntcT <= 60, tp = med ? B0.ntcT : 25, rp = med ? B0.ntcR : r25, lab = `${nBR(tp)} °C = ${nBR(rp)} kΩ`;
+ops.push(`q 1 1 1 rg ${C2.verde} RG 1.8 w ${circ(X(tp), Y(rp), 3.6)} B Q`, texto(Math.min(X(tp) + 7, x1 - largura(lab, true, 7.5) - 2), Math.max(Y(rp) - 6, y0 + 9), lab, true, 7.5, C2.navy));
+ops.push(texto(x0, y1 + 10, '0 °C', false, 7, C2.cinza), texto(x1 - largura('60 °C', false, 7), y1 + 10, '60 °C', false, 7, C2.cinza), texto(xB + 10, y0 + 6, 'kΩ', false, 7, C2.cinza));
+ops.push(texto(xB + 10, yy + hC - 6, med ? 'Medido na bancada' : 'Ponto nominal a 25 °C', true, 7.5, C2.verdeT));
+} };
+por([esp(2), secT('DIAGNÓSTICO INSTRUMENTADO'), graf], true);
+const M = (d.matriz || []).slice(0, 8), rows = [];
+for (let k = 0; k < M.length; k += 2) rows.push({ h: 35, draw: (yy) => [M[k], M[k + 1]].forEach((m, c) => {
+if (!m) return; const x = MX + c * (wC + 10), cor = m.s === 'cor' ? C2.ambar : C2.verde, corT = m.s === 'cor' ? C2.ambarT : C2.verdeT, fundo = m.s === 'cor' ? C2.ambarFundo : C2.verdeFundo;
+const ws = largura(m.selo, true, 6.5) + 19, xs = x + wC - ws - 6;
+ops.push(caixa2(x, yy, wC, 30, C2.branco, C2.borda, 5), `q ${fundo} rg ${cor} RG 0.8 w ${rr(xs, yy + 8, ws, 14, 7)} B Q`);
+ops.push(m.s === 'cor' ? `q ${cor} rg ${circ(xs + 7, yy + 15, 2.6)} f Q` : visto(xs + 4, yy + 11.6, 6, cor), texto(xs + 13, yy + 17.6, m.selo, true, 6.5, corT));
+const wt = wC - ws - 20; let L = quebrar(String(m.t || ''), true, 8, wt); if (L.length > 2) { let u = L.slice(1).join(' '); while (u.length > 4 && largura(u + '…', true, 8) > wt) u = u.slice(0, -1); L = [L[0], u + '…']; }
+const y1 = L.length === 1 ? yy + 18 : yy + 13; L.forEach((l, q) => ops.push(texto(x + 8, y1 + q * 10, l, true, 8, C2.navy))); }) });
+if (rows.length) por([secT('MATRIZ DE CONFORMIDADE'), ...rows, esp(10)], true);
+}
 const itens = d.itens || [];
 if (itens.length) {
 const xQ = MX, xD = MX + 40, wV = 104, wD = LARG - 40 - wV - 12;
@@ -159,6 +232,8 @@ const desc = quebrar(it.d || '—', true, 10.5, wD), extra = [it.j, it.faixa, it
 const L = desc.map((s, k) => ({ h: 15, draw: (yy) => { ops.push(texto(xD, yy + 11, s, true, 10.5)); if (!k) { ops.push(texto(xQ, yy + 11, `${it.q || 1}×`, false, 10.5)); const v = String(it.v || '—'); ops.push(texto(MX + LARG - largura(v, true, 10.5), yy + 11, v, true, 10.5)); } } }));
 if (extra.length) {
 const xT = xD + 3 + 8, wT = MX + LARG - xT - 8, T = extra.flatMap(s => txtL(s, { tam: 9, lead: 12, x: xT, w: wT, cor: s === it.faixa ? COR.tinta : COR.apoio, b: s === it.faixa }));
+if (d.limpo && Array.isArray(it.fx) && it.fx[1] > it.fx[0]) { const [mn, mx, v] = it.fx, wb = Math.min(190, wT), pos = Math.max(0, Math.min(1, (v - mn) / (mx - mn)));
+T.push({ h: 20, draw: (yy) => ops.push(`q ${C2.faixaVerde} rg ${rr(xT, yy + 4, wb, 5, 2.5)} f Q`, `q ${C2.navy} rg 1 1 1 RG 1.2 w ${circ(xT + pos * wb, yy + 6.5, 4.2)} B Q`, texto(xT, yy + 17, reais(mn), false, 6.5, C2.cinza), texto(xT + wb - largura(reais(mx), false, 6.5), yy + 17, reais(mx), false, 6.5, C2.cinza)) }); }
 const hT = soma(T) + 10;
 L.push({ h: 8, draw: (yy) => ops.push(retangulo(xD, yy + 3, MX + LARG - xD, hT, COR.caixa), retangulo(xD, yy + 3, 3, hT, COR.verde)) }, ...T, esp(5));
 }
@@ -197,6 +272,16 @@ else L.push({ h: 34, draw: (yy) => ops.push(linhaH(MX, MX + 230, yy + 32, COR.ti
 L.push(esp(4), ...txtL(d.assinaturaLegenda || 'Assinatura do cliente', { tam: 9.5, lead: 13, cor: COR.apoio, w: 300 }));
 if (d.assinaturaNota) L.push(...txtL(d.assinaturaNota, { tam: 9, lead: 12.5, cor: COR.apoio }));
 por(L, true);
+}
+if (d.limpo) {
+pags.forEach((o, i) => {
+const yL = PH - RODAPE + 10, tam = 85 / largura('GeloPRO', true, 1), yb = yL + 25, xT = MX + 85 + 14, wT = LARG - 99;
+o.push(linhaH(MX, MX + LARG, yL, C2.borda, 0.8), texto(MX, yb, 'Gelo', true, tam, C2.navy), texto(MX + largura('Gelo', true, tam), yb, 'PRO', true, tam, C2.azul));
+const s1 = `Documento aferido e emitido pelo Sistema GeloPRO · Nº ${numero} · Página ${i + 1} de ${pags.length}`, s2 = `Emitido em ${d.data || ''} · Base Atualizada ${d.base || ''}`;
+let t1 = 8; while (t1 > 6 && largura(s1, true, t1) > wT) t1 -= 0.25;
+o.push(texto(xT, yL + 16, s1, true, t1, C2.navy), texto(xT, yL + 28, s2, false, 7.5, C2.cinza));
+});
+return pags;
 }
 pags.forEach((o, i) => {
 const s = `Documento nº ${numero} · Emitido em ${d.data || ''} · Base Atualizada ${d.base || ''} · Página ${i + 1} de ${pags.length}`;

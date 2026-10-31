@@ -10,9 +10,9 @@ document.head.appendChild(s);
 const ocioso = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 if (document.readyState === 'complete') ocioso(libsPix); else window.addEventListener('load', () => ocioso(libsPix));
 const LEGADO = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
-if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v133')) {
+if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v134')) {
 const st = document.createElement('style');
-st.id = 'gp-cores-global-v133';
+st.id = 'gp-cores-global-v134';
 st.textContent = [
 '[data-chapa][data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-cliente-bloco][data-cli-ok="1"] { display: flex !important; }',
 '[data-video-enxuto="1"] [data-cliente-bloco] > span:first-child { display: none !important; }',
@@ -117,7 +117,7 @@ if (visiveis > 0 && !barraLimpar) {
 barraLimpar = document.createElement('button');
 barraLimpar.type = 'button';
 barraLimpar.setAttribute('data-limpar-todos-avisos', '1');
-barraLimpar.textContent = '🗑 Limpar todos os avisos';
+barraLimpar.textContent = '🗑 Limpar notificações';
 barraLimpar.style.cssText = 'min-height:48px;width:100%;box-sizing:border-box;padding:8px 14px;border-radius:14px;border:1.5px solid #b91c1c;background:#fef2f2;color:#991b1b;font:700 16px/20px Roboto,sans-serif;cursor:pointer;text-align:center;';
 barraLimpar.onclick = () => {
 const d = lerDel();
@@ -139,7 +139,7 @@ let msgVazio = central.querySelector('[data-avisos-vazio-msg]');
 if (visiveis === 0 && !msgVazio) {
 msgVazio = document.createElement('div');
 msgVazio.setAttribute('data-avisos-vazio-msg', '1');
-msgVazio.textContent = '✓ Nenhum aviso pendente no momento.';
+msgVazio.textContent = '✓ Nenhuma notificação pendente no momento.';
 msgVazio.style.cssText = 'padding:18px 14px;border-radius:14px;background:#f8fafc;border:1px dashed #94a3b8;color:#334155;font:700 16px/22px Roboto,sans-serif;text-align:center;';
 central.appendChild(msgVazio);
 } else if (visiveis > 0 && msgVazio) {

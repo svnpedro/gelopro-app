@@ -1958,16 +1958,32 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 </div>
 <sc-if value="{{ temPrint }}" hint-placeholder-val="{{ false }}">
 <div data-print="" aria-hidden="true" style="position:fixed;left:-10000px;top:0;width:794px;">
-  <dc-import name="FolhaDocumento" tipo="{{ dTipo }}" numero="{{ dNum }}" data="{{ dData }}" titular="{{ dTit }}" hint-size="794px,1000px">
+  <dc-import name="FolhaDocumento" tipo="{{ dTipo }}" numero="{{ dNum }}" data="{{ dData }}" titular="{{ dTit }}" limpo="{{ dLimpo }}" garSelo="{{ dGarSelo }}" hint-size="794px,1000px">
     <!-- PR #40: quadro Cliente & Equipamento em 2 colunas (caixa clara #f3f5f8 com moldura sutil #cbd3dd), igual ao PDF nativo. -->
     <div data-doc-cliente-equip="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid #cbd3dd;border-radius:8px;background:#f3f5f8;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
       <div data-doc-cliente="" style="min-width:0;display:flex;flex-direction:column;gap:2px;padding:12px 16px;"><span style="font:700 12px/16px 'Roboto',sans-serif;letter-spacing:.08em;color:var(--gp-on-paper-variant);">CLIENTE</span><span style="font:700 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dCli }}</span></div>
       <div data-doc-equip="" style="min-width:0;display:flex;flex-direction:column;gap:2px;padding:12px 16px;border-left:1px solid #cbd3dd;"><span style="font:700 12px/16px 'Roboto',sans-serif;letter-spacing:.08em;color:var(--gp-on-paper-variant);">EQUIPAMENTO AFERIDO</span><span style="font:500 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dEquip }}</span></div>
     </div>
+    <!-- PR #134 (uso real): Opção 3 clean. Diagnóstico instrumentado (velocímetro de sucção do fluido + curva NTC) e matriz de conformidade. -->
+    <sc-if value="{{ dBancTem }}" hint-placeholder-val="{{ false }}"><div data-doc-bancada="" style="display:flex;flex-direction:column;gap:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+      <span style="font:900 13px/18px 'Roboto',sans-serif;letter-spacing:.14em;color:#091e42;">DIAGNÓSTICO INSTRUMENTADO</span>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
+        <sc-if value="{{ dB.gTem }}" hint-placeholder-val="{{ false }}"><div data-doc-manometro="" style="border:1px solid #cbd5e1;border-radius:8px;background:#ffffff;padding:10px 12px;display:flex;flex-direction:column;gap:2px;">
+          <span style="font:900 12px/16px 'Roboto',sans-serif;letter-spacing:.06em;color:#091e42;">PRESSÃO E SUPERAQUECIMENTO</span><span style="font:500 12px/16px 'Roboto',sans-serif;color:#64748b;">{{ dB.gFaixa }}</span>
+          <div style="position:relative;width:220px;height:128px;"><span data-doc-gauge-img="" aria-hidden="true" style="position:absolute;left:0;top:0;width:220px;height:128px;background-image:{{ dB.gImg }};background-repeat:no-repeat;background-size:220px 128px;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span><span style="position:absolute;white-space:nowrap;font-family:'Roboto',sans-serif;left:{{ dB.gMinX }}px;top:98px;transform:translateX(-50%);font-size:10px;line-height:10px;color:#64748b;">{{ dB.gMin }}</span><span style="position:absolute;white-space:nowrap;font-family:'Roboto',sans-serif;left:{{ dB.gMaxX }}px;top:98px;transform:translateX(-50%);font-size:10px;line-height:10px;color:#64748b;">{{ dB.gMax }}</span><span data-doc-gauge-valor="" style="position:absolute;white-space:nowrap;font-family:'Roboto',sans-serif;left:110px;top:100px;transform:translateX(-50%);font-size:17px;line-height:17px;font-weight:900;color:#091e42;">{{ dB.gVal }}</span><span style="position:absolute;white-space:nowrap;font-family:'Roboto',sans-serif;left:110px;top:118px;transform:translateX(-50%);font-size:11px;line-height:11px;font-weight:800;color:#15803d;">{{ dB.gSub }}</span></div>
+          <span style="font:800 12px/16px 'Roboto',sans-serif;color:{{ dB.gCor }};">{{ dB.gStatus }}</span></div></sc-if>
+        <div data-doc-curva-ntc="" style="border:1px solid #cbd5e1;border-radius:8px;background:#ffffff;padding:10px 12px;display:flex;flex-direction:column;gap:2px;">
+          <span style="font:900 12px/16px 'Roboto',sans-serif;letter-spacing:.06em;color:#091e42;">CURVA DO SENSOR NTC</span><span style="font:500 12px/16px 'Roboto',sans-serif;color:#64748b;">{{ dB.nRef }}</span>
+          <div style="position:relative;width:220px;height:128px;"><span data-doc-ntc-img="" aria-hidden="true" style="position:absolute;left:0;top:0;width:220px;height:128px;background-image:{{ dB.nImg }};background-repeat:no-repeat;background-size:220px 128px;-webkit-print-color-adjust:exact;print-color-adjust:exact;"></span><span style="position:absolute;white-space:nowrap;font-family:'Roboto',sans-serif;left:34px;top:116px;font-size:10px;line-height:10px;color:#64748b;">0 °C</span><span style="position:absolute;white-space:nowrap;font-family:'Roboto',sans-serif;right:6px;top:116px;font-size:10px;line-height:10px;color:#64748b;">60 °C</span><span data-doc-ntc-ponto="" style="position:absolute;white-space:nowrap;font-family:'Roboto',sans-serif;left:{{ dB.nTxtX }}px;top:{{ dB.nTxtTop }}px;font-size:11px;line-height:11px;font-weight:900;color:#091e42;background:#ffffff;">{{ dB.nTxt }}</span><span style="position:absolute;white-space:nowrap;font-family:'Roboto',sans-serif;right:192px;top:8px;font-size:10px;line-height:10px;color:#64748b;">{{ dB.nTopo }}</span></div>
+          <span style="font:800 12px/16px 'Roboto',sans-serif;color:#15803d;">{{ dB.nStatus }}</span></div>
+      </div>
+      <span style="font:900 13px/18px 'Roboto',sans-serif;letter-spacing:.14em;color:#091e42;">MATRIZ DE CONFORMIDADE</span>
+      <div data-doc-matriz="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><sc-for list="{{ dMatriz }}" as="mz" hint-placeholder-count="4"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid #cbd5e1;border-radius:8px;background:#ffffff;"><span style="min-width:0;font:700 13px/17px 'Roboto',sans-serif;color:#091e42;overflow-wrap:anywhere;">{{ mz.t }}</span><span style="flex:none;font:800 10px/14px 'Roboto',sans-serif;letter-spacing:.05em;padding:2px 8px;border-radius:999px;color:{{ mz.cor }};background:{{ mz.fundo }};border:1px solid {{ mz.borda }};">{{ mz.selo }}</span></div></sc-for></div>
+    </div></sc-if>
     <sc-if value="{{ dItensVis }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;flex-direction:column;">
         <span style="font:700 16px/24px 'Roboto',sans-serif;padding-bottom:4px;">{{ dItensTit }}</span>
-        <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><div data-doc-tecnica="" style="display:flex;flex-direction:column;gap:2px;margin:4px 0 0 24px;padding:8px 12px;background:#f3f5f8;border-left:3px solid #16a34a;border-radius:0 6px 6px 0;-webkit-print-color-adjust:exact;print-color-adjust:exact;"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-doc-economia="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.eco }}</span></sc-if></div></sc-if></div></sc-for>
+        <sc-for list="{{ dItens }}" as="it" hint-placeholder-count="1"><div style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);"><div style="display:flex;justify-content:space-between;gap:16px;"><span style="flex:1;min-width:0;overflow-wrap:anywhere;">{{ it.d }}</span><span style="flex:none;font-variant-numeric:tabular-nums;">{{ it.vf }}</span></div><sc-if value="{{ it.temJ }}" hint-placeholder-val="{{ false }}"><div data-doc-tecnica="" style="display:flex;flex-direction:column;gap:2px;margin:4px 0 0 24px;padding:8px 12px;background:#f3f5f8;border-left:3px solid #16a34a;border-radius:0 6px 6px 0;-webkit-print-color-adjust:exact;print-color-adjust:exact;"><span data-doc-justificativa="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.j }}</span><span style="font:600 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper);overflow-wrap:anywhere;">{{ it.faixa }}</span><sc-if value="{{ it.temFx }}" hint-placeholder-val="{{ false }}"><span data-doc-faixa-barra="" style="position:relative;display:block;width:240px;height:22px;margin-top:2px;"><span style="position:absolute;left:0;right:0;top:6px;height:6px;border-radius:3px;background:#bbf7d0;"></span><span style="position:absolute;top:2px;left:calc({{ it.fxPct }} - 7px);width:14px;height:14px;box-sizing:border-box;border-radius:50%;background:#091e42;border:2px solid #ffffff;"></span><span style="position:absolute;left:0;top:13px;font:500 10px/10px 'Roboto',sans-serif;color:#64748b;">{{ it.fxMin }}</span><span style="position:absolute;right:0;top:13px;font:500 10px/10px 'Roboto',sans-serif;color:#64748b;">{{ it.fxMax }}</span></span></sc-if><sc-if value="{{ it.temE }}" hint-placeholder-val="{{ false }}"><span data-doc-economia="" style="font:500 14px/20px 'Roboto',sans-serif;color:var(--gp-on-paper-variant);overflow-wrap:anywhere;">{{ it.eco }}</span></sc-if></div></sc-if></div></sc-for>
         <sc-if value="{{ dTemBonif }}" hint-placeholder-val="{{ false }}"><div data-doc-bonificacao="" style="padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);font:600 16px/24px 'Roboto',sans-serif;overflow-wrap:anywhere;">{{ dBonifLinha }}</div></sc-if>
         <div data-doc-fechamento="" style="display:flex;flex-direction:column;"><sc-if value="{{ dTemDesc }}" hint-placeholder-val="{{ false }}"><div data-doc-desconto="" style="display:flex;flex-direction:column;gap:2px;padding:8px 0;border-bottom:1px solid var(--gp-paper-rule);font:600 16px/24px 'Roboto',sans-serif;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;"><span>{{ dSubtotalLinha }}</span><span>{{ dDescLinha }}</span></div></sc-if>
         <div style="display:flex;justify-content:space-between;gap:16px;padding-top:12px;font-weight:700;"><span>{{ dTotalRot }}</span><span style="font-variant-numeric:tabular-nums;">{{ dTotal }}</span></div>
@@ -2470,6 +2486,42 @@ const PDF_TITULO = { orc: 'Orçamento', gar: 'Termo de garantia', rec: 'Recibo P
 // Telefone no PDF: (11) 98765-4321 ou (11) 3456-7890; outro formato sai como foi digitado.
 const foneBR = (t) => { const d = dig(t).replace(/^55(?=\d{10,11}$)/, ''); return d.length === 11 ? `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}` : d.length === 10 ? `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}` : String(t || '').trim(); };
 const pdfNome = (tipo, num, cli) => window.GeloProPDF ? window.GeloProPDF.nomeArquivo(tipo, num, cli) : `${tipo}-${num}.pdf`;
+// PR #134 (uso real): bloco de bancada do documento clean (Opção 3). Faixa de sucção do fluido = POCO_PSI (a mesma da telemetria, PR #73);
+// curva do NTC desenhada com o R25 da marca na base e o Beta nominal 4100 da base (ntc_tolerancias.csv, F18) só como forma; medido quando há.
+const faixaPsiDe = (fl) => { const m = String(POCO_PSI[fl] || '').match(/(\d+)\D+(\d+)/); return m ? [+m[1], +m[2]] : null; };
+const nBR = (v) => String(Math.round(v * 10) / 10).replace('.', ',');
+const matrizDe = (tipo, d) => {
+  const b = d.bancada || {}, fl = b.fluido || d.fluido || '', fx = faixaPsiDe(fl), L = [];
+  if (tipo === 'orc') (d.itens || []).slice(0, 4).forEach(i => L.push({ t: i.d, s: 'cor' }));
+  if (b.psi != null) L.push({ t: `Pressão de sucção ${nBR(b.psi)} PSI${fx ? ` · faixa ${fx[0]}–${fx[1]}` : ''}`, s: 'af' });
+  if (b.sh != null) L.push({ t: `Superaquecimento ${nBR(b.sh)} °C`, s: 'af' });
+  if (b.ntcR != null) L.push({ t: `Sensor NTC ${nBR(b.ntcR)} kΩ${b.ntcT != null ? ` a ${nBR(b.ntcT)} °C` : ''}`, s: 'af' });
+  if (d.equip) L.push({ t: `Equipamento ${String(d.equip).split(', ').join(' · ')}`, s: 'ok' });
+  if (fx) L.push({ t: `Fluido ${fl} · faixa nominal ${fx[0]}–${fx[1]} PSI`, s: 'ok' });
+  if (tipo === 'orc' && d.garantia) L.push({ t: semGarantia(d.garantia) ? 'Sem garantia contratual (aparelho no estado)' : `Garantia contratual ${d.garantia}`, s: 'ok' });
+  return L.slice(0, 8).map(x => ({ ...x, selo: x.s === 'cor' ? 'CORRIGIDO NO ORÇAMENTO' : x.s === 'af' ? 'AFERIDO' : 'ESPECIFICAÇÃO CONFERIDA' }));
+};
+const NTC_BETA = 4100;
+const geoBancada = (b) => {
+  if (!b) return null; const fx = faixaPsiDe(b.fluido), r25 = b.r25 > 0 ? b.r25 : 10, P = (cx, cy, r, a) => [cx + r * Math.cos(a * Math.PI / 180), cy - r * Math.sin(a * Math.PI / 180)];
+  const arco = (cx, cy, r, a0, a1) => { const p0 = P(cx, cy, r, a0), p1 = P(cx, cy, r, a1); return `M${p0[0].toFixed(1)} ${p0[1].toFixed(1)} A${r} ${r} 0 0 1 ${p1[0].toFixed(1)} ${p1[1].toFixed(1)}`; };
+  const g = {};
+  if (fx) { const sp = fx[1] - fx[0], vmin = Math.max(0, Math.floor((fx[0] - sp * 1.6) / 10) * 10), vmax = Math.ceil((fx[1] + sp * 1.4) / 10) * 10, cx = 110, cy = 92, r = 74;
+    const ang = (v) => 180 - (Math.min(vmax, Math.max(vmin, v)) - vmin) / (vmax - vmin) * 180, pa = b.psi != null ? P(cx, cy, r - 10, ang(b.psi)) : null;
+    Object.assign(g, { gTem: true, gTrilho: arco(cx, cy, r, 180, 0), gIdeal: arco(cx, cy, r, ang(fx[0]), ang(fx[1])), gMin: String(vmin), gMax: String(vmax), gMinX: String(cx - r), gMaxX: String(cx + r),
+      gPont: !!pa, gX2: pa ? pa[0].toFixed(1) : String(cx), gY2: pa ? pa[1].toFixed(1) : String(cy), gVal: b.psi != null ? `${nBR(b.psi)} PSI` : `${fx[0]}–${fx[1]} PSI`,
+      gSub: b.sh != null ? `SH ${nBR(b.sh)} °C` : 'faixa nominal do fluido', gFaixa: `${b.fluido} · faixa ${fx[0]}–${fx[1]} PSI`, gStatus: b.psi == null ? 'Referência do fluido' : b.psi >= fx[0] && b.psi <= fx[1] ? '✓ Na faixa' : '▲ Fora da faixa', gCor: b.psi != null && (b.psi < fx[0] || b.psi > fx[1]) ? '#b45309' : '#15803d' }); }
+  const R = (t) => r25 * Math.exp(NTC_BETA * (1 / (t + 273.15) - 1 / 298.15)), x0 = 34, x1 = 214, y0 = 10, y1 = 112, rmax = R(0) * 1.05, X = (t) => x0 + t / 60 * (x1 - x0), Y = (v) => y1 - v / rmax * (y1 - y0);
+  const med = b.ntcR != null && b.ntcT != null && b.ntcT >= 0 && b.ntcT <= 60, tp = med ? b.ntcT : 25, rp = med ? b.ntcR : r25;
+  Object.assign(g, { nCurva: Array.from({ length: 31 }, (_, i) => `${X(i * 2).toFixed(1)},${Y(R(i * 2)).toFixed(1)}`).join(' '), nPx: X(tp).toFixed(1), nPy: Y(Math.min(rp, rmax)).toFixed(1),
+    nTxt: `${nBR(tp)} °C = ${nBR(rp)} kΩ`, nTxtX: Math.min(X(tp) + 8, 120).toFixed(1), nTxtY: Math.max(Y(Math.min(rp, rmax)) - 8, 22).toFixed(1), nTxtTop: (Math.max(Y(Math.min(rp, rmax)) - 8, 22) - 9).toFixed(1), nY1: String(y1), nX0: String(x0), nX1: String(x1), nTopo: `${Math.round(rmax / 5) * 5}k`,
+    nRef: `${nBR(r25)}K · curva da marca`, nStatus: med ? '✓ Medido na bancada' : 'Ponto nominal a 25 °C' });
+  // PR #134: o gráfico vai como imagem SVG (data URI em background-image, sem ";" porque o style do molde é separado por ";"): atributo SVG com {{ }} no molde gera erro de console antes do render.
+  const img = (svg) => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='220' height='128' viewBox='0 0 220 128'>${svg}</svg>`)}")`;
+  if (g.gTem) g.gImg = img(`<path d='${g.gTrilho}' fill='none' stroke='#e2e8f0' stroke-width='12' stroke-linecap='round'/><path d='${g.gIdeal}' fill='none' stroke='#16a34a' stroke-width='12'/>${g.gPont ? `<line x1='110' y1='92' x2='${g.gX2}' y2='${g.gY2}' stroke='#091e42' stroke-width='3' stroke-linecap='round'/>` : ''}<circle cx='110' cy='92' r='5' fill='#091e42'/>`);
+  g.nImg = img(`<rect x='34' y='10' width='180' height='102' fill='#ffffff' stroke='#cbd5e1'/><path d='M64 10V112M94 10V112M124 10V112M154 10V112M184 10V112M34 30H214M34 50H214M34 70H214M34 90H214' stroke='#eef2f7'/><polyline points='${g.nCurva}' fill='none' stroke='#0284c7' stroke-width='2.2'/><circle cx='${g.nPx}' cy='${g.nPy}' r='5' fill='#ffffff' stroke='#16a34a' stroke-width='2.5'/>`);
+  return g;
+};
 const docPdf = (tipo, d0, tit0, x = {}) => {
   // PR #40: registro do Cofre (inclusive o antigo, gravado antes da sanitização) e titular passam pelo limparTxt antes do PDF e do resumo.
   const d = limparFundo(d0 || {}), tit = tit0 ? limparObj(tit0) : tit0;
@@ -2485,7 +2537,10 @@ const docPdf = (tipo, d0, tit0, x = {}) => {
     titular: tit ? { nome: tit.nome, doc: tit.docFmt, docTipo: tit.docTipo, cidade: tit.cidade, pix: tit.pix } : {},
     cliente: { nome: d.cliente || 'Cliente', tel: foneBR(d.tel), equip: /BTU\/h/.test(d.equip || '') ? String(d.equip).split(', ').join(' · ') : d.equip || '' },
     itensTitulo: tipo === 'gar' ? 'Serviços cobertos' : 'Itens',
-    itens: fech ? itens.map(i => ({ q: i.q || 1, d: i.q > 1 ? `${i.d} (${BRL.format(i.v || 0)} cada)` : i.d, v: i.q > 1 && i.s != null ? BRL.format(i.s) : i.v != null ? BRL.format(i.v) : '—', j: i.j || '', faixa: i.faixa || '', eco: i.eco || '' })) : [],
+    itens: fech ? itens.map(i => ({ q: i.q || 1, d: i.q > 1 ? `${i.d} (${BRL.format(i.v || 0)} cada)` : i.d, v: i.q > 1 && i.s != null ? BRL.format(i.s) : i.v != null ? BRL.format(i.v) : '—', j: i.j || '', faixa: i.faixa || '', eco: i.eco || '', fx: !LEGADO_TESTES && Array.isArray(i.fx) && i.fx.length === 2 && i.v > 0 ? [i.fx[0], i.fx[1], Number(i.v)] : null })) : [],
+    // PR #134 (uso real): documento clean (Opção 3): topo da assistência, selo de garantia, bancada (2 gráficos) e matriz de conformidade.
+    limpo: !LEGADO_TESTES, garSelo: !LEGADO_TESTES && fech && garTxt && !semGarantia(garTxt) ? `GARANTIA ${String(garTxt).toUpperCase()}` : '',
+    bancada: !LEGADO_TESTES && (tipo === 'orc' || tipo === 'laudo') && d.bancada ? { ...d.bancada, faixa: faixaPsiDe(d.bancada.fluido) } : null, matriz: !LEGADO_TESTES && (tipo === 'orc' || tipo === 'laudo') && d.bancada ? matrizDe(tipo, d) : [],
     fechamento: !fech ? null : { bonif: tipo === 'orc' ? d.bonif || '' : '', linhas: temDesc ? [['Subtotal dos serviços', BRL.format(subtotal)], [DESC_ROT, `-${BRL.format(desc)}`]] : [], total: [temDesc ? 'Total final' : 'Total', BRL.format(total)], validade: tipo === 'orc' ? validadeLinhaDe(d.validade) : '' },
     blocos, preventiva: fech ? prevLinhaDe(d.prevEm || maisMeses(em, 6)) : '',
     foto: fech ? x.foto || null : null, assinatura: fech ? x.assin || null : null, assinaturaLegenda: `Assinatura do cliente: ${d.cliente || ''}`,
@@ -2670,6 +2725,10 @@ const RESET = { atalho: null, tela: 'inicio', sint: null, etapa: 0, hist: [], re
 // veterano abrindo a 1ª etapa técnica; no uso real (qualquer navegador comum) valem o Passo 1 enxuto e o atalho direto aos instrumentos.
 // ?real=1 força o uso real também no HeadlessChrome (para testar esse caminho); ?completo=1 força o layout completo em qualquer navegador.
 const LEGADO_TESTES = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
+// PR #134 (uso real): cabeçalhos executivos das telas internas (kicker e título em 1 linha). O legado segue com TT.
+const TTX = LEGADO_TESTES ? TT : { ...TT, docs: ['Emissão e WhatsApp', 'Central de Documentos'], laudo: ['Documento Oficial', 'Laudo de Condenação'], scripts: ['Comprovante Oficial', 'Recibo de Pagamento'],
+  pmoc: ['Portaria MS 3.523', 'Checklist PMOC'], cofre: ['Gestão de Clientes', 'Cofre e Garantias'], ptsh: ['Manometria Digital', TT.ptsh[1]], ntc: ['Bancada Eletrônica', TT.ntc[1]], btu: ['Dimensionamento', TT.btu[1]],
+  inv: ['Diagnóstico de Placa', TT.inv[1]], codigo: ['Autodiagnóstico', TT.codigo[1]] };
 // PR #103: no uso real a raiz ganha [data-uso-real="1"]; o CSS da telemetria industrial e dos botões táteis só vale com ela (testes legados intactos).
 try { if (!LEGADO_TESTES) document.documentElement.setAttribute('data-uso-real', '1'); } catch (e) {}
 // Atalho do veterano no uso real: ng/gp/gelo vão à hipótese de bancada com os instrumentos no topo; desliga/não liga vão à etapa de multímetro;
@@ -2940,7 +2999,7 @@ class Component extends DCLogic {
   arq() { return this.state.amostra ? ARQ.amostra : ARQ.real; }
   // atend (PR #43, EXT-MIX-1): identidade do atendimento, criada junto com o nº. Vai em cada documento do Cofre e na mídia do IndexedDB, para a
   // 2ª via nunca pegar foto ou assinatura de outro atendimento que recebeu o mesmo nº.
-  numero(avulso) { if (!avulso && this.state.fech && this.state.fech.numero) return this.state.fech.numero; const A = this.arq(), n = lerSeq(A) + 1; gravar(A.seq, n); const num = A.pre + String(n).padStart(4, '0'); if (!avulso) { this._atend = { num, id: `${num}@${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}` }; this.fSet({ numero: num, atend: this._atend.id }); } return num; }
+  numero(avulso) { if (!avulso && this.state.fech && this.state.fech.numero) return this.state.fech.numero; const A = this.arq(), n0 = lerSeq(A) + 1, n = !LEGADO_TESTES && n0 < 1001 ? n0 + 1000 : n0; gravar(A.seq, n); const num = A.pre + String(n).padStart(4, '0'); if (!avulso) { this._atend = { num, id: `${num}@${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}` }; this.fSet({ numero: num, atend: this._atend.id }); } return num; }
   imprimir(tipo, doc) {
     const num = AVULSO.includes(tipo) ? this.numero(true) : this.numero(), F0 = this.state.fech;
     const atend = AVULSO.includes(tipo) ? '' : (F0 && F0.numero === num && F0.atend) || (this._atend && this._atend.num === num ? this._atend.id : '');
@@ -3589,7 +3648,11 @@ class Component extends DCLogic {
     // PR #80: no uso real o Concluir também grava no Cofre (o toast "✓ Orçamento salvo no Cofre" nunca mente); devolve true quando o orçamento está no Cofre.
     const salvarAoConcluir = () => { try { if ((!st.amostra && LEGADO_TESTES) || !F || !F.numero) return false; const A = this.arq(), lista = lerDocs(A.docs); if (lista.some(d => d.numero === F.numero && !AVULSO.includes(d.tipo))) return true;
       const em = Date.now(); lista.push({ ...docBase(), tipo: 'orc', numero: F.numero, em, prevEm: maisMeses(em, 6), prevData: dataBR(maisMeses(em, 6)), ...(F.atend ? { atend: F.atend } : {}) }); gravar(A.docs, lista); return true; } catch (e) { return false; } };
-    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: selA.marca, btu: selA.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x) })), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto, bonif: bonif ? bonifLinha : '', fluido: selA.fluido });
+    // PR #134 (uso real): medições da bancada (PT/SH e NTC) e nominais (fluido, R25 da marca) que o documento clean desenha.
+    const r25Marca = (() => { const v = nm.map(r => num(r.r25_kohm)).filter(x => x > 0); return v.length ? v[0] : null; })();
+    const bancadaAtual = () => ({ fluido: selA.fluido, psi: P, sh: sh !== null ? Math.round(sh * 10) / 10 : null, r25: r25Marca, ntcR: med(st.ntcR), ntcT: med(st.ntcT) });
+    const fxDe = (x) => { const c = catDe(x); if (!c || !jCli(x).faixa) return null; const f = faixaDe(c, st.sel.btu); return f.min !== null && f.max !== null ? [f.min, f.max] : null; };
+    const docBase = () => ({ cliente: F.cliNome, tel: F.cliTel, equip, marca: selA.marca, btu: selA.btu, itens: fi.map(x => ({ d: x.d, v: x.n, q: x.q, s: x.s, ...jCli(x), ...(LEGADO_TESTES ? {} : { fx: fxDe(x) }) })), ...(LEGADO_TESTES ? {} : { bancada: bancadaAtual() }), subtotal, desconto: descVal, total: fTotal, validade, garantia: garTxt, cobre: F.cobre, naoCobre: F.naoCobre, ressalva, foto: !!F.foto, bonif: bonif ? bonifLinha : '', fluido: selA.fluido });
     const pd = st.printDoc;
     const B2 = st.btu, sB = (k) => (e) => { const v = e.target.value; this.setState(x => ({ btu: { ...x.btu, [k]: v } })); };
     const bA = med(B2.area), bP = String(B2.pes).trim() ? med(B2.pes) : 1, bWv = String(B2.w).trim() ? med(B2.w) : 0, bf = med(B2.sol === 'Sol da tarde' ? B2.f2 : B2.f1), bfp = String(B2.f3).trim() ? med(B2.f3) : 0;
@@ -4082,7 +4145,7 @@ class Component extends DCLogic {
       lMedToggle: () => this.setState(x => ({ laudo: { ...x.laudo, medCli: lMedOk ? null : String(x.laudo.cli || '').trim() } })),
       // Laudo de inviabilidade (PR #35): a troca do aparelho vira orçamento na hora, com desinstalação e instalação no porte do topo.
       lOrcar: () => this.abrirFech(['desinstalacao', 'instalacao_split'], true, ['desinstalacao', 'instalacao_split']),
-      lPdf: () => { if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } })); this.imprimir('laudo', { cliente: LD.cli, equip, medicoes: lMed, constatacoes: LD.cons, conclusao: LD.conc }); },
+      lPdf: () => { if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } })); this.imprimir('laudo', { cliente: LD.cli, equip, medicoes: lMed, constatacoes: LD.cons, conclusao: LD.conc, ...(LEGADO_TESTES ? {} : { bancada: bancadaAtual() }) }); },
       lZap: () => {
         if (!lOk) return this.setState(x => ({ laudo: { ...x.laudo, tentou: true } }));
         zap(telDo(LD.cli), zapTxt(['LAUDO TÉCNICO DE INVIABILIDADE', `Emitido em ${dataBR(Date.now())}`, timbre, `Cliente: ${LD.cli.trim()}`, `Equipamento: ${equip.split(', ').join(' · ')}`, '',
@@ -4308,7 +4371,16 @@ class Component extends DCLogic {
       temPrint: !!pd && (AVULSO.includes(pd) ? !!st.printDados : !!F), dTipo: (PDF_TITULO[pd] || 'Orçamento') + (st.printDados && st.printDados.rev > 1 ? ` · Revisão ${st.printDados.rev}` : ''), dNum: AVULSO.includes(pd) && st.printDados ? st.printDados.numero : F ? F.numero : '', dData: dataBR(Date.now()),
       dTit: tit ? { nome: tit.nome, doc: tit.docFmt, pix: tit.pix, cidade: tit.cidade } : {},
       dCli: AVULSO.includes(pd) && st.printDados ? st.printDados.cliente : F ? F.cliNome + (F.cliTel ? ' · ' + F.cliTel : '') : '', dEquip: AVULSO.includes(pd) && st.printDados && st.printDados.equip !== undefined ? st.printDados.equip : equip, dItensVis: pd !== 'rec' && !AVULSO.includes(pd), dItensTit: pd === 'gar' ? 'Serviços cobertos' : 'Itens',
-      dItens: fi.map(x => { const jc = jCli(x); return { d: descQ(x), vf: x.q > 1 && x.s !== null ? BRL.format(x.s) : x.n != null ? BRL.format(x.n) : '—', temJ: !!(jc.j || jc.faixa || jc.eco), j: jc.j, faixa: jc.faixa, temE: !!jc.eco, eco: jc.eco }; }), dTotal: BRL.format(fTotal),
+      dItens: fi.map(x => { const jc = jCli(x), fx = LEGADO_TESTES ? null : fxDe(x), pct = fx && x.n > 0 ? Math.max(0, Math.min(100, (x.n - fx[0]) / Math.max(1, fx[1] - fx[0]) * 100)) : 0;
+        return { d: descQ(x), vf: x.q > 1 && x.s !== null ? BRL.format(x.s) : x.n != null ? BRL.format(x.n) : '—', temJ: !!(jc.j || jc.faixa || jc.eco), j: jc.j, faixa: jc.faixa, temE: !!jc.eco, eco: jc.eco,
+          temFx: !!fx && x.n > 0, fxPct: pct.toFixed(1) + '%', fxMin: fx ? BRL.format(fx[0]) : '', fxMax: fx ? BRL.format(fx[1]) : '' }; }),
+      // PR #134 (uso real): folha clean (Opção 3). Bancada do orçamento ao vivo; a do laudo vem gravada no documento.
+      ...(() => { if (LEGADO_TESTES || !pd) return { dLimpo: false, dGarSelo: '', dBancTem: false, dB: {}, dMatriz: [] };
+        const ban = pd === 'orc' && F ? bancadaAtual() : pd === 'laudo' && st.printDados ? st.printDados.bancada : null, g = geoBancada(ban);
+        const base = pd === 'orc' && F ? { ...docBase(), bancada: ban } : { ...(st.printDados || {}), bancada: ban };
+        const cores = { cor: ['#b45309', '#fffbeb', '#fcd34d', '⚡ '], af: ['#15803d', '#f0fdf4', '#86efac', '✓ '], ok: ['#15803d', '#f0fdf4', '#86efac', '✓ '] };
+        return { dLimpo: true, dGarSelo: (pd === 'orc' || pd === 'gar') && garTxt && !semGar ? `✓ GARANTIA ${garTxt.toUpperCase()}` : '', dBancTem: !!g, dB: g || {},
+          dMatriz: g ? matrizDe(pd, base).map(m => ({ t: m.t, selo: cores[m.s][3] + m.selo, cor: cores[m.s][0], fundo: cores[m.s][1], borda: cores[m.s][2] })) : [] }; })(), dTotal: BRL.format(fTotal),
       dTemBonif: pd === 'orc' && bonif, dBonifLinha: bonifLinha,
       // Desconto (orçamento, garantia e recibo mostram o mesmo total líquido) e validade da proposta só no PDF do orçamento (PR #21).
       dTemDesc: temDesc && pd !== 'rec', dDescLinha: `${DESC_ROT}: -${BRL.format(descVal)}`, dSubtotalLinha: `Subtotal dos serviços: ${BRL.format(subtotal)}`, dTotalRot: temDesc && pd !== 'rec' ? 'Total final' : 'Total',
@@ -4475,8 +4547,8 @@ class Component extends DCLogic {
       aroR: st.tela === 'inicio' ? '28px' : '24px', visR: st.tela === 'inicio' ? '25px' : '21px',
       // Na Etapa o visor e a coluna encolhem o respiro (6 px) para entregar a altura às cenas.
       visPad: st.tela === 'etapa' ? '6px' : '12px 10px 12px', colGap: st.tela === 'etapa' ? '6px' : '8px',
-      kicker: st.atalho && st.atalho.tela === st.tela && (!st.atalho.etapa || st.atalho.etapa === st.etapa) ? st.atalho.t : st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? (FERR_INSTR.includes(E.ferr) ? `Medição no ${E.ferr === 'capacimetro' ? 'capacímetro' : E.ferr === 'manometro' ? 'manômetro' : E.ferr === 'termometro' ? 'termômetro' : 'multímetro'}` : 'Inspeção na unidade') : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.banc ? (LEGADO_TESTES ? 'Hipótese técnica de bancada' : 'Diagnóstico de bancada') : 'Hipótese pelas respostas') : m ? m.k : '',
-      titulo: capAtalho ? 'Capacitor e motor' : st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
+      kicker: st.atalho && st.atalho.tela === st.tela && (!st.atalho.etapa || st.atalho.etapa === st.etapa) ? st.atalho.t : st.tela === 'codigo' && st.sint === 'led' ? (LEGADO_TESTES ? 'O aparelho apresenta' : 'Autodiagnóstico') : TTX[st.tela] ? TTX[st.tela][0] : st.tela === 'etapa' ? (E.tec ? (FERR_INSTR.includes(E.ferr) ? `Medição no ${E.ferr === 'capacimetro' ? 'capacímetro' : E.ferr === 'manometro' ? 'manômetro' : E.ferr === 'termometro' ? 'termômetro' : 'multímetro'}` : 'Inspeção na unidade') : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.banc ? (LEGADO_TESTES ? 'Hipótese técnica de bancada' : 'Diagnóstico de bancada') : 'Hipótese pelas respostas') : m ? m.k : '',
+      titulo: capAtalho ? 'Capacitor e motor' : st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TTX[st.tela] ? TTX[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
       temSelo: st.tela === 'etapa', seloTxt: capAtalho ? '' : `Pergunta ${st.hist.length + 1}`, usoLegado: LEGADO_TESTES,
       // PR #116 (uso real): crachás do cabeçalho da pergunta. "PASSO k DE n" conta as etapas do mesmo tipo (rápidas ou técnicas) do percurso, pela
       // ordem da base, sem a triagem que o percurso pula; sem percurso, "PERGUNTA k".
@@ -4604,10 +4676,10 @@ class Component extends DCLogic {
       dPE: d ? 'auto' : 'none', dVis: d ? 'visible' : 'hidden', dHidden: d ? 'false' : 'true', dOp: d ? 1 : 0,
       dT: d ? 'translateY(0)' : 'translateY(calc(100% + 24px))',
       fecharDrawer: () => this.setState({ drawer: null }),
-      dKicker: dSel ? 'Selecionar' : d === 'avisos' ? 'Sininho' : 'Base técnica',
+      dKicker: dSel ? 'Selecionar' : d === 'avisos' ? (LEGADO_TESTES ? 'Sininho' : 'Alertas e Sistema') : 'Base técnica',
       // PR #132 (uso real): a gaveta de fichas mostra "Guia de Sintomas | Guia de Medições | Guia técnico" conforme a sala; o diálogo segue com
       // aria-label "Consultar fichas" (pr24/pr30 e as sondas o procuram por esse nome).
-      dTitulo: dSel ? OPTS[d].t : d === 'avisos' ? 'Central de Avisos' : st.fichaSel ? st.fichaSel.t : LEGADO_TESTES ? 'Consultar fichas' : st.fichaCat === 'sala-med' ? 'Guia de Medições' : st.fichaCat === 'sala-sint' ? 'Guia de Sintomas' : 'Guia técnico',
+      dTitulo: dSel ? OPTS[d].t : d === 'avisos' ? (LEGADO_TESTES ? 'Central de Avisos' : 'Central de Notificações') : st.fichaSel ? st.fichaSel.t : LEGADO_TESTES ? 'Consultar fichas' : st.fichaCat === 'sala-med' ? 'Guia de Medições' : st.fichaCat === 'sala-sint' ? 'Guia de Sintomas' : 'Guia técnico',
       dAria: dSel ? OPTS[d].t : d === 'avisos' ? 'Central de Avisos' : st.fichaSel ? st.fichaSel.t : 'Consultar fichas',
       dMarca: d === 'marca',
       // Lista da gaveta em 1 coluna abaixo de 360 px na Marca (em 2 colunas, Samsung, Electrolux e Springer saíam cortados ao lado da pastilha).
