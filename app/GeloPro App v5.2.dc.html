@@ -132,6 +132,25 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 [data-tema] [data-desconto-orcamento] button[aria-pressed="false"]{background:#eff6ff !important;border:1.5px solid #1d4ed8 !important;color:#1e3a8a !important;font-weight:700 !important;box-shadow:none !important;}
 [data-tema="claro"] [data-sc-name="LinhaOrcamento"] [data-campo][data-valor-cheio="1"]{border:1.5px solid #15803d !important;}
 [data-tema="claro"] [data-sc-name="LinhaOrcamento"] [data-moeda]{color:#15803d !important;font-weight:800 !important;}
+/* PR #103: Home no uso real ([data-uso-real] na raiz). Telemetria com a carcaça da pílula do topo; crachás, trilhos de LED, pino e insígnia
+   seguem no DOM só ocultos (testes legados e posPino). Os 3 canais caem nas 3 colunas da grade 3×3 (margem = vão da grade − borda − padding). */
+html[data-uso-real="1"] [data-telemetria]{margin:0 -5.5px !important;padding:6px !important;gap:0 !important;border-radius:18px !important;background:#1d2430 !important;border:1.5px solid #b0b8c4 !important;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55),0 2px 4px rgba(0,0,0,0.25) !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria]{margin:0 -6px !important;background:#ffffff !important;border:2px solid #091e42 !important;box-shadow:0 2px 4px rgba(9,30,66,0.15) !important;}
+html[data-uso-real="1"] [data-telemetria] :is([data-telemetria-cab],[data-trilho],[data-poco-marca]){display:none !important;}
+html[data-uso-real="1"] [data-telemetria] > [role="group"]{padding:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal]{gap:0 !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal] > button{height:56px !important;padding:0 !important;border-radius:13px !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-visor]{height:56px !important;padding:0 4px !important;border-radius:13px !important;border-width:1.5px !important;background:#0a1628 !important;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55) !important;row-gap:2px !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-visor]{background:#f8fafc !important;border:2px solid #091e42 !important;box-shadow:inset 0 1px 3px rgba(9,30,66,0.18) !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-visor][data-alerta="1"]{border-color:#b91c1c !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-valor]{font-size:20px !important;line-height:22px !important;font-weight:800 !important;overflow:visible !important;text-overflow:clip !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-un]{font-size:18px !important;line-height:22px !important;font-weight:800 !important;}
+html[data-uso-real="1"] [data-telemetria] [data-poco-ref]{padding:0 !important;border:0 !important;border-radius:0 !important;background:transparent !important;font:700 14px/16px 'Roboto',sans-serif !important;}
+/* PR #103: nada de "texto que é botão" no uso real. Notas, Orçar mesmo assim, Inverter (lista/anterior), Opções do orçamento e editar item
+   viram teclas táteis de 48 px; nenhum botão sublinhado. */
+html[data-uso-real="1"] :is(button,[role="button"]){text-decoration:none !important;}
+html[data-uso-real="1"] :is([data-detalhes-tecnicos-toggle],[data-forcar-orcar-ptsh],[data-forcar-orcar-ntc],[data-mais-opcoes],[data-editar-item],[data-inv-toggle-todos],[data-inv-anterior]){min-height:48px !important;box-sizing:border-box !important;padding:6px 16px !important;border-radius:999px !important;background:#e2e8f0 !important;border:1.5px solid #19365c !important;box-shadow:0 2px 0 rgba(9,30,66,0.18) !important;color:#091e42 !important;font-size:16px !important;line-height:20px !important;font-weight:700 !important;text-decoration:none !important;}
+html[data-uso-real="1"] [data-inv-anterior]:disabled{opacity:.55 !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -450,9 +469,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
                         <div data-canal="{{ r.k }}" style="min-width:0;display:flex;flex-direction:column;gap:3px;">
                           <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="position:relative;min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:12px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
-                            <span style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--cv-bg);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
-                              <span style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
-                              <span style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
+                            <span data-canal-visor="" data-alerta="{{ r.alerta }}" style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--cv-bg);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
+                              <span data-canal-valor="" style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
+                              <span data-canal-un="" style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
                               <sc-if value="{{ r.temLogo }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-poco-marca="{{ r.logoMarca }}" style="flex:none;display:inline-flex;width:16px;height:16px;"><dc-import name="LogoMarca" marca="{{ r.logoMarca }}" tamanho="{{ 16 }}" hint-size="16px,16px"></dc-import></span></sc-if>
                               <sc-if value="{{ r.temRef }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-quebra="" style="flex:0 0 100%;height:0;"></span><span data-poco-ref="{{ r.refK }}" style="flex:0 0 auto;max-width:100%;box-sizing:border-box;padding:1px 4px;border-radius:6px;background:var(--cv-ref-bg);border:1px solid var(--cv-ref-bd);min-width:0;font:600 14px/16px 'Roboto',sans-serif;color:var(--cv-ref);font-variant-numeric:tabular-nums;text-align:center;white-space:nowrap;">{{ r.ref }}</span></sc-if>
                             </span>
@@ -2099,6 +2118,8 @@ const RESET = { atalho: null, tela: 'inicio', sint: null, etapa: 0, hist: [], re
 // veterano abrindo a 1ª etapa técnica; no uso real (qualquer navegador comum) valem o Passo 1 enxuto e o atalho direto aos instrumentos.
 // ?real=1 força o uso real também no HeadlessChrome (para testar esse caminho); ?completo=1 força o layout completo em qualquer navegador.
 const LEGADO_TESTES = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
+// PR #103: no uso real a raiz ganha [data-uso-real="1"]; o CSS da telemetria industrial e dos botões táteis só vale com ela (testes legados intactos).
+try { if (!LEGADO_TESTES) document.documentElement.setAttribute('data-uso-real', '1'); } catch (e) {}
 // Atalho do veterano no uso real: ng/gp/gelo vão à hipótese de bancada com os instrumentos no topo; desliga/não liga vão à etapa de multímetro;
 // pinga/barulho (dreno e mecânica, sem manômetro nem multímetro) vão direto às causas e ao orçamento.
 const ATALHO_REAL = { naogela: ['res', 'ng_inc'], gelapouco: ['res', 'gp_inc'], gelo: ['res', 'ge_inc'], desliga: ['etapa', 't_de03'], naoliga: ['etapa', 't_nl01'], pinga: ['res', 'pi_inc'], barulho: ['res', 'ba_inc'] };
@@ -3101,7 +3122,7 @@ class Component extends DCLogic {
       const energ = !!e && /energizado/i.test(e.como_verificar || '');
       return { invOrdem: RE.map(z => z.etapa_id), invSegTxt: energ ? '⚠ Segurança: este teste é com o aparelho energizado. Depois dele, desligue a energia e descarregue os capacitores até perto de 0 V CC antes de tocar na placa.' : '⚠ Segurança: desligue a energia e descarregue os capacitores até perto de 0 V CC antes de tocar na placa (resistor de cerca de 100 Ω, 40 W).',
         invWizTem: wiz, invWizAttr: wiz && !IV._todos ? '1' : '0', invSegTem: wiz && invEt.some(z => z.etapa_id === 'seguranca'), invPassoTxt: `Teste ${k + 1} de ${N}`, invAtualId: wiz && e ? e.etapa_id : '',
-        invAntOff: k === 0, invAnterior: () => this.setState(x => ({ inv: { ...x.inv, _passo: Math.max(0, k - 1) } })), invTodosOn: IV._todos ? 'true' : 'false', invTodosTxt: IV._todos ? 'Voltar ao teste atual' : 'Ver todos',
+        invAntOff: k === 0, invAnterior: () => this.setState(x => ({ inv: { ...x.inv, _passo: Math.max(0, k - 1) } })), invTodosOn: IV._todos ? 'true' : 'false', invTodosTxt: IV._todos ? 'Voltar ao teste 1 por 1' : `Ver lista com os ${N} testes`,
         invToggleTodos: () => this.setState(x => ({ inv: { ...x.inv, _todos: !x.inv._todos } })),
         invNormal: marcar('Conforme', true), invDefeito: marcar('Fora', false), invRespOk: rr === 'Conforme' ? 'true' : 'false', invRespDef: rr === 'Fora' ? 'true' : 'false',
         invTemDefeito: wiz && RE.some(z => (IV[z.etapa_id] || {}).r === 'Fora'), invOrcarRodape: LEGADO_TESTES || !N, invTudoOk: wiz && ok, invTudoOkTxt: `✓ PLACA E COMPRESSOR OK NOS ${N} TESTES` }; })();
@@ -3278,7 +3299,7 @@ class Component extends DCLogic {
       // PR #83: notas e referências técnicas (avisos de manual, faixas de referência, fontes) recolhidas por padrão no uso real.
       // A nota de tolerância do NTC com defeito (curto, aberto, fora da curva) segue à vista: ela explica o veredicto.
       notasTem: !LEGADO_TESTES, notasAttr: !LEGADO_TESTES && !st.notasTec ? '0' : '1', notasExp: st.notasTec ? 'true' : 'false',
-      notasTxt: st.notasTec ? 'Ocultar notas e referências técnicas ▴' : 'Ver notas e referências técnicas ▾', notasToggle: () => this.setState(x => ({ notasTec: !x.notasTec })),
+      notasTxt: !LEGADO_TESTES ? (st.notasTec ? 'Fechar dicas e manual ▴' : 'Dicas de bancada e manual ▾') : st.notasTec ? 'Ocultar notas e referências técnicas ▴' : 'Ver notas e referências técnicas ▾', notasToggle: () => this.setState(x => ({ notasTec: !x.notasTec })),
       ntcTolNota: rZero || ntcFalha || rFora || dentro === false ? '0' : '1',
       // PR #85: assistente do Inverter (uso real) só com os testes reais da placa: a descarga dos capacitores (seguranca) vira aviso de topo.
       // ✓ Normal grava "Conforme" e avança; ✗ Defeito grava "Fora" e acende o orçamento da placa no topo. As fotos certo/erro respondem igual.
@@ -3435,7 +3456,7 @@ class Component extends DCLogic {
       fRetomar: () => this.setState(x => x.fechGuardado ? { fech: x.fechGuardado, fechGuardado: rascunhoComDono(x.fech) ? x.fech : null } : null),
       // PR #77: modo vídeo enxuto (só com this._video) e o botão que reabre as opções e custos.
       fVideoModo: !!this._video || !LEGADO_TESTES, fEnxuto: (this._video || !LEGADO_TESTES) && F && !F.maisOpcoes ? '1' : '0', fCliOk: F && F.cliNome.trim().length >= 2 ? '1' : '0',
-      fMaisExp: F && F.maisOpcoes ? 'true' : 'false', fMaisTxt: F && F.maisOpcoes ? 'Recolher opções e custos ▴' : 'Opções e custos do orçamento ▾', fMaisToggle: () => this.fSet(f => ({ maisOpcoes: !f.maisOpcoes })),
+      fMaisExp: F && F.maisOpcoes ? 'true' : 'false', fMaisTxt: !LEGADO_TESTES ? (F && F.maisOpcoes ? 'Fechar desconto, validade e custos ▴' : 'Desconto, validade e custos ▾') : F && F.maisOpcoes ? 'Recolher opções e custos ▴' : 'Opções e custos do orçamento ▾', fMaisToggle: () => this.fSet(f => ({ maisOpcoes: !f.maisOpcoes })),
       fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: limparTxt(e.target.value) }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
       fCliTel: F ? F.cliTel : '', fSetCliTel: (e) => this.fSet({ cliTel: e.target.value }),
       fEquip: equip, fEquipMarca: selA.marca, fEquipBtu: selA.btu, fEquipFlu: selA.fluido, fTemDiag: !!r && !discreto, fDiag: r ? `Hipótese interna (não vai ao cliente): ${r.t}` : '',
@@ -3465,7 +3486,7 @@ class Component extends DCLogic {
         setEst: setCusto(0), setComp: setCusto(cm), compTxt: c ? `${INSUMO.includes(c.id) ? 'Comprar insumo' : 'Comprar peça'} (~${R0(cm).replace(' ', '\u00a0')})` : '',
         estBorda: tE.borda, estFundo: tE.fundo, estCor: tE.cor, compBorda: tC.borda, compFundo: tC.fundo, compCor: tC.cor,
         temDica: !!(c && c.dica), dica: c ? ponto(c.dica) : '', temEco: !!ecoV, eco: ponto(ecoV), evita: discreto ? [] : evitaDe(ecoV), temEvita: !discreto && evitaDe(ecoV).length > 0,
-        edExp: ed ? 'true' : 'false', edAberto: ed, edTxt: ed ? 'Fechar a edição deste item' : 'Editar textos e faixa deste item', edSeta: ed ? 'rotate(180deg)' : 'none', edToggle: () => this.fSet(f => ({ itemEd: f.itemEd === i ? null : i })),
+        edExp: ed ? 'true' : 'false', edAberto: ed, edTxt: ed ? 'Fechar a edição deste item' : LEGADO_TESTES ? 'Editar textos e faixa deste item' : 'Ajustar custo e texto do item', edSeta: ed ? 'rotate(180deg)' : 'none', edToggle: () => this.fSet(f => ({ itemEd: f.itemEd === i ? null : i })),
         jVal: txtItem(x, 'j', c && c.j), fVal: txtItem(x, 'faixa', faixaPad(x)), eVal: ecoV, setJ: setX('j'), setF: setX('faixa'), setE: setX('eco'),
         // Auto-justificador (PR #35): em qualquer item (do catálogo ou do "+ Adicionar item"), 1 toque preenche procedimento e economia que
         // estiverem vazios. Sem valor válido, o botão fica desligado. Faixa (PR #43, EXT-FAIXA): no item do catálogo, a faixa real da tabela do
@@ -3745,7 +3766,7 @@ class Component extends DCLogic {
       aroR: st.tela === 'inicio' ? '28px' : '24px', visR: st.tela === 'inicio' ? '25px' : '21px',
       // Na Etapa o visor e a coluna encolhem o respiro (6 px) para entregar a altura às cenas.
       visPad: st.tela === 'etapa' ? '6px' : '12px 10px 12px', colGap: st.tela === 'etapa' ? '6px' : '8px',
-      kicker: st.atalho && st.atalho.tela === st.tela && (!st.atalho.etapa || st.atalho.etapa === st.etapa) ? st.atalho.t : st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? (FERR_INSTR.includes(E.ferr) ? `Medição no ${E.ferr === 'capacimetro' ? 'capacímetro' : E.ferr === 'manometro' ? 'manômetro' : E.ferr === 'termometro' ? 'termômetro' : 'multímetro'}` : 'Inspeção na unidade') : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.banc ? 'Hipótese técnica de bancada' : 'Hipótese pelas respostas') : m ? m.k : '',
+      kicker: st.atalho && st.atalho.tela === st.tela && (!st.atalho.etapa || st.atalho.etapa === st.etapa) ? st.atalho.t : st.tela === 'codigo' && st.sint === 'led' ? 'O aparelho apresenta' : TT[st.tela] ? TT[st.tela][0] : st.tela === 'etapa' ? (E.tec ? (FERR_INSTR.includes(E.ferr) ? `Medição no ${E.ferr === 'capacimetro' ? 'capacímetro' : E.ferr === 'manometro' ? 'manômetro' : E.ferr === 'termometro' ? 'termômetro' : 'multímetro'}` : 'Inspeção na unidade') : 'Checagem rápida') : st.tela === 'resultado' ? (r && r.banc ? (LEGADO_TESTES ? 'Hipótese técnica de bancada' : 'Diagnóstico de bancada') : 'Hipótese pelas respostas') : m ? m.k : '',
       titulo: capAtalho ? 'Capacitor e motor' : st.tela === 'codigo' && st.sint === 'led' ? 'LED piscando' : TT[st.tela] ? TT[st.tela][1] : st.tela === 'vazio' ? (m ? m.t : '') : (s ? s.nome : ''),
       temSelo: st.tela === 'etapa', seloTxt: capAtalho ? '' : `Pergunta ${st.hist.length + 1}`,
       // PR #78: a etapa técnica diz o que realmente é: inspeção na unidade (visual/nenhuma) ou medição no instrumento (multímetro/capacímetro).
@@ -3790,14 +3811,14 @@ class Component extends DCLogic {
         // PR #58: poço sem medição nunca fica mudo. Embaixo de "— PSI", "— kΩ" e "— °C" entra a referência viva do aparelho do topo
         // ([data-poco-ref]); com medição real, o valor medido volta a ocupar o poço sozinho. Em tela estreita, a variante mais longa que cabe.
         const ref = r.v === '—' ? POCO_REF[r.un](st.sel, W) : null, refW = (cw - 4 - 2 * gapG) / 3 - 18; // largura do canal menos aro (4), respiro (4) e cápsula (padding 4 + borda 1 de cada lado)
-        const refTxt = ref ? ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1] : '';
+        const refReal = (cw - 4 - 2 * gapG) / 3 - 12, refTxt = !ref ? '' : !LEGADO_TESTES ? ref.vs.find(v => larg(v, 14, 700) <= refReal) || ref.vs[ref.vs.length - 1] : ref.vs.find(v => larg(v, 14, 600) <= refW) || ref.vs[ref.vs.length - 1];
         // PR #60: trilho de 15 LEDs (4 azuis abaixo, 7 verdes na faixa, 4 vermelhos acima) e pino pelo desvio z (−1 a 1 = dentro da faixa).
         const k = r.un === 'PSI' ? 'psi' : r.un === 'kΩ' ? 'ntc' : 'sh', z = zLeitura(k), pos = z === null ? 7.5 : Math.max(0.5, Math.min(14.5, 7.5 + z * 3.5)), aceso = Math.floor(pos);
         // PR #73: a insígnia da marca só entra na 1ª linha ("— PSI [marca]") quando cabe no poço (traço + unidade + 2 vãos de 5 px + insígnia de 16 px).
         const canalIn = (cw - 4 - 2 * gapG) / 3 - 8, temLogo = !!(ref && ref.logo && OPTS.marca.list.includes(st.sel.marca)) && larg('—', 18, 700) + larg(r.un, 18, 600) + 26 <= canalIn;
         return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), ...(recal ? { anim: recal } : {}), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px', temLogo, logoMarca: st.sel.marca,
           // PR #66 (itens 20–21): aro sempre de 2 px; só a cor acompanha o resultado do canal (âmbar fora da faixa, vermelho em falha).
-          borda: aroDe(k, z), aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: '1', corU: 'var(--cv-un)', varre: this._varreN ? `gpSweepPino${this._varreN % 2 ? 'A' : 'B'} 500ms ease-out` : 'none',
+          borda: aroDe(k, z), alerta: aroDe(k, z) === '#f87171' ? '1' : undefined, aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: '1', corU: 'var(--cv-un)', varre: this._varreN ? `gpSweepPino${this._varreN % 2 ? 'A' : 'B'} 500ms ease-out` : 'none',
           // PR #68: os 7 verdes da faixa ficam sempre acesos; azul e vermelho apagados, menos o LED sob o pino.
           leds: LEDS.map((c, i) => { const fx = i >= 4 && i < 11, sob = z !== null && i === aceso; return { c, z: i < 4 ? 'baixo' : fx ? 'faixa' : 'alto', op: sob ? '1' : fx ? '0.92' : '.32', halo: sob ? `0 0 6px 1px ${c}` : fx ? '0 0 6px rgba(34,197,94,0.65)' : 'none' }; }),
           onClick: () => { this.bip(); r.onClick(); } };
