@@ -111,8 +111,8 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 [data-tema="sol"] [data-foto][role="button"]{border:2px solid #091e42 !important;}
 [data-tema="sol"] [data-chamar-preventiva]{background:#00b100 !important;border:2px solid #091e42 !important;color:#ffffff !important;box-shadow:0 2px 0 #091e42 !important;}
 /* PR #100: topo sem slogan (a regra Lato do slogan acima segue intacta, gate A6) e logo em baixo-relevo na chapa (titânio e claro; sol sem filtro). */
-[data-topo-slogan]{display:none !important;}
-[data-topo-coluna]{justify-content:center;align-self:stretch;}
+html[data-uso-real="1"] [data-topo-slogan]{display:none !important;}
+html[data-uso-real="1"] [data-topo-coluna]{justify-content:center;align-self:stretch;}
 :is([data-tema="titanio"],[data-tema="claro"]) [data-topo-gravado]{filter:drop-shadow(0 1px 0 rgba(255,255,255,0.85)) drop-shadow(0 -1px 1px rgba(9,30,66,0.5)) brightness(0.96) contrast(1.08) !important;}
 :is([data-tema="titanio"],[data-tema="claro"]) [data-topo-mascote]{filter:drop-shadow(0 1px 0 rgba(255,255,255,0.75)) drop-shadow(0 -1px 0.5px rgba(9,30,66,0.35));}
 :is([data-tema="titanio"],[data-tema="claro"]) [data-topo-nome]{text-shadow:0 1px 0 rgba(255,255,255,0.85) !important;}
@@ -132,20 +132,35 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 [data-tema] [data-desconto-orcamento] button[aria-pressed="false"]{background:#eff6ff !important;border:1.5px solid #1d4ed8 !important;color:#1e3a8a !important;font-weight:700 !important;box-shadow:none !important;}
 [data-tema="claro"] [data-sc-name="LinhaOrcamento"] [data-campo][data-valor-cheio="1"]{border:1.5px solid #15803d !important;}
 [data-tema="claro"] [data-sc-name="LinhaOrcamento"] [data-moeda]{color:#15803d !important;font-weight:800 !important;}
-/* PR #103: Home no uso real ([data-uso-real] na raiz). Telemetria com a carcaça da pílula do topo; crachás, trilhos de LED, pino e insígnia
-   seguem no DOM só ocultos (testes legados e posPino). Os 3 canais caem nas 3 colunas da grade 3×3 (margem = vão da grade − borda − padding). */
-html[data-uso-real="1"] [data-telemetria]{margin:0 -5.5px !important;padding:6px !important;gap:0 !important;border-radius:18px !important;background:#1d2430 !important;border:1.5px solid #b0b8c4 !important;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55),0 2px 4px rgba(0,0,0,0.25) !important;}
-html[data-uso-real="1"] [data-tema="sol"] [data-telemetria]{margin:0 -6px !important;background:#ffffff !important;border:2px solid #091e42 !important;box-shadow:0 2px 4px rgba(9,30,66,0.15) !important;}
+/* PR #104: Home no uso real ([data-uso-real] na raiz). Telemetria inteiriça, gêmea da pílula do topo (Marca | BTU/h | Fluido): uma pílula só,
+   3 canais transparentes separados por filetes de 1 px, sem caixote por canal. Alerta = traço discreto embaixo do canal. Crachás, trilhos de LED,
+   pino e insígnia seguem no DOM só ocultos (testes legados). Nada pula nem pisca: a leitura nova corre em auto-range numérico (autoRange). */
+html[data-uso-real="1"] [data-telemetria]{margin:0 !important;padding:0 !important;gap:0 !important;border-radius:999px !important;overflow:hidden !important;background:#1d2430 !important;border:1.5px solid #b0b8c4 !important;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55),0 2px 4px rgba(0,0,0,0.25) !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria]{background:#ffffff !important;border:2px solid #091e42 !important;box-shadow:0 2px 4px rgba(9,30,66,0.15) !important;}
 html[data-uso-real="1"] [data-telemetria] :is([data-telemetria-cab],[data-trilho],[data-poco-marca]){display:none !important;}
-html[data-uso-real="1"] [data-telemetria] > [role="group"]{padding:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;}
+html[data-uso-real="1"] [data-telemetria] > [role="group"]{padding:0 !important;gap:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;}
 html[data-uso-real="1"] [data-telemetria] [data-canal]{gap:0 !important;}
-html[data-uso-real="1"] [data-telemetria] [data-canal] > button{height:56px !important;padding:0 !important;border-radius:13px !important;}
-html[data-uso-real="1"] [data-telemetria] [data-canal-visor]{height:56px !important;padding:0 4px !important;border-radius:13px !important;border-width:1.5px !important;background:#0a1628 !important;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55) !important;row-gap:2px !important;}
-html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-visor]{background:#f8fafc !important;border:2px solid #091e42 !important;box-shadow:inset 0 1px 3px rgba(9,30,66,0.18) !important;}
-html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-visor][data-alerta="1"]{border-color:#b91c1c !important;}
-html[data-uso-real="1"] [data-telemetria] [data-canal-valor]{font-size:20px !important;line-height:22px !important;font-weight:800 !important;overflow:visible !important;text-overflow:clip !important;}
-html[data-uso-real="1"] [data-telemetria] [data-canal-un]{font-size:18px !important;line-height:22px !important;font-weight:800 !important;}
-html[data-uso-real="1"] [data-telemetria] [data-poco-ref]{padding:0 !important;border:0 !important;border-radius:0 !important;background:transparent !important;font:700 14px/16px 'Roboto',sans-serif !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal]:not(:first-child){border-left:1px solid rgba(255,255,255,0.16) !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal]:not(:first-child){border-left-color:#091e42 !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal] > button{height:52px !important;padding:0 !important;border:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal] > button:active{transform:none !important;filter:brightness(1.15) !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-visor]{height:52px !important;padding:0 4px !important;border:0 !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;row-gap:0 !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-visor][data-alerta="1"]{background:linear-gradient(#f87171,#f87171) center bottom 4px / 36% 3px no-repeat !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-visor][data-alerta="1"]{background:linear-gradient(#b91c1c,#b91c1c) center bottom 4px / 36% 3px no-repeat !important;}
+html[data-uso-real="1"] [data-telemetria], html[data-uso-real="1"] [data-telemetria] *{animation:none !important;transition:none !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-valor]{font-size:19px !important;line-height:22px !important;font-weight:800 !important;font-variant-numeric:tabular-nums !important;color:#ffffff !important;overflow:visible !important;text-overflow:clip !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-visor][data-medido="0"] [data-canal-valor]{color:#94a3b8 !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-valor]{color:#091e42 !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-canal-visor][data-medido="0"] [data-canal-valor]{color:#475569 !important;}
+html[data-uso-real="1"] [data-telemetria] [data-canal-un]{font-size:19px !important;line-height:22px !important;font-weight:800 !important;color:var(--cv-un) !important;}
+html[data-uso-real="1"] [data-telemetria] [data-poco-ref]{padding:0 !important;border:0 !important;border-radius:0 !important;background:transparent !important;font:700 14px/17px 'Roboto',sans-serif !important;font-variant-numeric:tabular-nums !important;color:#dbeafe !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-telemetria] [data-poco-ref]{color:#091e42 !important;}
+/* PR #104: topo no uso real. Nome do titular com a base na linha da base do urso de 46 px; "Avisos" some da vista (aria-label segue "Avisos")
+   e o sino fica no centro vertical da chavinha. No legado, slogan e coluna voltam ao desenho original (home.js). */
+html[data-uso-real="1"] [data-topo-marca]{align-items:flex-end !important;}
+html[data-uso-real="1"] [data-topo-coluna]{align-self:auto !important;justify-content:flex-end !important;}
+html[data-uso-real="1"] [data-topo-nome]{line-height:12px !important;}
+html[data-uso-real="1"] [data-sino-rotulo]{display:none !important;}
 /* PR #103: nada de "texto que é botão" no uso real. Notas, Orçar mesmo assim, Inverter (lista/anterior), Opções do orçamento e editar item
    viram teclas táteis de 48 px; nenhum botão sublinhado. */
 html[data-uso-real="1"] :is(button,[role="button"]){text-decoration:none !important;}
@@ -347,7 +362,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
             </button>
             <button type="button" data-sininho="" aria-label="{{ sinoAria }}" aria-haspopup="dialog" onClick="{{ abrirAvisos }}" style="grid-column:2;grid-row:1;position:relative;width:48px;min-height:48px;box-sizing:border-box;margin:0;padding:0;border:0;background:transparent;color:var(--gp-on-chassis);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;" style-active="transform:translateY(1px);">
               <span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="sino" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span>
-              <span aria-hidden="true" style="font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;color:var(--gp-on-chassis);">Avisos</span>
+              <span aria-hidden="true" data-sino-rotulo="" style="font:700 14px/16px 'Roboto',sans-serif;white-space:nowrap;color:var(--gp-on-chassis);">Avisos</span>
               <sc-if value="{{ temSinoBadge }}" hint-placeholder-val="{{ false }}"><span data-sininho-badge="{{ sinoN }}" aria-hidden="true" style="position:absolute;top:0;right:0;min-width:20px;height:20px;box-sizing:border-box;padding:0 5px;border-radius:999px;background:var(--gp-lucro-vermelho, #7f1d1d);box-shadow:0 0 0 2px var(--gp-chassis);color:var(--gp-on-lucro, #ffffff);font:700 14px/20px 'Roboto',sans-serif;text-align:center;font-variant-numeric:tabular-nums;">{{ sinoBadge }}</span></sc-if>
             </button>
             <button type="button" aria-label="Tema Sol" aria-pressed="{{ solPressed }}" title="{{ temaTitulo }}" onClick="{{ toggleTema }}" style="grid-column:3;grid-row:1;position:relative;width:48px;min-height:48px;box-sizing:border-box;margin:0;padding:4px 0 0;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;" style-active="transform:translateY(1px);">
@@ -469,7 +484,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                       <sc-for list="{{ leituras }}" as="r" hint-placeholder-count="3">
                         <div data-canal="{{ r.k }}" style="min-width:0;display:flex;flex-direction:column;gap:3px;">
                           <button type="button" aria-label="{{ r.aria }}" onClick="{{ r.onClick }}" style="position:relative;min-width:0;height:48px;box-sizing:border-box;padding:2px 0;border:0;border-radius:12px;background:transparent;color:var(--gp-on-reading);display:flex;cursor:pointer;" style-active="transform:translateY(2px);filter:brightness(.92);">
-                            <span data-canal-visor="" data-alerta="{{ r.alerta }}" style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--cv-bg);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
+                            <span data-canal-visor="" data-alerta="{{ r.alerta }}" data-medido="{{ r.medido }}" style="flex:1;min-width:0;height:44px;box-sizing:border-box;padding:0 {{ r.padX }};border-radius:12px;background:var(--cv-bg);border:2px solid {{ r.borda }};box-shadow:var(--gp-reading-shadow),inset 0 3px 8px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,.08);display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;gap:0 5px;animation:{{ r.anim }};">
                               <span data-canal-valor="" style="font:700 18px/20px 'Roboto',sans-serif;color:{{ r.corV }};font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ r.v }}</span>
                               <span data-canal-un="" style="font-family:'Roboto',sans-serif;font-size:18px;line-height:20px;font-weight:{{ r.pesoU }};color:{{ r.corU }};white-space:nowrap;">{{ r.un }}</span>
                               <sc-if value="{{ r.temLogo }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" data-poco-marca="{{ r.logoMarca }}" style="flex:none;display:inline-flex;width:16px;height:16px;"><dc-import name="LogoMarca" marca="{{ r.logoMarca }}" tamanho="{{ 16 }}" hint-size="16px,16px"></dc-import></span></sc-if>
@@ -542,7 +557,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:12px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <div data-res-rolagem="" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;">
                     <!-- PR #78: na hipótese de bancada de Não gela, Gela pouco e Forma gelo, os instrumentos reais ficam no topo (1 toque cada). -->
-                    <sc-if value="{{ resTemInstr }}" hint-placeholder-val="{{ false }}"><div data-res-instrumentos="" role="group" aria-label="Medir com instrumento" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><sc-for list="{{ resInstr }}" as="ri" hint-placeholder-count="4"><button type="button" data-res-instr="{{ ri.k }}" onClick="{{ ri.acao }}" style="min-width:0;min-height:64px;box-sizing:border-box;padding:8px 10px;border-radius:16px;border:var(--gp-tile-border, 0);background:var(--gp-tile, linear-gradient(180deg,#24466f 0%,#19365c 100%));box-shadow:var(--gp-tile-relief);color:var(--gp-on-tile, #ffffff);text-shadow:var(--gp-on-tile-shadow);display:flex;align-items:center;gap:8px;cursor:pointer;" style-hover="filter:brightness(1.08);" style-active="transform:translateY(2px);box-shadow:var(--gp-tile-relief-pressed);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-tile-icon, #bfdbfe);"><dc-import name="IconeGP" nome="{{ ri.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span><span style="flex:1;min-width:0;font:700 15px/18px 'Roboto',sans-serif;color:var(--gp-on-tile, #ffffff);text-align:left;text-wrap:balance;">{{ ri.l }}</span></button></sc-for></div></sc-if>
+                    <sc-if value="{{ resTemInstr }}" hint-placeholder-val="{{ false }}"><div data-res-instrumentos="" role="group" aria-label="Medir com instrumento" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><sc-for list="{{ resInstr }}" as="ri" hint-placeholder-count="4"><button type="button" data-res-instr="{{ ri.k }}" onClick="{{ ri.acao }}" style="min-width:0;min-height:64px;box-sizing:border-box;padding:8px 10px;border-radius:16px;border:var(--gp-tile-border, 0);background:var(--gp-tile, linear-gradient(180deg,#24466f 0%,#19365c 100%));box-shadow:var(--gp-tile-relief);color:var(--gp-on-tile, #ffffff);text-shadow:var(--gp-on-tile-shadow);display:flex;align-items:center;gap:8px;cursor:pointer;" style-hover="filter:brightness(1.08);" style-active="transform:translateY(2px);box-shadow:var(--gp-tile-relief-pressed);"><span aria-hidden="true" style="flex:none;display:inline-flex;color:var(--gp-on-tile-icon, #bfdbfe);"><dc-import name="IconeGP" nome="{{ ri.ico }}" tamanho="{{ 22 }}" hint-size="22px,22px"></dc-import></span><span style="flex:1;min-width:0;font:700 16px/19px 'Roboto',sans-serif;color:var(--gp-on-tile, #ffffff);text-align:left;text-wrap:balance;">{{ ri.l }}</span></button></sc-for></div></sc-if>
                     <div style="flex:none;box-sizing:border-box;padding:16px;border-radius:16px;border:1px solid var(--gp-card-edge);background:var(--gp-card-info);box-shadow:var(--gp-mold-shadow);display:flex;flex-direction:column;gap:8px;">
                       <dc-import name="Selo" texto="{{ resSelo }}" tipo="{{ resSeloTipo }}" style="align-self:flex-start;" hint-size="140px,26px"></dc-import>
                       <span style="font:700 20px/24px 'Roboto',sans-serif;color:var(--gp-on-surface);text-wrap:balance;">{{ resTitulo }}</span>
@@ -986,7 +1001,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
           <div data-atalhos="" style="flex:none;display:flex;flex-direction:column;gap:6px;padding:0 2px;">
             <dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Consultar fichas" icone="prancheta" acao="{{ abrirFichas }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
-            <sc-if value="{{ semAtendRodape }}" hint-placeholder-val="{{ true }}"><dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="Orçamento e garantia" icone="garantia" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import></sc-if>
+            <sc-if value="{{ semAtendRodape }}" hint-placeholder-val="{{ true }}"><dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="Orçamento e garantia" icone="{{ icoOrcHome }}" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import></sc-if>
             <sc-if value="{{ atendRodape }}" hint-placeholder-val="{{ false }}"><div data-atendimento-ativo="" role="group" aria-label="{{ atendAtivoT }}" style="flex:none;height:48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
               <button type="button" data-atendimento-continuar="" data-verde="1" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:2px solid #007a00;background:linear-gradient(180deg,#00c400 0%,#00a000 100%);color:#ffffff;font:800 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;" style-active="transform:translateY(1px);">Continuar atendimento</button>
               <button type="button" data-novo-atendimento="" aria-label="Novo atendimento (limpar anterior)" onClick="{{ novoAtend }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:1.5px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;">Novo atendimento</button>
@@ -2473,6 +2488,7 @@ class Component extends DCLogic {
     if (!el) this._pFoco = null;
   }
   componentDidUpdate(prev, prevSt) {
+    if (!LEGADO_TESTES) this.autoRange();
     // Rascunho (EXT-RAS): grava quando o fechamento muda; o modo Amostra e a simulação de cadastro nunca gravam.
     if (this.state.fOpen && this.state.selOrc) this.setState({ sel: this.state.selOrc, selOrc: null });
     if (this.state.fech !== this._fechGravado) { this._fechGravado = this.state.fech; if (!this.state.amostra && (this.props.simular || 'real') === 'real') gravarRascunho(this.state.fech); }
@@ -2531,6 +2547,35 @@ class Component extends DCLogic {
   // Pulso de 600 ms quando um valor novo aparece numa tela visível. O nome alterna entre duas keyframes iguais
   // (gpPulseResult/gpPulseResult2) para o navegador reiniciar a animação a cada valor; sem tela visível, nada é registrado,
   // e a pílula da inicial pulsa na primeira vez que mostra o valor novo. prefers-reduced-motion zera tudo pelo CSS global.
+  // PR #104 (uso real): auto-range de multímetro. Ao trocar Marca, BTU/h ou Fluido (ou voltar à Home com leitura nova), cada número dos 3 canais
+  // (valor medido e faixa de referência) corre de 0 até o valor em 350 ms (requestAnimationFrame, ease-out) e crava o texto exato no fim. Mexe só
+  // no nó de texto (nodeValue) que o React já pôs; dígitos que faltam viram espaço de figura, então a largura não muda. prefers-reduced-motion:
+  // sem contagem. A 1ª montagem não conta.
+  autoRange() {
+    const st = this.state, R = this._arFim;
+    if (st.tela !== 'inicio' || !R) return;
+    const chave = `${st.sel.marca}|${st.sel.btu}|${st.sel.fluido}|` + R.map(r => `${r.v}~${r.ref}`).join('|');
+    if (this._arChave === chave) return;
+    const antes = this._arChave; this._arChave = chave;
+    const tel = document.querySelector('[data-telemetria]'); if (!tel) return;
+    const nos = [];
+    [...tel.querySelectorAll('[data-canal]')].forEach((c, i) => { const r = R[i]; if (!r) return;
+      [[c.querySelector('[data-canal-valor]'), r.v], [c.querySelector('[data-poco-ref]'), r.ref]].forEach(([el, fim]) => { const t = el && fim ? document.createTreeWalker(el, NodeFilter.SHOW_TEXT).nextNode() : null; if (t) nos.push({ t, fim: String(fim) }); }); });
+    if (this._arRaf) { cancelAnimationFrame(this._arRaf); this._arRaf = null; }
+    const crava = () => nos.forEach(n => { if (n.t.nodeValue !== n.fim) n.t.nodeValue = n.fim; });
+    let calmo = false; try { calmo = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    if (antes === undefined || calmo || !nos.length) { crava(); tel.removeAttribute('data-auto-range'); return; }
+    const NUM = /\d+(?:[.,]\d+)?/g, t0 = performance.now(), DUR = 350;
+    tel.setAttribute('data-auto-range', '1');
+    const passo = (agora) => {
+      const t = Math.min(1, (agora - t0) / DUR), e = 1 - Math.pow(1 - t, 3);
+      if (t >= 1) { crava(); this._arRaf = null; tel.removeAttribute('data-auto-range'); return; }
+      nos.forEach(n => { n.t.nodeValue = n.fim.replace(NUM, m => { const dm = m.match(/([.,])(\d+)$/), x = parseFloat(m.replace(',', '.')) * e;
+        const s = dm ? x.toFixed(dm[2].length).replace('.', dm[1]) : String(Math.round(x)); return s.length < m.length ? ' '.repeat(m.length - s.length) + s : s; }); });
+      this._arRaf = requestAnimationFrame(passo);
+    };
+    this._arRaf = requestAnimationFrame(passo);
+  }
   pulso(id, v, visivel) {
     if (!visivel) return 'none';
     const P = this._pulso || (this._pulso = {}), a = P[id];
@@ -3802,8 +3847,8 @@ class Component extends DCLogic {
         return PC && PC.tecInicio && this.setState(x => ({ etapa: PC.tecInicio, hist: [...x.hist, x.etapa], pk: null, dica: false })); },
       atalhoVetTxt: !LEGADO_TESTES && /^(pinga|barulho)$/.test(st.sint) ? 'Já conferi o básico → Ver causas e montar orçamento' : 'Já conferi o básico → Ir direto para medição com instrumento',
       // PR #68: TELEMETRIA + pílulas de Marca, BTU/h e Fluido; com medição, o resumo segue ao lado (corta com reticências no que não couber).
-      telAnim: recal || 'none', telMarca: st.sel.marca, telBtu: `${st.sel.btu}\u00a0BTU/h`, telFluido: st.sel.fluido, telTemResumo: diags.length > 0, telResumo: diags.map(d => `${d.val} ${d.verCurto}`).join(' · '),
-      leituras: [
+      icoOrcHome: LEGADO_TESTES ? 'garantia' : 'garantia-dinheiro', telAnim: recal || 'none', telMarca: st.sel.marca, telBtu: `${st.sel.btu}\u00a0BTU/h`, telFluido: st.sel.fluido, telTemResumo: diags.length > 0, telResumo: diags.map(d => `${d.val} ${d.verCurto}`).join(' · '),
+      leituras: this._arFim = [
         { un: 'PSI', v: tsat !== null ? st.ptP.trim() : '—', o: tsat !== null ? 'Informada' : st.ptP.trim() ? 'Valor inválido' : 'Sem medição', faixa: `Sucção, ${st.sel.fluido}`, aria: tsat !== null ? `Pressão de sucção ${st.ptP.trim()} psig, ${st.sel.fluido}. Toque para abrir o PT/SH` : `Pressão, ${st.sel.fluido}: sem medição válida. Toque para lançar`, onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
         { un: 'kΩ', v: ntcReg ? st.ntcR.trim() : '—', o: ntcReg ? 'Informada' : st.ntcR.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Sensor NTC', aria: ntcReg ? `Resistência ${st.ntcR.trim()} kΩ. Toque para abrir o NTC` : 'Resistência: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ntc' }) : this.abrir('ntc', { modK: 'ntc' }) },
         { un: '°C', v: Tt !== null && !ptTErro ? st.ptT.trim() : '—', o: Tt !== null && !ptTErro ? 'Informada' : st.ptT.trim() ? 'Valor inválido' : 'Sem medição', faixa: 'Tubo de sucção', aria: Tt !== null && !ptTErro ? `Temperatura do tubo ${st.ptT.trim()} °C. Toque para abrir o PT/SH` : 'Temperatura: sem medição válida. Toque para lançar', onClick: () => lock ? this.vazio('upg', { modK: 'ptsh' }) : this.abrir('ptsh', { modK: 'ptsh' }) },
@@ -3818,7 +3863,7 @@ class Component extends DCLogic {
         const canalIn = (cw - 4 - 2 * gapG) / 3 - 8, temLogo = !!(ref && ref.logo && OPTS.marca.list.includes(st.sel.marca)) && larg('—', 18, 700) + larg(r.un, 18, 600) + 26 <= canalIn;
         return { ...r, ...this.leitura('pil-' + r.un, r.v, st.tela === 'inicio'), ...(recal ? { anim: recal } : {}), temRef: !!ref, ref: refTxt, refK: ref ? ref.k : undefined, padX: ref ? '2px' : '6px', temLogo, logoMarca: st.sel.marca,
           // PR #66 (itens 20–21): aro sempre de 2 px; só a cor acompanha o resultado do canal (âmbar fora da faixa, vermelho em falha).
-          borda: aroDe(k, z), alerta: aroDe(k, z) === '#f87171' ? '1' : undefined, aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: '1', corU: 'var(--cv-un)', varre: this._varreN ? `gpSweepPino${this._varreN % 2 ? 'A' : 'B'} 500ms ease-out` : 'none',
+          borda: aroDe(k, z), alerta: aroDe(k, z) === '#f87171' ? '1' : undefined, medido: r.v !== '—' ? '1' : '0', aria: ref ? `${r.aria}. ${ref.aria}` : r.aria, k, pino: (pos / 15 * 100).toFixed(2) + '%', pinoOp: '1', corU: 'var(--cv-un)', varre: this._varreN ? `gpSweepPino${this._varreN % 2 ? 'A' : 'B'} 500ms ease-out` : 'none',
           // PR #68: os 7 verdes da faixa ficam sempre acesos; azul e vermelho apagados, menos o LED sob o pino.
           leds: LEDS.map((c, i) => { const fx = i >= 4 && i < 11, sob = z !== null && i === aceso; return { c, z: i < 4 ? 'baixo' : fx ? 'faixa' : 'alto', op: sob ? '1' : fx ? '0.92' : '.32', halo: sob ? `0 0 6px 1px ${c}` : fx ? '0 0 6px rgba(34,197,94,0.65)' : 'none' }; }),
           onClick: () => { this.bip(); r.onClick(); } };
