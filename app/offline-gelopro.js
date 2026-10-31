@@ -9,7 +9,7 @@ document.head.appendChild(s);
 });
 const ocioso = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 if (document.readyState === 'complete') ocioso(libsPix); else window.addEventListener('load', () => ocioso(libsPix));
-const VERSAO_APP = 'v143';
+const VERSAO_APP = 'v144';
 window.GeloProVersao = VERSAO_APP;
 (function versaoAtual() {
 try {
@@ -43,9 +43,9 @@ recarregar();
 } catch (e) { }
 })();
 const LEGADO = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
-if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v143')) {
+if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v144')) {
 const st = document.createElement('style');
-st.id = 'gp-cores-global-v143';
+st.id = 'gp-cores-global-v144';
 st.textContent = [
 '[data-chapa][data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-cliente-bloco][data-cli-ok="1"] { display: flex !important; }',
 '[data-video-enxuto="1"] [data-cliente-bloco] > span:first-child { display: none !important; }',
