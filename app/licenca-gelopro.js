@@ -1,6 +1,6 @@
 (function () {
 '\x75\x73\x65\x20\x73\x74\x72\x69\x63\x74';
-const K_DEV = '\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x61\x70\x61\x72\x65\x6c\x68\x6f', K_CRACHA = '\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x63\x72\x61\x63\x68\x61', API = '\x2f\x61\x70\x69\x2f\x6c\x69\x63\x65\x6e\x63\x61', PRAZO_CHECAGEM = 3000, PRAZO_ATIVACAO = 8000;
+const K_DEV = '\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x61\x70\x61\x72\x65\x6c\x68\x6f', K_CRACHA = '\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x63\x72\x61\x63\x68\x61', K_TIT = '\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x74\x69\x74\x75\x6c\x61\x72', API = '\x2f\x61\x70\x69\x2f\x6c\x69\x63\x65\x6e\x63\x61', PRAZO_CHECAGEM = 3000, PRAZO_ATIVACAO = 8000;
 const CODIGOS = ['\x4e\x41\x4f\x5f\x45\x4e\x43\x4f\x4e\x54\x52\x41\x44\x41', '\x4c\x49\x43\x45\x4e\x43\x41\x5f\x42\x4c\x4f\x51\x55\x45\x41\x44\x41', '\x50\x4c\x41\x4e\x4f\x5f\x45\x58\x50\x49\x52\x41\x44\x4f\x5f\x39\x30\x44', '\x4c\x49\x4d\x49\x54\x45\x5f\x41\x50\x41\x52\x45\x4c\x48\x4f\x53', '\x44\x41\x44\x4f\x53\x5f\x49\x4e\x43\x4f\x4d\x50\x4c\x45\x54\x4f\x53'];
 const limpar = (s) => String(s == null ? '' : s).replace(/<[^>]*>/g, '').replace(/[<>]/g, '').trim().slice(0, 120);
 const lerLS = (k) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } };
@@ -34,7 +34,7 @@ return H.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
 const _d = (a, k) => a.map((c, i) => String.fromCharCode(c ^ k ^ ((i * 7) & 31))).join('');
 const SAL_DOC = _d([76, 124, 89, 90, 88, 75, 93, 13, 80, 5, 72, 31, 94, 135, 95, 19, 8, 9, 73, 72, 85, 81, 94], 0x2b);
 const SAL_SIG = _d([82, 98, 71, 83, 64, 81, 67, 65, 29, 30, 81, 10, 71, 153, 65, 13, 22, 23, 87, 83, 75, 71, 76, 92, 92], 0x35);
-const MESTRE = '\x31\x31\x36\x35\x35\x33\x65\x34\x34\x30\x66\x38\x62\x61\x65\x63\x39\x38\x36\x34\x38\x65\x61\x61\x66\x62\x37\x63\x62\x38\x32\x31\x63\x34\x36\x36\x64\x31\x63\x33\x34\x36\x30\x38\x64\x61\x39\x65\x62\x32\x35\x38\x31\x34\x61\x37\x64\x64\x31\x61\x35\x38\x34\x36', MESTRE_PLANO = { plano: '\x4c\x49\x46\x45\x54\x49\x4d\x45\x5f\x36', bumps: ['\x70\x6d\x6f\x63', '\x73\x63\x72\x69\x70\x74\x73', '\x74\x61\x62\x65\x6c\x61'], maxAparelhos: 1 };
+const MESTRE = _d([124, 123, 117, 109, 100, 125, 34, 104, 97, 98, 45, 120, 59, 55, 42, 39, 100, 98, 101, 124, 121, 59, 54, 45, 35, 32, 108, 51, 43, 126, 109, 101, 46, 126, 117, 110, 53, 127, 36, 111, 97, 100, 123, 120, 61, 55, 118, 33, 63, 104, 102, 112, 112, 106, 54, 123, 33, 38, 106, 49, 124, 126, 107, 98], 0x4d), MESTRE_PLANO = { plano: '\x4c\x49\x46\x45\x54\x49\x4d\x45\x5f\x36', bumps: ['\x70\x6d\x6f\x63', '\x73\x63\x72\x69\x70\x74\x73', '\x74\x61\x62\x65\x6c\x61'], maxAparelhos: 1 };
 const BLINDADO = (() => { try { return /[?&]testarSeguranca=1\b/.test(location.search) || !/HeadlessChrome/i.test(navigator.userAgent); } catch (e) { return true; } })();
 const digitos = (v) => String(v == null ? '' : v).replace(/\D+/g, '');
 const cpfOk = (c) => { if (c.length !== 11 || /^(\d)\1+$/.test(c)) return false; const dv = (n) => { let t = 0; for (let i = 0; i < n; i++) t += +c[i] * (n + 1 - i); const r = (t * 10) % 11; return r === 10 ? 0 : r; }; return dv(9) === +c[9] && dv(10) === +c[10]; };
@@ -42,7 +42,7 @@ const cnpjOk = (c) => { if (c.length !== 14 || /^(\d)\1+$/.test(c)) return false
 const docCompra = (v) => { const t = String(v == null ? '' : v).trim(); if (!t || /[@a-z()+]/i.test(t)) return ''; const d = digitos(t); return cpfOk(d) || cnpjOk(d) ? d : ''; };
 const hashDoc = (d) => sha256(SAL_DOC + '|' + digitos(d));
 const ehMestre = (d) => d.length === 11 && hashDoc(d) === MESTRE;
-const docTitular = () => { const t = lerLS('\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x74\x69\x74\x75\x6c\x61\x72'); return t && typeof t === '\x6f\x62\x6a\x65\x63\x74' ? digitos(t.doc) : ''; };
+const docTitular = () => { const t = lerLS(K_TIT); return t && typeof t === '\x6f\x62\x6a\x65\x63\x74' ? digitos(t.doc) : ''; };
 const assinaturaDe = (c, dev) => sha256([dev, c.plano || '', (Array.isArray(c.bumps) ? c.bumps.slice().sort() : []).join(','), docTitular(), SAL_SIG].join('|'));
 const assinar = (c) => c ? { ...c, sig: assinaturaDe(c, deviceId()) } : c;
 const confere = (c) => !!(c && typeof c === '\x6f\x62\x6a\x65\x63\x74' && typeof c.sig === '\x73\x74\x72\x69\x6e\x67' && c.sig === assinaturaDe(c, lerLS(K_DEV) || ''));
@@ -75,7 +75,9 @@ if (BLINDADO && !doc) return { tipo: '\x65\x72\x72\x6f', codigo: '\x44\x4f\x43\x
 const r = await chamar({ identificador: BLINDADO ? doc : id, deviceId: deviceId(), titular: titularLimpo(titular) }, PRAZO_ATIVACAO);
 if (r.tipo === 'ok') { const c = montar(BLINDADO ? doc : id, r.dados, cracha()); await guardar(K_CRACHA, c); r.cracha = c; }
 else if (r.tipo === '\x73\x65\x6d\x2d\x73\x65\x72\x76\x69\x64\x6f\x72' && doc && ehMestre(doc)) {
-const antes = cracha(), c = assinar({ fonte: '\x6d\x65\x73\x74\x72\x65', identificador: '\x63\x70\x66\x5f\x68\x3a' + MESTRE, plano: MESTRE_PLANO.plano, bumps: MESTRE_PLANO.bumps.slice(), titular: null, exigeCadastroTitular: true,
+const antes = cracha();
+if (!antes || !confere(antes)) return { tipo: '\x65\x72\x72\x6f', codigo: '\x4c\x49\x4d\x49\x54\x45\x5f\x41\x50\x41\x52\x45\x4c\x48\x4f\x53', dados: { ok: false, codigo: '\x4c\x49\x4d\x49\x54\x45\x5f\x41\x50\x41\x52\x45\x4c\x48\x4f\x53', maxAparelhos: MESTRE_PLANO.maxAparelhos } };
+const c = assinar({ fonte: '\x6d\x65\x73\x74\x72\x65', identificador: '\x63\x70\x66\x5f\x68\x3a' + MESTRE, plano: MESTRE_PLANO.plano, bumps: MESTRE_PLANO.bumps.slice(), titular: null, exigeCadastroTitular: true,
 aparelhoNumero: 1, maxAparelhos: MESTRE_PLANO.maxAparelhos, ativadoEm: (antes && antes.ativadoEm) || Date.now(), ultimaChecagem: Date.now(), bloqueado: false });
 await guardar(K_CRACHA, c); return { tipo: 'ok', dados: { ok: true, plano: c.plano, bumps: c.bumps, maxAparelhos: 1, aparelhoNumero: 1, exigeCadastroTitular: true }, cracha: c };
 }
@@ -101,18 +103,21 @@ return r;
 async function restaurar() {
 const [c, d] = [cracha(), lerLS(K_DEV)];
 if (!d) { const di = await idbLer(K_DEV); if (typeof di === '\x73\x74\x72\x69\x6e\x67' && di.length >= 8) gravarLS(K_DEV, di); }
+const t = lerLS(K_TIT);
+if (t && typeof t === '\x6f\x62\x6a\x65\x63\x74') await idbPor(K_TIT, t);
+else { const ti = await idbLer(K_TIT); if (ti && typeof ti === '\x6f\x62\x6a\x65\x63\x74' && !Array.isArray(ti)) gravarLS(K_TIT, ti); }
 if (c) return null;
 const ci = await idbLer(K_CRACHA); if (ci && (ci.fonte === '\x73\x65\x72\x76\x69\x64\x6f\x72' || ci.fonte === '\x6d\x65\x73\x74\x72\x65')) { gravarLS(K_CRACHA, ci); return ci; }
 return null;
 }
 const esquecer = () => guardar(K_CRACHA, null);
-const reassinar = () => { const c = cracha(); if (!c) return Promise.resolve(); const n = assinar(c); gravarLS(K_CRACHA, n); return idbPor(K_CRACHA, n); };
+const reassinar = () => { const c = cracha(), t = lerLS(K_TIT); if (t && typeof t === '\x6f\x62\x6a\x65\x63\x74') idbPor(K_TIT, t); if (!c) return Promise.resolve(); const n = assinar(c); gravarLS(K_CRACHA, n); return idbPor(K_CRACHA, n); };
 window.GeloProLicenca = { API, deviceId, cracha, ativar, checar, enviarTitular, restaurar, esquecer, limpar, blindado: BLINDADO, docCompra, confere, reassinar };
 try { window.dispatchEvent(new Event('\x67\x65\x6c\x6f\x70\x72\x6f\x3a\x6c\x69\x63\x65\x6e\x63\x61\x2d\x70\x72\x6f\x6e\x74\x61')); } catch (e) { }
 try {
 if (typeof document !== '\x75\x6e\x64\x65\x66\x69\x6e\x65\x64' && !document.querySelector('\x73\x63\x72\x69\x70\x74\x5b\x73\x72\x63\x2a\x3d\x22\x6f\x66\x66\x6c\x69\x6e\x65\x2d\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x6a\x73\x22\x5d')) {
 const s = document.createElement('\x73\x63\x72\x69\x70\x74');
-s.src = '\x6f\x66\x66\x6c\x69\x6e\x65\x2d\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x6a\x73\x3f\x76\x3d\x31\x33\x35';
+s.src = '\x6f\x66\x66\x6c\x69\x6e\x65\x2d\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x6a\x73\x3f\x76\x3d\x31\x33\x36';
 document.head.appendChild(s);
 }
 } catch (e) { }

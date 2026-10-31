@@ -2828,7 +2828,8 @@ class Component extends DCLogic {
     this._online = () => this.checarLicenca(); window.addEventListener('online', this._online);
     const c = L.cracha();
     if (c) this.aplicarCracha(c);
-    L.restaurar().then(r => { if (r) this.aplicarCracha(r); this.checarLicenca(); });
+    // PR #136: localStorage limpo com crachá no IndexedDB: o titular volta junto (restaurar) e entra no estado antes do crachá ser aplicado.
+    L.restaurar().then(r => { if (!this.state.tit) { const t = lerObj(K_TIT); if (t) this.setState({ tit: t }); } if (r) this.aplicarCracha(r); this.checarLicenca(); });
   }
   checarLicenca() { const L = window.GeloProLicenca; if (L) L.checar().then(r => { if (r && r.cracha) this.aplicarCracha(r.cracha); }); }
   // Crachá → licença e titular do app. Bloqueado (reembolso/cancelamento) apaga a licença deste aparelho e volta à tela bloqueada.
