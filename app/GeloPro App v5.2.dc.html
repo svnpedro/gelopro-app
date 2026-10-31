@@ -7,6 +7,25 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
+<style id="gp-anti-fouc">html,body{margin:0;background-color:#c1c0c1;}</style>
+<script>try{if(!navigator.webdriver||/[?&]fluido=1\b/.test(location.search))document.documentElement.setAttribute('data-gp-fluido','1');}catch(e){}</script>
+<style id="gp-fluidez-manteiga">
+@keyframes gpEntradaSuave{from{opacity:0;transform:translate3d(0,4px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes gpDeslizeCurto{from{opacity:.15;transform:translate3d(0,6px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes gpTelaSuave{from{opacity:.1;transform:translate3d(0,8px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes gpExpandirCartao{from{opacity:0;transform:translate3d(0,-4px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@media (prefers-reduced-motion:no-preference){
+[data-gp-fluido="1"] [data-chassi]{animation:gpEntradaSuave 220ms cubic-bezier(.22,1,.36,1) backwards}
+[data-gp-fluido="1"] [style*="gpIn"]{animation:gpTelaSuave 180ms cubic-bezier(.22,1,.36,1) backwards!important}
+[data-gp-fluido="1"] [data-passo-in]{animation:gpDeslizeCurto 160ms cubic-bezier(.22,1,.36,1) backwards!important}
+[data-gp-fluido="1"] :is([data-grade-sintomas],[data-grade-medicoes],[data-cofre-card],[data-ficha-secao]){animation:gpDeslizeCurto 170ms cubic-bezier(.22,1,.36,1) backwards}
+[data-gp-fluido="1"] :is([data-cod-aberto],[data-cat-detalhes],[data-ficha-entradas],[data-desconto-orcamento],[data-validade-proposta]){animation:gpExpandirCartao 160ms cubic-bezier(.22,1,.36,1) backwards}
+[data-gp-fluido="1"] [data-cod-seta]{transition:transform 160ms cubic-bezier(.22,1,.36,1)}
+[data-gp-fluido="1"] :is(button,[role=button],[role=option],[role=tab],[role=radio]){transition:transform 110ms cubic-bezier(.22,1,.36,1),box-shadow 140ms ease,background-color 140ms ease,border-color 140ms ease}
+[data-gp-fluido="1"] :is(button,[role=button],[role=option],[role=tab],[role=radio]):active{transform:translate3d(0,1px,0) scale(.988)}
+[data-gp-fluido="1"] :is([data-vis],[data-fichas],[data-codigo-tela] [role=list],[data-catalogo],[data-home-inicio],[data-res-rolagem]){-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
+}
+</style>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -26,7 +45,7 @@
 </style>
 <link href="ref/acetinado-sedoso.css" rel="stylesheet">
 <style>
-html,body{margin:0;background:#e6eaef;}
+html,body{margin:0;background:#c1c0c1;}
 a{color:var(--gp-primary);}a:hover{color:var(--gp-on-primary-container);}
 button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 :focus-visible,[data-foco="1"]{outline:3px solid var(--gp-focus);outline-offset:2px;}
@@ -2593,6 +2612,7 @@ class Component extends DCLogic {
     if (!el) this._pFoco = null;
   }
   componentDidUpdate(prev, prevSt) {
+    if (document.documentElement.getAttribute('data-gp-fluido') === '1') this.fluidez();
     if (!LEGADO_TESTES) this.autoRange();
     // Rascunho (EXT-RAS): grava quando o fechamento muda; o modo Amostra e a simulação de cadastro nunca gravam.
     if (this.state.fOpen && this.state.selOrc) this.setState({ sel: this.state.selOrc, selOrc: null });
@@ -2600,7 +2620,7 @@ class Component extends DCLogic {
     if (prev.tema !== this.props.tema && this.state.tema !== null) this.setState({ tema: null });
     // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #c1c0c1 no Titânio e no Claro.
     const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
-    if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#c1c0c1'; if (tc.content !== cor) tc.content = cor; }
+    if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#c1c0c1'; if (tc.content !== cor) tc.content = cor; if (this._fundoCor !== cor) { this._fundoCor = cor; document.documentElement.style.backgroundColor = cor; document.body.style.backgroundColor = cor; } }
     // PR #101 (uso real): toda troca de tela, sintoma, etapa, resultado, módulo, aba da Home, gaveta, ficha aberta ou passo do Orçamento
     // abre no topo: zera na hora (instantâneo) todos os containers roláveis e a página; um 2º ajuste no próximo quadro só roda se o
     // usuário não tocou na tela (toque, clique ou roda cancelam).
@@ -2680,6 +2700,15 @@ class Component extends DCLogic {
       this._arRaf = requestAnimationFrame(passo);
     };
     this._arRaf = requestAnimationFrame(passo);
+  }
+  // PR #110 (só com [data-gp-fluido="1"], humano no celular; webdriver sem ?fluido=1 fica instantâneo): pergunta nova do Passo a Passo,
+  // resultado novo e teste novo do Inverter entram com deslize de 160 ms (Web Animations, GPU: opacity + translate3d; termina em transform none).
+  // Telas, gavetas e passos do Orçamento remontam e usam o CSS de #gp-fluidez-manteiga.
+  fluidez() {
+    const st = this.state, F = st.fech, k = [st.tela, st.etapa, st.res, F && F.passo, st.inv && st.inv._passo].join('|');
+    if (this._fluK === k) return; const antes = this._fluK; this._fluK = k; if (antes === undefined) return;
+    try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
+    document.querySelectorAll('[data-opcoes], [data-inv-etapa]').forEach(el => { if (el.animate && el.getClientRects().length) el.animate([{ opacity: 0.1, transform: 'translate3d(0,8px,0)' }, { opacity: 1, transform: 'translate3d(0,0,0)' }], { duration: 160, easing: 'cubic-bezier(0.22,1,0.36,1)' }); });
   }
   pulso(id, v, visivel) {
     if (!visivel) return 'none';
