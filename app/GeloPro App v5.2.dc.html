@@ -122,6 +122,16 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 /* PR #101: [data-home-rolagem] cresce com o conteúdo (flex 1 0 auto) e nunca rola, mas era um container de rolagem com overscroll contain:
    em tela baixa o gesto sobre ele não passava para o [data-home-inicio] (quem rola) e a Home parecia presa. Vira bloco comum, sem rolagem suave. */
 [data-home-rolagem]{overflow-y:visible !important;overscroll-behavior:auto !important;scroll-behavior:auto !important;}
+/* PR #102: alavancas do Orçamento por natureza também nas opções abertas: estoque (verde esmeralda), visita isenta (âmbar CAT),
+   desconto/concessão (cobalto). E o poço de valor em reais como mostrador de dinheiro no tema claro (borda e R$ em #15803d). */
+[data-tema] [data-custo-peca] > button:first-child[aria-pressed="true"]{background:linear-gradient(180deg,#047857 0%,#065f46 100%) !important;border:1.5px solid #34d399 !important;color:#ffffff !important;}
+[data-tema] [data-custo-peca] > button:first-child[aria-pressed="false"]{background:#ecfdf5 !important;border:1.5px solid #047857 !important;color:#065f46 !important;font-weight:700 !important;}
+[data-tema] [data-bonificar-visita][aria-checked="true"]{background:#f59e0b !important;border:1.5px solid #b45309 !important;color:#111827 !important;font-weight:800 !important;}
+[data-tema] [data-bonificar-visita][aria-checked="false"]{background:#fffbeb !important;border:1.5px solid #b45309 !important;color:#92400e !important;font-weight:700 !important;}
+[data-tema] [data-desconto-orcamento] button[aria-pressed="true"]{background:#1d4ed8 !important;border:1.5px solid #60a5fa !important;color:#ffffff !important;}
+[data-tema] [data-desconto-orcamento] button[aria-pressed="false"]{background:#eff6ff !important;border:1.5px solid #1d4ed8 !important;color:#1e3a8a !important;font-weight:700 !important;box-shadow:none !important;}
+[data-tema="claro"] [data-sc-name="LinhaOrcamento"] [data-campo][data-valor-cheio="1"]{border:1.5px solid #15803d !important;}
+[data-tema="claro"] [data-sc-name="LinhaOrcamento"] [data-moeda]{color:#15803d !important;font-weight:800 !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -1133,27 +1143,27 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <!-- PR #72: o placar financeiro abre no topo do Passo 1 (visível sem rolar em 390×844). Modo cliente ao lado: total grande à direita e os
                    dois tópicos limpos abaixo de uma linha fina, sem tijolo verde e sem faixa de "modo cliente". Modo técnico: total, lucro líquido em
                    destaque e trilho único de 6 px com o indicador (rótulo da faixa atual em 700 + sublinhado). -->
-              <div data-lucro-painel="" data-estado="{{ fLucroEst }}" role="status" style="box-sizing:border-box;padding:14px 16px 16px;border-radius:16px;background:{{ fLucroFundo }};box-shadow:inset 6px 0 0 {{ fLucroViva }},0 6px 16px rgba(9,30,66,0.22);display:flex;flex-direction:column;gap:10px;animation:{{ fPainelAnim }};">
+              <!-- PR #102: visor de lucro monolítico (Fluke/Bosch): 1 só mostrador LCD encastrado em chanfro, borda de 2 px na cor viva do estado,
+                   tipografia compacta e a régua de instrumento (vermelho/âmbar/verde, marcador nítido, 3 rótulos) na base. background-color sólido
+                   por baixo do gradiente: é o fundo que o contrastePainel do gate mede (texto ≥ 4,5:1). -->
+              <div data-lucro-painel="" data-estado="{{ fLucroEst }}" role="status" style="box-sizing:border-box;padding:10px 12px;border-radius:16px;border:2px solid {{ fLucroViva }};background-color:{{ fLucroCor }};background-image:{{ fLucroGrad }};box-shadow:inset 0 3px 8px rgba(0,0,0,0.7),0 2px 4px rgba(9,30,66,0.2);display:flex;flex-direction:column;gap:6px;animation:{{ fPainelAnim }};">
                 <sc-if value="{{ fDiscreto }}" hint-placeholder-val="{{ false }}"><div data-termometro="" data-modo-cliente="" role="group" aria-label="Tabela técnica referencial 2026" style="display:flex;flex-direction:column;gap:10px;">
                   <div data-total-painel="" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:700 16px/22px 'Roboto',sans-serif;color:#e2e8f0;">Total ao cliente</span><span style="font:800 28px/32px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ fTotalTxt }}</span></div>
                   <div aria-hidden="true" data-decor="" style="height:0;border-top:1px solid rgba(255,255,255,0.14);"></div>
                   <span data-cliente-topico="" style="font:700 16px/22px 'Roboto',sans-serif;color:#ffffff;letter-spacing:.01em;text-wrap:pretty;">✓ TABELA TÉCNICA REFERENCIAL 2026</span>
                   <span data-cliente-topico="" style="font:500 16px/22px 'Roboto',sans-serif;color:#e2e8f0;text-wrap:pretty;">✓ Escopo técnico com peça, mão de obra e garantia auditados para o porte do equipamento</span>
                 </div></sc-if>
-                <sc-if value="{{ fVerCusto }}" hint-placeholder-val="{{ true }}"><div data-total-painel="" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);">Total ao cliente</span><span style="font:800 28px/32px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;white-space:nowrap;">{{ fTotalTxt }}</span></div></sc-if>
-                <sc-if value="{{ fTemDesc }}" hint-placeholder-val="{{ false }}"><span data-lucro-desconto="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ fDescPainel }}</span></sc-if>
-                <sc-if value="{{ fTemLucro }}" hint-placeholder-val="{{ false }}"><div data-lucro-liquido="" style="box-sizing:border-box;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,0.28);box-shadow:inset 0 0 0 1.5px {{ fLucroViva }};font:800 22px/28px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;text-wrap:balance;">{{ fLucroTxt }}</div></sc-if>
-                <sc-if value="{{ fTemLucroMsg }}" hint-placeholder-val="{{ true }}"><span data-lucro-msg="" style="font:600 16px/22px 'Roboto',sans-serif;color:var(--gp-on-lucro, #ffffff);text-wrap:pretty;">{{ fLucroMsg }}</span></sc-if>
+                <sc-if value="{{ fVerCusto }}" hint-placeholder-val="{{ true }}"><div data-total-painel="" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:#cbd5e1;letter-spacing:.02em;">Total ao cliente</span><span style="font:800 24px/28px 'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ fTotalTxt }}</span></div></sc-if>
+                <sc-if value="{{ fTemDesc }}" hint-placeholder-val="{{ false }}"><span data-lucro-desconto="" style="font:600 16px/20px 'Roboto',sans-serif;color:#e2e8f0;font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ fDescPainel }}</span></sc-if>
+                <sc-if value="{{ fTemLucro }}" hint-placeholder-val="{{ false }}"><div data-lucro-liquido="" style="box-sizing:border-box;padding:0;border-top:1px solid rgba(255,255,255,0.14);padding-top:6px;font:800 17px/21px 'Roboto',sans-serif;color:{{ fLucroTxtCor }};font-variant-numeric:tabular-nums;text-wrap:balance;">{{ fLucroTxt }}</div></sc-if>
+                <sc-if value="{{ fTemLucroMsg }}" hint-placeholder-val="{{ true }}"><span data-lucro-msg="" style="font:600 16px/20px 'Roboto',sans-serif;color:#e2e8f0;text-wrap:pretty;">{{ fLucroMsg }}</span></sc-if>
                 <sc-if value="{{ fTemTermo }}" hint-placeholder-val="{{ false }}">
-                  <div data-termometro="" role="meter" aria-label="Posição do valor na tabela de referência" aria-valuemin="0" aria-valuemax="{{ fTermMax }}" aria-valuenow="{{ fTermVal }}" aria-valuetext="{{ fTermTxt }}" style="position:relative;height:18px;margin:2px 8px 0;">
-                    <span aria-hidden="true" data-termometro-trilho="" style="position:absolute;left:0;right:0;top:6px;height:6px;border-radius:999px;background:rgba(255,255,255,0.16);"></span>
-                    <span aria-hidden="true" style="position:absolute;left:0;top:6px;height:6px;width:{{ fTermPos }};border-radius:999px;background:{{ fLucroViva }};"></span>
-                    <span aria-hidden="true" data-termometro-corte="piso" style="position:absolute;top:4px;height:10px;width:2px;margin-left:-1px;left:{{ fTermZr }};border-radius:1px;background:rgba(255,255,255,0.5);"></span>
-                    <span aria-hidden="true" data-termometro-corte="tipico" style="position:absolute;top:4px;height:10px;width:2px;margin-left:-1px;left:{{ fTermTip }};border-radius:1px;background:rgba(255,255,255,0.5);"></span>
-                    <span data-termometro-marcador="" style="position:absolute;top:1px;left:{{ fTermPos }};width:16px;height:16px;margin-left:-8px;box-sizing:border-box;border-radius:50%;background:#ffffff;box-shadow:0 0 0 3px {{ fLucroViva }},0 2px 6px rgba(0,0,0,0.5);transition:left 200ms ease-out;"></span>
+                  <div data-termometro="" role="meter" aria-label="Posição do valor na tabela de referência" aria-valuemin="0" aria-valuemax="{{ fTermMax }}" aria-valuenow="{{ fTermVal }}" aria-valuetext="{{ fTermTxt }}" style="position:relative;height:14px;margin:2px 7px 0;">
+                    <span aria-hidden="true" data-termometro-trilho="" style="position:absolute;left:0;right:0;top:4px;height:6px;border-radius:3px;overflow:hidden;display:flex;box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);"><span style="flex:none;width:{{ fTermZr }};background:#dc2626;"></span><span style="flex:none;width:{{ fTermZa }};background:#d97706;border-left:1px solid #0b1220;"></span><span style="flex:1;background:#16a34a;border-left:1px solid #0b1220;"></span></span>
+                    <span data-termometro-marcador="" style="position:absolute;top:0;left:{{ fTermPos }};width:6px;height:14px;margin-left:-3px;box-sizing:border-box;border-radius:2px;background:#ffffff;box-shadow:0 0 0 1.5px #0b1220,0 1px 3px rgba(0,0,0,0.6);transition:left 200ms ease-out;"></span>
                   </div>
                   <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;">
-                    <sc-for list="{{ fTermZonas }}" as="z" hint-placeholder-count="3"><span data-rotulo="" aria-current="{{ z.atual }}" style="font:{{ z.peso }} 14px/18px 'Roboto',sans-serif;color:{{ z.cor }};text-align:{{ z.al }};text-decoration:{{ z.sub }};text-underline-offset:3px;">{{ z.t }}</span></sc-for>
+                    <sc-for list="{{ fTermZonas }}" as="z" hint-placeholder-count="3"><span data-rotulo="" aria-current="{{ z.atual }}" style="font:{{ z.peso }} 14px/16px 'Roboto',sans-serif;color:{{ z.cor }};text-align:{{ z.al }};text-decoration:{{ z.sub }};text-underline-offset:3px;">{{ z.t }}</span></sc-for>
                   </div>
                 </sc-if>
                 <sc-if value="{{ fTemAjuste }}" hint-placeholder-val="{{ false }}"><button type="button" data-lucro-ajuste="" onClick="{{ fAjuste }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:0;background:var(--gp-lucro-acao, #ffffff);color:var(--gp-on-lucro-acao, #0b1220);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;" style-active="transform:translateY(1px);">{{ fAjusteTxt }}</button></sc-if>
@@ -1214,9 +1224,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 </div>
               </sc-for>
               <sc-if value="{{ fChipsTem }}" hint-placeholder-val="{{ false }}"><div data-atalhos-lucro-p1="" role="group" aria-label="Lucro em 1 toque" style="flex:none;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;align-items:center;">
-                <sc-if value="{{ fChipEstTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-estoque="" aria-pressed="{{ fChipEstOn }}" onClick="{{ fChipEst }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid {{ fChipEstBd }};background:{{ fChipEstBg }};color:{{ fChipEstCor }};">{{ fChipEstTxt }}</button></sc-if>
-                <sc-if value="{{ fChipComboTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-combo="" aria-label="{{ fChipComboAria }}" onClick="{{ fChipCombo }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid #b45309;background:#fffbeb;color:#78350f;">{{ fChipComboTxt }}</button></sc-if>
-                <sc-if value="{{ fChipVisTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-visita="" aria-pressed="{{ fChipVisOn }}" onClick="{{ fBonifToggle }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 15px/18px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid {{ fChipVisBd }};background:{{ fChipVisBg }};color:{{ fChipVisCor }};">{{ fChipVisTxt }}</button></sc-if>
+                <sc-if value="{{ fChipEstTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-estoque="" aria-pressed="{{ fChipEstOn }}" onClick="{{ fChipEst }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid {{ fChipEstBd }};background:{{ fChipEstBg }};color:{{ fChipEstCor }};">{{ fChipEstTxt }}</button></sc-if>
+                <sc-if value="{{ fChipComboTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-combo="" aria-label="{{ fChipComboAria }}" onClick="{{ fChipCombo }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;border:1.5px solid #475569;background:#f1f5f9;color:#0f172a;">{{ fChipComboTxt }}</button></sc-if>
+                <sc-if value="{{ fChipVisTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-visita="" aria-pressed="{{ fChipVisOn }}" onClick="{{ fBonifToggle }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font-family:'Roboto',sans-serif;font-size:16px;line-height:20px;font-weight:{{ fChipVisPeso }};cursor:pointer;border:1.5px solid {{ fChipVisBd }};background:{{ fChipVisBg }};color:{{ fChipVisCor }};">{{ fChipVisTxt }}</button></sc-if>
               </div></sc-if>
               <sc-if value="{{ fVideoModo }}" hint-placeholder-val="{{ false }}"><button type="button" data-mais-opcoes="" aria-expanded="{{ fMaisExp }}" onClick="{{ fMaisToggle }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:1.5px dashed var(--gp-outline);background:transparent;color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;">{{ fMaisTxt }}</button></sc-if>
               <button type="button" data-add-item="" onClick="{{ fAddItem }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>Adicionar item</button>
@@ -1597,6 +1607,8 @@ const ZAP_MODELOS = ['1. Completo + Tabela + Economia Preventiva', '2. Resumo Di
 // Referência que acompanha o custo médio da peça no bastidor do técnico (texto definido pelo Pedro; nunca sai para o cliente).
 const REF_BASTIDOR = 'Base SINAPI / Distribuidoras 2026';
 // Painel de Lucro Líquido: fundo escuro e texto branco fixos (com o hexadecimal de reserva, caso o TemaGeloPro em cache não tenha os tokens).
+// PR #102: visor de lucro (LCD): [topo do gradiente, fundo sólido (o que o gate mede), borda viva] por estado.
+const VISOR_LUCRO = { verde: ['#071324', '#0c1e36', '#22c55e'], amarelo: ['#1c1204', '#291a06', '#f59e0b'], vermelho: ['#240808', '#360c0c', '#ef4444'], vazio: ['#071324', '#0c1e36', '#64748b'] };
 const LUCRO = {
   verde: ['var(--gp-lucro-verde, #064e3b)', 'var(--gp-lucro-verde-viva, #22c55e)'], amarelo: ['var(--gp-lucro-ambar, #78350f)', 'var(--gp-lucro-ambar-viva, #f59e0b)'],
   vermelho: ['var(--gp-lucro-vermelho, #7f1d1d)', 'var(--gp-lucro-vermelho-viva, #ef4444)'], vazio: ['var(--gp-lucro-neutro, #1e293b)', 'var(--gp-lucro-trilho, #0b1220)'],
@@ -3482,14 +3494,16 @@ class Component extends DCLogic {
         const cb0 = combos[0], higNoOrc = !!F && F.itens.some(x => x.sid === 'higienizacao' || /higieniza/i.test(String(x.d || ''))), cH = (st.base && st.base.cat || []).find(c => c.id === 'higienizacao');
         const curto = (t) => /higieniza/i.test(t) ? 'Higienização' : t.split(/[(+–-]/)[0].trim().split(' ').slice(0, 3).join(' ');
         const temEst = !!c0 && cm0 > 0, temCombo = !!cb0 || (!!cH && !higNoOrc), temVis = !!F && (podeBonif || !!F.bonif), visOn = !!(F && F.bonif);
-        const on = (b) => b ? ['#dcfce7', '#15803d', '#15803d'] : ['#ffffff', '#19365c', '#19365c'];
+        // PR #102: cor por natureza da alavanca. Lucro (estoque) em verde esmeralda; escudo comercial (visita isenta) em âmbar CAT.
+        const onEst = (b) => b ? ['linear-gradient(180deg,#047857 0%,#065f46 100%)', '#ffffff', '#34d399'] : ['#ecfdf5', '#065f46', '#047857'];
+        const onVis = (b) => b ? ['#f59e0b', '#111827', '#b45309'] : ['#fffbeb', '#92400e', '#b45309'];
         return { fChipsTem: fp === 1 && !discreto && !LEGADO_TESTES && !!F && !F.maisOpcoes && (temEst || temCombo || temVis),
           fChipEstTem: temEst, fChipEstOn: est0 ? 'true' : 'false', fChipEstTxt: est0 ? '✓ Peça do estoque (R$ 0)' : 'Peça do estoque (R$ 0)',
-          fChipEstBg: on(est0)[0], fChipEstCor: on(est0)[1], fChipEstBd: on(est0)[2],
+          fChipEstBg: onEst(est0)[0], fChipEstCor: onEst(est0)[1], fChipEstBd: onEst(est0)[2],
           fChipEst: () => temEst && this.fSet(f => ({ itens: f.itens.map((y, j) => j === 0 ? { ...y, custo: est0 ? cm0 : 0 } : y) })),
           fChipComboTem: temCombo, fChipComboTxt: `+ ${curto(cb0 ? cb0.t : 'Higienização')}`, fChipComboAria: cb0 ? `Incluir ${cb0.t}` : 'Incluir Higienização Técnica Completa',
           fChipCombo: () => cb0 ? addCat(cb0) : cH && addCat(cH),
-          fChipVisTem: temVis, fChipVisOn: visOn ? 'true' : 'false', fChipVisTxt: visOn ? '✓ Visita grátis hoje' : 'Visita grátis hoje', fChipVisBg: on(visOn)[0], fChipVisCor: on(visOn)[1], fChipVisBd: on(visOn)[2] };
+          fChipVisTem: temVis, fChipVisOn: visOn ? 'true' : 'false', fChipVisTxt: visOn ? '✓ Visita grátis hoje' : 'Visita grátis hoje', fChipVisBg: onVis(visOn)[0], fChipVisCor: onVis(visOn)[1], fChipVisBd: onVis(visOn)[2], fChipVisPeso: visOn ? 800 : 700 };
       })(),
       fTemCombo: fp === 1 && combos.length > 0 && !discreto, fCombos: combos.map(c => { const l = R0(Math.max(0, (tipDe(c, st.sel.btu) || 0) - custoPorte(c, st.sel.btu).cmed)); return { id: c.id, lucro: TG('lucro', `+${l}`), nome: c.t, aria: `Incluir ${c.t}: +${l} de lucro líquido`, acao: () => addCat(c) }; }),
       // Modo cliente ao lado e visita bonificada (PR #20), com o mesmo desenho de chave do detalhamento técnico.
@@ -3531,7 +3545,8 @@ class Component extends DCLogic {
       fTemRessalva: !!ressalva, fRessalvaLinha: ressalva ? `Ressalva / estado encontrado: ${ponto(ressalva)}` : '',
       fPodeSugerir: !!r && !!F && F.itens.every(x => !x.d.trim()), fSugerir: () => r && this.fSet({ itens: r.a.map(d => ({ d, v: '' })) }),
       fCusto: F ? F.custo : '', fSetCusto: (e) => this.fSet({ custo: e.target.value }), fTemCusto: custo !== null, fCustoE: custoErro ? 'erro' : 'normal', fCustoM: custoErro,
-      fLucroEst: lucroEst, fLucroFundo: discreto ? '#0f2340' : LUCRO[lucroEst][0], fLucroViva: discreto ? '#38bdf8' : LUCRO[lucroEst][1], fTemLucro: temValor && !discreto, fTemLucroMsg: !discreto,
+      fLucroEst: lucroEst, fLucroFundo: discreto ? '#0f2340' : LUCRO[lucroEst][0], fLucroViva: discreto ? '#38bdf8' : VISOR_LUCRO[lucroEst][2],
+      fLucroCor: discreto ? '#0f2340' : VISOR_LUCRO[lucroEst][1], fLucroGrad: discreto ? 'linear-gradient(180deg,#0b1a33 0%,#0f2340 100%)' : `linear-gradient(180deg,${VISOR_LUCRO[lucroEst][0]} 0%,${VISOR_LUCRO[lucroEst][1]} 100%)`, fLucroTxtCor: lucroEst === 'verde' ? '#86efac' : lucroEst === 'amarelo' ? '#fde68a' : lucroEst === 'vermelho' ? '#fecaca' : '#ffffff', fTemLucro: temValor && !discreto, fTemLucroMsg: !discreto,
       // PR #78: com custo total zero, "(100% de margem)" parece irreal; sai o motivo do custo zero (peça do estoque ou custo não informado).
       fLucroTxt: custoTot === 0 && fTotal > 0 ? `SEU LUCRO LÍQUIDO: ${BRL.format(lucro)} · ${fi.some(x => String(x.custo ?? '').trim() !== '' && reais(String(x.custo)) === 0) ? 'peça do estoque (custo R$ 0)' : 'sem custo informado'}` : `SEU LUCRO LÍQUIDO: ${BRL.format(lucro)} (${margem}% de margem)`,
       fLucroMsg: lucroEst === 'vazio' ? 'Lance os itens para ver o lucro e a posição do valor na tabela.'
@@ -3540,7 +3555,7 @@ class Component extends DCLogic {
         : lucroEst === 'amarelo' ? `Na média da tabela. Dá para acrescentar +${BRL.format(alvoAj - fTotal)} e chegar ao valor típico.`
         : lucro <= 0 ? `Abaixo do custo (${BRL.format(custoTot)}). Ajuste antes de fechar.` : `Abaixo do piso da tabela (${BRL.format(piso)}).`,
       fTemTermo: temValor && !discreto, fTermMax: String(Math.round(escala)), fTermVal: String(Math.round(fTotal)), fTermTxt: `${BRL.format(fTotal)}; piso ${BRL.format(piso)}, típico ${BRL.format(tipico)}`,
-      fTermZr: pct(piso) + '%', fTermTip: pct(tipico) + '%', fTermPos: `${pct(fTotal)}%`,
+      fTermZr: pct(piso) + '%', fTermZa: Math.max(0, pct(tipico) - pct(piso)) + '%', fTermTip: pct(tipico) + '%', fTermPos: `${pct(fTotal)}%`,
       fTermZonas: [['vermelho', 'Abaixo do piso', 'left'], ['amarelo', 'Na média da tabela', 'center'], ['verde', discreto ? 'Acima da média' : 'Margem alta', 'right']].map(([k, t, al]) => ({ t, al, atual: lucroEst === k ? 'true' : undefined, peso: lucroEst === k ? 700 : 600, sub: lucroEst === k ? 'underline' : 'none', cor: lucroEst === k ? '#ffffff' : '#e2e8f0' })),
       fTemAjuste: (lucroEst === 'amarelo' || lucroEst === 'vermelho') && !discreto, fAjusteTxt: lucroEst === 'amarelo' ? `Ajustar para ${BRL.format(alvoAj)}` : 'Ajustar para o piso',
       fAjuste: () => ajustar(lucroEst === 'amarelo' ? 'tip' : 'min'),

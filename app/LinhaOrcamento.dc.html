@@ -13,7 +13,7 @@
     <span data-campo="1" data-foco="{{ focoD }}" style="flex:1 1 100%;min-width:0;min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:var(--gp-r-campo, 14px);border:{{ bordaD }};background:{{ fundo }};box-shadow:{{ rec }};display:flex;align-items:center;">
       <textarea aria-label="{{ ariaD }}" rows="1" value="{{ descricao }}" onInput="{{ aoDescricao }}" placeholder="{{ phD }}" disabled="{{ des }}" aria-invalid="{{ invD }}" style="flex:1;min-width:0;min-height:24px;box-sizing:content-box;padding:0;border:0;outline:none;resize:none;overflow:hidden;field-sizing:content;background:transparent;font:500 16px/24px 'Roboto',sans-serif;color:{{ corTxt }};--gp-on-surface-variant:{{ corPh }};"></textarea>
     </span>
-    <span data-campo="1" style="flex:1 1 96px;min-width:0;height:56px;box-sizing:border-box;padding:0 12px;border-radius:var(--gp-r-campo, 14px);border:{{ bordaV }};background:{{ fundo }};box-shadow:{{ recV }};display:flex;align-items:center;gap:6px;">
+    <span data-campo="1" data-valor-cheio="{{ cheio }}" style="flex:1 1 96px;min-width:0;height:56px;box-sizing:border-box;padding:0 12px;border-radius:var(--gp-r-campo, 14px);border:{{ bordaV }};background:{{ fundo }};box-shadow:{{ recV }};display:flex;align-items:center;gap:6px;">
       <span data-moeda="1" style="flex:none;font:700 16px/22px 'Roboto',sans-serif;color:{{ corMoeda }};font-variant-numeric:tabular-nums;">R$</span>
       <input aria-label="{{ ariaV }}" inputMode="decimal" value="{{ valor }}" onInput="{{ aoValor }}" placeholder="0,00" disabled="{{ des }}" aria-invalid="{{ invV }}" style="flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;text-align:right;font:700 16px/24px 'Roboto',sans-serif;color:{{ corTxt }};--gp-on-surface-variant:{{ corPh }};font-variant-numeric:tabular-nums;letter-spacing:0.01em;">
     </span>
@@ -45,6 +45,8 @@ class Component extends DCLogic {
     const d = this.props.descricao ?? '';
     return {
       editavel: !ro, ro, des, erro, erroTxt: 'Erro: ' + (this.props.erroMsg || 'informe o valor'),
+      // PR #102: poço de valor preenchido (sem erro) vira mostrador de dinheiro no tema claro (CSS do app: borda e R$ em #15803d).
+      cheio: v !== null && v > 0 && !(erro && campo === 'valor') ? '1' : undefined,
       descricao: d, descricaoTxt: d || 'Item sem descrição', valor: this.props.valor ?? '', valorFmt: v === null ? '—' : BRL.format(v),
       aoDescricao: this.props.aoDescricao, aoValor: this.props.aoValor, aoRemover: this.props.aoRemover,
       phD: this.props.placeholder || 'Descreva o item', ariaD: 'Descrição do item ' + (this.props.n || ''), ariaV: 'Valor do item ' + (this.props.n || '') + ' em reais', ariaRem: 'Remover item ' + (this.props.n || ''),
