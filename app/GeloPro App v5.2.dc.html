@@ -522,6 +522,29 @@ html[data-uso-real="1"] [data-tema="titanio"] [data-dock-barra]{box-shadow:inset
   html[data-uso-real="1"] [data-tema="titanio"] :is([data-chassi],[data-chapa]){box-shadow:none !important;}
 }
 html[data-uso-real="1"] :is([data-grade-sintomas],[data-grade-medicoes],[data-telemetria],[data-home-modo],[data-atalhos],[data-dock-barra],[data-dock-barra] *){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+/* PR #138 (uso real, Titânio e Sol, a partir de 341 px): borda única e escala de espaços em múltiplos de 4 na Home.
+   Borda única a 16 px do chassi (±0,5): janela Equipamento, trilho das abas, colunas de fora da grade, telemetria, gêmeos e teclas do dock.
+   Escala: 8 px entre os quadrados da grade (linha e coluna), abas → grade, grade → telemetria e telemetria → gêmeos; 8 px de respiro interno do
+   berço CNC nos 4 lados; 8 px entre o berço e a janela Equipamento e entre o berço e o dock (16 px de janela a abas e de gêmeos ao dock).
+   Alturas dos botões, corpos de letra, cores e o chanfro/soquete do PR #130 não mudam; a grade absorve só a sobra (133–134 px em 390 × 844).
+   Dock: 6 teclas de 48 px de ponta a ponta na borda única, com o mesmo passo entre elas (a coluna de cada tecla cresce para os lados com a
+   margem negativa: m = 10% da barra − 30,8 px resolve tecla de fora = borda única). */
+@media (min-width:341px){
+  html[data-uso-real="1"] [data-topo] > [role="group"][aria-label="Equipamento"]{margin-left:4px !important;margin-right:4px !important;}
+  html[data-uso-real="1"] div:has(> [data-tema] > [data-vis] [data-home-rolagem]){margin-left:2px !important;margin-right:2px !important;margin-bottom:4px !important;}
+  html[data-uso-real="1"] [data-vis]:has([data-home-rolagem]){padding-left:5px !important;padding-right:5px !important;}
+  html[data-uso-real="1"] [data-home-inicio]{gap:8px !important;padding-top:3px !important;margin-left:-5px !important;margin-right:-5px !important;padding-left:5px !important;padding-right:5px !important;}
+  html[data-uso-real="1"] [data-home-modo]{padding-left:0 !important;padding-right:0 !important;margin-bottom:0 !important;}
+  html[data-uso-real="1"] [data-home-rolagem]{gap:8px !important;padding-bottom:5px !important;margin-left:-5px !important;margin-right:-5px !important;padding-left:5px !important;padding-right:5px !important;}
+  html[data-uso-real="1"] :is([data-grade-sintomas],[data-grade-medicoes]){padding-left:0 !important;padding-right:0 !important;row-gap:8px !important;column-gap:8px !important;}
+  html[data-uso-real="1"] :is([data-telemetria],[data-atalhos]){margin-left:0 !important;margin-right:0 !important;margin-top:0 !important;margin-bottom:0 !important;}
+  html[data-uso-real="1"] [data-tema="titanio"] div:has(> [data-tema] > [data-vis] [data-home-rolagem])::before{top:0 !important;right:0 !important;bottom:0 !important;left:0 !important;}
+  html[data-uso-real="1"] [data-dock-barra]{padding-left:16px !important;padding-right:16px !important;}
+  html[data-uso-real="1"] nav[aria-label="Módulos"]{margin-left:calc(30.8px - 10%) !important;margin-right:calc(30.8px - 10%) !important;}
+  html[data-uso-real="1"] [data-topo-linha]{align-items:center !important;}
+  html[data-uso-real="1"] [data-topo-marca]{padding-top:0 !important;}
+  html[data-uso-real="1"] [data-topo-mascote]{align-self:center !important;}
+}
 /* PR #133: Passo 4 com os controles secundários recolhidos (uso real, gaveta [data-mais-p4] fechada). */
 html[data-uso-real="1"] [data-p4-opcionais][data-aberto="0"]{display:none !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
@@ -2687,7 +2710,7 @@ const POCO_REF = {
   // R22 60–75 psi). O porte entra no texto ("118–135 · 12k") e a insígnia da marca do topo entra ao lado de "PSI" (logo: true). A marca e o BTU/h vão no aria-label.
   PSI: (sel) => {
     const f = POCO_PSI[sel.fluido] || POCO_PSI.R410A, btu = parseInt(String(sel.btu || '').replace(/\D/g, ''), 10) || 0, k = btu ? `${Math.round(btu / 1000)}k` : '';
-    return { k: 'psi', logo: true, vs: k ? [`${f} · ${k}`, `${f}·${k}`, f] : [f], aria: `Referência de campo de sucção ${sel.fluido}: ${f} psi (${sel.marca}, ${sel.btu} BTU/h)` };
+    return { k: 'psi', logo: true, vs: k ? (LEGADO_TESTES ? [`${f} · ${k}`, `${f}·${k}`, f] : [`${f} · ${k}`, f]) : [f], aria: `Referência de campo de sucção ${sel.fluido}: ${f} psi (${sel.marca}, ${sel.btu} BTU/h)` };
   },
   'kΩ': (sel) => { const n = POCO_NTC[sel.marca] || '5K–50K'; return { k: 'ntc', vs: [n, n.replace(/K\//g, '/')], aria: `Nominais NTC de referência ${sel.marca}: ${n}` }; },
   // PR #70: o 3º poço muda ao vivo com marca, fluido e porte. Elgin R410A: alvo oficial; R32 e R22: faixa do fluido; R410A nas demais marcas: SH com
@@ -2699,7 +2722,8 @@ const POCO_REF = {
     if (sel.fluido === 'R32') return { k: 'sh', vs: curta ? ['SH 7–11 °C', 'SH 7–11'] : ['SH 7–11 · R32', '7–11 · R32', 'SH 7–11 °C', 'SH 7–11'], aria: 'Referência de campo de superaquecimento: 7–11 °C com R32' };
     if (sel.fluido === 'R22') return { k: 'sh', vs: curta ? ['SH 6–10 °C', 'SH 6–10'] : ['SH 6–10 · R22', '6–10 · R22', 'SH 6–10 °C', 'SH 6–10'], aria: 'Referência de campo de superaquecimento: 6–10 °C com R22' };
     const g = btu >= 18000 ? '25g/m' : '15g/m';
-    return { k: 'sh', vs: curta ? ['SH 7–11 °C', 'SH 7–11'] : [`SH 7–11 · ${g}`, `SH 7–11·${g}`, `7–11 · ${g}`, 'SH 7–11 °C', 'SH 7–11'], aria: `Referência de campo de superaquecimento: 7–11 °C; adicional de linha ${g.replace('g/m', ' g/m')} para ${sel.btu} BTU/h` };
+    // PR #138 (uso real): um formato só de separador (" · " com espaço dos dois lados e "15 g/m" com espaço antes da unidade).
+    return { k: 'sh', vs: curta ? ['SH 7–11 °C', 'SH 7–11'] : LEGADO_TESTES ? [`SH 7–11 · ${g}`, `SH 7–11·${g}`, `7–11 · ${g}`, 'SH 7–11 °C', 'SH 7–11'] : [`7–11 · ${g.replace('g/m', ' g/m')}`, 'SH 7–11 °C', 'SH 7–11'], aria: `Referência de campo de superaquecimento: 7–11 °C; adicional de linha ${g.replace('g/m', ' g/m')} para ${sel.btu} BTU/h` };
   },
 };
 const COLA_ETAPA = { t_ng04: 'capacitor', t_gp04: 'capacitor', t_ng03: 'tensao', t_gp03: 'tensao', t_de03: 'tensao', t_nl01: 'tensao' };
@@ -4042,7 +4066,7 @@ class Component extends DCLogic {
     // PR #58: Sintomas e Medições e Testes no mesmo ritmo de 8 px (gavetas, gavetas → grade 3×2 e grade 3×3); tela de até 640 px aperta
     // para 6 px. PR #64: o vão não depende mais da faixa de diagnóstico (medir não mexe na grade). Com a faixa de atendimento aberta, a grade 3×2 garante cartões de 54 px: a PlacaSintoma
     // mostra o ícone compacto (18 a 22 px) de 48 px para cima, e a área rola como antes.
-    const abaMed = st.abaHome === 'medicoes', cw = faceW - 38, gapG = H <= 640 ? 6 : 8;
+    const abaMed = st.abaHome === 'medicoes', cw = faceW - (LEGADO_TESTES || W <= 340 ? 38 : 32), gapG = H <= 640 ? 6 : 8; // PR #138: telemetria na borda única (16 px) no uso real
     const larg = (t, fs, peso) => { if (!this._ctx) this._ctx = document.createElement('canvas').getContext('2d'); this._ctx.font = `${peso || 700} ${fs}px Roboto`; return this._ctx.measureText(t).width; };
     // Atalhos: módulo bônus com cadeado no plano de 90 dias abre o convite de upgrade, como no dock.
     // PR #66 (item 31): o atalho de Medições e Testes leva o próprio nome para o cabeçalho (kicker), para o topo bater com o botão tocado.

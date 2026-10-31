@@ -9,10 +9,43 @@ document.head.appendChild(s);
 });
 const ocioso = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 if (document.readyState === 'complete') ocioso(libsPix); else window.addEventListener('load', () => ocioso(libsPix));
+const VERSAO_APP = 'v138';
+window.GeloProVersao = VERSAO_APP;
+(function versaoAtual() {
+try {
+if (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]testarUpdate=1\b/.test(location.search)) return;
+if (!/^https?:$/.test(location.protocol) || !window.fetch) return;
+const sw = 'serviceWorker' in navigator ? navigator.serviceWorker : null, tinhaControle = !!(sw && sw.controller);
+let recarregou = false;
+const recarregar = () => { if (recarregou) return; recarregou = true; try { location.reload(); } catch (e) { } };
+if (sw) sw.addEventListener('controllerchange', () => { if (!tinhaControle) return; const alvo = sessionStorage.getItem('gelopro.reloadFor') || 'sw'; if (sessionStorage.getItem('gelopro.reloadCC') === alvo) return; sessionStorage.setItem('gelopro.reloadCC', alvo); recarregar(); });
+const ctl = window.AbortController ? new AbortController() : null, relogio = setTimeout(() => ctl && ctl.abort(), 2500);
+fetch('versao.json?t=' + Date.now(), { cache: 'no-store', credentials: 'omit', signal: ctl ? ctl.signal : undefined }).then(r => r.ok ? r.json() : null).then(async (j) => {
+clearTimeout(relogio);
+const v = j && typeof j.v === 'string' ? j.v.trim().slice(0, 40) : '';
+if (!v || v === VERSAO_APP) return;
+if (sessionStorage.getItem('gelopro.reloadFor') === v) return;
+sessionStorage.setItem('gelopro.reloadFor', v);
+try {
+const reg = sw ? await sw.getRegistration() : null;
+if (reg) {
+await reg.update().catch(() => {});
+const novo = reg.installing || reg.waiting;
+if (novo) {
+await new Promise((ok) => { const fim = setTimeout(ok, 4000); const ver = () => { if (novo.state === 'installed') novo.postMessage({ tipo: 'SKIP_WAITING' }); if (novo.state === 'activated' || novo.state === 'redundant') { clearTimeout(fim); ok(); } }; novo.addEventListener('statechange', ver); ver(); });
+}
+}
+if (window.caches) { const ks = await caches.keys(); await Promise.all(ks.filter(k => k.startsWith('gelopro-offline-') && k !== 'gelopro-offline-' + v).map(k => caches.delete(k))); }
+} catch (e) { }
+sessionStorage.setItem('gelopro.reloadCC', v);
+recarregar();
+}).catch(() => clearTimeout(relogio));
+} catch (e) { }
+})();
 const LEGADO = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
-if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v137')) {
+if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v138')) {
 const st = document.createElement('style');
-st.id = 'gp-cores-global-v137';
+st.id = 'gp-cores-global-v138';
 st.textContent = [
 '[data-chapa][data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-cliente-bloco][data-cli-ok="1"] { display: flex !important; }',
 '[data-video-enxuto="1"] [data-cliente-bloco] > span:first-child { display: none !important; }',

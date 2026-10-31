@@ -1,5 +1,5 @@
 'use strict';
-const CACHE = 'gelopro-offline-v137';
+const CACHE = 'gelopro-offline-v138';
 const REDE_MS = 3000;
 const NUCLEO = [
 'GeloPro App v5.2.dc.html', 'support.js', 'manifest.json',
@@ -43,6 +43,7 @@ try { const r = await fetch(url, { cache: 'reload', credentials: 'omit' }); if (
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('gelopro-offline-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('message', (e) => {
 const d = e.data || {};
+if (d === 'SKIP_WAITING' || d.tipo === 'SKIP_WAITING') { e.waitUntil(self.skipWaiting()); return; }
 if (d.tipo !== 'guardar' || !Array.isArray(d.urls)) return;
 e.waitUntil(caches.open(CACHE).then(async (c) => {
 const urls = [...new Set(d.urls.map(String).filter(guardavel).map(u => u.split('#')[0]))];
@@ -70,6 +71,20 @@ const req = e.request;
 if (req.method !== 'GET' || !guardavel(req.url) || req.headers.has('range')) return;
 const chave = req.url.split('#')[0];
 if (FEED.test(new URL(chave).pathname)) return e.respondWith(feed(e, chave));
+const caminho = new URL(chave).pathname;
+if (req.mode === 'navigate' || /\.dc\.html$|\.js$|\/versao\.json$/.test(caminho)) {
+return e.respondWith((async () => {
+try {
+const r = await fetch(chave, { cache: 'no-store', credentials: 'omit' });
+if (r && r.ok && !/\/versao\.json$/.test(caminho)) { const cp = r.clone(); e.waitUntil(caches.open(CACHE).then(c => c.put(chave, cp)).catch(() => {})); }
+return r;
+} catch (err) {
+const c = await caches.open(CACHE), hit = (await c.match(chave)) || (await c.match(req, { ignoreSearch: req.mode === 'navigate' }));
+if (hit) return hit;
+throw err;
+}
+})());
+}
 let gravacao = Promise.resolve();
 const rede = fetch(req).then((r) => {
 if (r && (r.ok || r.type === 'opaque')) { const cp = r.clone(); gravacao = caches.open(CACHE).then(c => c.put(chave, cp)).catch(() => {}); }
