@@ -337,10 +337,29 @@ html[data-uso-real="1"] [data-inv-vereditos] .tag{min-height:32px !important;pad
 /* PR #114: calculadoras na 1ª dobra (uso real). Textos soltos em sr-only (faixa do fluido R410A, descrição do sensor NTC, "Fatores de amostra",
    fórmula); fotos de bancada do PT/SH e fatores da Carga recolhidos em "Dicas de bancada e manual" ([data-nota-tecnica]); resultado no mostrador
    escuro #1d2430 (poços de valor mantidos). */
-html[data-uso-real="1"] :is([data-lembrete-fluido],[data-ntc-desc],[data-carga-fatores-aviso],[data-carga-formula]){position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0,0,0,0) !important;white-space:nowrap !important;border:0 !important;}
-html[data-uso-real="1"] [data-mostrador-calc]{background:#1d2430 !important;border:1.5px solid #b0b8c4;border-radius:18px !important;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55) !important;}
+html[data-uso-real="1"] [data-notas-tec="0"] :is([data-lembrete-fluido],[data-ntc-desc],[data-carga-fatores-aviso],[data-carga-formula]){position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0,0,0,0) !important;white-space:nowrap !important;border:0 !important;}
+html[data-uso-real="1"] [data-mostrador-calc]{padding:8px 10px !important;background:#1d2430 !important;border:1.5px solid #b0b8c4;border-radius:18px !important;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55) !important;}
 html[data-uso-real="1"] [data-mostrador-calc] > div > span:first-child{color:#cbd5e1 !important;}
-html[data-uso-real="1"] [data-notas-tec]{gap:10px !important;}
+html[data-uso-real="1"] [data-notas-tec]{gap:8px !important;}
+/* PR #115: Modo Cliente (uso real). Total em verde #4ade80 e 2 crachás oficiais (.tag) em vez de 2 parágrafos brancos (os textos originais
+   seguem em sr-only). O painel escuro vale nos 2 temas (PR #109), por isso o verde fica #4ade80 também no Sol. */
+html[data-uso-real="1"] [data-modo-cliente]{gap:8px !important;}
+html[data-uso-real="1"] [data-modo-cliente] [data-total-painel] > span:first-child{font:700 14px/18px 'Roboto',sans-serif !important;letter-spacing:.03em;text-transform:uppercase;color:#cbd5e1 !important;}
+html[data-uso-real="1"] [data-modo-cliente] [data-total-painel] > span:last-child{font:800 24px/28px 'Roboto',sans-serif !important;color:#4ade80 !important;}
+html[data-uso-real="1"] [data-cliente-crachas]{display:flex;flex-wrap:wrap;gap:6px;}
+html[data-uso-real="1"] [data-cliente-crachas] .tag{border-radius:8px !important;padding:4px 8px !important;font:800 16px/20px 'Roboto',sans-serif !important;letter-spacing:-.01em;white-space:nowrap;}
+html[data-uso-real="1"] [data-cliente-crachas] .tag-medida{background:#0c4a6e !important;border:1px solid #38bdf8 !important;color:#7dd3fc !important;}
+html[data-uso-real="1"] [data-cliente-crachas] .tag-ok{background:#064e3b !important;border:1px solid #22c55e !important;color:#4ade80 !important;}
+/* PR #115: Passo 1 e LinhaOrcamento (uso real). Rótulos em marinho forte; R$ em cápsula verde; preço e remover com 48 px, mesmo top e borda firme. */
+html[data-uso-real="1"] :is([data-campo-cli-nome] label > span:first-child,[data-rot-itens]){font:800 16px/20px 'Roboto',sans-serif !important;color:#091e42 !important;}
+html[data-uso-real="1"] [data-sc-name="LinhaOrcamento"] [data-moeda]{padding:4px 10px;border-radius:8px;background:#dcfce7;color:#15803d !important;font-weight:800 !important;}
+html[data-uso-real="1"] [data-sc-name="LinhaOrcamento"] [data-campo]:has([data-moeda]){height:48px !important;padding:0 8px 0 6px !important;border:1.5px solid var(--gp-linha-borda, #64748b) !important;}
+html[data-uso-real="1"] [data-sc-name="LinhaOrcamento"] [data-campo][data-valor-cheio="1"]{border-color:#15803d !important;}
+html[data-uso-real="1"] [data-sc-name="LinhaOrcamento"] [data-campo]:has([data-moeda]) input{font:800 18px/22px 'Roboto',sans-serif !important;color:#091e42 !important;}
+html[data-uso-real="1"] [data-sc-name="LinhaOrcamento"] button[aria-label^="Remover"]{width:48px !important;height:48px !important;border:1.5px solid var(--gp-linha-borda, #64748b) !important;color:#dc2626 !important;align-self:flex-start;}
+/* PR #115: t_de03 e t_nl01 em tela baixa (uso real): as fotos das respostas recolhem enquanto "Como verificar" está fechado; a cola do
+   instrumento (220 V e 127 V) segue inteira. Dicas de bancada abertas devolvem os textos técnicos das calculadoras. */
+@media (max-height:760px){html[data-uso-real="1"] [data-opcoes]:is([data-etapa="t_de03"],[data-etapa="t_nl01"])[data-com-dica="0"] [data-quadro]{display:none !important;}html[data-uso-real="1"] [data-opcoes]:is([data-etapa="t_de03"],[data-etapa="t_nl01"])[data-com-dica="0"] [data-barra]{flex:1 1 auto !important;width:auto !important;}}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -706,7 +725,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <span>{{ colaL2 }}</span>
                   </div></sc-if>
                   <div style="flex:1;min-height:0;">
-                    <div data-opcoes="" data-etapa="{{ etapaId }}" style="height:100%;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:{{ linhas }};gap:6px;">
+                    <div data-opcoes="" data-etapa="{{ etapaId }}" data-com-dica="{{ dicaAttr }}" style="height:100%;overflow-y:auto;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:{{ linhas }};gap:6px;">
                       <sc-for list="{{ opcoes }}" as="o" hint-placeholder-count="2">
                         <button type="button" aria-label="{{ o.aria }}" data-saude="{{ o.saude }}" onClick="{{ o.onClick }}" style="min-width:0;min-height:48px;grid-column:{{ o.gcol }};display:flex;flex-direction:{{ o.cartaoDir }};box-sizing:border-box;margin:0;padding:0;border-radius:16px;overflow:hidden;border:2px solid var(--gp-sec-edge);background:var(--gp-card-action);color:#ffffff;text-align:center;cursor:pointer;" style-active="filter:brightness(.94);">
                           <sc-if value="{{ o.temBand }}" hint-placeholder-val="{{ true }}"><span data-quadro="" style="position:relative;container-type:{{ o.cont }};flex:1 1 auto;min-width:0;min-height:56px;align-self:stretch;box-sizing:border-box;background:{{ o.band }};display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -926,6 +945,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <dc-import name="CampoTexto" rotulo="BTU/h por pessoa" valor="{{ bF3 }}" estado="{{ bE.f3 }}" erroMsg="{{ bM.f3 }}" aoDigitar="{{ bSetF3 }}" modo="decimal" style="display:block;min-width:0;" hint-size="100%,74px"></dc-import>
                   </div>
                   <span data-carga-formula="" style="flex:none;font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">Estimativa = área × fator + pessoas além da primeira × fator por pessoa + watts × 3,412. Os fatores são referência de mercado sem fonte na base técnica; a conversão de watts é física. Não substitui cálculo de carga por norma.</span>
+                  <sc-if value="{{ notasTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-detalhes-tecnicos-toggle="" aria-expanded="{{ notasExp }}" onClick="{{ notasToggle }}" style="flex:none;align-self:flex-start;min-height:48px;box-sizing:border-box;padding:4px 6px;border:0;background:transparent;color:var(--gp-on-surface-variant);font:600 16px/20px 'Roboto',sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer;">{{ notasTxt }}</button></sc-if>
                 </div>
               </sc-if>
 
@@ -1376,10 +1396,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                    por baixo do gradiente: é o fundo que o contrastePainel do gate mede (texto ≥ 4,5:1). -->
               <div data-lucro-painel="" data-estado="{{ fLucroEst }}" role="status" style="box-sizing:border-box;padding:10px 12px;border-radius:16px;border:2px solid {{ fLucroViva }};background-color:{{ fLucroCor }};background-image:{{ fLucroGrad }};box-shadow:inset 0 3px 8px rgba(0,0,0,0.7),0 2px 4px rgba(9,30,66,0.2);display:flex;flex-direction:column;gap:6px;animation:{{ fPainelAnim }};">
                 <sc-if value="{{ fDiscreto }}" hint-placeholder-val="{{ false }}"><div data-termometro="" data-modo-cliente="" role="group" aria-label="Tabela técnica referencial 2026" style="display:flex;flex-direction:column;gap:10px;">
-                  <div data-total-painel="" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:700 16px/22px 'Roboto',sans-serif;color:#e2e8f0;">{{ fTotalRotCli }}</span><span style="font:800 28px/32px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ fTotalTxt }}</span></div>
+                  <div data-total-painel="" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span data-rotulo="" style="font:700 16px/22px 'Roboto',sans-serif;color:#e2e8f0;">{{ fTotalRotCli }}</span><span style="font:800 28px/32px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ fTotalTxt }}</span></div>
                   <div aria-hidden="true" data-decor="" style="height:0;border-top:1px solid rgba(255,255,255,0.14);"></div>
-                  <span data-cliente-topico="" style="font:700 16px/22px 'Roboto',sans-serif;color:#ffffff;letter-spacing:.01em;text-wrap:pretty;">✓ TABELA TÉCNICA REFERENCIAL 2026</span>
-                  <span data-cliente-topico="" style="font:500 16px/22px 'Roboto',sans-serif;color:#e2e8f0;text-wrap:pretty;">✓ Escopo técnico com peça, mão de obra e garantia auditados para o porte do equipamento</span>
+                  <span data-cliente-topico="" class="{{ srReal }}" style="font:700 16px/22px 'Roboto',sans-serif;color:#ffffff;letter-spacing:.01em;text-wrap:pretty;">✓ TABELA TÉCNICA REFERENCIAL 2026</span>
+                  <span data-cliente-topico="" class="{{ srReal }}" style="font:500 16px/22px 'Roboto',sans-serif;color:#e2e8f0;text-wrap:pretty;">✓ Escopo técnico com peça, mão de obra e garantia auditados para o porte do equipamento</span>
+                  <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><div data-cliente-crachas="" aria-hidden="true"><span class="tag tag-medida" data-selo="" data-rotulo="">✓ TABELA TÉCNICA 2026</span><span class="tag tag-ok" data-selo="" data-rotulo="">✓ PEÇA + MÃO DE OBRA + GARANTIA</span></div></sc-if>
                 </div></sc-if>
                 <sc-if value="{{ fVerCusto }}" hint-placeholder-val="{{ true }}"><div data-total-painel="" style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;"><span style="font:700 16px/20px 'Roboto',sans-serif;color:#cbd5e1;letter-spacing:.02em;">Total ao cliente</span><span style="font:800 24px/28px 'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ fTotalTxt }}</span></div></sc-if>
                 <sc-if value="{{ fTemDesc }}" hint-placeholder-val="{{ false }}"><span data-lucro-desconto="" style="font:600 16px/20px 'Roboto',sans-serif;color:#e2e8f0;font-variant-numeric:tabular-nums;text-wrap:pretty;">{{ fDescPainel }}</span></sc-if>
@@ -1418,7 +1439,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <span data-equip-txt="" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;font:600 16px/20px 'Roboto',sans-serif;">{{ fEquip }}</span>
                 <sc-if value="{{ fTemDiag }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);">{{ fDiag }}</span></sc-if>
               </div>
-              <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Itens do orçamento</span>
+              <span data-rot-itens="" style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Itens do orçamento</span>
               <sc-for list="{{ fItens }}" as="it" hint-placeholder-count="1">
                 <div data-item-cartao="" style="display:flex;flex-direction:column;gap:6px;box-sizing:border-box;padding:8px;border-radius:16px;border:1.5px solid var(--gp-outline-variant);background:var(--gp-card-info);box-shadow:0 2px 5px rgba(9,30,66,0.08);">
                   <dc-import name="LinhaOrcamento" n="{{ it.n }}" descricao="{{ it.d }}" valor="{{ it.v }}" estado="{{ it.e }}" campoErro="{{ it.ce }}" erroMsg="{{ it.em }}" aoDescricao="{{ it.setD }}" aoValor="{{ it.setV }}" aoRemover="{{ it.rem }}" style="display:block;" hint-size="100%,104px"></dc-import>
@@ -3962,7 +3983,7 @@ class Component extends DCLogic {
         : [{ t: 'Recebimento', x: recebimentoDe(F.cliNome, fTotal, F.numero, Date.now()) }],
       dTemFoto: !!F && (pd === 'orc' || pd === 'gar') && !!F.fotoUrl, dFotoBg: F && F.fotoUrl ? `url("${F.fotoUrl}")` : 'none',
       dTemAssin: !!F && pd !== 'rec' && !AVULSO.includes(pd) && !!F.assin, dAssinBg: F && F.assinUrl ? `url("${F.assinUrl}")` : 'none', dAssinLeg: F ? `Assinatura do cliente: ${F.cliNome}` : '',
-      dicaVis: !!st.dica, dicaVisL: !!st.dica && LEGADO_TESTES, dicaVisR: !!st.dica && !LEGADO_TESTES, dicaExp: st.dica ? 'true' : 'false', dicaToggle: () => this.setState(x => ({ dica: !x.dica })), portao: !!PG, pRef: this.pRef, inerte: PG || (st.fOpen && st.fech) ? '' : undefined, fundoOculto: PG || (st.fOpen && st.fech) ? 'true' : undefined, pKicker: PG ? PG.k : '', pTitulo: PG ? PG.t : '', pTexto: PG ? PG.x : '',
+      dicaAttr: st.dica ? '1' : '0', dicaVis: !!st.dica, dicaVisL: !!st.dica && LEGADO_TESTES, dicaVisR: !!st.dica && !LEGADO_TESTES, dicaExp: st.dica ? 'true' : 'false', dicaToggle: () => this.setState(x => ({ dica: !x.dica })), portao: !!PG, pRef: this.pRef, inerte: PG || (st.fOpen && st.fech) ? '' : undefined, fundoOculto: PG || (st.fOpen && st.fech) ? 'true' : undefined, pKicker: PG ? PG.k : '', pTitulo: PG ? PG.t : '', pTexto: PG ? PG.x : '',
       pForm: gk === 'form', pConf: gk === 'conf', pCompra: gk === 'sem' || gk === 'bloq', licId: st.licId, setLicId: (e) => this.setState({ licId: limparTxt(e.target.value).slice(0, 120), licMsg: null }), licIdE: st.licMsg === 'DADOS_INCOMPLETOS' ? 'erro' : 'normal', pAviso: !!(PG && PG.av), pAvisoTipo: PG && PG.av ? PG.av[0] : 'info', pAvisoT: PG && PG.av ? PG.av[1] : '', pAvisoX: PG && PG.av ? PG.av[2] : '', pAvisoFixo: !!licAv && (gk === 'sem' || gk === 'bloq'),
       pKeys: PG ? PG.keys.map(k => ({ ...k, e: 'normal', aria: k.aria || k.l })) : [], pN: PG ? String(PG.keys.length) : '0', pCols: PG && PG.keys.length > 1 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)',
       campos: [

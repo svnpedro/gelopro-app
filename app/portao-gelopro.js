@@ -108,8 +108,20 @@ if (d < 0.06) A.push({ g: 'G-L9 daltonismo', txt: `${tok[i][0]} × ${tok[j][0]}`
 }
 }
 antiMonocromia(root, falha);
+travasReal(root, falha);
 const res = { ok: F.length === 0, falhas: F, alertas: A, quando: new Date().toISOString(), largura: innerWidth, tema: tema ? tema.getAttribute('data-tema') : '' };
 window.__portao = res; return res;
+}
+function travasReal(root, falha) {
+if (!/[?&]real=1\b/.test(location.search)) return;
+const visivel = (e) => { if (!e.getClientRects().length) return false; for (let x = e; x && x !== document.body; x = x.parentElement) { const c = getComputedStyle(x), r = x.getBoundingClientRect(); if (c.display === 'none' || c.visibility === 'hidden' || +c.opacity === 0) return false; if (r.width <= 2 && /hidden|clip/.test(c.overflowX)) return false; } return true; };
+const textuais = (box) => [...box.querySelectorAll('*')].filter(e => [...e.childNodes].some(n => n.nodeType === 3 && n.textContent.trim()) && visivel(e));
+const dentro = (sel) => [...(root.matches && root.matches(sel) ? [root] : []), ...root.querySelectorAll(sel)].filter(visivel);
+dentro('[data-lucro-painel], [data-inv-meta]').forEach(box => textuais(box).forEach(e => { const h = e.getBoundingClientRect().height; if (h > 50) falha('G-L11 prosa em visor', e, `${Math.round(h)} px de altura dentro do visor (máximo 2 linhas, 50 px)`); }));
+dentro('[data-lucro-painel]').forEach(box => { const cs = []; textuais(box).forEach(e => { const c = pc(getComputedStyle(e).color); if (c && !cs.some(k => dist(k, c) < 0.06)) cs.push(c); }); if (cs.length < 2) falha('G-L12 visor monocromático', box, `${cs.length} cor de texto no painel (mínimo 2 distintas)`); });
+dentro('[data-sc-name="LinhaOrcamento"]').forEach(l => { const m = l.querySelector('[data-moeda]'), a = m && m.closest('[data-campo]'), b = l.querySelector('button[aria-label^="Remover"]'); if (!a || !b || !visivel(a) || !visivel(b)) return;
+const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); if (Math.abs(ra.top - rb.top) > 2 || Math.abs(ra.height - rb.height) > 2) falha('G-L13 alinhamento de linha de item', b, `preço ${Math.round(ra.top)}/${Math.round(ra.height)} px × remover ${Math.round(rb.top)}/${Math.round(rb.height)} px (top/altura, tolerância 2 px)`); });
+dentro('[data-lucro-painel], [data-cofre-card], [data-sc-name="LinhaOrcamento"]').forEach(box => textuais(box).forEach(e => { const own = [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(''); if (/R\$/.test(own) && /mono|courier/i.test(getComputedStyle(e).fontFamily)) falha('G-L18 R$ em fonte mono', e, `"${own.trim().slice(0, 20)}" em ${getComputedStyle(e).fontFamily.split(',')[0]}`); }));
 }
 const ESCOPO = '[data-fichas],[data-central-avisos],[data-cofre-card],[data-vis],[role="dialog"]';
 const GENERICO = new Set(['estado', 'data', 'custo', 'sem-ref', 'neutro']);
