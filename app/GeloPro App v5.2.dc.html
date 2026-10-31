@@ -196,6 +196,18 @@ html[data-uso-real="1"] button[aria-label="Tema Sol"]{padding:0 !important;gap:0
 /* PR #123: a barra "Consultar fichas" sai do rodapé nas 2 abas (uso real): rodapé sempre de 48 px, sem o salto de 54 px da grade e da
    telemetria ao trocar Sintomas | Medições. As fichas seguem no 9º quadrado de Medições e Testes; o legado não muda. */
 html[data-uso-real="1"] [data-atalhos] > :first-child{display:none !important;}
+/* PR #124: rodapé da Home em 1 linha de 48 px com 2 botões lado a lado: "Fichas: Sintomas|Medições" (cobalto #19365c no Titânio, branco com
+   borda #091e42 no Sol) e o Orçamento verde. Com atendimento ativo: quadrado de fichas 48×48 + trio ▶ ⏸ + medido pelo conteúdo. */
+html[data-uso-real="1"] [data-atalhos]{display:grid !important;grid-template-columns:minmax(0,1fr) auto !important;gap:6px !important;align-items:center !important;flex-direction:unset !important;height:48px;}
+html[data-uso-real="1"] [data-atalhos]:has(> [data-atendimento-ativo]){grid-template-columns:48px minmax(0,1fr) !important;}
+html[data-uso-real="1"] [data-atalhos] > [data-atendimento-ativo]{grid-template-columns:auto auto auto !important;border:0 !important;}
+html[data-uso-real="1"] [data-atalhos] > [data-sc-name="AtalhoTecla"] button > span > span:nth-child(n+3){display:none !important;}
+html[data-uso-real="1"] [data-fichas-sala]{min-width:48px;height:48px;box-sizing:border-box;padding:0 12px;border-radius:999px;background:#19365c;border:1.5px solid #0c1d36;box-shadow:inset 0 1px 0 rgba(255,255,255,0.2),0 2px 0 rgba(9,30,66,0.3);display:inline-flex;align-items:center;justify-content:center;gap:6px;font:800 15px/18px 'Roboto',sans-serif;white-space:nowrap;cursor:pointer;}
+html[data-uso-real="1"] [data-fichas-sala] > span{color:#ffffff !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-fichas-sala]{background:#ffffff;border-color:#091e42;box-shadow:0 2px 0 rgba(9,30,66,0.25);}
+html[data-uso-real="1"] [data-tema="sol"] [data-fichas-sala] > span{color:#091e42 !important;}
+html[data-uso-real="1"] [data-atalhos]:has(> [data-atendimento-ativo]) [data-fichas-sala]{width:48px;padding:0;}
+html[data-uso-real="1"] [data-atalhos]:has(> [data-atendimento-ativo]) [data-fichas-sala-txt]{position:absolute !important;width:1px !important;height:1px !important;overflow:hidden !important;clip:rect(0,0,0,0) !important;white-space:nowrap !important;}
 [data-ntc-uni]{align-items:stretch !important;}
 [data-ntc-uni] > *,[data-ntc-uni] [role="option"]{height:100%;box-sizing:border-box;}
 .tag.tag-l{max-width:100%;overflow-wrap:break-word;}
@@ -1345,7 +1357,9 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
         <sc-if value="{{ telaInicio }}" hint-placeholder-val="{{ true }}">
           <div data-atalhos="" data-aba="{{ abaHomeK }}" style="flex:none;display:flex;flex-direction:column;gap:6px;padding:0 2px;">
             <dc-import name="AtalhoTecla" pilula="{{ true }}" rotulo="Consultar fichas" icone="prancheta" acao="{{ abrirFichas }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import>
-            <sc-if value="{{ semAtendRodape }}" hint-placeholder-val="{{ true }}"><dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="Orçamento e garantia" icone="{{ icoOrcHome }}" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import></sc-if>
+            <!-- PR #124 (uso real): fichas por "sala de aula" da aba ativa (Sintomas | Medições), lado a lado com o Orçamento numa linha de 48 px. -->
+            <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><button type="button" data-fichas-sala="{{ abaHomeK }}" aria-label="{{ fichasSalaAria }}" onClick="{{ abrirFichasSala }}" style-active="transform:translateY(1px);"><svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{ fichasIcoHex }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg><span data-fichas-sala-txt="">{{ fichasSalaRot }}</span></button></sc-if>
+            <sc-if value="{{ semAtendRodape }}" hint-placeholder-val="{{ true }}"><dc-import name="AtalhoTecla" pilula="{{ true }}" verde="{{ true }}" rotulo="{{ orcHomeRot }}" aria="Orçamento e garantia" icone="{{ icoOrcHome }}" acao="{{ irOrcamento }}" style="display:block;min-width:0;" hint-size="100%,48px"></dc-import></sc-if>
             <sc-if value="{{ atendRodape }}" hint-placeholder-val="{{ false }}"><div data-atendimento-ativo="" role="group" aria-label="{{ atendAtivoT }}" style="flex:none;height:48px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
               <button type="button" data-atendimento-continuar="" data-verde="1" aria-label="{{ atendContinuarT }}" onClick="{{ atendContinuar }}" style="min-width:0;height:48px;box-sizing:border-box;padding:4px 10px;border-radius:999px;border:2px solid #007a00;background:linear-gradient(180deg,#00c400 0%,#00a000 100%);color:#ffffff;font:800 15px/18px 'Roboto',sans-serif;text-align:center;text-wrap:balance;overflow:hidden;cursor:pointer;" style-active="transform:translateY(1px);"><svg data-trio-ico="play" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:none;"><path d="M6.5 3.8v16.4L20.5 12z" fill="#ffffff"/></svg><span>Continuar</span><span class="sr-only"> atendimento</span></button>
               <button type="button" data-pausar-novo="" aria-label="Pausar / Novo aparelho" onClick="{{ pausarNovo }}"><svg data-trio-ico="pause" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="flex:none;"><path d="M5.5 3.5h5v17h-5zM13.5 3.5h5v17h-5z" fill="#091e42"/></svg><span>Pausar</span><span class="sr-only"> / Novo aparelho</span></button>
@@ -1894,6 +1908,8 @@ const SINTOMAS = [
 ];
 // Catálogo de fichas: tudo o que a base técnica tem, por categoria. Cada ficha abre o destino real (percurso, tabela ou ferramenta).
 const FCAT = { sint: ['Sintomas', 'Sintoma'], gas: ['Sensores & Gás', 'Teste'], cod: ['Códigos & LED', 'Código'], inv: ['Inverter & Docs', 'Componente'] };
+// PR #124 (uso real): salas de aula da gaveta de fichas (filtro que junta categorias).
+const SALAS_FICHA = { 'sala-sint': ['sint', 'cod'], 'sala-med': ['gas', 'inv'] };
 const FICO = { sint: 'alerta', gas: 'pt-sh', cod: 'codigo', inv: 'placa-ipm' };
 const FERR = { visual: ['Inspeção visual', 'busca'], multimetro: ['Multímetro', 'multimetro'], capacimetro: ['Capacímetro', 'capacitor'], nenhuma: ['Observação', 'info'] };
 const SECOES = ['Problema', 'Hipóteses', 'Verificações', 'Referência', 'Resultados', 'Próximo passo'];
@@ -3677,9 +3693,9 @@ class Component extends DCLogic {
     }
     // Ficha que troca a marca ou o fluido do atendimento avisa antes, na própria linha.
     const troca = (sub) => (sub.match(/abre com (?:a marca|o fluido) .+$/) || [''])[0].replace(/^abre/, 'Abre');
-    const qF = norm(st.busca.trim()), catSel = st.fichaCat && st.fichaCat !== 'todos' ? st.fichaCat : null;
+    const qF = norm(st.busca.trim()), catSel = st.fichaCat && st.fichaCat !== 'todos' ? st.fichaCat : null, salaSel = SALAS_FICHA[st.fichaCat] || null;
     const ariaF = (f, sub) => `${f.tipo}: ${f.t}${/[.?!]$/.test(f.t) ? '' : '.'} ${f.chave}. ${sub}`;
-    const fichasF = catF.filter(f => (!catSel || f.cat === catSel) && (!qF || norm([f.t, f.tipo, ...(f.ents || [f]).map(x => x.sub), f.chave].join(' ')).includes(qF))).map(f => {
+    const fichasF = catF.filter(f => (!catSel || (salaSel ? salaSel.includes(f.cat) : f.cat === catSel)) && (!qF || norm([f.t, f.tipo, ...(f.ents || [f]).map(x => x.sub), f.chave].join(' ')).includes(qF))).map(f => {
       const multi = !!f.ents && f.ents.length > 1, tags = f.tags || (f.chave ? [TG('medida', f.chave)] : []);
       return { ...f, temLogo: !!f.logo, pl: f.logo ? '8px' : '44px', nota: troca(f.sub), notaL: LEGADO_TESTES && !!troca(f.sub), notaR: !LEGADO_TESTES && !!troca(f.sub), notaP: LEGADO_TESTES ? [] : realce(troca(f.sub)), aria: ariaF(f, f.sub), onClick: f.abrir, uma: !multi, multi, tags, temTags: tags.length > 0,
         // Ficha repetida em vários sintomas: 1 cartão, um botão de entrada por sintoma (cada um abre a etapa daquele percurso).
@@ -4277,9 +4293,16 @@ class Component extends DCLogic {
         { k: 'sh', t: 'Pressão e SH', ico: 'lucide-gauge', acao: atalhoMod('ptsh', 'ptsh', null, 'Pressão e SH') },
         { k: 'vacuo', t: 'Vácuo e carga', ico: 'lucide-botija', acao: atalhoMod('ptsh', 'ptsh', '[data-orcar-ptsh]', 'Vácuo e carga') },
         { k: 'btu', t: 'Carga térmica', ico: 'lucide-calculator', acao: atalhoMod('ntc', 'btu', null, 'Carga térmica') },
-        { k: 'fichas', t: 'Fichas técnicas', ico: 'prancheta', acao: abrirFichas },
+        // PR #124 (uso real): o 9º quadrado vira teste de bancada (Ponte IPM no teste de diodo, etapa 'ipm' do inverter_checklist.csv), abrindo direto
+        // essa etapa no Guia Inverter; as fichas ficam no rodapé por sala. O legado mantém "Fichas técnicas" (pr30.js confere os 9 traçados).
+        LEGADO_TESTES ? { k: 'fichas', t: 'Fichas técnicas', ico: 'prancheta', acao: abrirFichas } : { k: 'diodo_ipm', t: nomeMed('Diodo IPM', 'Ponte IPM'), ico: 'diodo', acao: () => {
+          const i = invEt.filter(z => z.etapa_id !== 'seguranca').findIndex(z => z.etapa_id === 'ipm');
+          this.setState(x => ({ inv: { ...x.inv, _passo: Math.max(0, i), _todos: false } })); atalhoMod('inv', 'inv', '[data-inv-id="ipm"]', 'Diodo IPM')(); } },
       ],
-      abrirFichas,
+      abrirFichas, orcHomeRot: LEGADO_TESTES ? 'Orçamento e garantia' : 'Orçamento',
+      fichasSalaRot: abaMed ? 'Fichas: Medições' : 'Fichas: Sintomas', fichasIcoHex: tema === 'sol' ? '#091e42' : '#ffffff',
+      fichasSalaAria: abaMed ? 'Fichas: Medições (sensores, pressão, Inverter e componentes)' : 'Fichas: Sintomas (percursos, códigos e LED)',
+      abrirFichasSala: () => this.setState({ drawer: 'fichas', fichaSel: null, busca: '', fichaCat: abaMed ? 'sala-med' : 'sala-sint', fichaSec: null }),
       up: () => { if (this.state.pk) this.setState({ pk: null }); },
       chips: [['marca', 'Marca'], ['btu', 'BTU/h'], ['fluido', 'Fluido']].map(([k, rot]) => ({
         ...(() => { const logo = k === 'marca' && !marcaUni, w = eqW * FR[k] / 100 - 4 - (logo ? 24 : 1) - 2, ctx = this._ctx || (this._ctx = document.createElement('canvas').getContext('2d'));
@@ -4438,8 +4461,9 @@ class Component extends DCLogic {
       }) : [],
       busca: st.busca, setBusca: (e) => this.setState({ busca: e.target.value }),
       fichasInfo: catF.length ? (() => { const nF = fichasF.reduce((t, f) => t + nEnt(f), 0), nC = catF.reduce((t, f) => t + nEnt(f), 0); return `${nF === nC ? nC : nF + ' de ' + nC} fichas. Cada uma abre o percurso, a tabela ou a ferramenta real.`; })() : 'A base técnica ainda está carregando.',
-      fichaFiltros: [['todos', 'Todos'], ...Object.entries(FCAT).map(([k, v]) => [k, v[0]])].map(([k, l]) => {
-        const on = (st.fichaCat || 'todos') === k, n = (k === 'todos' ? catF : catF.filter(f => f.cat === k)).reduce((t, f) => t + nEnt(f), 0);
+      // PR #124 (uso real): chips por sala de aula: Todas | Sintomas (percursos, etapas, códigos, LED) | Medições (sensores, gás, Inverter, componentes).
+      fichaFiltros: (LEGADO_TESTES ? [['todos', 'Todos'], ...Object.entries(FCAT).map(([k, v]) => [k, v[0]])] : [['todos', 'Todas'], ['sala-sint', 'Sintomas'], ['sala-med', 'Medições']]).map(([k, l]) => {
+        const on = (st.fichaCat || 'todos') === k, n = (k === 'todos' ? catF : catF.filter(f => SALAS_FICHA[k] ? SALAS_FICHA[k].includes(f.cat) : f.cat === k)).reduce((t, f) => t + nEnt(f), 0);
         return { l: `${l} ${n}`, on: on ? 'true' : 'false', fundo: on ? 'var(--gp-accent-fill)' : 'var(--gp-card-action)', cor: on ? 'var(--gp-on-accent-fill)' : 'var(--gp-on-surface)', borda: on ? '2px solid var(--gp-dock-ring)' : '1px solid var(--gp-sec-edge)', acao: () => this.setState({ fichaCat: k, fichaSec: null }) };
       }),
       // Formato C: seções por categoria; buscando ou filtrando, as seções com resultado já vêm abertas.
