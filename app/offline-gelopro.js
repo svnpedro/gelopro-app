@@ -10,9 +10,9 @@ document.head.appendChild(s);
 const ocioso = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 if (document.readyState === 'complete') ocioso(libsPix); else window.addEventListener('load', () => ocioso(libsPix));
 const LEGADO = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
-if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v108')) {
+if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v109')) {
 const st = document.createElement('style');
-st.id = 'gp-cores-global-v108';
+st.id = 'gp-cores-global-v109';
 st.textContent = [
 '[data-chapa][data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-cliente-bloco][data-cli-ok="1"] { display: flex !important; }',
 '[data-video-enxuto="1"] [data-cliente-bloco] > span:first-child { display: none !important; }',
