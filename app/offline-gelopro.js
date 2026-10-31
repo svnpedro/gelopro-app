@@ -10,9 +10,9 @@ document.head.appendChild(s);
 const ocioso = window.requestIdleCallback || ((f) => setTimeout(f, 600));
 if (document.readyState === 'complete') ocioso(libsPix); else window.addEventListener('load', () => ocioso(libsPix));
 const LEGADO = (() => { try { const q = location.search; return /[?&]completo=1\b/.test(q) || (/HeadlessChrome/i.test(navigator.userAgent) && !/[?&]real=1\b/.test(q)); } catch (e) { return false; } })();
-if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v130')) {
+if (typeof document !== 'undefined' && !document.getElementById('gp-cores-global-v131')) {
 const st = document.createElement('style');
-st.id = 'gp-cores-global-v130';
+st.id = 'gp-cores-global-v131';
 st.textContent = [
 '[data-chapa][data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-video-enxuto="1"] [data-cliente-bloco][data-cli-ok="1"], [data-cliente-bloco][data-cli-ok="1"] { display: flex !important; }',
 '[data-video-enxuto="1"] [data-cliente-bloco] > span:first-child { display: none !important; }',
@@ -39,7 +39,7 @@ st.textContent = [
 '[data-tema="sol"] [data-chapa] [data-cabecalho] > div { background: #ffffff !important; border: 2px solid #091e42 !important; }',
 '[data-tema="sol"] [data-chapa] [data-cabecalho] > div span { color: #091e42 !important; }',
 '[data-bandeja]:has([data-alerta-diamante="fluido"]), [data-alerta-diamante="fluido"] { display: none !important; }',
-'[data-central-avisos] [data-aviso-item^="sis-"], [data-central-avisos] [data-aviso-item^="feed-"], [data-central-avisos] [data-aviso-item^="fluido-"], [data-central-avisos] [data-aviso-categoria="sis"], [data-central-avisos] [data-aviso-categoria="tecnico"], [data-central-avisos] [data-selo-atualizacao] { display: none !important; }',
+'[data-central-avisos] [data-aviso-item^="sis-"], [data-central-avisos] [data-aviso-item^="fluido-"], [data-central-avisos] [data-aviso-categoria="sis"], [data-central-avisos] [data-aviso-categoria="tecnico"], [data-central-avisos] [data-selo-atualizacao] { display: none !important; }',
 '[data-chapa] [data-passo-in] > [data-sc-name="Aviso"]:first-child { display: none !important; }',
 '[data-codigo-tela] > [data-sc-name="Aviso"] { display: none !important; }',
 '[data-res-rolagem]:has([data-res-instrumentos]) > div:has([data-res-fonte]) { display: none !important; }',
@@ -86,7 +86,7 @@ const itens = [...central.querySelectorAll('[data-aviso-item]')];
 let visiveis = 0;
 itens.forEach((it) => {
 const k = it.getAttribute('data-aviso-item');
-if (!k || /^(sis|feed|fluido)-/.test(k) || del[k]) {
+if (!k || /^(sis|fluido)-/.test(k) || del[k]) {
 it.style.setProperty('display', 'none', 'important');
 return;
 }
@@ -98,7 +98,7 @@ btn.type = 'button';
 btn.setAttribute('data-excluir-aviso', k);
 btn.setAttribute('aria-label', 'Excluir este aviso');
 btn.textContent = '✕ Excluir';
-btn.style.cssText = 'align-self:flex-end;min-height:36px;padding:4px 10px;border-radius:999px;border:1px solid #ef4444;background:#fef2f2;color:#991b1b;font:700 13px/16px Roboto,sans-serif;cursor:pointer;margin-top:4px;';
+btn.style.cssText = 'align-self:flex-end;min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:1.5px solid #b91c1c;background:#fef2f2;color:#991b1b;font:700 14px/18px Roboto,sans-serif;cursor:pointer;margin-top:6px;';
 btn.onclick = (e) => {
 e.stopPropagation();
 const d = lerDel();
@@ -118,7 +118,7 @@ barraLimpar = document.createElement('button');
 barraLimpar.type = 'button';
 barraLimpar.setAttribute('data-limpar-todos-avisos', '1');
 barraLimpar.textContent = '🗑 Limpar todos os avisos';
-barraLimpar.style.cssText = 'min-height:48px;width:100%;box-sizing:border-box;padding:8px 14px;border-radius:14px;border:1.5px solid #ef4444;background:#fef2f2;color:#991b1b;font:700 15px/20px Roboto,sans-serif;cursor:pointer;text-align:center;';
+barraLimpar.style.cssText = 'min-height:48px;width:100%;box-sizing:border-box;padding:8px 14px;border-radius:14px;border:1.5px solid #b91c1c;background:#fef2f2;color:#991b1b;font:700 16px/20px Roboto,sans-serif;cursor:pointer;text-align:center;';
 barraLimpar.onclick = () => {
 const d = lerDel();
 itens.forEach((it) => {
@@ -127,6 +127,8 @@ if (k) d[k] = 1;
 it.style.setProperty('display', 'none', 'important');
 });
 gravarDel(d);
+const lg = acharComp();
+if (lg) lg.setState(x => ({ alertaOff: { ...(x.alertaOff || {}), ...d }, avisosLidos: { ...(x.avisosLidos || {}), ...d } }));
 gerenciarExclusaoAvisos();
 };
 central.insertBefore(barraLimpar, central.firstChild);

@@ -2398,6 +2398,8 @@ const CAT_ABAS = [
 const INSUMO = ['higienizacao', 'limpeza_simples', 'dreno_isol', 'desinstalacao'];
 // Central de Avisos do Sininho (PR #22): Todos + categorias. O × da bandeja só tira o alerta da bandeja; ele continua aqui enquanto o gatilho vale.
 // PR #27 (achado 4): notas de versão em "Sistema", fora de Lucro, Técnico e Preventivas; aparecem só em Todos e em Sistema, com etiqueta discreta.
+// PR #131: destinos aceitos no campo "ir" do feed-avisos.json (rótulo do botão do aviso).
+const FEED_IR = { ntc: 'Abrir Sensor NTC', ptsh: 'Abrir PT/SH', inv: 'Abrir Inverter', docs: 'Abrir Docs', cofre: 'Ir para o Cofre', orc: 'Abrir orçamento' };
 const AVISO_CATS = [['todos', 'Todos'], ['lucro', 'Lucro & Garantia'], ['tecnico', 'Técnico & Fluido'], ['prev', 'Preventivas'], ['sis', 'Sistema']];
 const AVISO_COR = { lucro: 'var(--gp-lucro-ambar-viva, #f59e0b)', tecnico: 'var(--gp-lucro-verde-viva, #22c55e)', prev: 'var(--gp-dock-ring)', sis: 'var(--gp-outline)' };
 // Etiqueta da categoria no cabeçalho do aviso.
@@ -2695,8 +2697,15 @@ class Component extends DCLogic {
     fetch('feed-avisos.json', { cache: 'no-store', signal: ctl ? ctl.signal : undefined }).then(r => r.ok ? r.json() : null).then(j => {
       const l = j && Array.isArray(j.avisos) ? j.avisos : [];
       const ok = l.filter(a => a && typeof a.k === 'string' && typeof a.t === 'string' && a.k.trim() && a.t.trim()).slice(0, 20)
-        .map(a => ({ k: limparTxt(a.k).trim().slice(0, 40), t: limparTxt(a.t).trim().slice(0, 240), em: Number.isFinite(+a.em) && +a.em > 0 ? +a.em : undefined }));
+        .map(a => ({ k: limparTxt(a.k).trim().slice(0, 40), t: limparTxt(a.t).trim().slice(0, 240), em: Number.isFinite(+a.em) && +a.em > 0 ? +a.em : undefined, ir: FEED_IR[a.ir] ? a.ir : undefined }));
       if (ok.length) this.setState({ feedAvisos: ok });
+      // PR #131 (uso real): atualização nova (fora de gelopro.avisos.excluidos e ainda não anunciada nesta sessão) acende um toast clicável que
+      // abre a Central de Avisos. No HeadlessChrome só com ?testarFeed=1, para não mexer nas suítes antigas.
+      if (LEGADO_TESTES || (/HeadlessChrome/.test(navigator.userAgent) && !/[?&]testarFeed=1\b/.test(location.search))) return;
+      let del = {}, vistos = {}; try { del = JSON.parse(localStorage.getItem('gelopro.avisos.excluidos') || '{}') || {}; vistos = JSON.parse(sessionStorage.getItem('gelopro.feed.anunciados') || '{}') || {}; } catch (e) {}
+      const novos = ok.filter(a => !del['feed-' + a.k] && !vistos[a.k]); if (!novos.length) return;
+      novos.forEach(a => { vistos[a.k] = 1; }); try { sessionStorage.setItem('gelopro.feed.anunciados', JSON.stringify(vistos)); } catch (e) {}
+      this.toastFeed();
     }).catch(() => {}).finally(() => { if (t) clearTimeout(t); });
   }
   iniciarLicenca() {
@@ -2775,6 +2784,14 @@ class Component extends DCLogic {
     }
   }
   // PR #80: toast verde no topo por 3,5 s confirmando que o orçamento foi para o Cofre (fica no <body>, sobrevive à volta para a Home).
+  // PR #131: toast de atualização recebida pelo feed (botão de 48 px no topo; o toque abre a Central de Avisos; some sozinho em 9 s).
+  toastFeed() {
+    try { const ant = document.querySelector('[data-toast-feed]'); if (ant) ant.remove(); const t = document.createElement('button'); t.type = 'button'; t.setAttribute('data-toast-feed', '');
+      t.setAttribute('aria-label', 'Nova atualização disponível. Toque para ver na Central de Avisos'); t.textContent = '🔔 Nova atualização disponível · Toque para ver';
+      t.style.cssText = "position:fixed;z-index:2147483646;left:50%;top:calc(env(safe-area-inset-top, 0px) + 12px);transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);min-height:48px;box-sizing:border-box;padding:12px 20px;border-radius:999px;background:#1d4ed8;border:2px solid #93c5fd;color:#ffffff;font:800 16px/20px 'Roboto',sans-serif;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;";
+      t.onclick = () => { t.remove(); this.setState({ drawer: 'avisos', avisoCat: 'todos', fOpen: false }); };
+      document.body.appendChild(t); setTimeout(() => t.remove(), 9000); } catch (e) { /* sem DOM */ }
+  }
   toastCofre(txt) {
     try { const ant = document.querySelector('[data-toast-cofre]'); if (ant) ant.remove(); const t = document.createElement('div'); t.setAttribute('data-toast-cofre', ''); t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite');
       t.textContent = txt || '✓ Orçamento salvo no Cofre'; t.style.cssText = "position:fixed;z-index:2147483646;left:50%;top:calc(env(safe-area-inset-top, 0px) + 12px);transform:translateX(-50%);max-width:calc(100vw - 32px);box-sizing:border-box;padding:12px 20px;border-radius:999px;background:#15803d;border:2px solid #86efac;color:#ffffff;font:800 16px/20px 'Roboto',sans-serif;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;";
@@ -3667,13 +3684,19 @@ class Component extends DCLogic {
     cofreL.filter(c => c.prevEm).sort((a, b) => a.prevEm - b.prevEm).slice(0, 5).forEach(c => { const b = c.base, ap = aparelhoDe(b);
       aviso({ k: 'prev-' + c.n, cat: 'prev', ico: 'calendario', em: b.em, persist: true, t: 'Preventiva de 6 meses', chips: [TG('estado', b.cliente || 'Cliente'), ...(ap ? [TG('capacidade', ap)] : []), TG('prazo', b.prevData || dataBR(c.prevEm))], acoes: [{ k: 'cofre', l: 'Ir para o Cofre', acao: irCofre('prev') }] }); });
     // Feed remoto do Sininho (app/feed-avisos.json): avisos válidos (k e t em texto) entram como avisos do sistema, sem HTML.
-    (st.feedAvisos || []).forEach(u => aviso({ k: 'feed-' + u.k, cat: 'sis', ico: 'info', em: u.em, persist: true, t: u.t, acoes: [] }));
+    // PR #131: no uso real o aviso do feed vem com o crachá ✨ ATUALIZAÇÃO e, se o JSON trouxer "ir", com o botão de destino.
+    (st.feedAvisos || []).forEach(u => aviso({ k: 'feed-' + u.k, cat: 'sis', ico: 'info', em: u.em, persist: true, t: u.t, ...(LEGADO_TESTES ? {} : { chips: [TG('ok', '✨ ATUALIZAÇÃO')] }),
+      acoes: !LEGADO_TESTES && u.ir ? [{ k: u.ir, l: FEED_IR[u.ir], acao: u.ir === 'cofre' ? irCofre('todos') : u.ir === 'orc' ? () => { this.setState({ drawer: null }); this.abrirFech(); } : irMod(u.ir) }] : [] }));
     ATUALIZACOES.forEach(u => aviso({ k: u.k, cat: 'sis', ico: 'info', em: u.em, persist: true, t: u.t,
       acoes: [{ k: u.ir, l: u.l, acao: u.ir === 'cofre' ? irCofre('todos') : () => { this.abrirFech(); this.fSet({ catAberto: true, catAba: 'todos' }); } }] }));
     Object.keys(A0).forEach(k => { if (!avisos.some(a => a.k === k)) delete A0[k]; });
     // Lido: fluido, preventivas e sistema ficam gravados no aparelho; os do atendimento ficam no estado (Concluir zera) e valem para aquela
     // ocorrência (data e hora): o aviso que some e volta, como o retorno depois de tirar a higienização, conta como novo de novo.
     const lidosP = lerObj(this.arq().avisos) || {}, lidosA = st.avisosLidos || {}, naoLidos = avisos.filter(a => a.persist ? !lidosP[a.k] : lidosA[a.k] !== a.em);
+    // PR #131 (uso real): o badge conta só o que a Central mostra (sem os fixos ocultos sis-*/fluido-* nem os excluídos) e mantém aceso cada
+    // atualização do feed até ela ser excluída (✕ Excluir ou Limpar todos gravam em gelopro.avisos.excluidos).
+    const avDel = LEGADO_TESTES ? {} : (lerObj('gelopro.avisos.excluidos') || {}), naoLidosSino = LEGADO_TESTES ? naoLidos
+      : avisos.filter(a => !/^(sis|fluido)-/.test(a.k) && !avDel[a.k] && (/^feed-/.test(a.k) || naoLidos.includes(a)));
     const abrirAvisos = () => {
       gravar(this.arq().avisos, { ...lidosP, ...Object.fromEntries(avisos.filter(a => a.persist).map(a => [a.k, 1])) });
       this.setState(x => ({ drawer: 'avisos', avisoCat: 'todos', avisosNovos: naoLidos.map(a => a.k), avisosLidos: { ...x.avisosLidos, ...Object.fromEntries(avisos.filter(a => !a.persist).map(a => [a.k, a.em])) } }));
@@ -4317,8 +4340,8 @@ class Component extends DCLogic {
       toggleTema: () => this.setState({ tema: TEMA_PROX[tema] }),
       // Topo (PR #45): marca gravada no chassi, slogan e, embaixo, o nome do titular inteiro, em linhas equilibradas (nunca reticências).
       topoNome: nomeTopo, topoAria: `GeloPRO · Titular: ${nomeTopo}`,
-      sinoAria: naoLidos.length ? `Avisos: ${naoLidos.length} ${naoLidos.length === 1 ? 'novo' : 'novos'}` : 'Avisos: nenhum novo', abrirAvisos,
-      temSinoBadge: naoLidos.length > 0, sinoN: String(naoLidos.length), sinoBadge: naoLidos.length > 99 ? '99+' : String(naoLidos.length),
+      sinoAria: naoLidosSino.length ? `Avisos: ${naoLidosSino.length} ${naoLidosSino.length === 1 ? 'novo' : 'novos'}` : 'Avisos: nenhum novo', abrirAvisos,
+      temSinoBadge: naoLidosSino.length > 0, sinoN: String(naoLidosSino.length), sinoBadge: naoLidosSino.length > 99 ? '99+' : String(naoLidosSino.length),
       dAvisos: d === 'avisos', avisoCatK: avCat, avisoVazio: !avLista.length,
       avisoCats: AVISO_CATS.map(([k, l]) => ({ k, ...pilula(avCat === k, `${l} (${k === 'todos' ? avisos.length : avisos.filter(a => a.cat === k).length})`, () => this.setState({ avisoCat: k })) })),
       avisoItens: avLista.map(a => ({ k: a.k, cat: a.cat, catTag: TG(...(AVISO_TAG[a.cat] || ['sem-ref', ''])), em: String(a.em), quando: dataHora(a.em), t: a.t, ico: a.ico, cor: AVISO_COR[a.cat], chips: a.chips || [], temChips: !!(a.chips && a.chips.length),
