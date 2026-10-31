@@ -9,7 +9,7 @@
 <x-dc>
 <sc-if value="{{ gira }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="{{ oculto }}" role="{{ papel }}" aria-label="{{ rotulo }}" width="{{ t }}" height="{{ t }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none;"><path d="M12 3a9 9 0 1 1-9 9"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.9s" repeatCount="indefinite"></animateTransform></path></svg></sc-if>
 <sc-if value="{{ fixo }}" hint-placeholder-val="{{ true }}"><svg aria-hidden="{{ oculto }}" role="{{ papel }}" aria-label="{{ rotulo }}" width="{{ t }}" height="{{ t }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none;"><sc-for list="{{ tracos }}" as="d" hint-placeholder-count="1"><path d="{{ d }}"></path></sc-for></svg></sc-if>
-<sc-if value="{{ cheio }}" hint-placeholder-val="{{ false }}"><svg aria-hidden="{{ oculto }}" role="{{ papel }}" aria-label="{{ rotulo }}" width="{{ t }}" height="{{ t }}" viewBox="0 0 24 24" fill="{{ corCheio }}" stroke="none" style="display:block;flex:none;"><sc-for list="{{ tracos }}" as="d" hint-placeholder-count="1"><path d="{{ d }}"></path></sc-for></svg></sc-if>
+<sc-if value="{{ cheio }}" hint-placeholder-val="{{ false }}"><svg data-zap-oficial="{{ zapOf }}" aria-hidden="{{ oculto }}" role="{{ papel }}" aria-label="{{ rotulo }}" width="{{ t }}" height="{{ t }}" viewBox="0 0 24 24" fill="{{ corCheio }}" stroke="none" style="display:block;flex:none;"><sc-for list="{{ tracos }}" as="d" hint-placeholder-count="1"><path d="{{ d }}"></path></sc-for></svg></sc-if>
 <sc-if value="{{ catalogo }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;gap:16px;">
   <sc-for list="{{ grupos }}" as="g" hint-placeholder-count="3">
@@ -137,7 +137,7 @@ class Component extends DCLogic {
     const rot = this.props.rotulo;
     return {
       catalogo: cat, gira: !cat && n === 'carregando', fixo: !cat && n !== 'carregando' && !CHEIOS[n], cheio: !cat && !!CHEIOS[n],
-      corCheio: /^#[0-9a-fA-F]{3,8}$/.test(this.props.cor || '') ? this.props.cor : '#ffffff',
+      corCheio: /^#[0-9a-fA-F]{3,8}$/.test(this.props.cor || '') ? this.props.cor : '#ffffff', zapOf: n === 'zap' ? '' : undefined,
       tracos: CHEIOS[n] || MAPA[n] || MAPA.neutro, t: this.props.tamanho || 24,
       oculto: rot ? undefined : 'true', papel: rot ? 'img' : undefined, rotulo: rot,
       grupos: cat ? GRUPOS.map(([t, m]) => ({ t: `${t} · ${Object.keys(m).length}`, itens: Object.entries(m).map(([k, d]) => ({ n: k, d })) })) : [],
