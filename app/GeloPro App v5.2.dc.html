@@ -485,6 +485,8 @@ html[data-uso-real="1"] [data-res-rolagem] > ol > li{padding:12px !important;bor
 html[data-uso-real="1"] [data-res-rolagem] > ol > li:first-child{border-top:0 !important;}
 html[data-uso-real="1"] [data-res-rolagem] ol .destaque{font-weight:800 !important;}
 html[data-uso-real="1"] [data-res-servico]{background:#f0fdf4 !important;border:2px solid #16a34a !important;border-radius:14px !important;box-shadow:0 3px 0 #14532d,0 6px 14px rgba(20,83,45,0.2) !important;}
+/* PR #128: Passo 2 com os 4 opcionais recolhidos (uso real, gaveta [data-mais-p2] fechada). */
+html[data-uso-real="1"] [data-p2-opcionais][data-aberto="0"]{display:none !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -1742,6 +1744,11 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <dc-import name="SeletorPrazo" rotulo="Garantia contratual" valor="{{ fPrazo }}" estado="{{ fPrazoE }}" erroMsg="escolha um prazo" acao="{{ fSetPrazo }}" style="display:block;" hint-size="100%,104px"></dc-import>
               <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><div data-prazo-rapido="" role="group" aria-label="Prazos rápidos" style="display:flex;flex-wrap:wrap;gap:8px;"><sc-for list="{{ fPrazoPilulas }}" as="pz" hint-placeholder-count="3"><button type="button" aria-pressed="{{ pz.on }}" onClick="{{ pz.acao }}" style="min-height:48px;box-sizing:border-box;padding:6px 14px;border-radius:999px;border:{{ pz.borda }};background:{{ pz.fundo }};color:{{ pz.cor }};font:600 16px/20px 'Roboto',sans-serif;text-align:left;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ pz.t }}</button></sc-for></div></sc-if>
               <sc-if value="{{ fLivre }}" hint-placeholder-val="{{ false }}"><dc-import name="CampoTexto" rotulo="Prazo e escopo (texto livre)" valor="{{ fPrazoLivre }}" aoDigitar="{{ fSetPrazoLivre }}" placeholder="Ex.: 20 dias para a limpeza" estado="{{ fLivreE }}" erroMsg="descreva o prazo" style="display:block;" hint-size="100%,74px"></dc-import></sc-if>
+              <!-- PR #128 (uso real): os 4 opcionais do Passo 2 (cobre, não cobre, ressalva e foto) recolhidos por padrão sob [data-mais-p2], como o
+                   "Desconto, validade e custos" do Passo 1: Total e Garantia contratual ficam na 1ª dobra. Fechado, só some da vista (display:none, segue no
+                   DOM); no legado o invólucro é display:contents e nada muda. -->
+              <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><button type="button" data-mais-p2="" aria-expanded="{{ fMaisP2Exp }}" onClick="{{ fMaisP2Toggle }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:1.5px dashed var(--gp-outline);background:transparent;color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;">{{ fMaisP2Txt }}</button></sc-if>
+              <div data-p2-opcionais="" data-aberto="{{ fMaisP2Ab }}" style="display:contents;">
               <dc-import name="CampoTexto" rotulo="O que a garantia cobre" valor="{{ fCobre }}" aoDigitar="{{ fSetCobre }}" placeholder="Os serviços do orçamento" style="display:block;" hint-size="100%,74px"></dc-import>
               <dc-import name="CampoTexto" rotulo="O que não cobre" valor="{{ fNaoCobre }}" aoDigitar="{{ fSetNaoCobre }}" placeholder="Ex.: mau uso, surto de energia" style="display:block;" hint-size="100%,74px"></dc-import>
               <span style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Ressalva / estado encontrado</span>
@@ -1766,6 +1773,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <span data-foto-previa="" role="img" aria-label="Prévia da foto de evidência" style="display:block;width:100%;height:160px;border-radius:12px;background-color:var(--gp-display);background-image:{{ fFotoBg }};background-size:contain;background-position:center;background-repeat:no-repeat;"></span>
                   <button type="button" onClick="{{ fFotoRem }}" style="min-height:48px;box-sizing:border-box;border-radius:var(--gp-r-tecla, 999px);border:1px solid var(--gp-outline);background:transparent;color:var(--gp-primary);font:600 16px/22px 'Roboto',sans-serif;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">Remover foto</button>
                 </sc-if>
+              </div>
               </div>
             </div>
           </sc-if>
@@ -2717,6 +2725,8 @@ class Component extends DCLogic {
       legenda('1 toque no topo: marca, BTU/h e gás');
       await escolher('Marca', 'Samsung'); await escolher('BTU/h', '18.000'); await escolher('Fluido', 'R32'); await escolher('Marca', 'Midea'); await escolher('Fluido', 'R410A');
       legenda('Os 3 visores recalibram na hora'); await d(1300);
+      // PR #128: a grade da Home desliza para Medições e Testes (botões grandes, gêmeos imóveis) e volta para Sintomas.
+      legenda('Sintomas | Medições: a grade desliza'); await toque(document.querySelector('[data-aba-home="medicoes"]'), 900); await toque(document.querySelector('[data-aba-home="sintomas"]'), 700);
       // b) Código no display: o FAÇA pisca e o botão verde Orçar abre o orçamento.
       legenda('Código no display: o que fazer');
       await toque(achar('[data-grade-sintomas] button', e => /Código no display/.test(nome(e))), 900);
@@ -3742,7 +3752,7 @@ class Component extends DCLogic {
     const ariaF = (f, sub) => `${f.tipo}: ${f.t}${/[.?!]$/.test(f.t) ? '' : '.'} ${f.chave}. ${sub}`;
     const fichasF = catF.filter(f => (!catSel || (salaSel ? salaSel.includes(f.cat) : f.cat === catSel)) && (!qF || norm([f.t, f.tipo, ...(f.ents || [f]).map(x => x.sub), f.chave].join(' ')).includes(qF))).map(f => {
       const multi = !!f.ents && f.ents.length > 1, tags = f.tags || (f.chave ? [TG('medida', f.chave)] : []);
-      return { ...f, temLogo: !!f.logo, pl: f.logo ? '8px' : '44px', nota: troca(f.sub), notaL: LEGADO_TESTES && !!troca(f.sub), notaR: !LEGADO_TESTES && !!troca(f.sub), notaP: LEGADO_TESTES ? [] : realce(troca(f.sub)), aria: ariaF(f, f.sub), onClick: f.abrir, uma: !multi, multi, tags, temTags: tags.length > 0,
+      return { ...f, temLogo: !!f.logo, pl: f.logo ? '8px' : '44px', nota: troca(f.sub), notaL: LEGADO_TESTES && !!troca(f.sub), notaR: !LEGADO_TESTES && !!troca(f.sub), notaP: LEGADO_TESTES ? [] : realce(troca(f.sub)), aria: ariaF(f, f.sub), onClick: !LEGADO_TESTES && st.fichaCat === 'sala-med' ? () => { this.setState({ abaHome: 'medicoes' }); f.abrir(); } : f.abrir, uma: !multi, multi, tags, temTags: tags.length > 0,
         // Ficha repetida em vários sintomas: 1 cartão, um botão de entrada por sintoma (cada um abre a etapa daquele percurso).
         entradas: multi ? f.ents.map(en => ({ l: en.sint, aria: ariaF(f, en.sub), onClick: en.abrir })) : [] };
     });
@@ -3936,7 +3946,7 @@ class Component extends DCLogic {
           capRec ? `Capacidade comercial recomendada: ${fmtBTU(capRec)} (porte ${PORTE_ROT[porteDe(capRec)]})` : `Capacidade comercial recomendada: dividir a carga entre aparelhos (estimativa acima de ${fmtBTU(btuNum(OPTS.btu.list[OPTS.btu.list.length - 1]))})`, '',
           capRec ? 'Monto o orçamento da instalação com essa capacidade. É só responder por aqui.' : 'Monto o orçamento com a divisão entre aparelhos. É só responder por aqui.', `Base Atualizada ${BASE_MES}`]));
       },
-      bLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cli: x.laudo.cli || (x.fech ? x.fech.cliNome : ''), cons: x.laudo.cons || `Ambiente de ${B2.area} m², ${B2.pes} pessoa(s), ${B2.w || 0} W de aparelhos, ${B2.sol.toLowerCase()}. Estimativa de ${bEst ? fmtBTU(bEst) : '—'} para aparelho de ${st.sel.btu} BTU/h.` } })),
+      bLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', prev: { tela: x.tela, modK: x.modK, atalho: x.atalho, foco: null }, laudo: { ...x.laudo, cli: x.laudo.cli || (x.fech ? x.fech.cliNome : ''), cons: x.laudo.cons || `Ambiente de ${B2.area} m², ${B2.pes} pessoa(s), ${B2.w || 0} W de aparelhos, ${B2.sol.toLowerCase()}. Estimativa de ${bEst ? fmtBTU(bEst) : '—'} para aparelho de ${st.sel.btu} BTU/h.` } })),
       docsHub: [
         { tipo: 'Fechamento', t: 'Orçamento e garantia', s: 'Itens, garantia, assinatura, Pix e PDF', acao: () => this.abrirFech() },
         { tipo: lock ? 'Bônus bloqueado' : 'Bônus', t: 'Laudo de inviabilidade', s: 'PDF com constatações, medições e conclusão', acao: () => lock ? this.vazio('upg', { modK: 'docs' }) : this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cli: x.laudo.cli || (x.fech ? x.fech.cliNome : '') } })) },
@@ -4038,6 +4048,7 @@ class Component extends DCLogic {
       // PR #77: modo vídeo enxuto (só com this._video) e o botão que reabre as opções e custos.
       fVideoModo: !!this._video || !LEGADO_TESTES, fEnxuto: (this._video || !LEGADO_TESTES) && F && !F.maisOpcoes ? '1' : '0', fCliOk: F && F.cliNome.trim().length >= 2 ? '1' : '0',
       fMaisExp: F && F.maisOpcoes ? 'true' : 'false', fMaisTxt: !LEGADO_TESTES ? (F && F.maisOpcoes ? 'Fechar desconto, validade e custos ▴' : 'Desconto, validade e custos ▾') : F && F.maisOpcoes ? 'Recolher opções e custos ▴' : 'Opções e custos do orçamento ▾', fMaisToggle: () => this.fSet(f => ({ maisOpcoes: !f.maisOpcoes })),
+      fMaisP2Ab: LEGADO_TESTES || (F && F.maisP2) ? '1' : '0', fMaisP2Exp: F && F.maisP2 ? 'true' : 'false', fMaisP2Txt: F && F.maisP2 ? 'Fechar cobertura, ressalva e foto ▴' : 'Cobertura, ressalva e foto (opcional) ▾', fMaisP2Toggle: () => this.fSet(f => ({ maisP2: !f.maisP2 })),
       fCliNome: F ? F.cliNome : '', fSetCliNome: (e) => this.fSet({ cliNome: limparTxt(e.target.value) }), fCliNomeE: tent && fp === 1 && F.cliNome.trim().length < 2 ? 'erro' : 'normal',
       fCliTel: F ? F.cliTel : '', fSetCliTel: (e) => this.fSet({ cliTel: e.target.value }),
       fEquip: equip, fEquipMarca: selA.marca, fEquipBtu: selA.btu, fEquipFlu: selA.fluido, fTemDiag: !!r && !discreto, fDiag: r ? `Hipótese interna (não vai ao cliente): ${r.t}` : '',
@@ -4379,6 +4390,8 @@ class Component extends DCLogic {
       voltar: () => this.setState(x => {
         // PR #127 (uso real): Laudo, PMOC e Recibo avulso voltam SEMPRE para Docs na aba Documentos (PDF); antes o Laudo caía na Home (ele abre
         // de Docs por setState, sem gravar prev). O legado segue a regra antiga.
+        // PR #128: o Laudo aberto pela Carga térmica ("Levar ao laudo de quarto quente") volta para a Carga térmica; nos outros casos, para Docs.
+        if (!LEGADO_TESTES && x.tela === 'laudo' && x.prev && x.prev.tela === 'btu') return { ...x.prev, modo: null, prev: null };
         if (!LEGADO_TESTES && ['laudo', 'pmoc', 'scripts'].includes(x.tela)) return { tela: 'docs', modK: 'docs', docsAba: 'pdf', modo: null, prev: null };
         if (['pmoc', 'scripts'].includes(x.tela)) return { tela: 'docs', modK: 'docs' };
         if (MOD.includes(x.tela)) return x.prev && x.prev.tela !== 'inicio' ? { ...x.prev, modo: null, modK: null, prev: null } : { ...RESET };
