@@ -1102,7 +1102,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                   <sc-if value="{{ bAcima }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="aviso" titulo="{{ bAcimaT }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
                   <sc-if value="{{ bTemRec }}" hint-placeholder-val="{{ false }}"><div data-recomendacao="" style="flex:none;"><dc-import name="Aviso" tipo="info" titulo="{{ bRecT }}" texto="{{ bRecX }}" fixo="{{ true }}" style="display:block;" hint-size="100%,48px"></dc-import></div></sc-if>
                   <sc-if value="{{ bTemVer }}" hint-placeholder-val="{{ false }}"><dc-import name="Aviso" tipo="{{ bVerTipo }}" titulo="{{ bVerT }}" texto="{{ bVerX }}" style="display:block;flex:none;" hint-size="100%,48px"></dc-import></sc-if>
-                  <sc-if value="{{ bTemVer }}" hint-placeholder-val="{{ false }}"><dc-import name="AtalhoTecla" rotulo="Levar ao laudo de quarto quente" icone="documento" acao="{{ bLaudo }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import></sc-if>
+                  <sc-if value="{{ bTemVer }}" hint-placeholder-val="{{ false }}"><dc-import name="AtalhoTecla" rotulo="{{ bLaudoRot }}" icone="documento" acao="{{ bLaudo }}" style="display:block;flex:none;" hint-size="100%,60px"></dc-import></sc-if>
                   <sc-if value="{{ bTemRec }}" hint-placeholder-val="{{ false }}"><div data-zap-btu="" style="flex:none;"><dc-import name="AtalhoTecla" verde="{{ true }}" rotulo="Enviar recomendação no WhatsApp" icone="{{ icoZap }}" acao="{{ bZap }}" style="display:block;" hint-size="100%,60px"></dc-import></div></sc-if>
                   <span data-carga-fatores-aviso="" style="font:700 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface);">Fatores de amostra. Confirme antes de usar.</span>
                   <div data-campos-linha="" data-nota-tecnica="1" style="flex:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:end;">
@@ -1206,7 +1206,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                     <sc-if value="{{ docsAbaPdf }}" hint-placeholder-val="{{ true }}">
                       <sc-for list="{{ docsCards }}" as="d" hint-placeholder-count="4">
                         <div data-doc-card="{{ d.k }}">
-                          <div data-doc-topo=""><span data-doc-nome="">{{ d.t }}</span><span data-doc-cracha="" data-rotulo="" style="background:{{ d.crFundo }};color:{{ d.crCor }};border:1px solid {{ d.crBorda }};">{{ d.cracha }}</span></div>
+                          <div data-doc-topo=""><span data-doc-nome="">{{ d.t }}</span><sc-if value="{{ d.temSr }}" hint-placeholder-val="{{ false }}"><span class="sr-only">{{ d.sr }}</span></sc-if><span data-doc-cracha="" data-rotulo="" style="background:{{ d.crFundo }};color:{{ d.crCor }};border:1px solid {{ d.crBorda }};">{{ d.cracha }}</span></div>
                           <span data-doc-sub="">{{ d.s }}</span>
                           <sc-if value="{{ d.temAcao }}" hint-placeholder-val="{{ true }}"><button type="button" data-doc-gerar="{{ d.k }}" aria-label="{{ d.aria }}" onClick="{{ d.acao }}" style-active="transform:translateY(1px);"><svg aria-hidden="true" focusable="false" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" style="flex:none;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>{{ d.btn }}</span></button></sc-if>
                         </div>
@@ -1336,8 +1336,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
               <sc-if value="{{ telaCofre }}" hint-placeholder-val="{{ false }}">
                 <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;padding-right:4px;scrollbar-color:var(--gp-outline) transparent;display:flex;flex-direction:column;gap:8px;animation:gpIn 220ms cubic-bezier(0.22, 1, 0.36, 1);">
                   <sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><div data-cofre-mostrador="" role="status" style="flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));box-sizing:border-box;padding:10px 12px;border-radius:18px;background:#1d2430;border:1.5px solid #b0b8c4;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55);">
-                    <div style="min-width:0;display:flex;flex-direction:column;gap:2px;padding-right:10px;"><span data-most-rot="" data-rotulo="" style="font:700 14px/16px 'Roboto',sans-serif;color:#cbd5e1;letter-spacing:.03em;text-transform:uppercase;">Salvos no Cofre</span><span data-most-val="" style="font:800 22px/26px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cofreNDocs }}</span></div>
-                    <div style="position:relative;min-width:0;display:flex;flex-direction:column;gap:2px;padding-left:12px;"><span aria-hidden="true" data-decor="" style="position:absolute;left:0;top:4px;bottom:4px;width:1px;background:rgba(255,255,255,0.16);"></span><span data-most-rot="" data-rotulo="" style="font:700 14px/16px 'Roboto',sans-serif;color:#cbd5e1;letter-spacing:.03em;text-transform:uppercase;">Total registrado</span><span data-most-val="" data-most-din="" style="font:800 22px/26px 'Roboto',sans-serif;color:#4ade80;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cofreSoma }}</span></div>
+                    <div style="min-width:0;display:flex;flex-direction:column;gap:2px;padding-right:10px;"><span data-most-rot="" data-rotulo="" style="font:700 14px/16px 'Roboto',sans-serif;color:#cbd5e1;letter-spacing:.03em;text-transform:uppercase;">Serviços salvos</span><span data-most-val="" style="font:800 22px/26px 'Roboto',sans-serif;color:#ffffff;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cofreNDocs }}</span></div>
+                    <div style="position:relative;min-width:0;display:flex;flex-direction:column;gap:2px;padding-left:12px;"><span aria-hidden="true" data-decor="" style="position:absolute;left:0;top:4px;bottom:4px;width:1px;background:rgba(255,255,255,0.16);"></span><span data-most-rot="" data-rotulo="" style="font:700 14px/16px 'Roboto',sans-serif;color:#cbd5e1;letter-spacing:.03em;text-transform:uppercase;">Total fechado</span><span data-most-val="" data-most-din="" style="font:800 22px/26px 'Roboto',sans-serif;color:#4ade80;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cofreSoma }}</span></div>
                   </div></sc-if>
                   <sc-if value="{{ andTem }}" hint-placeholder-val="{{ false }}"><div data-cofre-andamento="" role="group" aria-label="Em execução agora" style="flex:none;display:flex;flex-direction:column;gap:8px;">
                     <span class="lbl" data-rotulo="" style="font-size:16px;line-height:20px;color:#92400e;">⚡ Em execução agora</span>
@@ -1447,7 +1447,7 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
     <div data-tema="{{ temaPapel }}" style="display:contents;">
     <div aria-hidden="{{ dHidden }}" style="position:absolute;inset:0;z-index:40;pointer-events:{{ dPE }};visibility:{{ dVis }};">
       <div onClick="{{ fecharDrawer }}" style="position:absolute;inset:0;background:var(--gp-scrim);opacity:{{ dOp }};transition:opacity 200ms ease-out;"></div>
-      <div role="dialog" aria-modal="true" aria-label="{{ dTitulo }}" style="position:absolute;left:8px;right:8px;bottom:8px;box-sizing:border-box;padding:8px 8px 10px;border-radius:24px;background:var(--gp-chassis);box-shadow:var(--gp-chassis-ring);transform:{{ dT }};transition:transform 240ms cubic-bezier(0.22, 1, 0.36, 1),opacity 200ms ease-out;display:flex;flex-direction:column;gap:8px;">
+      <div role="dialog" aria-modal="true" aria-label="{{ dAria }}" style="position:absolute;left:8px;right:8px;bottom:8px;box-sizing:border-box;padding:8px 8px 10px;border-radius:24px;background:var(--gp-chassis);box-shadow:var(--gp-chassis-ring);transform:{{ dT }};transition:transform 240ms cubic-bezier(0.22, 1, 0.36, 1),opacity 200ms ease-out;display:flex;flex-direction:column;gap:8px;">
           <span aria-hidden="true" data-decor="" style="align-self:center;width:44px;height:5px;border-radius:3px;background:var(--gp-chassis-edge);"></span>
           <div data-cabecalho="" style="flex:none;display:flex;align-items:center;gap:12px;padding:0 4px;">
             <div style="flex:1;min-width:0;gap:2px;box-sizing:border-box;min-height:56px;padding:5px 14px;border-radius:16px;background:var(--gp-pill);border:2px solid var(--gp-pill-edge);box-shadow:var(--gp-pill-shadow);display:flex;flex-direction:column;justify-content:center;">
@@ -1694,8 +1694,8 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                 <sc-if value="{{ fChipVisTem }}" hint-placeholder-val="{{ false }}"><button type="button" data-chip-visita="" aria-pressed="{{ fChipVisOn }}" onClick="{{ fBonifToggle }}" style="flex:none;min-height:48px;box-sizing:border-box;padding:4px 14px;border-radius:999px;white-space:nowrap;font-family:'Roboto',sans-serif;font-size:16px;line-height:20px;font-weight:{{ fChipVisPeso }};cursor:pointer;border:1.5px solid {{ fChipVisBd }};background:{{ fChipVisBg }};color:{{ fChipVisCor }};">{{ fChipVisTxt }}</button></sc-if>
               </div></sc-if>
               <sc-if value="{{ fVideoModo }}" hint-placeholder-val="{{ false }}"><button type="button" data-mais-opcoes="" aria-expanded="{{ fMaisExp }}" onClick="{{ fMaisToggle }}" style="min-height:48px;box-sizing:border-box;padding:6px 12px;border-radius:var(--gp-r-tecla, 999px);border:1.5px dashed var(--gp-outline);background:transparent;color:var(--gp-on-surface);font:700 16px/20px 'Roboto',sans-serif;cursor:pointer;">{{ fMaisTxt }}</button></sc-if>
-              <button type="button" data-add-item="" onClick="{{ fAddItem }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span>Adicionar item</button>
-              <button type="button" data-catalogo-botao="" aria-expanded="{{ fCatExp }}" onClick="{{ fCatToggle }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/22px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ fCatTxt }}</button>
+              <button type="button" data-add-item="" onClick="{{ fAddItem }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/22px 'Roboto',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);"><span aria-hidden="true" style="display:inline-flex;"><dc-import name="IconeGP" nome="mais" tamanho="{{ 20 }}" hint-size="20px,20px"></dc-import></span><span>{{ fAddTxt }}</span><sc-if value="{{ usoReal }}" hint-placeholder-val="{{ false }}"><span class="sr-only">Adicionar item</span></sc-if></button>
+              <button type="button" data-catalogo-botao="" aria-expanded="{{ fCatExp }}" onClick="{{ fCatToggle }}" style="min-height:56px;box-sizing:border-box;padding:8px 12px;border-radius:16px;border:2px solid var(--gp-dock-ring);background:var(--gp-card-action);color:var(--gp-on-surface);font:700 16px/22px 'Roboto',sans-serif;text-align:center;cursor:pointer;" style-hover="box-shadow:inset 0 0 0 999px var(--gp-state-hover);">{{ fCatTxt }}<sc-if value="{{ fCatSrTem }}" hint-placeholder-val="{{ false }}"><span class="sr-only"> (Adicionar peça ou serviço da tabela)</span></sc-if></button>
               <sc-if value="{{ fCatVazio }}" hint-placeholder-val="{{ false }}"><span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-surface-variant);text-wrap:pretty;">A tabela de peças e serviços ainda está carregando. Lance o item à mão ou tente de novo em alguns segundos.</span></sc-if>
               <sc-if value="{{ fCatAberto }}" hint-placeholder-val="{{ false }}">
                 <div data-catalogo="" role="group" aria-label="Tabela de peças e serviços" style="display:flex;flex-direction:column;gap:8px;">
@@ -3990,6 +3990,7 @@ class Component extends DCLogic {
           capRec ? `Capacidade comercial recomendada: ${fmtBTU(capRec)} (porte ${PORTE_ROT[porteDe(capRec)]})` : `Capacidade comercial recomendada: dividir a carga entre aparelhos (estimativa acima de ${fmtBTU(btuNum(OPTS.btu.list[OPTS.btu.list.length - 1]))})`, '',
           capRec ? 'Monto o orçamento da instalação com essa capacidade. É só responder por aqui.' : 'Monto o orçamento com a divisão entre aparelhos. É só responder por aqui.', `Base Atualizada ${BASE_MES}`]));
       },
+      bLaudoRot: LEGADO_TESTES ? 'Levar ao laudo de quarto quente' : 'Gerar laudo de capacidade insuficiente',
       bLaudo: () => this.setState(x => ({ tela: 'laudo', modK: 'docs', prev: { tela: x.tela, modK: x.modK, atalho: x.atalho, foco: null }, laudo: { ...x.laudo, cli: x.laudo.cli || (x.fech ? x.fech.cliNome : ''), cons: x.laudo.cons || `Ambiente de ${B2.area} m², ${B2.pes} pessoa(s), ${B2.w || 0} W de aparelhos, ${B2.sol.toLowerCase()}. Estimativa de ${bEst ? fmtBTU(bEst) : '—'} para aparelho de ${st.sel.btu} BTU/h.` } })),
       docsHub: [
         { tipo: 'Fechamento', t: 'Orçamento e garantia', s: 'Itens, garantia, assinatura, Pix e PDF', acao: () => this.abrirFech() },
@@ -4000,7 +4001,7 @@ class Component extends DCLogic {
       // (abrirFech, laudo, recibo avulso, PMOC, Cofre). Adicional não comprado mostra o crachá cinza e o que é, sem botão (como antes).
       ...(() => { if (LEGADO_TESTES) return { docsCards: [], scLiberado: false, scBloq: false };
         const aba = st.docsAba === 'zap' ? 'zap' : 'pdf', temS = bumps.includes('scripts'), temP = bumps.includes('pmoc'), temT = bumps.includes('tabela');
-        const card = (k, t, cracha, sub, acao, btn, livre = true) => ({ k, t, cracha, s: sub, acao, temAcao: !!acao, btn: btn || 'Gerar documento', aria: `${btn || 'Gerar documento'}: ${t}`,
+        const card = (k, t, cracha, sub, acao, btn, livre = true) => ({ k, t, cracha, s: sub, acao, sr: k === 'laudo' ? 'Laudo de inviabilidade' : '', temSr: k === 'laudo', temAcao: !!acao, btn: btn || 'Gerar documento', aria: `${btn || 'Gerar documento'}: ${t}`,
           crFundo: livre ? '#cffafe' : '#e2e8f0', crCor: livre ? '#155e75' : '#334155', crBorda: livre ? '#0891b2' : '#64748b' });
         const nDocs = Object.keys(porNum).length;
         return { docsAbaK: aba, docsAbaPdf: aba === 'pdf', docsAbaZap: aba === 'zap', docsPdfSel: aba === 'pdf' ? 'true' : 'false', docsZapSel: aba === 'zap' ? 'true' : 'false',
@@ -4008,7 +4009,7 @@ class Component extends DCLogic {
           docsIrPdf: () => this.setState({ docsAba: 'pdf' }), docsIrZap: () => this.setState({ docsAba: 'zap' }), scLiberado: temS, scBloq: !temS,
           docsCards: [
             card('orc', 'Orçamento e termo de garantia', 'COM ASSINATURA', 'Itens, termo de entrega e garantia, assinatura do cliente, Pix e PDF', () => this.abrirFech()),
-            card('laudo', 'Laudo de inviabilidade', lock ? 'BÔNUS BLOQUEADO' : 'LAUDO · GERA PDF', 'PDF com constatações, medições e conclusão',
+            card('laudo', 'Laudo de condenação técnica', lock ? 'BÔNUS BLOQUEADO' : 'LAUDO · GERA PDF', 'PDF técnico quando o reparo não compensa',
               () => lock ? this.vazio('upg', { modK: 'docs' }) : this.setState(x => ({ tela: 'laudo', modK: 'docs', laudo: { ...x.laudo, cli: x.laudo.cli || (x.fech ? x.fech.cliNome : '') } })), lock ? 'Ver como liberar' : '', !lock),
             card('reca', 'Recibo avulso', temS ? 'GERA PDF' : 'NÃO COMPRADO', temS ? 'Recibo com valor, forma de pagamento e PDF para o cliente' : 'Faz parte do Kit de scripts e recibos. Adicional da compra.',
               temS ? () => this.setState({ tela: 'scripts', modK: 'docs' }) : null, '', temS),
@@ -4133,7 +4134,8 @@ class Component extends DCLogic {
         ariaJ: `Procedimento incluso do item ${i + 1}`, ariaF: c ? `Faixa de referência de tabela do item ${i + 1}` : `Estimativa técnica do serviço do item ${i + 1}`, fRot: c ? 'Faixa de referência de tabela' : 'Estimativa técnica do serviço (opcional)', autoJRot: c ? 'Gerar justificativa e faixa de tabela p/ este valor' : 'Gerar justificativa técnica p/ este item', ariaE: `Economia preventiva do item ${i + 1}`, ce: semD ? 'descricao' : 'valor', em: semD ? 'descreva o item' : reaisErro(x.v) || 'informe um valor maior que zero', setD: fItem(i, 'd'), setV: fItem(i, 'v'), rem: () => this.fSet(f => ({ itemEd: null, itens: f.itens.length > 1 ? f.itens.filter((_, j) => j !== i) : [{ d: '', v: '' }] })) }; }),
       fAddItem: () => this.fSet(f => ({ itens: [...f.itens, { d: '', v: '' }] })),
       // Catálogo "+ Adicionar peça ou serviço da tabela" (bastidor do técnico).
-      fCatTxt: F && F.catAberto ? 'Fechar a tabela de peças e serviços' : '+ Adicionar peça ou serviço da tabela', fCatExp: F && F.catAberto ? 'true' : 'false', fCatAberto: !!(F && F.catAberto) && CAT.length > 0,
+      // PR #132 (uso real): rótulos de bancada nos 2 botões de item; o texto antigo segue no DOM em sr-only.
+      fCatTxt: F && F.catAberto ? 'Fechar a tabela de peças e serviços' : LEGADO_TESTES ? '+ Adicionar peça ou serviço da tabela' : '+ Escolher da tabela pronta', fCatSrTem: !LEGADO_TESTES && !(F && F.catAberto), fAddTxt: LEGADO_TESTES ? 'Adicionar item' : 'Digitar item avulso', fCatExp: F && F.catAberto ? 'true' : 'false', fCatAberto: !!(F && F.catAberto) && CAT.length > 0,
       fCatPorte: `Valores do porte ${PORTE_ROT[porteDe(st.sel.btu)]} (${st.sel.btu} BTU/h). Tudo editável no item.`,
       fCatToggle: () => this.fSet(f => ({ catAberto: !f.catAberto })), fCatVazio: !!(F && F.catAberto) && !CAT.length,
       // Abas do catálogo (PR #22): Todos (16, padrão), Indicados pelo diagnóstico e as 3 famílias; a 5ª ocupa a linha inteira.
@@ -4400,8 +4402,8 @@ class Component extends DCLogic {
           this.setState(x => ({ inv: { ...x.inv, _passo: Math.max(0, i), _todos: false } })); atalhoMod('inv', 'inv', '[data-inv-id="ipm"]', 'Diodo IPM')(); } },
       ],
       abrirFichas, orcHomeRot: LEGADO_TESTES ? 'Orçamento e garantia' : 'Orçamento',
-      fichasSalaRot: abaMed ? 'Fichas: Medições' : 'Fichas: Sintomas', fichasIcoHex: tema === 'sol' ? '#091e42' : '#67c6ff',
-      fichasSalaAria: abaMed ? 'Fichas: Medições (sensores, pressão, Inverter e componentes)' : 'Fichas: Sintomas (percursos, códigos e LED)',
+      fichasSalaRot: abaMed ? 'Guia de Medições' : 'Guia de Sintomas', fichasIcoHex: tema === 'sol' ? '#091e42' : '#67c6ff',
+      fichasSalaAria: abaMed ? 'Guia de Medições (fichas de sensores, pressão, Inverter e componentes)' : 'Guia de Sintomas (fichas de percursos, códigos e LED)',
       abrirFichasSala: () => this.setState({ drawer: 'fichas', fichaSel: null, busca: '', fichaCat: abaMed ? 'sala-med' : 'sala-sint', fichaSec: null }),
       up: () => { if (this.state.pk) this.setState({ pk: null }); },
       chips: [['marca', 'Marca'], ['btu', 'BTU/h'], ['fluido', 'Fluido']].map(([k, rot]) => ({
@@ -4549,7 +4551,10 @@ class Component extends DCLogic {
       dT: d ? 'translateY(0)' : 'translateY(calc(100% + 24px))',
       fecharDrawer: () => this.setState({ drawer: null }),
       dKicker: dSel ? 'Selecionar' : d === 'avisos' ? 'Sininho' : 'Base técnica',
-      dTitulo: dSel ? OPTS[d].t : d === 'avisos' ? 'Central de Avisos' : st.fichaSel ? st.fichaSel.t : 'Consultar fichas',
+      // PR #132 (uso real): a gaveta de fichas mostra "Guia de Sintomas | Guia de Medições | Guia técnico" conforme a sala; o diálogo segue com
+      // aria-label "Consultar fichas" (pr24/pr30 e as sondas o procuram por esse nome).
+      dTitulo: dSel ? OPTS[d].t : d === 'avisos' ? 'Central de Avisos' : st.fichaSel ? st.fichaSel.t : LEGADO_TESTES ? 'Consultar fichas' : st.fichaCat === 'sala-med' ? 'Guia de Medições' : st.fichaCat === 'sala-sint' ? 'Guia de Sintomas' : 'Guia técnico',
+      dAria: dSel ? OPTS[d].t : d === 'avisos' ? 'Central de Avisos' : st.fichaSel ? st.fichaSel.t : 'Consultar fichas',
       dMarca: d === 'marca',
       // Lista da gaveta em 1 coluna abaixo de 360 px na Marca (em 2 colunas, Samsung, Electrolux e Springer saíam cortados ao lado da pastilha).
       dCols: d === 'marca' && W < 360 ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))',
