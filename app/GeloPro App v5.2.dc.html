@@ -117,6 +117,11 @@ button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 :is([data-tema="titanio"],[data-tema="claro"]) [data-topo-mascote]{filter:drop-shadow(0 1px 0 rgba(255,255,255,0.75)) drop-shadow(0 -1px 0.5px rgba(9,30,66,0.35));}
 :is([data-tema="titanio"],[data-tema="claro"]) [data-topo-nome]{text-shadow:0 1px 0 rgba(255,255,255,0.85) !important;}
 [data-tema="sol"] :is([data-topo-gravado],[data-topo-mascote]){filter:none !important;}
+/* PR #101: rolagem nativa e desimpedida nos containers que rolam (inércia no iOS, sem arrastar a página por trás). */
+:is([data-home-inicio],[data-res-rolagem],[data-codigo-tela],[data-notas-tec],[data-chapa][role="dialog"] [data-vis],[data-fichas],[data-central-avisos]){-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;}
+/* PR #101: [data-home-rolagem] cresce com o conteúdo (flex 1 0 auto) e nunca rola, mas era um container de rolagem com overscroll contain:
+   em tela baixa o gesto sobre ele não passava para o [data-home-inicio] (quem rola) e a Home parecia presa. Vira bloco comum, sem rolagem suave. */
+[data-home-rolagem]{overflow-y:visible !important;overscroll-behavior:auto !important;scroll-behavior:auto !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -2095,6 +2100,9 @@ class Component extends DCLogic {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.forceUpdate());
     this._esc = (e) => { if (e.key === 'Escape' && this.state.drawer) this.setState({ drawer: null }); };
     window.addEventListener('keydown', this._esc);
+    // PR #101: toque, clique ou roda do mouse cancelam na hora qualquer ajuste de rolagem pendente (o dedo do usuário sempre manda).
+    this._toque = () => { this._toqueEm = Date.now(); if (this._topoRaf) { cancelAnimationFrame(this._topoRaf); this._topoRaf = null; } if (!LEGADO_TESTES) clearTimeout(this._focoT); };
+    ['touchstart', 'pointerdown', 'wheel'].forEach(t => window.addEventListener(t, this._toque, { capture: true, passive: true }));
     this._rs = () => this.forceUpdate(); window.addEventListener('resize', this._rs);
     this._antesImpressao = () => { if (!this._nomeImpressao || !document.querySelector('[data-print]')) return; if (this._titulo0 === undefined) this._titulo0 = document.title; document.title = this._nomeImpressao.replace(/\.pdf$/i, ''); };
     this._aposImpressao = () => { if (this._titulo0 !== undefined) document.title = this._titulo0; };
@@ -2410,7 +2418,18 @@ class Component extends DCLogic {
     this.precarregarModulo(tela);
     this.setState(st => ({ atalho: null, ...(extra && extra.sel && !st.selOrc && rascunhoComDono(st.fech) ? { selOrc: st.sel } : {}), prev: MOD.includes(st.tela) ? st.prev : { tela: st.tela, etapa: st.etapa, sint: st.sint, res: st.res, hist: st.hist }, tela, modo: null, modK: null, drawer: null, foco: null, ...extra }));
   }
-  componentWillUnmount() { window.removeEventListener('online', this._online); window.removeEventListener('gelopro:licenca-pronta', this._licPronta); window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('beforeprint', this._antesImpressao); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._focoT); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
+  // PR #101: zera a rolagem de todos os containers do app e da página (scrollTop = 0, sem animação).
+  topoGeral() {
+    if (this._topoRaf) cancelAnimationFrame(this._topoRaf);
+    const zera = () => { try {
+      document.querySelectorAll('[data-vis], [data-vis] *, [role="dialog"], [role="dialog"] *, [data-home-inicio], [data-home-rolagem], [data-res-rolagem], [data-codigo-tela], [data-fichas], [data-central-avisos], [data-passo-in]').forEach(e => { if (e.scrollTop) e.scrollTop = 0; });
+      const se = document.scrollingElement || document.documentElement; if (se && se.scrollTop) se.scrollTop = 0;
+    } catch (e) { /* sem DOM */ } };
+    zera();
+    this._topoRaf = requestAnimationFrame(() => { this._topoRaf = null; if (!this._toqueEm || Date.now() - this._toqueEm > 250) zera(); });
+  }
+  componentWillUnmount() {
+    if (this._toque) ['touchstart', 'pointerdown', 'wheel'].forEach(t => window.removeEventListener(t, this._toque, true)); window.removeEventListener('online', this._online); window.removeEventListener('gelopro:licenca-pronta', this._licPronta); window.removeEventListener('keydown', this._esc); window.removeEventListener('resize', this._rs); window.removeEventListener('beforeprint', this._antesImpressao); window.removeEventListener('afterprint', this._aposImpressao); clearInterval(this._fp); clearTimeout(this._pecas); clearTimeout(this._focoT); (this._cenas || []).forEach(clearTimeout); Object.values(this.state.cenas).forEach(u => URL.revokeObjectURL(u)); }
   pRef = React.createRef();
   focarPortao() {
     const fe = this.fRef.current;
@@ -2428,6 +2447,13 @@ class Component extends DCLogic {
     // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #c1c0c1 no Titânio e no Claro.
     const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
     if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#c1c0c1'; if (tc.content !== cor) tc.content = cor; }
+    // PR #101 (uso real): toda troca de tela, sintoma, etapa, resultado, módulo, aba da Home, gaveta, ficha aberta ou passo do Orçamento
+    // abre no topo: zera na hora (instantâneo) todos os containers roláveis e a página; um 2º ajuste no próximo quadro só roda se o
+    // usuário não tocou na tela (toque, clique ou roda cancelam).
+    if (!LEGADO_TESTES) {
+      const s0 = this.state, kTopo = [s0.tela, s0.sint, s0.etapa, s0.res, s0.modK, s0.modo, s0.abaHome, s0.drawer, s0.fichaSel ? (s0.fichaSel.t || '1') : '', s0.fOpen && s0.fech ? s0.fech.passo : '', s0.fOpen ? 'f' : '', this.state.portao ? 'p' : ''].join('|');
+      if (kTopo !== this._topoK) { this._topoK = kTopo; this.topoGeral(); }
+    }
     // Fechamento (PR #22): avançar ou voltar de passo abre o visor no topo (Aprovação e Pix nunca começam no meio da rolagem).
     // O motor (support.js) não passa o estado anterior: o último passo visto fica em this._fPasso.
     const pn = this.state.fOpen && this.state.fech ? this.state.fech.passo : null;
@@ -2443,7 +2469,10 @@ class Component extends DCLogic {
     // Atalho de medição (PR #28): o módulo abre já rolado até a etapa ou linha pedida (state.foco = seletor); sai do estado quando acha.
     // Tenta a cada 100 ms (até 2,5 s) enquanto a lista ainda cresce: no 1º acesso ao módulo as etapas e as fotos entram depois, então só
     // encerra depois de 3 leituras seguidas com a linha no topo.
-    if (this.state.foco && this._focoSel !== this.state.foco) {
+    // PR #101: no uso real o módulo abre SEMPRE no topo e nenhum loop rola a tela (o loop de até 2,5 s puxava a tela contra o dedo).
+    // O foco rolado segue só na bateria legada (HeadlessChrome sem ?real=1), que o cobra (ex.: Vácuo e carga no pr30).
+    if (this.state.foco && !LEGADO_TESTES) { this._focoSel = null; clearTimeout(this._focoT); this.setState({ foco: null }); }
+    else if (this.state.foco && this._focoSel !== this.state.foco) {
       const sel = this._focoSel = this.state.foco; let n = 0, firme = 0;
       const tenta = () => {
         const el = document.querySelector(sel); let c = el && el.parentElement; while (c && !/(auto|scroll)/.test(getComputedStyle(c).overflowY)) c = c.parentElement;
