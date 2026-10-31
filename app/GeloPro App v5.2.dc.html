@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#c1c0c1">
+<meta name="theme-color" content="#cfd5df">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.json">
-<style id="gp-anti-fouc">html,body{margin:0;background-color:#c1c0c1;}</style>
+<style id="gp-anti-fouc">html,body{margin:0;background-color:#cfd5df;}</style>
 <script>try{if(!navigator.webdriver||/[?&]fluido=1\b/.test(location.search))document.documentElement.setAttribute('data-gp-fluido','1');}catch(e){}</script>
 <style id="gp-fluidez-manteiga">
 @keyframes gpEntradaSuave{from{opacity:0;transform:translate3d(0,4px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-@keyframes gpDeslizeCurto{from{opacity:.15;transform:translate3d(0,6px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
-@keyframes gpTelaSuave{from{opacity:.1;transform:translate3d(0,8px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes gpDeslizeCurto{from{opacity:.85;transform:translate3d(6px,0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
+@keyframes gpTelaSuave{from{opacity:.85;transform:translate3d(6px,0,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 @keyframes gpExpandirCartao{from{opacity:0;transform:translate3d(0,-4px,0)}to{opacity:1;transform:translate3d(0,0,0)}}
 @media (prefers-reduced-motion:no-preference){
 [data-gp-fluido="1"] [data-chassi]{animation:gpEntradaSuave 220ms cubic-bezier(.22,1,.36,1) backwards}
-[data-gp-fluido="1"] [style*="gpIn"]{animation:gpTelaSuave 180ms cubic-bezier(.22,1,.36,1) backwards!important}
-[data-gp-fluido="1"] [data-passo-in]{animation:gpDeslizeCurto 160ms cubic-bezier(.22,1,.36,1) backwards!important}
-[data-gp-fluido="1"] :is([data-grade-sintomas],[data-grade-medicoes],[data-cofre-card],[data-ficha-secao]){animation:gpDeslizeCurto 170ms cubic-bezier(.22,1,.36,1) backwards}
+[data-gp-fluido="1"] [style*="gpIn"]{animation:gpTelaSuave 130ms cubic-bezier(.22,1,.36,1) backwards!important}
+[data-gp-fluido="1"] [data-passo-in]{animation:gpDeslizeCurto 130ms cubic-bezier(.22,1,.36,1) backwards!important}
+[data-gp-fluido="1"] :is([data-grade-sintomas],[data-grade-medicoes],[data-cofre-card],[data-ficha-secao]){animation:gpDeslizeCurto 130ms cubic-bezier(.22,1,.36,1) backwards}
 [data-gp-fluido="1"] :is([data-cod-aberto],[data-cat-detalhes],[data-ficha-entradas],[data-desconto-orcamento],[data-validade-proposta]){animation:gpExpandirCartao 160ms cubic-bezier(.22,1,.36,1) backwards}
 [data-gp-fluido="1"] [data-cod-seta]{transition:transform 160ms cubic-bezier(.22,1,.36,1)}
 [data-gp-fluido="1"] :is(button,[role=button],[role=option],[role=tab],[role=radio]){transition:transform 110ms cubic-bezier(.22,1,.36,1),box-shadow 140ms ease,background-color 140ms ease,border-color 140ms ease}
@@ -45,7 +45,7 @@
 </style>
 <link href="ref/acetinado-sedoso.css" rel="stylesheet">
 <style>
-html,body{margin:0;background:#c1c0c1;}
+html,body{margin:0;background:#cfd5df;}
 a{color:var(--gp-primary);}a:hover{color:var(--gp-on-primary-container);}
 button{-webkit-tap-highlight-color:transparent;font-family:inherit;}
 :focus-visible,[data-foco="1"]{outline:3px solid var(--gp-focus);outline-offset:2px;}
@@ -295,6 +295,33 @@ html[data-uso-real="1"] [data-realce-bloco]{line-height:24px !important;}
 /* PR #112: filtros do Cofre em 1 linha cada (colunas no tamanho do rótulo; 14/16 800, nowrap, sem corte em 375 e 390). */
 html[data-uso-real="1"] [data-cofre-filtros]{grid-template-columns:repeat(3,auto) !important;}
 html[data-uso-real="1"] [data-cofre-filtro]{padding:0 8px !important;white-space:nowrap !important;font-size:14px !important;line-height:16px !important;font-weight:800 !important;border-width:2px !important;}
+/* PR #113: faxina anti-bagunça (uso real). Frase limpa de uma cor; cor só no visor e na etiqueta de bloco. Selos de fonte ("Base GeloPro",
+   "Base Atualizada · …", fonte do código) e a prosa repetida do META ficam em sr-only (seguem no DOM para os testes legados). */
+html[data-uso-real="1"] :is(.tag.tag-fonte,[data-inv-meta-cab],[data-inv-ref]){position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0,0,0,0) !important;white-space:nowrap !important;border:0 !important;font-size:16px !important;}
+html[data-uso-real="1"] [data-inv-etapa] [data-inv-meta]{position:relative;display:flex;flex-direction:column;gap:8px;box-sizing:border-box;padding:10px 12px !important;border:1.5px solid #b0b8c4 !important;border-radius:16px !important;background:#1d2430 !important;box-shadow:inset 0 2px 5px rgba(0,0,0,0.55) !important;color:#ffffff;}
+html[data-uso-real="1"] [data-inv-alvo-linha]{display:grid !important;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 8px !important;}
+html[data-uso-real="1"] [data-inv-alvo-linha] > :is([data-inv-alvo],.tag){grid-column:2;justify-self:end;}
+html[data-uso-real="1"] [data-inv-rot-alvo]{grid-column:1;grid-row:1 / span 2;font:700 14px/18px 'Roboto',sans-serif;letter-spacing:.03em;text-transform:uppercase;color:#cbd5e1;}
+html[data-uso-real="1"] [data-inv-meta] [data-inv-alvo]{font:800 22px/26px 'Roboto',sans-serif !important;color:#fbbf24 !important;font-variant-numeric:tabular-nums;background:transparent !important;border:0 !important;padding:0 !important;box-shadow:none !important;}
+html[data-uso-real="1"] [data-inv-alvo-linha] .tag{min-height:0 !important;padding:0 !important;border:0 !important;background:transparent !important;font:600 14px/18px 'Roboto',sans-serif !important;color:#94a3b8 !important;}
+html[data-uso-real="1"] [data-inv-meta] [data-inv-compressores] *{color:#e2e8f0 !important;}
+html[data-uso-real="1"] [data-inv-meta] :is([data-inv-meta-cab],[data-inv-meta-cab] *,[data-inv-ref]){color:#e2e8f0 !important;background:transparent !important;}
+html[data-uso-real="1"] [data-inv-vereditos]{display:flex !important;flex-direction:column;align-items:stretch;gap:6px !important;}
+html[data-uso-real="1"] [data-inv-vereditos] .tag{display:flex !important;width:100%;box-sizing:border-box;min-height:36px;padding:6px 10px !important;border-radius:10px !important;white-space:normal !important;font:800 16px/20px 'Roboto',sans-serif !important;}
+html[data-uso-real="1"] [data-inv-vereditos] .tag-ok{background:#064e3b !important;border:1.5px solid #22c55e !important;color:#4ade80 !important;}
+html[data-uso-real="1"] [data-inv-vereditos] .tag-falha{background:#450a0a !important;border:1.5px solid #ef4444 !important;color:#fca5a5 !important;}
+html[data-uso-real="1"] [data-inv-vereditos] .tag:not(.tag-ok):not(.tag-falha){background:#0a1628 !important;border:1.5px solid #38bdf8 !important;color:#67c6ff !important;}
+html[data-uso-real="1"] [data-inv-como-txt]{display:block;box-sizing:border-box;padding:8px 10px;border:1px solid #cbd5e1;border-radius:12px;background:#ffffff;color:#091e42 !important;font:600 16px/22px 'Roboto',sans-serif !important;}
+html[data-uso-real="1"] :is([data-inv-resp],[data-opcoes] > button){border-width:2px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,0.7),0 2px 4px rgba(9,30,66,0.12) !important;}
+html[data-uso-real="1"] [data-codigo-tela] :is([data-cod-causa],[data-cod-faca]) span:not(.tag){color:#1e293b !important;font-weight:600 !important;}
+/* PR #113: Home. Seletor Sintomas | Medições contínuo (trilho único, sem vão) com a aba ativa em chanfro iluminado; 9 cartões de Medições com chanfro metálico. */
+html[data-uso-real="1"] [data-home-modo]{gap:0 !important;padding:0 !important;border-radius:999px;background:#1d2430;box-shadow:inset 0 0 0 1.5px #b0b8c4,inset 0 2px 5px rgba(0,0,0,0.55);}
+html[data-uso-real="1"] [data-home-modo] > [data-aba-home] > span{border:1px solid transparent !important;background:transparent !important;color:#e2e8f0 !important;}
+html[data-uso-real="1"] [data-home-modo] > [data-aba-home][aria-selected="true"] > span{border-color:#60a5fa !important;background:linear-gradient(180deg,#2563eb 0%,#1d4ed8 100%) !important;color:#ffffff !important;box-shadow:inset 0 1px 0 rgba(255,255,255,0.35),0 2px 4px rgba(0,0,0,0.35);}
+html[data-uso-real="1"] [data-tema="sol"] [data-home-modo]{background:#ffffff;box-shadow:inset 0 0 0 2px #091e42;}
+html[data-uso-real="1"] [data-tema="sol"] [data-home-modo] > [data-aba-home] > span{color:#091e42 !important;}
+html[data-uso-real="1"] [data-tema="sol"] [data-home-modo] > [data-aba-home][aria-selected="true"] > span{color:#ffffff !important;}
+html[data-uso-real="1"] [data-grade-medicoes] [data-atalho-medicao] button{border:1.5px solid #64748b !important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.28),inset 0 -2px 0 rgba(0,0,0,0.45),0 3px 6px rgba(9,30,66,0.28) !important;}
 input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opacity:1;}
 /* Etapa: a cena fica inteira (contain, nenhum selo cortado) e 100% nítida até a base (PR #23). A sobra do quadro (em cima/embaixo ou nas
    laterais) é o espelho da própria cena, como um piso brilhante: cada faixa [data-borda] repete a imagem no tamanho real (--l × --l),
@@ -435,8 +462,10 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
 @keyframes gpPulseResult2{0%{transform:scale(1);filter:none}35%{transform:scale(1.06);filter:brightness(1.3)}100%{transform:scale(1);filter:none}}
 @media (min-width:768px){[data-microfaixa]{padding:12px 28px 0 !important;}}
 /* Celular e tela vertical (até 767,98 px): o app ocupa 100vw × 100dvh e o fundo da página acompanha o chassi do tema ativo
-   (#c1c0c1 no Titânio e no Claro, #ffffff no Sol), para não sobrar faixa branca no Android nem no iPhone. */
-@media (max-width:767.98px){html,body{background:#c1c0c1 !important;width:100%;min-height:100%;overscroll-behavior:none;}html:has([data-tema=sol]),html:has([data-tema=sol]) body{background:#ffffff !important;}[data-mesa]{display:block !important;min-height:0 !important;padding:0 !important;background:transparent !important;}[data-moldura]{width:100vw !important;height:100vh !important;height:100dvh !important;padding:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;}[data-lateral]{display:none !important;}[data-chassi]{border-radius:0 !important;box-shadow:none !important;}}
+   (#c1c0c1 no Titânio e no Claro, #ffffff no Sol), para não sobrar faixa branca no Android nem no iPhone.
+   PR #113 (tela cheia): fora dos 100dvh (barra de status e faixa sob a barra flutuante do Safari) o fundo segue o tom real do chassi
+   acetinado — #cfd5df no topo (theme-color), #adadad na base (medida no app) —, sem a faixa cinza chapada #c1c0c1 em volta. */
+@media (max-width:767.98px){html{background:#adadad linear-gradient(180deg,#cfd5df 0%,#adadad 100%) no-repeat !important;min-height:100%;}body{background:transparent !important;}html,body{width:100%;overscroll-behavior:none;}html:has([data-tema=sol]),html:has([data-tema=sol]) body{background:#ffffff !important;}[data-mesa]{display:block !important;min-height:0 !important;padding:0 !important;background:transparent !important;}[data-moldura]{width:100vw !important;height:100vh !important;height:100dvh !important;padding:0 !important;border-radius:0 !important;background:none !important;box-shadow:none !important;}[data-lateral]{display:none !important;}[data-chassi]{border-radius:0 !important;box-shadow:none !important;}}
 /* Olho de Águia (PR #26), só em telas de até 340 px (320 px e zoom do sistema): o dock aproxima as 6 teclas (vão de 4 para 2 px) para cada
    uma ter 48 px de toque e o rótulo "NTC/BTU" ficar em 14 px; a grade da Home mantém 48 px por cartão e rola por dentro quando a altura acaba. */
 @media (max-width:340px){[data-dock-barra]{padding-left:2px !important;padding-right:2px !important;}nav[aria-label="Módulos"]{gap:2px !important;}[data-grade-sintomas]{grid-auto-rows:minmax(66px,1fr) !important;}}
@@ -904,15 +933,15 @@ input::placeholder,textarea::placeholder{color:var(--gp-on-surface-variant);opac
                         <dc-import name="Selo" texto="{{ e.selo }}" tipo="{{ e.seloTipo }}" style="flex:none;" hint-size="96px,26px"></dc-import>
                       </div>
                       <span class="destaque" style="display:block;">{{ e.t }}</span>
-                      <sc-if value="{{ e.comoSimples }}" hint-placeholder-val="{{ true }}"><span class="corpo">{{ e.como }}</span></sc-if><sc-if value="{{ e.comoRico }}" hint-placeholder-val="{{ false }}"><span class="corpo" data-inv-como=""><sc-for list="{{ e.comoP }}" as="cp" hint-placeholder-count="2"><span data-inv-param="{{ cp.p }}" data-gp-isento="{{ cp.isento }}">{{ cp.t }}</span></sc-for></span></sc-if>
+                      <sc-if value="{{ e.comoSimples }}" hint-placeholder-val="{{ true }}"><span class="corpo" data-inv-como-txt="">{{ e.como }}</span></sc-if><sc-if value="{{ e.comoRico }}" hint-placeholder-val="{{ false }}"><span class="corpo" data-inv-como=""><sc-for list="{{ e.comoP }}" as="cp" hint-placeholder-count="2"><span data-inv-param="{{ cp.p }}" data-gp-isento="{{ cp.isento }}">{{ cp.t }}</span></sc-for></span></sc-if>
                       <sc-if value="{{ e.temPontas }}" hint-placeholder-val="{{ false }}"><div data-inv-pontas="" style="display:flex;flex-direction:column;gap:6px;"><sc-for list="{{ e.pontas }}" as="pt" hint-placeholder-count="2"><div class="tags" style="row-gap:6px;column-gap:12px;"><span class="tags" style="flex-wrap:nowrap;"><span class="tag tag-ponta-vermelha" data-selo="" data-rotulo="">● VERMELHA</span><span aria-hidden="true" style="font:800 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">→</span><span class="tag tag-terminal" data-selo="" data-rotulo="">{{ pt.v }}</span></span><span class="tags" style="flex-wrap:nowrap;"><span class="tag tag-ponta-preta" data-selo="" data-rotulo="">● PRETA</span><span aria-hidden="true" style="font:800 16px/20px 'Roboto',sans-serif;color:var(--gp-on-surface);">→</span><span class="tag tag-terminal" data-selo="" data-rotulo="">{{ pt.p }}</span></span></div></sc-for><sc-if value="{{ e.inverter }}" hint-placeholder-val="{{ false }}"><div class="tags"><span class="tag tag-alerta" data-selo="" data-rotulo="" data-inverta-pontas="">↔ INVERTA AS PONTAS</span></div></sc-if></div></sc-if>
                       <sc-if value="{{ e.temPar }}" hint-placeholder-val="{{ false }}"><div data-fotos-comparacao="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;"><span data-foto="erro" role="{{ e.fotoRole }}" aria-label="{{ e.fotoErroAria }}" onClick="{{ e.fotoErro }}" style="cursor:{{ e.fotoCursor }};position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ e.parErro }};"></span><span data-faixa-legenda="erro" data-rotulo="" class="{{ e.fxErroC }}">{{ e.fxErro }}</span></span><span data-foto="certo" role="{{ e.fotoRole }}" aria-label="{{ e.fotoOkAria }}" onClick="{{ e.fotoOk }}" style="cursor:{{ e.fotoCursor }};position:relative;display:block;aspect-ratio:64 / 55;overflow:hidden;border-radius:16px;border:1px solid var(--gp-card-edge);background-color:var(--gp-scene-bg);"><span aria-hidden="true" style="position:absolute;inset:0;background-position:center bottom;background-size:100% auto;background-repeat:no-repeat;background-image:{{ e.parCerto }};"></span><span data-faixa-legenda="certo" data-rotulo="" class="{{ e.fxCertoC }}">{{ e.fxCerto }}</span></span></div></sc-if>
                       <div data-inv-meta="" style="box-sizing:border-box;padding:10px 12px;border-radius:16px;background:var(--gp-display);display:flex;flex-direction:column;gap:8px;">
-                        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;"><span class="lbl" data-rotulo="">Meta</span><span class="{{ e.fonteTag.c }}" data-selo="" data-rotulo="" data-inv-fonte="">{{ e.fonteTag.t }}</span></div>
-                        <sc-if value="{{ e.temAlvo }}" hint-placeholder-val="{{ false }}"><div class="tags" style="column-gap:10px;"><span data-inv-alvo="" class="num-chave">{{ e.alvo }}</span><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="">{{ e.cond.t }}</span></sc-if></div></sc-if>
+                        <div data-inv-meta-cab="" style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;"><span class="lbl" data-rotulo="">Meta</span><span class="{{ e.fonteTag.c }}" data-selo="" data-rotulo="" data-inv-fonte="">{{ e.fonteTag.t }}</span></div>
+                        <sc-if value="{{ e.temAlvo }}" hint-placeholder-val="{{ false }}"><div class="tags" data-inv-alvo-linha="" style="column-gap:10px;"><sc-if value="{{ e.rq }}" hint-placeholder-val="{{ false }}"><span data-inv-rot-alvo="" data-rotulo="">Valor esperado</span></sc-if><span data-inv-alvo="" class="num-chave">{{ e.alvo }}</span><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="">{{ e.cond.t }}</span></sc-if></div></sc-if>
                         <sc-if value="{{ e.temComp }}" hint-placeholder-val="{{ false }}"><div data-inv-compressores="" style="display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:4px;align-items:baseline;"><sc-for list="{{ e.comp }}" as="cp" hint-placeholder-count="3"><span data-rotulo="" style="font:600 14px/20px 'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;color:var(--gp-on-display);overflow-wrap:anywhere;">{{ cp.m }}</span><span data-ohm="" style="font:800 18px/22px 'Roboto',sans-serif;color:#b45309;font-variant-numeric:tabular-nums;white-space:nowrap;">{{ cp.o }}</span></sc-for><sc-if value="{{ e.temCond }}" hint-placeholder-val="{{ false }}"><span class="{{ e.cond.c }}" data-selo="" data-rotulo="" style="grid-column:1 / -1;justify-self:start;">{{ e.cond.t }}</span></sc-if></div></sc-if>
-                        <div class="tags"><sc-for list="{{ e.vereditos }}" as="vd" hint-placeholder-count="2"><span class="{{ vd.c }}" data-selo="" data-rotulo="">{{ vd.t }}</span></sc-for><sc-for list="{{ e.medidas }}" as="md" hint-placeholder-count="1"><span class="{{ md.c }}" data-selo="" data-rotulo="">{{ md.t }}</span></sc-for></div>
-                        <span style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);text-wrap:pretty;">{{ e.ref }}</span>
+                        <div class="tags" data-inv-vereditos=""><sc-for list="{{ e.vereditos }}" as="vd" hint-placeholder-count="2"><span class="{{ vd.c }}" data-selo="" data-rotulo="">{{ vd.t }}</span></sc-for><sc-for list="{{ e.medidas }}" as="md" hint-placeholder-count="1"><span class="{{ md.c }}" data-selo="" data-rotulo="">{{ md.t }}</span></sc-for></div>
+                        <span data-inv-ref="" style="font:500 16px/22px 'Roboto',sans-serif;color:var(--gp-on-display-variant);text-wrap:pretty;">{{ e.ref }}</span>
                       </div>
                       <sc-if value="{{ e.wiz }}" hint-placeholder-val="{{ false }}"><div data-inv-respostas="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
                         <button type="button" data-inv-resp="ok" aria-pressed="{{ invRespOk }}" onClick="{{ invNormal }}" style="min-width:0;min-height:64px;box-sizing:border-box;padding:8px 10px;border-radius:14px;border:2px solid #16a34a;background:#dcfce7;color:#14532d;font:800 16px/20px 'Roboto',sans-serif;text-align:center;text-wrap:balance;cursor:pointer;" style-active="transform:translateY(1px);">✓ Normal (bateu a leitura)</button>
@@ -2243,6 +2272,8 @@ const COD_SIGLA = /\((?:T\d[A-Z]?|TP|TH\d?)\)|\bEEPROM\b|\bIPM\b|\bPFC\b|\bBorne
 const COD_ESTADO = /aberto ou em curto|em curto|fora de controle|sobrecorrente|falha de comunica[çc][ãa]o|subtens[ãa]o|sobretens[ãa]o|travado|sem resposta|superaquecimento/gi;
 const partesCod = (txt) => {
   if (LEGADO_TESTES || !txt) return { semPartes: true, temPartes: false, partes: [] };
+  // PR #113: frase limpa de uma cor (#091e42 800) no cartão; nada de cápsula no meio da frase.
+  if (txt) return { semPartes: false, temPartes: true, partes: [{ t: txt, k: 'peca' }] };
   const M = [];
   for (const [re, k] of [[COD_SIGLA, 'sigla'], [COD_ESTADO, 'estado']]) { re.lastIndex = 0; let m; while ((m = re.exec(txt))) M.push({ i: m.index, f: m.index + m[0].length, k }); }
   M.sort((a, b) => a.i - b.i); const P = []; let pos = 0;
@@ -2254,7 +2285,7 @@ const partesCod = (txt) => {
 // O texto segue contínuo (soma das partes = texto original); no legado, a string única de sempre.
 const INV_PARAM = /\d+(?:,\d+)?\s?V(?![a-zà-ú])(?:\s?(?:CC|CA|DC|AC)\b)?(?:\s?\/\s?\d+(?:,\d+)?\s?V(?![a-zà-ú])(?:\s?(?:CC|CA|DC|AC)\b)?)?|\bBorne S\b|\bP e N\b/g;
 const partesInv = (txt) => {
-  if (LEGADO_TESTES || !txt) return { comoSimples: true, comoRico: false, comoP: [] };
+  if (LEGADO_TESTES || !txt || true) return { comoSimples: true, comoRico: false, comoP: [] }; // PR #113: frase do Inverter limpa, sem pílulas no meio
   const P = []; let pos = 0, m; INV_PARAM.lastIndex = 0;
   while ((m = INV_PARAM.exec(txt))) { if (m.index > pos) P.push({ t: txt.slice(pos, m.index) }); P.push({ t: m[0], p: '1', isento: '1' }); pos = m.index + m[0].length; }
   if (pos < txt.length) P.push({ t: txt.slice(pos) });
@@ -2271,6 +2302,7 @@ const RX_REALCE = [
 ];
 const realce = (txt) => {
   txt = String(txt || ''); if (!txt) return [];
+  return [{ t: txt }]; // PR #113: frase corrida em 1 cor só (as cápsulas no meio das frases saíram)
   const M = []; RX_REALCE.forEach(([k, re]) => { re.lastIndex = 0; let m; while ((m = re.exec(txt))) M.push({ i: m.index, f: m.index + m[0].length, k }); });
   M.sort((a, b) => a.i - b.i || b.f - a.f); const P = []; let pos = 0;
   M.forEach(m => { if (m.i < pos) return; if (m.i > pos) P.push({ t: txt.slice(pos, m.i) }); P.push({ t: txt.slice(m.i, m.f), k: m.k, isento: '1' }); pos = m.f; });
@@ -2695,9 +2727,9 @@ class Component extends DCLogic {
     if (this.state.fOpen && this.state.selOrc) this.setState({ sel: this.state.selOrc, selOrc: null });
     if (this.state.fech !== this._fechGravado) { this._fechGravado = this.state.fech; this._fechEm = Date.now(); if (!this.state.amostra && (this.props.simular || 'real') === 'real') gravarRascunho(this.state.fech); }
     if (prev.tema !== this.props.tema && this.state.tema !== null) this.setState({ tema: null });
-    // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #c1c0c1 no Titânio e no Claro.
+    // Barra do navegador e fundo da página na cor do chassi: #ffffff no Sol, #cfd5df no Titânio e no Claro.
     const tc = document.querySelector('meta[name="theme-color"]'), tm = document.querySelector('[data-tema]');
-    if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#c1c0c1'; if (tc.content !== cor) tc.content = cor; if (this._fundoCor !== cor) { this._fundoCor = cor; document.documentElement.style.backgroundColor = cor; document.body.style.backgroundColor = cor; } }
+    if (tc && tm) { const cor = tm.dataset.tema === 'sol' ? '#ffffff' : '#cfd5df'; if (tc.content !== cor) tc.content = cor; if (this._fundoCor !== cor) { this._fundoCor = cor; document.documentElement.style.backgroundColor = cor; document.body.style.backgroundColor = cor; } }
     // PR #101 (uso real): toda troca de tela, sintoma, etapa, resultado, módulo, aba da Home, gaveta, ficha aberta ou passo do Orçamento
     // abre no topo: zera na hora (instantâneo) todos os containers roláveis e a página; um 2º ajuste no próximo quadro só roda se o
     // usuário não tocou na tela (toque, clique ou roda cancelam).
@@ -2785,7 +2817,7 @@ class Component extends DCLogic {
     const st = this.state, F = st.fech, k = [st.tela, st.etapa, st.res, F && F.passo, st.inv && st.inv._passo].join('|');
     if (this._fluK === k) return; const antes = this._fluK; this._fluK = k; if (antes === undefined) return;
     try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; } catch (e) {}
-    document.querySelectorAll('[data-opcoes], [data-inv-etapa]').forEach(el => { if (el.animate && el.getClientRects().length) el.animate([{ opacity: 0.1, transform: 'translate3d(0,8px,0)' }, { opacity: 1, transform: 'translate3d(0,0,0)' }], { duration: 160, easing: 'cubic-bezier(0.22,1,0.36,1)' }); });
+    document.querySelectorAll('[data-opcoes], [data-inv-etapa]').forEach(el => { if (el.animate && el.getClientRects().length) el.animate([{ opacity: 0.85, transform: 'translate3d(6px,0,0)' }, { opacity: 1, transform: 'translate3d(0,0,0)' }], { duration: 130, easing: 'cubic-bezier(0.22,1,0.36,1)' }); });
   }
   // PR #111: pausa o atendimento da bancada (vai para a fila "Em andamento" do Cofre) e deixa a bancada limpa para o próximo aparelho.
   pausarNovo() {
@@ -3577,7 +3609,7 @@ class Component extends DCLogic {
       // ✓ Normal grava "Conforme" e avança; ✗ Defeito grava "Fora" e acende o orçamento da placa no topo. As fotos certo/erro respondem igual.
       ...invWiz,
       invEtapas: invEt.map((e, i) => { const r = IV[e.etapa_id] || {}; return { atual: e.etapa_id === invWiz.invAtualId ? '1' : '0', nTxt: !invWiz.invWizTem ? String(i + 1) : e.etapa_id === 'seguranca' ? '⚠' : String(invWiz.invOrdem.indexOf(e.etapa_id) + 1), wiz: e.etapa_id === invWiz.invAtualId, fotoRole: e.etapa_id === invWiz.invAtualId ? 'button' : undefined, fotoCursor: e.etapa_id === invWiz.invAtualId ? 'pointer' : 'auto',
-        fotoOk: e.etapa_id === invWiz.invAtualId ? invWiz.invNormal : null, fotoErro: e.etapa_id === invWiz.invAtualId ? invWiz.invDefeito : null, fotoOkAria: e.etapa_id === invWiz.invAtualId ? 'Foto do certo: marcar Normal' : undefined, fotoErroAria: e.etapa_id === invWiz.invAtualId ? 'Foto do erro: marcar Defeito' : undefined, n: i + 1, id: e.etapa_id, t: e.titulo, como: e.como_verificar, ...partesInv(e.como_verificar), ref: e.referencia, r: r.r || '', v: r.v || '', setR: invSet(e.etapa_id, 'r'), setV: invSet(e.etapa_id, 'v'), ph: INV_PH[e.etapa_id] || '', selo: r.r || 'Pendente', seloTipo: INV_SELO[r.r] || 'neutro', ntc: e.etapa_id === 'sensores', reg: invReg, ...par('inv_' + e.etapa_id), ...invVisual(e) }; }),
+        fotoOk: e.etapa_id === invWiz.invAtualId ? invWiz.invNormal : null, fotoErro: e.etapa_id === invWiz.invAtualId ? invWiz.invDefeito : null, fotoOkAria: e.etapa_id === invWiz.invAtualId ? 'Foto do certo: marcar Normal' : undefined, fotoErroAria: e.etapa_id === invWiz.invAtualId ? 'Foto do erro: marcar Defeito' : undefined, n: i + 1, id: e.etapa_id, t: e.titulo, como: e.como_verificar, ...partesInv(e.como_verificar), rq: !LEGADO_TESTES, ref: e.referencia, r: r.r || '', v: r.v || '', setR: invSet(e.etapa_id, 'r'), setV: invSet(e.etapa_id, 'v'), ph: INV_PH[e.etapa_id] || '', selo: r.r || 'Pendente', seloTipo: INV_SELO[r.r] || 'neutro', ntc: e.etapa_id === 'sensores', reg: invReg, ...par('inv_' + e.etapa_id), ...invVisual(e) }; }),
       invNtc: () => this.abrir('ntc', { modK: 'ntc' }),
       // Orçar direto do checklist (PR #35): reparo da placa no orçamento e placa nova em "Indicados"; compressor marcado "Fora" entra junto.
       invOrcar: () => { const cFora = (IV.compressor || {}).r === 'Fora'; this.abrirFech(['reparo_placa', 'placa_nova', ...(cFora ? ['compressor_troca'] : [])], true, cFora ? ['compressor_troca'] : null); },
