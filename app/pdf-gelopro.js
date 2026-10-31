@@ -153,19 +153,24 @@ a = topo + 6; D.forEach(([s, b, tam, lead, cor]) => { if (s) ops.push(texto(xD +
 y = h + 3 + 16;
 }
 function cabecalhoLimpo() {
-const t = d.titular || {}, wD = 182, xD = MX + LARG - wD, wE = LARG - wD - 16, topo = 26, os = OS_LIMPO[d.tipo] || 'DOCUMENTO TÉCNICO';
+const t = d.titular || {}, wD = 182, xD = MX + LARG - wD, wE = LARG - wD - 16, topo = 22, os = OS_LIMPO[d.tipo] || 'DOCUMENTO TÉCNICO';
 ops.push(retangulo(0, 0, PW, 4, C2.filete));
 let a = topo;
-quebrar(String(t.nome || 'Titular não cadastrado').toUpperCase(), true, 15, wE).forEach(s => { ops.push(texto(MX, a + 14, s, true, 15, C2.navy)); a += 19; });
+ops.push(texto(MX, a + 8, 'EMPRESA PRESTADORA DO SERVIÇO', true, 7.5, C2.azul)); a += 13;
+quebrar(String(t.nome || 'Titular não cadastrado').toUpperCase(), true, 14.5, wE).forEach(s => { ops.push(texto(MX, a + 13.5, s, true, 14.5, C2.navy)); a += 18.5; });
 a += 2;
 [t.doc ? `${t.docTipo || 'CPF/CNPJ'} ${t.doc}` : '', t.cidade || '', t.pix ? `Chave Pix ${t.pix}` : ''].filter(Boolean).forEach(s => quebrar(s, false, 9.5, wE).forEach(l => { ops.push(texto(MX, a + 9, l, false, 9.5, C2.texto2)); a += 13.5; }));
+const lg = img && img.logo, wL = 132, hL = lg ? wL * lg.h / lg.w : 0; let bT = topo - 4;
+if (lg) { const xP = xD + wD - wL - 16; ops.push(`q ${C2.navy} rg ${rr(xP, bT, wL + 16, hL + 10, 6)} f Q`, `q ${n2(wL)} 0 0 ${n2(hL)} ${n2(xP + 8)} ${n2(PH - (bT + 5) - hL)} cm /${lg.nome} Do Q`); bT += hL + 14; }
+else { const tm = 16; ops.push(texto(xD + wD - largura('GeloPRO', true, tm), bT + 14, 'Gelo', true, tm, C2.navy), texto(xD + wD - largura('PRO', true, tm), bT + 14, 'PRO', true, tm, C2.azul)); bT += 19; }
+const ch = 'Desenvolvido com tecnologia GeloPRO'; ops.push(texto(xD + wD - largura(ch, false, 7), bT + 7, ch, false, 7, C2.cinza)); bT += 13;
 const sel = d.garSelo || '', rev = (tipoTxt.match(/Revisão \d+/) || [''])[0], hQ = 64 + (sel ? 22 : 0);
-ops.push(caixa2(xD, topo - 4, wD, hQ, C2.gelo, C2.borda, 7));
-let b = topo + 6; ops.push(texto(xD + 12, b + 7, os, true, 7.5, C2.cinza)); b += 12;
+ops.push(caixa2(xD, bT, wD, hQ, C2.gelo, C2.borda, 7));
+let b = bT + 10; ops.push(texto(xD + 12, b + 7, os, true, 7.5, C2.cinza)); b += 12;
 const nTxt = `Nº ${numero}`; let tn = 18; while (tn > 10 && largura(nTxt, true, tn) > wD - 24) tn -= 0.5; ops.push(texto(xD + 12, b + tn * 0.85, nTxt, true, tn, C2.navy)); b += tn + 5;
 const em = [`Emissão ${d.data || ''}`, rev, d.via2 || ''].filter(Boolean).join(' · '); let te = 8.5; while (te > 6.5 && largura(em, false, te) > wD - 24) te -= 0.25; ops.push(texto(xD + 12, b + 8, em, false, te, C2.texto2)); b += 14;
 if (sel) { const ws = largura(sel, true, 7) + 24; ops.push(`q ${C2.verdeFundo} rg ${C2.verde} RG 1 w ${rr(xD + 12, b + 2, ws, 15, 7.5)} B Q`, visto(xD + 18, b + 6, 7, C2.verde), texto(xD + 28, b + 12.4, sel, true, 7, C2.verdeT)); }
-const h = Math.max(a, topo - 4 + hQ) + 10;
+const h = Math.max(a, bT + hQ) + 10;
 ops.push(linhaH(MX, MX + LARG, h, C2.navy, 1.5));
 y = h + 14;
 }
@@ -178,7 +183,19 @@ const CL = [...rot('CLIENTE', xC1), ...txtL(c.nome || 'Cliente', { b: true, tam:
 const EQ = [...rot('EQUIPAMENTO AFERIDO', xC2), ...txtL(c.equip ? (/BTU\/h/.test(c.equip) ? `Equipamento: ${c.equip}` : c.equip) : '—', { tam: 9.5, lead: 13, x: xC2, w: wC })];
 const soma = (A) => A.reduce((t, l) => t + l.h, 0), hCol = Math.max(soma(CL), soma(EQ)), hCL = hCol + 20;
 const colunas = { h: hCol, draw: (yy) => { let k = yy; CL.forEach(l => { l.draw(k); k += l.h; }); k = yy; EQ.forEach(l => { l.draw(k); k += l.h; }); } };
-por([{ h: 10, draw: (yy) => ops.push(retangulo(MX, yy, LARG, hCL, COR.caixa), `q ${COR.regua} RG 0.8 w ${n2(MX)} ${n2(PH - yy - hCL)} ${n2(LARG)} ${n2(hCL)} re S Q`, `q ${COR.regua} RG 0.8 w ${n2(MX + LARG / 2)} ${n2(PH - yy - hCL + 8)} m ${n2(MX + LARG / 2)} ${n2(PH - yy - 8)} l S Q`) }, colunas, esp(10), esp(14)], true);
+if (!d.limpo) por([{ h: 10, draw: (yy) => ops.push(retangulo(MX, yy, LARG, hCL, COR.caixa), `q ${COR.regua} RG 0.8 w ${n2(MX)} ${n2(PH - yy - hCL)} ${n2(LARG)} ${n2(hCL)} re S Q`, `q ${COR.regua} RG 0.8 w ${n2(MX + LARG / 2)} ${n2(PH - yy - hCL + 8)} m ${n2(MX + LARG / 2)} ${n2(PH - yy - 8)} l S Q`) }, colunas, esp(10), esp(14)], true);
+else {
+const wQ = (LARG - 10) / 2, xQ1 = MX, xQ2 = MX + wQ + 10, wT = wQ - 20, ED = d.equipDet || {};
+const L1 = [...txtL(c.nome || 'Cliente', { b: true, tam: 11, lead: 15, x: xQ1 + 10, w: wT, cor: C2.navy }), ...(c.tel ? txtL(`Telefone: ${c.tel}`, { tam: 9.5, lead: 13, x: xQ1 + 10, w: wT, cor: C2.texto2 }) : [])];
+const eqL = ED.marca || ED.btu || ED.fluido ? [ED.marca ? `Marca: ${ED.marca}` : '', ED.btu ? `Capacidade: ${ED.btu} BTU/h` : '', ED.fluido ? `Fluido: ${ED.fluido}` : ''].filter(Boolean) : [c.equip || '—'];
+const L2 = eqL.flatMap(s => txtL(s, { tam: 9.5, lead: 13, x: xQ2 + 10, w: wT, cor: C2.texto2 }));
+const hQ = Math.max(soma(L1), soma(L2)) + 34;
+por([{ h: hQ + 14, draw: (yy) => {
+[[xQ1, 'DADOS DO CLIENTE', L1], [xQ2, 'EQUIPAMENTO AFERIDO', L2]].forEach(([x, rotulo, L]) => {
+ops.push(caixa2(x, yy, wQ, hQ, C2.branco, C2.borda, 6), `q ${C2.navy} rg ${n2(x)} ${n2(PH - yy - 17)} ${n2(wQ)} 17 re f Q`, texto(x + 10, yy + 11.8, rotulo, true, 8, C2.branco));
+let k = yy + 25; L.forEach(l => { l.draw(k); k += l.h; }); });
+} }], true);
+}
 if (d.limpo && d.bancada) {
 const B0 = d.bancada, fx = B0.faixa, wC = (LARG - 10) / 2, hC = 128;
 const secT = (s) => ({ h: 18, draw: (yy) => ops.push(texto(MX, yy + 11, s, true, 9, C2.navy), linhaH(MX + largura(s, true, 9) + 8, MX + LARG, yy + 8, C2.borda, 0.8)) });
@@ -228,12 +245,22 @@ if (itens.length) {
 const xQ = MX, xD = MX + 40, wV = 104, wD = LARG - 40 - wV - 12;
 const cab = [...titulo(d.itensTitulo || 'Itens'), { h: 16, draw: (yy) => { ops.push(texto(xQ, yy + 9, 'QTD.', true, 8.5, COR.apoio), texto(xD, yy + 9, 'DESCRIÇÃO', true, 8.5, COR.apoio), texto(MX + LARG - largura('VALOR', true, 8.5), yy + 9, 'VALOR', true, 8.5, COR.apoio), linhaH(MX, MX + LARG, yy + 14, COR.tinta, 1)); } }];
 itens.forEach((it, i) => {
-const desc = quebrar(it.d || '—', true, 10.5, wD), extra = [it.j, it.faixa, it.eco].filter(Boolean);
+const triade = d.limpo && (it.condicao || it.resultado), desc = quebrar(it.d || '—', true, 10.5, wD), extra = triade ? [it.condicao, it.escopo, it.faixa, it.resultado].filter(Boolean) : [it.j, it.faixa, it.eco].filter(Boolean);
 const L = desc.map((s, k) => ({ h: 15, draw: (yy) => { ops.push(texto(xD, yy + 11, s, true, 10.5)); if (!k) { ops.push(texto(xQ, yy + 11, `${it.q || 1}×`, false, 10.5)); const v = String(it.v || '—'); ops.push(texto(MX + LARG - largura(v, true, 10.5), yy + 11, v, true, 10.5)); } } }));
 if (extra.length) {
-const xT = xD + 3 + 8, wT = MX + LARG - xT - 8, T = extra.flatMap(s => txtL(s, { tam: 9, lead: 12, x: xT, w: wT, cor: s === it.faixa ? COR.tinta : COR.apoio, b: s === it.faixa }));
+const xT = xD + 3 + 8, wT = MX + LARG - xT - 8;
+const rotT = (s) => ({ h: 12, draw: (yy) => ops.push(texto(xT, yy + 9, s, true, 7.5, C2.navy)) });
+const T = !triade ? extra.flatMap(s => txtL(s, { tam: 9, lead: 12, x: xT, w: wT, cor: s === it.faixa ? COR.tinta : COR.apoio, b: s === it.faixa }))
+: [...(it.condicao ? [rotT('CONDIÇÃO IDENTIFICADA'), ...txtL(it.condicao, { tam: 9, lead: 12, x: xT, w: wT, cor: C2.texto2 }), esp(3)] : []),
+...(it.escopo ? [rotT('ESCOPO TÉCNICO'), ...txtL(it.escopo, { tam: 9, lead: 12, x: xT, w: wT, cor: C2.texto2 })] : []),
+...(it.faixa ? txtL(it.faixa, { tam: 9, lead: 12, x: xT, w: wT, cor: COR.tinta, b: true }) : [])];
 if (d.limpo && Array.isArray(it.fx) && it.fx[1] > it.fx[0]) { const [mn, mx, v] = it.fx, wb = Math.min(190, wT), pos = Math.max(0, Math.min(1, (v - mn) / (mx - mn)));
 T.push({ h: 20, draw: (yy) => ops.push(`q ${C2.faixaVerde} rg ${rr(xT, yy + 4, wb, 5, 2.5)} f Q`, `q ${C2.navy} rg 1 1 1 RG 1.2 w ${circ(xT + pos * wb, yy + 6.5, 4.2)} B Q`, texto(xT, yy + 17, reais(mn), false, 6.5, C2.cinza), texto(xT + wb - largura(reais(mx), false, 6.5), yy + 17, reais(mx), false, 6.5, C2.cinza)) }); }
+if (triade && it.resultado) {
+const RL = quebrar(it.resultado, true, 8.8, wT - 16), hR = RL.length * 11.5 + 22;
+T.push(esp(4), { h: hR, draw: (yy) => { ops.push(`q ${C2.verdeFundo} rg ${rr(xT, yy, wT, hR - 4, 4)} f Q`, retangulo(xT, yy, 3, hR - 4, C2.verde), texto(xT + 9, yy + 10, 'RESULTADO E PROTEÇÃO DO PATRIMÔNIO', true, 7.5, C2.verdeT));
+RL.forEach((l, q) => ops.push(texto(xT + 9, yy + 21 + q * 11.5, l, true, 8.8, HEX('#14532d')))); } });
+}
 const hT = soma(T) + 10;
 L.push({ h: 8, draw: (yy) => ops.push(retangulo(xD, yy + 3, MX + LARG - xD, hT, COR.caixa), retangulo(xD, yy + 3, 3, hT, COR.verde)) }, ...T, esp(5));
 }
@@ -253,6 +280,23 @@ por(L, true);
 }
 const blocos = (d.blocos || []).filter(b => b && (b.t || b.x));
 blocos.forEach(b => {
+if (d.limpo && d.pixQr && d.pixInfo && /^Pagamento por Pix/.test(b.t || '')) {
+const P = d.pixInfo, Q = d.pixQr, nQ = Q.length, lado = 76, mod = lado / (nQ + 8), xQ = MX + 10, wR = LARG - lado - 46, xR = MX + lado + 30;
+const CC = quebrar(P.copia, false, 6.8, wR).slice(0, 6), hB = Math.max(lado + 34, 14 + 16 + 13 + 13 + 12 + CC.length * 9 + 18);
+por([esp(4), { h: 18, draw: (yy) => ops.push(texto(MX, yy + 11, 'PAGAMENTO E APROVAÇÃO VIA PIX', true, 9, C2.navy), linhaH(MX + largura('PAGAMENTO E APROVAÇÃO VIA PIX', true, 9) + 8, MX + LARG, yy + 8, C2.borda, 0.8)) },
+{ h: hB + 12, draw: (yy) => {
+ops.push(caixa2(MX, yy, LARG, hB, C2.gelo, C2.borda, 7), caixa2(xQ - 4, yy + 8, lado + 8, lado + 8, C2.branco, C2.borda, 4));
+const qs = []; for (let r = 0; r < nQ; r++) for (let k = 0; k < nQ; k++) if (Q[r][k] === '1') qs.push(`${n2(xQ + (k + 4) * mod)} ${n2(PH - (yy + 12 + (r + 4) * mod) - mod)} ${n2(mod + 0.01)} ${n2(mod + 0.01)} re`);
+ops.push(`q 0 0 0 rg ${qs.join(' ')} f Q`, texto(xQ + (lado - largura('Escaneie no app do banco', false, 7)) / 2, yy + lado + 26, 'Escaneie no app do banco', false, 7, C2.cinza));
+let k = yy + 18; const v = `VALOR TOTAL: ${P.valor}`; ops.push(texto(xR, k, v, true, 11.5, HEX('#15803d'))); k += 16;
+ops.push(texto(xR, k, `Favorecido: ${P.favorecido}`, true, 9, C2.navy)); k += 13;
+ops.push(texto(xR, k, `Chave Pix: ${P.chave}`, false, 9, C2.texto2)); k += 13;
+ops.push(texto(xR, k, 'Pix Copia e Cola:', true, 7.5, C2.navy)); k += 10;
+CC.forEach(l => { ops.push(texto(xR, k, l, false, 6.8, C2.texto2)); k += 9; });
+ops.push(texto(xR, k + 4, 'Pix gerado não comprova pagamento.', false, 7, C2.cinza));
+} }], true);
+return;
+}
 const T = b.t ? titulo(b.t) : [], X = txtL(b.x || '—', { tam: 10, lead: 14 });
 por([...T, ...X.slice(0, 2)], true); por([...X.slice(2), esp(12)], false);
 });
@@ -275,11 +319,14 @@ por(L, true);
 }
 if (d.limpo) {
 pags.forEach((o, i) => {
-const yL = PH - RODAPE + 10, tam = 85 / largura('GeloPRO', true, 1), yb = yL + 25, xT = MX + 85 + 14, wT = LARG - 99;
-o.push(linhaH(MX, MX + LARG, yL, C2.borda, 0.8), texto(MX, yb, 'Gelo', true, tam, C2.navy), texto(MX + largura('Gelo', true, tam), yb, 'PRO', true, tam, C2.azul));
-const s1 = `Documento aferido e emitido pelo Sistema GeloPRO · Nº ${numero} · Página ${i + 1} de ${pags.length}`, s2 = `Emitido em ${d.data || ''} · Base Atualizada ${d.base || ''}`;
-let t1 = 8; while (t1 > 6 && largura(s1, true, t1) > wT) t1 -= 0.25;
-o.push(texto(xT, yL + 16, s1, true, t1, C2.navy), texto(xT, yL + 28, s2, false, 7.5, C2.cinza));
+const yL = PH - RODAPE + 10, lg = img && img.logo, wLg = 85, hLg = lg ? wLg * lg.h / lg.w : 0, xT = MX + wLg + 14, wT = LARG - wLg - 14, t = d.titular || {};
+o.push(linhaH(MX, MX + LARG, yL, C2.borda, 0.8));
+if (lg) o.push(`q ${C2.navy} rg ${rr(MX, yL + 6, wLg, hLg + 6, 4)} f Q`, `q ${n2(wLg - 8)} 0 0 ${n2((wLg - 8) * lg.h / lg.w)} ${n2(MX + 4)} ${n2(PH - (yL + 9) - (wLg - 8) * lg.h / lg.w)} cm /${lg.nome} Do Q`);
+else { const tam = 85 / largura('GeloPRO', true, 1); o.push(texto(MX, yL + 25, 'Gelo', true, tam, C2.navy), texto(MX + largura('Gelo', true, tam), yL + 25, 'PRO', true, tam, C2.azul)); }
+const s1 = `Desenvolvido com tecnologia GeloPRO · Documento aferido nº ${numero} · Página ${i + 1} de ${pags.length}`;
+const s2 = [t.nome, t.doc ? `${t.docTipo || 'CPF/CNPJ'} ${t.doc}` : '', t.cidade].filter(Boolean).join(' · '), s3 = `Emitido em ${d.data || ''} · Base Atualizada ${d.base || ''}`;
+const cabe = (s, b, t0) => { let tt = t0; while (tt > 5.5 && largura(s, b, tt) > wT) tt -= 0.25; return tt; };
+o.push(texto(xT, yL + 13, s1, true, cabe(s1, true, 7.8), C2.navy), texto(xT, yL + 24, s2, false, cabe(s2, false, 7.2), C2.texto2), texto(xT, yL + 34, s3, false, 6.8, C2.cinza));
 });
 return pags;
 }
