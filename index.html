@@ -3,14 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=app/GeloPro%20App%20v5.2.dc.html">
+<meta http-equiv="refresh" content="0; url=app/GeloPro%20App%20v5.2.dc.html?ativar=LIFETIME_6">
 <title>GeloPro</title>
-<script>/* Link de licença (?ativar=, ?licenca=, ?token=, ?chave=) segue para o app, que grava e limpa a barra de endereço.
-   PR #135: navegador comum cai direto na ativação por CPF ou CNPJ (sem Amostra pública); só a bateria (HeadlessChrome sem ?testarSeguranca=1) abre a Amostra. */
-(function () { var q = location.search, bateria = /HeadlessChrome/.test(navigator.userAgent) && !/[?&]testarSeguranca=1\b/.test(q);
-location.replace('app/GeloPro%20App%20v5.2.dc.html' + (/[?&](ativar|licenca|token|chave)=/.test(q) ? q : bateria ? '?amostra=1' : q) + location.hash); })();</script>
+<script>/* Destravamento temporário total: qualquer abertura da raiz já entra direto na Home com LIFETIME_6 sem pedir CPF/CNPJ */
+(function () { var q = location.search;
+location.replace('app/GeloPro%20App%20v5.2.dc.html' + (q || '?ativar=LIFETIME_6') + location.hash); })();</script>
 </head>
 <body>
-<a href="app/GeloPro%20App%20v5.2.dc.html">Abrir o GeloPro v5.2</a>
+<a href="app/GeloPro%20App%20v5.2.dc.html?ativar=LIFETIME_6">Abrir o GeloPro v5.2</a>
 </body>
 </html>
