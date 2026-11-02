@@ -7,11 +7,11 @@
 <meta name="theme-color" content="#091e42">
 <title>GeloPRO · Fichas de Diagnóstico</title>
 <!--
-  Fichas de Diagnóstico em 7 camadas (D-001, D-002, D-003, D-023, D-058, D-073) na moldura do GeloPRO v148.
-  Ilustrações Duotone Line-Art aprovadas pelo Pedro (imagens/dNNN.webp, cópia de ../app/imagens/fichas/) e ícones recortados delas
-  (imagens/icones/). Nenhuma foto 3D antiga da pasta de cenas. Sem emoji; SVG só para ícone de interface 24×24 (class="ic").
-  Orçar: dentro do app (?embed=1) manda {gelopro:'orcar'} ao app, que abre o Orçamento real Nº 1001 (abrirFech + pdf-gelopro.js);
-  fora do app, abre o app com #orcar=<serviço>&ficha=<id>. Nada de orçamento paralelo nesta página.
+  14 Fichas de Diagnóstico em 7 camadas na moldura do GeloPRO v148. Ilustrações Duotone aprovadas pelo Pedro (imagens/*.webp, cópia de
+  ../app/imagens/fichas/) e ícones recortados delas (imagens/icones/). Nenhuma foto 3D antiga da pasta de cenas.
+  Orçamento Nº 1001: gerado NESTA página pelo motor real do app (../app/pdf-gelopro.js + ../app/gelopro-pix.js + QR do vendor), com a mesma
+  numeração do app (gelopro.seq) e o titular do app (gelopro.titular). Dentro do app (?embed=1) o pedido vai para o fechamento do próprio app.
+  Bônus: dados lidos dos CSVs completos de ../base-tecnica/. Sem emoji; SVG só para ícone de interface 24×24 (class="ic").
 -->
 <style>
 @font-face{font-family:'Roboto';font-style:normal;font-display:swap;font-weight:400 800;src:url(../app/fontes/roboto-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
@@ -27,7 +27,7 @@ html[data-tema="lua"]{--folha:#0F172A;--cartao:#111C2E;--linha:#24466F;--linha2:
 html,body{height:100%}
 body{overflow:hidden;font-family:var(--f-txt);color:var(--txt);background-color:#c1c0c1;background-image:url("../app/ref/acetinado-sedoso.svg");background-repeat:no-repeat;background-position:center;background-size:100% 100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-input{font:inherit;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
 img{display:block;max-width:100%}
 :focus-visible{outline:3px solid #67C6FF;outline-offset:2px}
 .ic{display:block;flex-shrink:0}
@@ -55,6 +55,7 @@ html[data-tema="lua"] .tema .bola{transform:translateX(24px)}
 .tecla.verde{background:linear-gradient(180deg,#00b100 0%,#009900 54%,#006b00 100%);border-color:#003d00;box-shadow:inset 0 2px 1px rgba(187,247,208,.48),inset 0 -4px 6px rgba(0,35,0,.58),0 4px 0 #003d00,0 5.5px 0 rgba(255,255,255,.68),0 8px 14px rgba(0,40,0,.38)}
 .tecla.verde:active{box-shadow:inset 0 2px 1px rgba(187,247,208,.48),inset 0 -4px 6px rgba(0,35,0,.58),0 1px 0 #003d00,0 2px 0 rgba(255,255,255,.5)}
 .tecla.vermelha{background:linear-gradient(180deg,#DC2626 0%,#B91C1C 54%,#7F1D1D 100%);border-color:#450A0A;box-shadow:inset 0 2px 1px rgba(254,202,202,.45),inset 0 -4px 6px rgba(40,0,0,.55),0 4px 0 #450A0A,0 5.5px 0 rgba(255,255,255,.6),0 8px 14px rgba(40,0,0,.35)}
+.tecla[disabled]{opacity:.55;cursor:wait}
 .tecla span{min-width:0}
 .tecla span:has(> .ic){flex-shrink:0;min-width:auto;display:flex}
 
@@ -77,15 +78,16 @@ html[data-tema="lua"] .c2 h1{color:#FFFFFF}
 .c4{margin:0 10px;background:#FFFFFF;border:1.5px solid var(--linha);border-radius:10px;overflow:hidden}
 .ilustra{position:relative}
 .ilustra img{width:100%;height:auto}
-.alvo{position:absolute;width:7.5%;max-width:64px;aspect-ratio:1/1;transform:translate(-50%,-50%);border-radius:50%}
-.alvo::after{content:"";position:absolute;inset:8%;border-radius:50%;border:3px solid #1D9BF0;opacity:0;animation:pulso 1.8s ease-out infinite}
-.alvo.sel::after{border-color:#F59E0B;opacity:1;animation:none;box-shadow:0 0 0 4px rgba(245,158,11,.45),0 0 16px rgba(245,158,11,.75)}
-@keyframes pulso{0%{opacity:.85;transform:scale(.9)}100%{opacity:0;transform:scale(1.6)}}
+/* Diâmetro das bolinhas 01–05 nas artes 1672×941 (≈74 px = 4,5% da largura). */
+.alvo{position:absolute;width:4.5%;aspect-ratio:1/1;transform:translate(-50%,-50%);border-radius:50%}
+.alvo::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2.5px solid #0EA5E9;opacity:0;animation:pulso 1.8s ease-out infinite}
+.alvo.sel::after{border-color:#F59E0B;opacity:1;animation:none;box-shadow:0 0 0 3px rgba(245,158,11,.45)}
+@keyframes pulso{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.55)}}
 .det{display:none;margin:8px 10px 0;border-radius:12px;background:#0F172A;color:#E2E8F0;padding:10px;font-size:13px;line-height:1.4}
 .det.on{display:block;animation:surge .22s ease-out}
 @keyframes surge{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-.lupa{position:relative;width:100%;aspect-ratio:16/9;border-radius:9px;background-color:#FFFFFF;background-repeat:no-repeat;border:2px solid #F59E0B;margin-bottom:9px}
-.lupa::after{content:"";position:absolute;left:50%;top:50%;width:22%;aspect-ratio:1/1;transform:translate(-50%,-50%);border-radius:50%;border:3px solid #F59E0B;box-shadow:0 0 0 3px rgba(245,158,11,.35)}
+/* Lupa: recorte limpo da própria arte (260%), centrado entre a bolinha e a peça que a linha ciano aponta. Sem marcador por cima. */
+.lupa{position:relative;width:100%;aspect-ratio:16/9;border-radius:9px;background-color:#FFFFFF;background-repeat:no-repeat;background-size:260% auto;border:2px solid #F59E0B;margin-bottom:9px}
 .lupa span{position:absolute;left:6px;top:6px;font-family:var(--f-tit);font-size:11px;font-weight:800;color:#FFFFFF;background:#091E42;border-radius:6px;padding:2px 7px}
 .det .cab{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
 .det .cab .num{width:26px;height:26px;border-radius:50%;font-size:12.5px;flex-shrink:0}
@@ -96,8 +98,6 @@ html[data-tema="lua"] .c2 h1{color:#FFFFFF}
 .det .teclas{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .det .teclas .tecla{height:46px;font-size:12.5px;justify-content:center;text-align:center}
 .num{display:inline-flex;align-items:center;justify-content:center;font-family:var(--f-tit);font-weight:800;color:#FFFFFF;background:#1D9BF0}
-
-/* Camada 5: as 2 colunas lado a lado em qualquer largura (390 px inclusive) */
 .c5{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 10px 0;align-items:start}
 .c5 > section{min-width:0}
 .bloco-h{background:#091E42;color:#FFFFFF;font-family:var(--f-tit);font-weight:800;font-size:10.5px;letter-spacing:.02em;text-transform:uppercase;padding:6px 7px;border-radius:4px 4px 0 0;line-height:1.15}
@@ -138,14 +138,15 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 .rodape{display:flex;justify-content:space-between;gap:10px;margin-top:10px;background:#091E42;color:#FFFFFF;padding:8px 10px;font-family:var(--f-tit);font-size:10.5px;font-weight:800;letter-spacing:.03em}
 .rodape span{min-width:0}
 
-/* ── Folhas (índice, causa, bônus) ── */
+/* ── Folhas (índice, causa, orçamento, bônus) ── */
 .fundo{position:fixed;inset:0;background:rgba(9,30,66,.55);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
 .fundo.aberto{opacity:1;pointer-events:auto}
-.folha{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:88dvh;overflow-y:auto;background:#FFFFFF;color:#0F172A;border-radius:18px 18px 0 0;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-width:640px;margin:0 auto;padding:8px 14px calc(22px + env(safe-area-inset-bottom))}
+.folha{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:92dvh;overflow-y:auto;background:#FFFFFF;color:#0F172A;border-radius:18px 18px 0 0;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-width:720px;margin:0 auto;padding:8px 14px calc(22px + env(safe-area-inset-bottom))}
 .folha.aberto{transform:none}
 .folha .alca{width:44px;height:5px;border-radius:3px;background:#CBD5E1;margin:2px auto 10px}
 .folha .fechar{position:absolute;right:10px;top:8px;width:36px;height:36px;border-radius:50%;background:#F1F5F9;display:flex;align-items:center;justify-content:center}
 .folha h3{font-family:var(--f-tit);font-size:19px;font-weight:800;color:#091E42;line-height:1.25;margin:0 44px 8px 0}
+.folha h4{font-family:var(--f-tit);font-size:15px;font-weight:800;color:#091E42;margin:14px 0 6px}
 .folha .sub{font-size:13px;color:#475569;margin-bottom:12px;line-height:1.4}
 .folha .pilha{display:grid;gap:10px}
 .folha .tecla{height:50px;font-size:14px;justify-content:center;text-align:center}
@@ -156,11 +157,13 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 .blocos::-webkit-scrollbar{display:none}
 .blocos button{flex-shrink:0;padding:6px 11px;border-radius:999px;border:1px solid #CBD5E1;font-size:12.5px;font-weight:700;white-space:nowrap}
 .blocos button[aria-pressed="true"]{background:#091E42;border-color:#091E42;color:#FFFFFF}
-.item-ficha{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;width:100%;text-align:left;padding:9px 2px;border-bottom:1px solid #F1F5F9}
-.item-ficha .ico{width:64px;height:40px;border-radius:8px;overflow:hidden;background:#FFFFFF;border:1px solid #E2E8F0}
+.grupo-h{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#475569;background:#F1F5F9;border-radius:6px;padding:5px 8px;margin-top:10px}
+.item-ficha{display:grid;grid-template-columns:72px 1fr;gap:10px;align-items:center;width:100%;text-align:left;padding:8px 2px;border-bottom:1px solid #F1F5F9}
+.item-ficha .ico{width:72px;height:41px;border-radius:8px;overflow:hidden;background:#FFFFFF;border:1px solid #E2E8F0}
 .item-ficha .ico img{width:100%;height:100%;object-fit:cover}
 .item-ficha .cod{font-family:var(--f-mono);font-size:10.5px;font-weight:800;color:#1D9BF0}
 .item-ficha .nm{font-family:var(--f-tit);font-size:14.5px;font-weight:800;color:#0F172A;line-height:1.2}
+.item-ficha .sb{font-size:12px;color:#64748B;line-height:1.3}
 .item-ficha.atual{background:#E0F2FE;border-radius:10px}
 .vazio{border:1px dashed #CBD5E1;border-radius:12px;padding:14px;text-align:center;font-size:14px;color:#334155}
 .vazio .pilha{margin-top:10px}
@@ -171,19 +174,71 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 .servico .faixa{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font-weight:800;color:#091E42;flex-wrap:wrap}
 .servico .ref{font-size:11.5px;color:#64748B;margin-top:4px}
 .form{display:grid;gap:10px;margin:6px 0 12px}
+.form label{display:grid;gap:4px;font-size:13px;font-weight:700;color:#334155}
+.form input[type=number],.form input[type=text],.form input[type=tel],.form select,.form textarea{min-height:44px;border:1.5px solid #CBD5E1;border-radius:10px;padding:0 12px;font-size:16px;background:#FFFFFF;width:100%;min-width:0}
+.form textarea{padding:10px 12px;min-height:76px;resize:vertical;line-height:1.35}
+.form .duas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .form .chk{display:flex;align-items:center;gap:10px;font-weight:600;border:1px solid #E2E8F0;border-radius:10px;padding:10px 12px;font-size:13px}
 .form .chk input{width:22px;height:22px;flex-shrink:0}
 .veredito{border-radius:12px;padding:11px 12px;font-weight:800;font-size:15px;line-height:1.3;margin-bottom:12px}
-.veredito.ok{background:#DCFCE7;color:#14532D}.veredito.neutro{background:#F1F5F9;color:#334155}
-.tabela{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:12px}
+.veredito small{display:block;font-weight:600;font-size:12.5px;margin-top:3px}
+.veredito.ok{background:#DCFCE7;color:#14532D}.veredito.def{background:#FEE2E2;color:#7F1D1D}.veredito.neutro{background:#F1F5F9;color:#334155}.veredito.alerta{background:#FEF3C7;color:#78350F}
+.tabela-box{overflow-x:auto;margin-bottom:12px;border:1px solid #E2E8F0;border-radius:10px}
+.tabela{width:100%;border-collapse:collapse;font-size:12.5px}
 .tabela th,.tabela td{text-align:left;padding:7px 6px;border-bottom:1px solid #E2E8F0;vertical-align:top}
-.tabela th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#64748B}
+.tabela th{font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:#64748B;background:#F8FAFC;position:sticky;top:0}
 .tabela td.f{color:#64748B;font-size:11px;white-space:nowrap}
+.tabela td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+.tabela tr.marca td{background:#FEF3C7;font-weight:800}
 .menu-bonus{display:grid;gap:8px}
 .menu-bonus button{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid #E2E8F0;border-radius:12px;padding:10px 12px;font-size:13.5px;font-weight:700}
 .menu-bonus .n{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:#091E42;color:#67C6FF;display:flex;align-items:center;justify-content:center;font-family:var(--f-tit);font-weight:800}
-.progresso{height:8px;border-radius:4px;background:#E2E8F0;overflow:hidden;margin:4px 0 12px}
-.progresso i{display:block;height:100%;background:#00B100;transition:width .3s}
+.menu-bonus small{display:block;font-weight:500;color:#64748B;font-size:12px;margin-top:2px}
+.abas{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}
+.abas button{padding:7px 12px;border-radius:999px;border:1px solid #CBD5E1;font-size:13px;font-weight:800}
+.abas button[aria-pressed="true"]{background:#091E42;color:#FFFFFF;border-color:#091E42}
+.passo-inv{border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;margin-bottom:10px}
+.passo-inv .lupa{margin:0;border:0;border-bottom:1px solid #E2E8F0;border-radius:0}
+.passo-inv .tx{padding:9px 11px;font-size:13px;line-height:1.4}
+.passo-inv .tx b.t{display:block;font-family:var(--f-tit);font-size:14.5px;color:#091E42;margin-bottom:3px}
+.passo-inv .ref{margin-top:6px;background:#ECFDF5;border-radius:8px;padding:6px 8px;color:#14532D;font-weight:600}
+.passo-inv .meta{margin-top:5px;font-size:11.5px;color:#64748B}
+.tira{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.tira img{border-radius:8px;border:1px solid #E2E8F0}
+.codigo{border:1px solid #E2E8F0;border-radius:10px;padding:8px 10px;margin-bottom:6px;font-size:13px;line-height:1.4}
+.codigo .cd{font-family:var(--f-mono);font-weight:800;font-size:15px;color:#091E42}
+.codigo .mk{font-size:11.5px;color:#64748B}
+.codigo .fa{margin-top:4px;background:#ECFDF5;border-radius:7px;padding:5px 7px;color:#14532D;font-size:12.5px}
+.tri3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.tri3 button{border:1.5px solid #CBD5E1;border-radius:8px;padding:6px 2px;font-size:12px;font-weight:800;min-height:36px}
+.tri3 button[aria-pressed="true"].ok{background:#DCFCE7;border-color:#16A34A;color:#14532D}
+.tri3 button[aria-pressed="true"].fo{background:#FEE2E2;border-color:#DC2626;color:#7F1D1D}
+.tri3 button[aria-pressed="true"].nm{background:#F1F5F9;border-color:#64748B}
+.item-ck{border:1px solid #E2E8F0;border-radius:10px;padding:8px 10px;margin-bottom:6px}
+.item-ck p{font-size:13px;font-weight:700;margin-bottom:6px;line-height:1.35}
+.item-ck p small{display:block;font-weight:500;color:#64748B;font-size:12px}
+.orc-cab{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#091E42;color:#FFFFFF;border-radius:12px;padding:10px 12px;margin-bottom:10px}
+.orc-cab b{font-family:var(--f-tit);font-size:18px}
+.orc-cab span{font-family:var(--f-mono);font-size:13px;color:#67C6FF}
+.itens-orc{display:grid;gap:8px;margin-bottom:6px}
+.item-orc{border:1px solid #E2E8F0;border-radius:10px;padding:8px 10px}
+.item-orc .fx{font-size:11.5px;color:#64748B;margin-top:4px}
+.item-orc .lin{display:grid;grid-template-columns:1fr 110px 40px;gap:8px;align-items:end;margin-top:6px}
+.item-orc .rm{height:44px;border-radius:10px;border:1px solid #FCA5A5;color:#B91C1C;display:flex;align-items:center;justify-content:center}
+.total-orc{display:flex;justify-content:space-between;align-items:center;font-family:var(--f-tit);font-weight:800;font-size:20px;color:#091E42;border-top:2px solid #091E42;padding-top:8px;margin:6px 0 12px}
+.pix-prev{display:flex;gap:12px;align-items:center;background:#F8FAFC;border-radius:10px;padding:10px;margin-bottom:12px}
+.pix-prev canvas{width:96px;height:96px;flex-shrink:0;image-rendering:pixelated;background:#FFFFFF}
+.pix-prev p{font-size:12.5px;color:#334155;line-height:1.4;word-break:break-all}
+.assinatura{position:relative;border:1.5px dashed #94A3B8;border-radius:10px;background:#F8FAFC;height:120px;touch-action:none}
+.assinatura canvas{width:100%;height:100%;display:block}
+.assinatura .dica{position:absolute;left:10px;top:8px;font-size:12px;color:#94A3B8;pointer-events:none}
+.assinatura .limpar{position:absolute;right:6px;top:6px;font-size:12px;font-weight:800;color:#091E42;background:#FFFFFF;border:1px solid #CBD5E1;border-radius:7px;padding:4px 8px}
+.prazos{display:flex;gap:6px;flex-wrap:wrap}
+.prazos button{padding:7px 10px;border-radius:999px;border:1px solid #CBD5E1;font-size:12.5px;font-weight:700}
+.prazos button[aria-pressed="true"]{background:#091E42;color:#FFFFFF;border-color:#091E42}
+.aviso{font-size:12.5px;border-radius:10px;padding:8px 10px;margin-bottom:10px;background:#F1F5F9;color:#334155;line-height:1.4}
+.aviso.ok{background:#DCFCE7;color:#14532D}.aviso.def{background:#FEE2E2;color:#7F1D1D}
+.carregando{padding:16px;text-align:center;color:#64748B;font-size:14px}
 
 @media (min-width:600px){
   .c1{font-size:11px;padding:7px 12px}
@@ -197,7 +252,7 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
   .verif{grid-template-columns:32px 1fr;gap:9px;padding:7px 6px}.verif .bol{width:32px;height:32px;font-size:13px}.verif:not(:last-child)::before{left:20px;top:38px}
   .verif .tt{font-size:14px}.verif .ln{font-size:12.5px}
   .tecla{font-size:13px}
-  .folha{bottom:auto;top:50%;border-radius:18px;transform:translateY(-40%) scale(.97);opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;max-height:84dvh}
+  .folha{bottom:auto;top:50%;border-radius:18px;transform:translateY(-40%) scale(.97);opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;max-height:88dvh}
   .folha.aberto{transform:translateY(-50%);opacity:1;pointer-events:auto}
   .folha .alca{display:none}
 }
@@ -219,7 +274,7 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 <main id="visor"></main>
 
 <nav id="dock" aria-label="Dock do app">
-  <button class="tecla" id="d-indice"><span id="ic-d1"></span><span>Índice (120)</span></button>
+  <button class="tecla" id="d-indice"><span id="ic-d1"></span><span>Índice (14 Fichas)</span></button>
   <button class="tecla" id="d-bonus"><span id="ic-d2"></span><span>6 Bônus &amp; Tabelas</span></button>
   <button class="tecla verde" id="d-orcar" data-orcar-real=""><span id="ic-d3"></span><span>Orçar este Reparo (PDF Nº 1001 + Pix)</span></button>
 </nav>
@@ -227,6 +282,10 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 <div class="fundo" id="fundo"></div>
 <section class="folha" id="modal" role="dialog" aria-modal="true" aria-label="Detalhe"></section>
 
+<!-- Motor real do app: QR (vendor da v148), Pix (BR Code) e PDF offline (GeloProPDF). -->
+<script src="../app/vendor/qrcode-generator-1.4.4.js"></script>
+<script src="../app/gelopro-pix.js"></script>
+<script src="../app/pdf-gelopro.js"></script>
 <script>
 'use strict';
 // ───────────── Ícones de interface (SVG 24×24, traço com hex cravado; nunca equipamento) ─────────────
@@ -242,138 +301,195 @@ const PATHS = {
   lua: '<path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/>',
   sol: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>',
   busca: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  baixar: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  chat: '<path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/>',
+  mais: '<path d="M12 5v14M5 12h14"/>',
 };
 const ic = (n, cor, t = 20) => `<svg class="ic" viewBox="0 0 24 24" width="${t}" height="${t}" fill="none" stroke="${cor}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PATHS[n]}</svg>`;
 const alerta = (t = 40) => `<svg class="ic" viewBox="0 0 24 24" width="${t}" height="${t}" aria-hidden="true"><path d="M12 2.5L1.5 21h21z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 9v6" stroke="#E2650A" stroke-width="2.6" stroke-linecap="round"/><circle cx="12" cy="18" r="1.5" fill="#E2650A"/></svg>`;
 
-// ───────────── Dados ─────────────
-// Faixas: base-tecnica/precos_regionais_2026.csv (região GELOPRO, PED01). O valor final e o PDF saem do Orçamento real do app.
-const PRECOS = {
-  cap_partida: ['Substituição de Capacitor de Partida + Teste de Corrente', 180, 220, 290],
-  sensor_ntc: ['Substituição de Sensor NTC (Ambiente/Serpentina) + Aferição Ôhmica', 190, 240, 320],
-  higienizacao: ['Higienização Técnica Completa (Serpentina, Turbina e Bandeja)', 200, 250, 380],
-  carga_fluido: ['Correção de Vazamento na Flange + Vácuo + Carga de Fluido', 350, 450, 650],
-  reparo_placa: ['Reparo / Substituição de Placa Eletrônica ou Módulo IPM', 420, 550, 850],
-  motor_vent: ['Substituição de Motor Ventilador / Turbina ou Coxins', 280, 380, 520],
-  fusivel_eletrica: ['Recuperação de Proteção Elétrica, Fusível e Bornes de Força', 160, 190, 260],
-  placa_nova: ['Fornecimento e Substituição de Placa Eletrônica Nova', 580, 780, 1150],
-  compressor_troca: ['Substituição de Compressor + Limpeza de Linha, Vácuo e Carga', 1100, 1450, 1950],
-  instalacao_split: ['Instalação Padrão de Split (Até 3m de Linha + Vácuo)', 450, 580, 780],
-  desinstalacao: ['Desinstalação Técnica com Recolhimento de Gás (Pump-Down)', 180, 220, 320],
-  visita_diag: ['Visita Técnica e Diagnóstico Instrumentado', 80, 120, 150],
-};
+// ───────────── Utilidades ─────────────
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (t) => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const norm = (t) => String(t ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const brl = (v) => BRL.format(Number(v) || 0).replace(/\s/, ' ');
+const nn = (i) => String(i).padStart(2, '0');
+const caixaAlta = (t) => esc(t).split('µ').map(x => x.toUpperCase()).join('µ');
+const num = (v) => { const n = Number(String(v ?? '').replace(/\s/g, '').replace(',', '.')); return Number.isFinite(n) ? n : null; };
+const f1 = (v, d = 1) => Number(v).toFixed(d).replace('.', ',');
+const dataBR = (ms) => new Date(ms).toLocaleDateString('pt-BR');
+const ler = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const lerJSON = (k) => { try { return JSON.parse(ler(k) || 'null'); } catch (e) { return null; } };
+
+// Leitor de CSV com aspas (a mesma regra do app e do portão max-claude) e carga sob demanda dos arquivos de ../base-tecnica/.
+function parseCSV(t) {
+  const L = []; let row = [], cur = '', q = false;
+  for (let i = 0; i < t.length; i++) { const c = t[i]; if (q) { if (c === '"' && t[i + 1] === '"') { cur += '"'; i++; } else if (c === '"') q = false; else cur += c; } else if (c === '"') q = true; else if (c === ',') { row.push(cur); cur = ''; } else if (c === '\n') { row.push(cur); L.push(row); row = []; cur = ''; } else if (c !== '\r') cur += c; }
+  if (cur || row.length) { row.push(cur); L.push(row); }
+  const [h, ...rs] = L; return rs.filter(r => r.length > 1).map(r => Object.fromEntries(h.map((k, i) => [k.trim(), (r[i] ?? '').trim()])));
+}
+const CSV = {};
+const csv = (nome) => CSV[nome] || (CSV[nome] = fetch('../base-tecnica/' + nome).then(r => { if (!r.ok) throw new Error(nome + ' HTTP ' + r.status); return r.text(); }).then(parseCSV));
+
+// ───────────── Dados das 14 fichas ─────────────
 const BLOCOS = [['todos', 'Todos'], ['b1', '1. Não Gela'], ['b2', '2. Não Liga'], ['b3', '3. Elétrica'], ['b4', '4. Água e Gelo'], ['b5', '5. Ruídos'], ['b6', '6. Comando'], ['b7', '7. Códigos'], ['b8', '8. Inverter']];
 const PIL = [['p1', 'MUITO COMUM'], ['p1', 'MUITO COMUM'], ['p2', 'COMUM'], ['p2', 'COMUM'], ['p3', 'MENOS COMUM']];
-const BONUS = [
-  '+35 Guias Visuais Exclusivos de Split Inverter (Placa, Ponte IPM, PFC e Comunicação)',
-  'Tradutor Instantâneo de Códigos de Erro e Piscadas de LED',
-  'Tabelas Rápidas em 1 Página + Aferidor de Sensores NTC e Pressão de Gás',
-  'Protocolo Blindado "Antes de Condenar a Peça Cara"',
-  'Guia "Quando o Reparo Não Compensa" + Emissor de Laudo Técnico em 1 Toque',
-  'Gerador de Orçamento Pronto em PDF (Nº 1001) com Tabela 2026, Garantia e QR Code Pix',
-];
-const CODIGOS = [["Elgin","Eco Inverter II HJ","F1","Falha - Módulo IPM","F29 p.27"],["Elgin","Eco Inverter II HJ","L4","Falha - IPM do módulo drive do compressor","F29 p.27"],["Elgin","Eco Inverter II HJ","F4","Falha - Sensor de temperatura - Descarga","F29 p.27"],["Elgin","Eco Inverter II HJ","E2","Falha - Sensor de temperatura - Condensador","F29 p.27"],["Elgin","Eco Inverter II HJ","E5 (5E)","Falha - Comunicação Unidade Interna e Externa","F29 p.27"],["EOS","Master Inverter Pro Cassete/Piso Teto","E1","Falha na válvula de quatro vias","F33 p.36"],["Electrolux","Cassete/Piso-Teto Inverter R32","E1","Falha na válvula 4 vias","F32 p.26"],["EOS","Master Inverter Pro Cassete/Piso Teto","A1","Falha no sensor de temperatura ambiente da unidade interna","F33 p.35"],["EOS","Master Inverter Pro Cassete/Piso Teto","A9","Erro de comunicação entre a unidade externa e a unidade interna","F33 p.35"],["Samsung","Cassete/Teto Inverter R32","E121","Erro no sensor de temperatura ambiente da unidade interna (curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E202","Erro de comunicação entre a unidade interna e a unidade externa","F31 p.39"],["Electrolux","Cassete/Piso-Teto Inverter R32","AA","Erro de comunicação entre o controlador com fio e a PCB principal da unidade interna","F32 p.25"]];
-
-/* As 6 fichas (textos do Pedro, 02/11/2026). alvos = centro medido de cada bolinha 01–05 da ilustração (% da largura e da altura);
-   a bolinha N marca a verificação N. vc[N-1] = causa ligada à verificação N. Cada causa leva o serviço do catálogo que o Orçamento real abre. */
+/* alvos = centro de cada bolinha 01–05 (% da arte 1672×941, medido por visão computacional; conferido com 0,2 a 6 px de diferença).
+   foco = ponto médio entre a bolinha e a peça onde a linha ciano termina (centro da lupa). vc[N-1] = causa ligada à verificação N.
+   Textos D-001, D-002, D-003, D-023, D-058 e D-073: Pedro (02/11/2026). D-004, D-005, D-040, D-057, D-087, S-04, S-06 e S-07: rascunho
+   a partir das ilustrações aprovadas, sem número novo (marcados com rascunho: true até o Pedro aprovar). */
 const F = [
 { id: 'D-001', img: 'd001', bloco: 'NÃO GELA', blocos: ['b1'], titulo: 'Liga, mas não gela', sub: 'Evaporadora ligada, ventilação normal, ar saindo na temperatura do ambiente.',
   chips: ['Convencional e Inverter', 'Refrigeração', 'Alicate amperímetro'],
   busca: 'liga nao gela nao esfria gas vazamento carga baixa filtro serpentina capacitor ventilador condensadora compressor corrente manifold',
-  alvos: [[25.3, 19.59], [77.49, 16.57], [97.02, 45.57], [51.11, 86.04], [97.03, 66.39]],
+  alvos: [[25.0, 18.0], [76.9, 17.5], [96.9, 44.3], [51.2, 89.1], [96.9, 64.9]], foco: [[22.67, 27.6], [73.74, 21.5], [89.42, 43.94], [54.01, 76.43], [93.31, 69.11]],
   causas: [['Carga de gás baixa por vazamento', 'carga_fluido'], ['Filtro e serpentina obstruídos', 'higienizacao'], ['Capacitor do compressor fraco', 'cap_partida'], ['Ventilador da condensadora parado', 'motor_vent'], ['Compressor sem partida ou travado', 'compressor_troca']],
   verifs: [['Confira filtro, serpentina e saída de ar da evaporadora', 'Fluxo fraco indica sujeira, não falta de gás'], ['Meça a corrente do compressor com o alicate amperímetro', 'Corrente bem abaixo da nominal indica pouco gás'], ['Teste o capacitor do compressor com o multímetro', 'Valor fora do indicado na etiqueta (±5%) condena a peça'], ['Verifique se o ventilador da condensadora gira normalmente', 'Ventilador parado derruba a troca de calor'], ['Conecte o manifold e leia a pressão de baixa', 'Pressão fora da faixa do gás indica vazamento']],
   vc: [2, 1, 3, 4, 1],
   proximo: [['a corrente está bem abaixo da nominal', 'Procure o vazamento na flange ou linha antes de completar carga', 'carga_fluido'], ['a corrente está normal e não gela', 'Investigue fluxo de ar e faça higienização completa', 'higienizacao'], ['o compressor não parte', 'Teste capacitor de partida, bornes e placa', 'cap_partida']],
   antes: 'Não complete gás sem achar o vazamento: o aparelho gela por poucos dias e o cliente chama de volta no retorno.' },
-
 { id: 'D-002', img: 'd002', bloco: 'NÃO GELA', blocos: ['b1', 'b3'], titulo: 'Compressor liga e desarma', sub: 'Compressor parte, roda alguns minutos e desliga sozinho no térmico.',
   chips: ['Convencional e Inverter', 'Refrigeração', 'Alicate amperímetro'],
   busca: 'compressor liga desarma desliga sozinho termico sobrecarga condensadora suja ventilador fraco capacitor excesso de gas enrolamento corrente alta',
-  alvos: [[59.94, 77.75], [5.31, 29.61], [22.62, 69.55], [94.73, 12.41], [67.17, 15.11]],
+  alvos: [[59.2, 77.2], [4.7, 28.3], [22.0, 68.3], [95.3, 13.9], [66.5, 15.7]], foco: [[54.72, 80.58], [8.78, 30.89], [25.35, 55.67], [89.52, 17.05], [65.55, 20.07]],
   causas: [['Condensadora suja sem troca de calor', 'higienizacao'], ['Ventilador da condensadora fraco', 'motor_vent'], ['Capacitor abaixo do valor indicado', 'cap_partida'], ['Excesso de carga de gás', 'carga_fluido'], ['Compressor com enrolamento alterado', 'compressor_troca']],
   verifs: [['Meça a corrente do compressor durante o funcionamento', 'Corrente subindo acima da nominal indica sobrecarga térmica'], ['Limpe e inspecione a serpentina da condensadora', 'Aletas obstruídas travam a dissipação de calor e elevam a pressão'], ['Confirme a rotação e o fluxo do ventilador externo', 'Ventilador lento faz o compressor ferver e abrir o térmico'], ['Teste o capacitor de marcha com o capacímetro', 'Capacitância baixa eleva a corrente do compressor'], ['Meça a resistência entre os pinos S, C e R a frio', 'Resistência muito baixa ou fuga para carcaça indica curto']],
   vc: [1, 1, 2, 3, 5],
   proximo: [['a corrente sobe até o térmico abrir', 'Lave a condensadora e restabeleça a ventilação primeiro', 'higienizacao'], ['a condensadora está limpa e a corrente alta', 'Substitua o capacitor ou corrija excesso de fluido', 'cap_partida'], ['há curto nos pinos S-C-R ou fuga para a massa', 'Condene o compressor com laudo técnico', 'compressor_troca']],
   antes: 'Condensadora suja ou sem ventilação derruba o compressor igual a peça queimada. Limpe e meça a corrente antes de condenar.' },
-
 { id: 'D-003', img: 'd003', bloco: 'NÃO GELA', blocos: ['b1'], titulo: 'Ar sai frio, ambiente não esfria', sub: 'Saída da evaporadora gelada, mas a temperatura do ambiente não cai.',
   chips: ['Todos', 'Instalação', 'Termômetro'],
   busca: 'ar sai frio ambiente nao esfria sala quente subdimensionado btu carga termica sol porta janela infiltracao filtro turbina delta t',
-  alvos: [[74.52, 35.94], [90.37, 82.2], [47.26, 53.04], [36.02, 11.53], [83.55, 11.93]],
+  alvos: [[73.9, 35.4], [91.0, 80.7], [46.7, 53.9], [35.7, 12.6], [83.8, 10.6]], foco: [[71.34, 38.69], [88.86, 85.51], [47.27, 60.96], [39.38, 15.07], [78.98, 12.21]],
   causas: [['Aparelho subdimensionado para o ambiente', 'instalacao_split'], ['Infiltração de ar quente por portas e janelas', 'visita_diag'], ['Carga térmica alta de sol, pessoas e computadores', 'visita_diag'], ['Filtro e turbina parcialmente sujos', 'higienizacao'], ['Fluxo de ar mal direcionado', 'visita_diag']],
   verifs: [['Meça a temperatura de entrada (retorno) e de saída da evaporadora', 'Diferença (Delta T) entre 10 °C e 14 °C prova que o aparelho está gelando'], ['Confira vedação de portas, janelas e frestas', 'Entrada contínua de ar quente anula a capacidade do Split'], ['Levante a carga térmica real da sala (sol, pessoas e equipamentos)', 'Ambiente acima da capacidade em BTU/h nunca atinge o setpoint'], ['Verifique filtro, serpentina e vazão da turbina', 'Pouco volume de ar gela na boca da máquina mas não circula na sala'], ['Compare a etiqueta do aparelho (BTU/h) com a metragem e carga', 'Subdimensionamento exige laudo técnico de capacidade insuficiente']],
   vc: [4, 2, 3, 4, 1], ir: { 1: 'D-001' },
-  proximo: [['a diferença de temperatura (Delta T) está entre 10 e 14 °C', 'O aparelho está bom: emita Laudo de Carga Térmica / Capacidade', 'visita_diag'], ['a diferença de temperatura está abaixo de 8 °C', 'Volte ao diagnóstico D-001 de refrigeração e limpeza', null, 'D-001'], ['há infiltração aberta ou sol direto', 'Oriente vedação e cortina antes de mexer no equipamento', 'visita_diag']],
+  proximo: [['a diferença de temperatura (Delta T) está entre 10 e 14 °C', 'O aparelho está bom: emita Laudo de Carga Térmica / Capacidade', null, null, 'laudo'], ['a diferença de temperatura está abaixo de 8 °C', 'Volte ao diagnóstico D-001 de refrigeração e limpeza', null, 'D-001'], ['há infiltração aberta ou sol direto', 'Oriente vedação e cortina antes de mexer no equipamento', 'visita_diag']],
   antes: 'Aparelho que entrega de 10 °C a 14 °C de diferença entre retorno e saída não tem defeito de gás nem de peça. Não mexa na carga à toa.' },
-
+{ id: 'D-004', img: 'd004', bloco: 'NÃO GELA', blocos: ['b1'], rascunho: true, titulo: 'Gela e para', sub: 'Começa gelando, depois o compressor desliga sozinho e o ar volta à temperatura do ambiente.',
+  chips: ['Convencional e Inverter', 'Refrigeração', 'Alicate amperímetro'],
+  busca: 'gela e para gela depois para desliga sozinho compressor desliga sensor serpentina ntc condensadora suja placa rele ventilador corrente',
+  alvos: [[16.5, 16.2], [56.3, 16.2], [38.7, 16.2], [52.8, 94.4], [84.2, 15.9]], foco: [[14.08, 31.75], [55.06, 27.76], [36.69, 29.35], [56.01, 79.61], [80.68, 21.23]],
+  causas: [['Condensadora suja sem troca de calor', 'higienizacao'], ['Sensor da serpentina fora da faixa', 'sensor_ntc'], ['Ventilador da condensadora falhando', 'motor_vent'], ['Capacitor fraco elevando a corrente', 'cap_partida'], ['Relé ou conector da placa falhando', 'reparo_placa']],
+  verifs: [['Meça a resistência do sensor da serpentina solto da placa', 'Sensor fora da curva faz a placa desligar o compressor antes da hora'], ['Inspecione e lave a serpentina da condensadora', 'Aletas sujas sobem a pressão e o compressor abre no térmico'], ['Confira o LED e os conectores da placa da evaporadora', 'Conector frouxo ou relé falhando corta o comando do compressor'], ['Veja se o ventilador da condensadora acompanha o compressor', 'Ventilador que para junto deixa o compressor sem troca de calor'], ['Meça a corrente do compressor até ele desligar', 'Corrente subindo até desligar aponta sobrecarga, não falta de comando']],
+  vc: [2, 1, 5, 3, 4],
+  proximo: [['a condensadora está suja', 'Lave a condensadora e meça a corrente de novo', 'higienizacao'], ['o sensor está fora da curva', 'Troque o sensor NTC da serpentina', 'sensor_ntc'], ['a corrente sobe até desarmar com tudo limpo', 'Teste capacitor e ventilador antes de condenar o compressor', 'cap_partida']],
+  antes: 'Compressor que gela e para quase sempre está sem troca de calor ou com sensor ruim. Limpe, meça o sensor e a corrente antes de falar em compressor.' },
+{ id: 'D-005', img: 'd005', bloco: 'NÃO GELA', blocos: ['b1'], rascunho: true, titulo: 'Gela pouco, sem força', sub: 'O aparelho gela, mas fraco: o ambiente demora e não chega à temperatura pedida.',
+  chips: ['Convencional e Inverter', 'Refrigeração', 'Manifold'],
+  busca: 'gela pouco sem forca fraco nao chega na temperatura filtro sujo turbina suja gas baixo vazamento condensadora suja isolamento tubo',
+  alvos: [[12.9, 13.9], [15.6, 80.4], [93.2, 27.4], [58.3, 14.4], [53.8, 93.4]], foco: [[10.67, 26.08], [17.76, 66.87], [92.44, 41.7], [55.32, 25.0], [55.04, 87.51]],
+  causas: [['Filtro de ar entupido', 'higienizacao'], ['Carga de gás baixa por vazamento', 'carga_fluido'], ['Turbina com crosta de sujeira', 'higienizacao'], ['Condensadora suja', 'higienizacao'], ['Isolamento da linha danificado', 'dreno_isol']],
+  verifs: [['Retire e confira o filtro de ar contra a luz', 'Filtro entupido derruba a vazão e o frio não chega à sala'], ['Inspecione as pás da turbina da evaporadora', 'Crosta nas pás reduz o volume de ar mesmo com filtro limpo'], ['Conecte o manifold e confira pressão de sucção e superaquecimento', 'Pressão baixa com superaquecimento alto indica pouco gás'], ['Inspecione a serpentina da condensadora', 'Condensadora suja tira rendimento e sobe a pressão de alta'], ['Confira o isolamento da linha de sucção', 'Tubo descascado perde frio no caminho e sua na parede']],
+  vc: [1, 3, 2, 4, 5],
+  proximo: [['filtro ou turbina estão sujos', 'Faça a higienização completa antes de medir gás', 'higienizacao'], ['a pressão de sucção está baixa', 'Procure o vazamento, corrija e refaça a carga', 'carga_fluido'], ['o isolamento está rasgado', 'Refaça o isolamento térmico da linha', 'dreno_isol']],
+  antes: 'Gela pouco não é sinônimo de falta de gás. Limpe filtro, turbina e condensadora e só então leia a pressão.' },
 { id: 'D-023', img: 'd023', bloco: 'NÃO LIGA', blocos: ['b2', 'b3'], titulo: 'Não liga, display apagado', sub: 'Aparelho sem nenhuma reação ao comando, sem luz e sem sinal sonoro.',
   chips: ['Todos', 'Elétrica', 'Multímetro'],
   busca: 'nao liga display apagado sem luz sem sinal morto disjuntor tomada fusivel fuse placa fonte 5v 12v varistor cabo interligacao borneira',
-  alvos: [[5.06, 13.65], [38.86, 6.48], [61.19, 4.03], [80.16, 5.96], [96.67, 71.99]],
+  alvos: [[4.4, 13.0], [38.4, 5.2], [60.7, 5.2], [79.5, 5.2], [96.6, 70.6]], foco: [[8.63, 17.92], [36.54, 16.95], [60.25, 16.42], [77.73, 13.23], [93.16, 76.75]],
   causas: [['Falta de tensão no disjuntor ou tomada', 'fusivel_eletrica'], ['Fusível de vidro da placa queimado', 'fusivel_eletrica'], ['Fonte primária da placa sem tensão de saída', 'reparo_placa'], ['Cabo de alimentação ou interligação rompido', 'fusivel_eletrica'], ['Placa eletrônica principal queimada', 'placa_nova']],
   verifs: [['Meça a tensão CA na saída do disjuntor do quadro', 'Sem 220V no disjuntor o defeito está na rede elétrica da casa'], ['Meça a tensão de chegada na régua de bornes (L e N)', 'Tensão presente nos bornes prova que o cabo até a máquina está íntegro'], ['Teste a continuidade do fusível (FUSE) na placa da evaporadora', 'Fusível aberto corta 100% da energia da placa eletrônica'], ['Meça a saída da fonte/transformador da placa (12V e 5V CC)', 'Chega 220V CA mas não sai 5V/12V CC confirma falha na fonte da placa'], ['Confira aperto e continuidade da borneira de interligação (1-2-3)', 'Fio solto ou oxidado interrompe a alimentação entre unidades']],
   vc: [1, 4, 2, 3, 4],
   proximo: [['não chega 220V na régua de bornes L-N', 'Restabeleça disjuntor, tomada ou cabo de alimentação', 'fusivel_eletrica'], ['o fusível da placa está aberto', 'Verifique varistor em curto antes de trocar o fusível', 'fusivel_eletrica'], ['chega 220V e a fonte não gera 5V/12V', 'Orce reparo ou substituição da placa eletrônica', 'reparo_placa']],
   antes: 'Fusível queimado é consequência de surto ou curto. Trocar o fusível sem testar o varistor e a linha faz queimar de novo na hora.' },
-
+{ id: 'D-040', img: 'd040', bloco: 'ELÉTRICA', blocos: ['b3', 'b2'], rascunho: true, titulo: 'Desarma o disjuntor', sub: 'O disjuntor cai quando o compressor tenta partir ou poucos segundos depois.',
+  chips: ['Convencional e Inverter', 'Elétrica', 'Multímetro'],
+  busca: 'desarma disjuntor cai a chave desarmando curto massa compressor capacitor em curto borne queimado varistor fusivel placa cabo fino',
+  alvos: [[36.2, 5.1], [6.8, 12.1], [55.6, 5.1], [71.2, 5.1], [88.1, 5.1]], foco: [[38.52, 24.23], [8.63, 29.54], [55.7, 24.23], [69.48, 27.36], [85.41, 23.8]],
+  causas: [['Compressor em massa ou em curto', 'compressor_troca'], ['Borne de força queimado ou frouxo', 'fusivel_eletrica'], ['Capacitor em curto', 'cap_partida'], ['Disjuntor ou cabo abaixo do pedido', 'fusivel_eletrica'], ['Varistor ou placa em curto', 'reparo_placa']],
+  verifs: [['Meça os pinos S, C e R entre si e cada pino contra a carcaça', 'Pino com continuidade para a carcaça é compressor em massa'], ['Confira o disjuntor e o cabo pela etiqueta do aparelho', 'Disjuntor fraco ou cabo fino desarma mesmo com o aparelho bom'], ['Teste o capacitor com o capacímetro', 'Capacitor em curto puxa corrente alta e derruba o disjuntor'], ['Inspecione os bornes de força da condensadora', 'Borne escurecido ou derretido indica mau contato e aquecimento'], ['Confira fusível e varistor da placa externa', 'Varistor estourado ou trilha queimada mostra surto na rede']],
+  vc: [1, 4, 3, 2, 5],
+  proximo: [['há continuidade de pino para a carcaça', 'Condene o compressor com laudo técnico', 'compressor_troca'], ['o borne está escurecido ou derretido', 'Refaça bornes e conexões de força', 'fusivel_eletrica'], ['capacitor e compressor estão bons', 'Confira disjuntor, cabo e varistor da placa', 'reparo_placa']],
+  antes: 'Não rearme o disjuntor várias vezes nem troque por um maior: meça o isolamento do compressor antes de religar.' },
+{ id: 'D-057', img: 'd057', bloco: 'ÁGUA E GELO', blocos: ['b4'], rascunho: true, titulo: 'Pingando água na evaporadora', sub: 'Água escorrendo pela frente do aparelho ou pela parede com o ar-condicionado ligado.',
+  chips: ['Todos', 'Dreno', 'Nível e lanterna'],
+  busca: 'pingando agua vazando goteira dreno bandeja cheia transbordando lodo mangueira subida sifao desnivelado nivel calha trincada parede',
+  alvos: [[10.2, 93.8], [62.8, 93.9], [82.2, 15.3], [31.3, 5.7], [4.1, 62.8]], foco: [[14.31, 85.53], [60.8, 86.43], [84.97, 24.12], [34.34, 12.25], [9.53, 66.04]],
+  causas: [['Saída do dreno entupida por lodo', 'dreno_isol'], ['Mangueira com subida ou sifão', 'dreno_isol'], ['Evaporadora desnivelada', 'dreno_isol'], ['Bandeja transbordando por sujeira acumulada', 'higienizacao'], ['Bandeja trincada ou fora do encaixe', 'visita_diag']],
+  verifs: [['Confira se a bandeja está cheia ou transbordando', 'Bandeja cheia mostra que a água não está saindo pelo dreno'], ['Desobstrua a saída da bandeja e despeje um copo de água', 'Água que não escoa confirma lodo na saída ou na mangueira'], ['Siga a mangueira do dreno até o fim', 'Subida, barriga ou sifão seguram a água dentro da bandeja'], ['Coloque o nível em cima da evaporadora', 'Aparelho caído para o lado errado joga a água para fora da bandeja'], ['Inspecione a calha e o encaixe da bandeja', 'Bandeja trincada ou fora do encaixe pinga mesmo com dreno livre']],
+  vc: [4, 1, 2, 3, 5],
+  proximo: [['a água não escoa pela saída', 'Desobstrua bandeja e mangueira do dreno', 'dreno_isol'], ['a mangueira sobe ou faz sifão', 'Refaça o caimento da mangueira', 'dreno_isol'], ['o aparelho está desnivelado', 'Nivele a evaporadora no suporte', 'dreno_isol']],
+  antes: 'Bomba de condensado não resolve lodo nem desnível. Desobstrua, nivele e teste com água antes de orçar bomba.' },
 { id: 'D-058', img: 'd058', bloco: 'ÁGUA E GELO', blocos: ['b4', 'b1'], titulo: 'Serpentina congelando na evaporadora', sub: 'Camada de gelo bloqueando a serpentina interna e queda forte no vento.',
   chips: ['Convencional e Inverter', 'Refrigeração', 'Manifold e alicate'],
   busca: 'serpentina congelando gelo evaporadora congela vento fraco filtro turbina suja gas baixo vazamento sensor degelo ntc restricao tubo dobrado',
-  alvos: [[5.48, 88.69], [20.71, 12.53], [74.18, 80.4], [71.33, 37.7], [42.76, 9.53]],
+  alvos: [[4.7, 89.9], [20.0, 11.2], [74.2, 82.0], [72.0, 39.1], [42.5, 11.2]], foco: [[7.13, 85.86], [18.67, 24.46], [75.98, 82.45], [74.58, 35.49], [41.29, 26.59]],
   causas: [['Filtro, serpentina ou turbina sujos bloqueando o ar', 'higienizacao'], ['Carga de gás baixa por vazamento', 'carga_fluido'], ['Turbina da evaporadora girando devagar', 'motor_vent'], ['Sensor de degelo da serpentina fora da faixa', 'sensor_ntc'], ['Restrição na linha de líquido ou tubo dobrado', 'carga_fluido']],
   verifs: [['Descongele a serpentina e avalie a força do vento na saída', 'Vento fraco faz o frio acumular no alumínio e virar bloco de gelo'], ['Inspecione tela do filtro, aletas e pás da turbina interna', 'Crosta de sujeira na turbina tira a vazão mesmo com filtro limpo'], ['Meça a corrente do compressor com alicate amperímetro', 'Corrente baixa acompanhada de gelo no tubo fino aponta falta de gás'], ['Conecte o manifold e confira a pressão de sucção e superaquecimento', 'Pressão abaixo da faixa confirma baixa carga de refrigerante'], ['Meça a resistência ôhmica (kΩ) do sensor preso na serpentina', 'Sensor alterado não avisa a placa para cortar o compressor no gelo']],
   vc: [1, 1, 2, 2, 4],
   proximo: [['o fluxo de ar está fraco por sujeira', 'Faça higienização completa da turbina e serpentina antes de medir gás', 'higienizacao'], ['o ar está forte e a pressão e a corrente estão baixas', 'Localize o vazamento na flange, corrija e refaça a carga', 'carga_fluido'], ['limpeza e pressão estão normais', 'Substitua o sensor NTC de degelo da serpentina', 'sensor_ntc']],
   antes: 'Congelamento quase nunca pede gás direto na chegada. Se você colocar gás com a turbina suja, o aparelho fica com excesso de carga.' },
-
 { id: 'D-073', img: 'd073', bloco: 'RUÍDOS', blocos: ['b5'], titulo: 'Barulho na evaporadora', sub: 'Ruído de raspagem, chiado ou trepidação vindo da unidade interna.',
   chips: ['Todos', 'Ventilação', 'Inspeção manual'],
   busca: 'barulho evaporadora ruido raspando chiado trepidacao vibra turbina suja desbalanceada bucha mancal rolamento motor eixo folga carcaca frouxa',
-  alvos: [[5.52, 34.06], [36.07, 31.12], [23.82, 88.31], [82.29, 31.86], [94.2, 90.98]],
+  alvos: [[5.0, 32.3], [35.5, 29.8], [24.0, 89.9], [82.3, 33.4], [93.9, 89.5]], foco: [[8.63, 40.86], [35.69, 38.81], [28.15, 85.86], [78.23, 42.2], [92.4, 78.76]],
   causas: [['Turbina suja ou desbalanceada por crosta', 'higienizacao'], ['Sujeira ou plástico encostando nas pás da turbina', 'higienizacao'], ['Bucha de borracha do mancal esquerda gasta ou seca', 'motor_vent'], ['Carcaça, bandeja ou suporte de parede frouxos', 'visita_diag'], ['Rolamento interno e eixo do motor da turbina com folga', 'motor_vent']],
   verifs: [['Com o aparelho desligado, gire a turbina manualmente', 'Sentir arrasto ou batida já mostra o ponto exato que está pegando'], ['Inspecione pás quebradas ou acúmulo de sujeira na turbina', 'Peso desigual de sujeira faz a turbina vibrar em alta rotação'], ['Confira travas da bandeja, presilhas e apoio na chapa da parede', 'Plástico frouxo estala e vibra quando o ar esfria'], ['Ligue somente na ventilação e ouça em velocidade baixa, média e alta', 'Chiado metálico contínuo acompanha a rotação do rolamento do motor'], ['Puxe levemente o eixo do motor para checar folga axial e radial', 'Folga na bucha ou no rolamento exige troca da bucha ou do motor']],
   vc: [2, 1, 4, 5, 3],
   proximo: [['há sujeira acumulada ou objeto raspando', 'Realize desmontagem e higienização completa da turbina', 'higienizacao'], ['a bucha do lado oposto ao motor está seca ou gasta', 'Lubrifique com graxa apropriada ou substitua a bucha do mancal', 'motor_vent'], ['o rolamento interno do motor ronca com folga', 'Orce a substituição do motor ventilador da evaporadora', 'motor_vent']],
   antes: 'Antes de condenar o motor da evaporadora, limpe a turbina, alinhe a bucha lateral e aperte a carcaça. Boa parte do ruído some aí.' },
+{ id: 'D-087', img: 'd087', bloco: 'CÓDIGOS', blocos: ['b7', 'b6', 'b8'], rascunho: true, titulo: 'Código de erro no display', sub: 'O visor mostra um código (E1, por exemplo) ou o LED pisca e o aparelho não gela.',
+  chips: ['Convencional e Inverter', 'Comando', 'Multímetro'],
+  busca: 'codigo de erro display e1 e2 e5 led piscando pisca sensor ntc comunicacao borneira 1 2 3 s placa externa ventilador condensadora',
+  alvos: [[9.8, 80.3], [23.7, 11.3], [44.5, 23.1], [94.4, 15.5], [60.6, 89.8]], foco: [[12.38, 73.36], [19.33, 19.84], [42.94, 34.13], [92.06, 27.68], [62.96, 74.12]],
+  causas: [['Sensor de temperatura aberto ou em curto', 'sensor_ntc'], ['Cabo de interligação com mau contato', 'fusivel_eletrica'], ['Ventilador da condensadora parado', 'motor_vent'], ['Falha de comunicação entre as placas', 'reparo_placa'], ['Placa eletrônica com defeito', 'placa_nova']],
+  verifs: [['Anote o código do display e consulte o Tradutor de Códigos (Bônus 2)', 'O código aponta o circuito com problema, não a peça'], ['Meça os sensores de ambiente e de serpentina soltos da placa', 'Sensor aberto ou em curto é a causa mais barata de código'], ['Meça tensão e sinal na borneira de interligação 1-2-3-S', 'Sem tensão ou sinal no S, a falha está no cabo de comunicação'], ['Conte as piscadas do LED da placa externa', 'A piscada da condensadora confirma o código da evaporadora'], ['Veja se o ventilador da condensadora parte junto', 'Ventilador parado gera código de proteção por temperatura']],
+  vc: [5, 1, 2, 4, 3],
+  proximo: [['o sensor está fora da curva', 'Troque o sensor NTC', 'sensor_ntc'], ['falta tensão ou sinal no borne S', 'Refaça o cabo de interligação', 'fusivel_eletrica'], ['sensores e cabo estão bons', 'Orce o reparo da placa eletrônica', 'reparo_placa']],
+  antes: 'Código não condena placa. Meça sensores e o cabo de interligação antes de orçar placa nova.' },
+{ id: 'S-04', img: 's04', bloco: 'HIGIENE', blocos: ['b4'], rascunho: true, titulo: 'Cheiro ruim no ar', sub: 'Ar com cheiro de mofo, umidade ou esgoto quando o aparelho liga.',
+  chips: ['Todos', 'Higienização', 'Inspeção visual'],
+  busca: 'cheiro ruim mau cheiro mofo bolor umidade esgoto fedor biofilme serpentina turbina bandeja agua parada filtro dreno sifao ralo higienizacao',
+  alvos: [[36.2, 7.7], [35.1, 83.2], [65.9, 7.7], [10.5, 8.0], [93.5, 73.9]], foco: [[34.79, 21.23], [37.97, 70.93], [63.36, 23.4], [12.49, 23.13], [88.62, 79.09]],
+  causas: [['Biofilme na serpentina', 'higienizacao'], ['Turbina com mofo', 'higienizacao'], ['Água parada na bandeja', 'dreno_isol'], ['Filtro sujo e úmido', 'higienizacao'], ['Dreno no esgoto sem sifão', 'dreno_isol']],
+  verifs: [['Inspecione a serpentina da evaporadora com lanterna', 'Mancha escura entre as aletas é biofilme e solta cheiro de mofo'], ['Confira se há água parada na bandeja', 'Água parada apodrece e o cheiro sai junto com o ar'], ['Inspecione as pás da turbina', 'Crosta escura nas pás espalha mofo pela sala'], ['Retire o filtro e veja a tela contra a luz', 'Filtro com poeira e gordura segura umidade e cheiro'], ['Veja onde a mangueira do dreno termina', 'Dreno ligado ao esgoto sem sifão puxa cheiro de esgoto para dentro']],
+  vc: [1, 3, 2, 4, 5],
+  proximo: [['há biofilme na serpentina ou na turbina', 'Faça a higienização completa com desmontagem', 'higienizacao'], ['há água parada na bandeja', 'Desobstrua e nivele o dreno', 'dreno_isol'], ['o cheiro é de esgoto', 'Refaça a saída do dreno com sifão ou fora do esgoto', 'dreno_isol']],
+  antes: 'Spray perfumado só mascara o cheiro por alguns dias. Sem limpar serpentina, turbina e bandeja, o cliente chama de volta.' },
+{ id: 'S-06', img: 's06', bloco: 'VENTILAÇÃO', blocos: ['b1', 'b5'], rascunho: true, titulo: 'Ventilador interno parado', sub: 'O aparelho liga e o compressor funciona, mas a turbina da evaporadora não gira.',
+  chips: ['Todos', 'Ventilação', 'Multímetro'],
+  busca: 'ventilador interno parado turbina nao gira motor ventilador capacitor do motor queimado bucha mancal travada conector placa evaporadora',
+  alvos: [[31.8, 38.2], [63.1, 5.4], [81.9, 5.4], [71.9, 92.5], [3.1, 41.3]], foco: [[32.86, 50.08], [65.19, 19.07], [79.83, 19.07], [68.34, 79.03], [7.02, 51.63]],
+  causas: [['Capacitor do motor ventilador fraco', 'cap_partida'], ['Turbina travada por sujeira ou bucha', 'higienizacao'], ['Motor ventilador queimado', 'motor_vent'], ['Bucha do mancal seca ou gasta', 'motor_vent'], ['Placa sem saída para o motor', 'reparo_placa']],
+  verifs: [['Com o aparelho desligado, gire a turbina com a mão', 'Turbina presa ou dura aponta bucha ou sujeira travando'], ['Teste o capacitor do motor ventilador com o capacímetro', 'Capacitor fraco deixa o motor zumbindo sem girar'], ['Meça a tensão no conector do motor na placa', 'Tensão chegando e motor parado condena o motor'], ['Meça a resistência dos enrolamentos do motor', 'Enrolamento aberto mostra motor queimado'], ['Confira a bucha do mancal do lado oposto ao motor', 'Bucha seca trava a turbina e esquenta o motor']],
+  vc: [2, 1, 5, 3, 4],
+  proximo: [['a turbina está presa', 'Limpe a turbina e lubrifique ou troque a bucha', 'motor_vent'], ['o capacitor está fraco', 'Troque o capacitor do motor ventilador', 'cap_partida'], ['chega tensão e o motor não gira', 'Orce a troca do motor ventilador', 'motor_vent']],
+  antes: 'Antes de condenar o motor, gire a turbina com a mão e teste o capacitor. Turbina presa queima motor novo também.' },
+{ id: 'S-07', img: 's07', bloco: 'COMANDO', blocos: ['b6'], rascunho: true, titulo: 'Controle não responde', sub: 'O aparelho não obedece ao controle remoto: não liga, não muda a temperatura nem o modo.',
+  chips: ['Todos', 'Comando', 'Câmera do celular'],
+  busca: 'controle nao responde controle remoto nao funciona pilha fraca invertida infravermelho receptor sensor ir camera celular botao auto emergencia',
+  alvos: [[6.5, 50.3], [26.1, 83.2], [73.4, 76.2], [75.4, 6.1], [90.7, 65.8]], foco: [[9.74, 56.23], [30.01, 83.74], [68.61, 82.89], [77.56, 17.29], [88.95, 56.7]],
+  causas: [['Pilhas fracas ou invertidas', 'visita_diag'], ['Controle remoto com defeito', 'visita_diag'], ['Receptor infravermelho com defeito', 'reparo_placa'], ['Teclado do controle gasto', 'visita_diag'], ['Placa da evaporadora sem comando', 'reparo_placa']],
+  verifs: [['Aperte os botões e veja se o visor do controle acende', 'Visor apagado ou fraco aponta pilha ou controle com defeito'], ['Troque as pilhas por novas e confira a polaridade', 'Pilha fraca ou invertida é a causa mais comum'], ['Aponte o controle para a câmera do celular e aperte um botão', 'Luz piscando na tela prova que o controle está transmitindo'], ['Inspecione o receptor infravermelho e o conector na placa', 'Receptor solto ou oxidado não recebe o sinal do controle'], ['Ligue pelo botão AUTO ou de emergência do aparelho', 'Ligando pelo botão, a placa está boa e o problema é controle ou receptor']],
+  vc: [4, 1, 2, 3, 5],
+  proximo: [['o controle não aparece na câmera', 'Troque as pilhas ou o controle remoto', 'visita_diag'], ['o controle transmite e o aparelho não recebe', 'Troque o receptor infravermelho da placa', 'reparo_placa'], ['nem o botão AUTO liga o aparelho', 'Abra a ficha D-023 (não liga)', null, 'D-023']],
+  antes: 'Controle que não responde quase nunca é placa. Teste pilha, câmera do celular e botão AUTO antes de orçar placa.' },
 ];
 
-// ───────────── Utilidades e estado ─────────────
-const $ = (s, el = document) => el.querySelector(s);
-const $$ = (s, el = document) => [...el.querySelectorAll(s)];
-const esc = (t) => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-const norm = (t) => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-const brl = (v) => 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const nn = (i) => String(i).padStart(2, '0');
-const caixaAlta = (t) => esc(t).split('µ').map(x => x.toUpperCase()).join('µ');
-const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
-const ler = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const ICO = (f, n) => `imagens/icones/${f.img}_${n}.webp`;
 const IMG = (f) => `imagens/${f.img}.webp`;
 const EMBED = (() => { try { return new URLSearchParams(location.search).get('embed') === '1' && window.parent !== window; } catch (e) { return false; } })();
 if (EMBED) document.documentElement.dataset.embed = '1';
 const visor = $('#visor');
-const S = { idx: 0, sel: 0, estado: {}, defeito: {} };   // estado[ficha][verificação] = 'ok' | 'def'; defeito[ficha] = nº da causa confirmada
+const S = { idx: 0, sel: 0, estado: {}, defeito: {} };
 const fichaAtual = () => F[S.idx];
 const servicoAtual = () => { const f = fichaAtual(), c = S.defeito[f.id]; return f.causas[(c || 1) - 1][1]; };
-
-// ───────────── Orçamento real (motor do app) ─────────────
-// Dentro do app: mensagem para o GeloPro App v5.2 abrir o fechamento (abrirFech) com o serviço lançado; o PDF Nº 1001 sai do pdf-gelopro.js.
-// Fora do app: abre o próprio app com o pedido no endereço (#orcar=…&ficha=…), que ele lê ao carregar.
-const APP = '../app/GeloPro%20App%20v5.2.dc.html';
-function orcarReal(servicos) {
-  const f = fichaAtual(), ids = (Array.isArray(servicos) ? servicos : [servicos]).filter(Boolean);
-  if (EMBED) { window.parent.postMessage({ gelopro: 'orcar', servicos: ids, ficha: f.id }, location.origin === 'null' ? '*' : location.origin); return; }
-  location.href = `${APP}#orcar=${encodeURIComponent(ids.join(','))}&ficha=${encodeURIComponent(f.id)}`;
-}
+// Lupa: recorte 260% da arte centrado no foco (meio do caminho entre a bolinha e a peça apontada pela linha ciano).
+const Z = 2.6;
+const lupaPos = (x, y) => { const p = (v) => Math.min(100, Math.max(0, (v / 100 * Z - .5) / (Z - 1) * 100)).toFixed(2); return `${p(x)}% ${p(y)}%`; };
+const lupaEstilo = (img, x, y) => `background-image:url('${img}');background-position:${lupaPos(x, y)}`;
 
 // ───────────── Ficha em 7 camadas ─────────────
 function montarFicha(i) {
   S.idx = i; S.sel = 0; const f = F[i]; S.estado[f.id] = S.estado[f.id] || {};
   const st = S.estado[f.id], conf = S.defeito[f.id];
   const chipK = ['Sistema', 'Aplicação', 'Ferramenta'], chipI = ['sistema', 'aplicacao', 'ferramenta'];
-  visor.innerHTML = `<article class="ficha" data-ficha="${f.id}">
-    <div class="c1"><span>+120 Diagnósticos · Ar-condicionado split</span><b>${f.id} · ${f.bloco}</b></div>
+  visor.innerHTML = `<article class="ficha" data-ficha="${f.id}" ${f.rascunho ? 'data-rascunho="1"' : ''}>
+    <div class="c1"><span>+14 Fichas mestras · Ar-condicionado split</span><b>${f.id} · ${f.bloco}</b></div>
     <div class="c2"><h1>${esc(f.titulo)}</h1><p>${esc(f.sub)}</p></div>
     <div class="c3">${f.chips.map((v, k) => `<div class="chip"><span class="tile"><img src="${ICO(f, chipI[k])}" alt=""></span><span class="t"><span class="k">${chipK[k]}</span><span class="v">${caixaAlta(v)}</span></span></div>`).join('')}</div>
     <div class="c4" data-img-slot="ficha-${f.id}"><div class="ilustra"><img src="${IMG(f)}" alt="Ilustração técnica da ficha ${f.id} com os 5 pontos de verificação" width="1672" height="941">${f.alvos.map(([x, y], k) => `<button class="alvo" data-v="${k + 1}" style="left:${x}%;top:${y}%" aria-label="Verificação ${nn(k + 1)}: ${esc(f.verifs[k][0])}"></button>`).join('')}</div></div>
@@ -386,7 +502,7 @@ function montarFicha(i) {
         <div class="verifs">${f.verifs.map(([tt, ln], k) => `<button class="verif${st[k + 1] ? ' ' + st[k + 1] : ''}" data-v="${k + 1}"><span class="bol">${nn(k + 1)}</span><span><span class="tt">${esc(tt)}</span><span class="ln">${ic('check', '#16A34A', 14)}<span>${esc(ln)}</span></span></span></button>`).join('')}</div>
       </section>
     </div>
-    <section class="c6"><h3>Próximo passo</h3>${f.proximo.map(([se, entao, srv, ir], k) => `<button class="prox" data-p="${k}"><span class="se"><b>SE</b> ${esc(se)}</span>${ic('seta', '#1D9BF0', 20)}<span class="entao">${esc(entao)}<span class="acao">${ir ? 'Abrir a ficha ' + ir : 'Orçar este reparo'}</span></span></button>`).join('')}</section>
+    <section class="c6"><h3>Próximo passo</h3>${f.proximo.map(([se, entao, srv, ir, ex], k) => `<button class="prox" data-p="${k}"><span class="se"><b>SE</b> ${esc(se)}</span>${ic('seta', '#1D9BF0', 20)}<span class="entao">${esc(entao)}<span class="acao">${ir ? 'Abrir a ficha ' + ir : ex === 'laudo' ? 'Emitir laudo em PDF' : 'Orçar este reparo'}</span></span></button>`).join('')}</section>
     <div class="c7"><span class="tri">${alerta(38)}</span><div><b>Antes de trocar a peça:</b><p>${esc(f.antes)}</p></div></div>
     <div class="rodape"><span>GELOPRO · GUIA DE DIAGNÓSTICO</span><span>${f.id} · ${esc(f.bloco)}</span></div>
   </article>`;
@@ -394,20 +510,15 @@ function montarFicha(i) {
   $('#sel-cod').textContent = `${f.id} · ${f.bloco}`; $('#sel-nome').textContent = f.titulo;
   $$('[data-v]', visor).forEach(b => b.addEventListener('click', () => selecionar(+b.dataset.v, !b.closest('.c4'))));
   $$('[data-c]', visor).forEach(b => b.addEventListener('click', () => { const c = +b.dataset.c, v = f.vc.indexOf(c) + 1; if (v) selecionar(v, true); else abrirCausa(f, c, null); }));
-  $$('.prox', visor).forEach(b => b.addEventListener('click', () => { const p = f.proximo[+b.dataset.p]; if (p[3]) montarFicha(F.findIndex(x => x.id === p[3])); else orcarReal(p[2]); }));
+  $$('.prox', visor).forEach(b => b.addEventListener('click', () => { const p = f.proximo[+b.dataset.p]; if (p[3]) montarFicha(F.findIndex(x => x.id === p[3])); else if (p[4] === 'laudo') abrirBonus(4); else abrirOrcamento(p[2]); }));
   try { history.replaceState(null, '', location.search + '#' + f.id); } catch (e) {}
 }
-// Lupa: a própria ilustração ampliada 3,2× e centrada na bolinha da verificação.
-function lupaEstilo(f, v) {
-  const [x, y] = f.alvos[v - 1], z = 3.2, px = Math.min(100, Math.max(0, (x / 100 * z - .5) / (z - 1) * 100)), py = Math.min(100, Math.max(0, (y / 100 * z - .5) / (z - 1) * 100));
-  return `background-image:url('${IMG(f)}');background-size:${z * 100}% auto;background-position:${px.toFixed(2)}% ${py.toFixed(2)}%`;
-}
 function selecionar(v, rolarAoQuadro) {
-  const f = fichaAtual(), [tt, ln] = f.verifs[v - 1], c = f.vc[v - 1]; S.sel = v;
+  const f = fichaAtual(), [tt, ln] = f.verifs[v - 1], c = f.vc[v - 1], [fx, fy] = f.foco[v - 1]; S.sel = v;
   $$('.alvo,.verif', visor).forEach(e => e.classList.toggle('sel', +e.dataset.v === v));
   $$('.causa', visor).forEach(e => e.classList.toggle('sel', +e.dataset.c === c));
   const det = $('.det', visor);
-  det.innerHTML = `<div class="lupa" style="${lupaEstilo(f, v)}" role="img" aria-label="Lupa no ponto ${nn(v)}"><span>Ponto ${nn(v)}</span></div>
+  det.innerHTML = `<div class="lupa" style="${lupaEstilo(IMG(f), fx, fy)}" role="img" aria-label="Lupa no ponto ${nn(v)}"><span>Ponto ${nn(v)}</span></div>
     <div class="cab"><span class="num">${nn(v)}</span><h4>${esc(tt)}</h4></div>
     <div class="exp">${ic('check', '#86EFAC', 16)}<span>${esc(ln)}</span></div>
     <div class="liga">Causa ligada: <b>${nn(c)} · ${esc(f.causas[c - 1][0])}</b> (${PIL[c - 1][1].toLowerCase()})</div>
@@ -437,38 +548,47 @@ function abrir(html, depois) {
 }
 fundo.addEventListener('click', fechar);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fechar(); });
-const blocoServico = (id) => { const s = PRECOS[id]; return `<div class="servico"><b>${esc(s[0])}</b><div class="faixa"><span>Faixa: ${brl(s[1])} a ${brl(s[3])}</span><span>Típico: ${brl(s[2])}</span></div><div class="ref">Tabela de preços GeloPro 2026 · o valor final, a garantia, a assinatura e o Pix saem no Orçamento Nº 1001 do app</div></div>`; };
 const teclaOrcar = (rot = 'Orçar este Reparo (PDF Nº 1001 + Pix)') => `<button class="tecla verde" data-a="orc" data-orcar-real="">${ic('doc', '#FFFFFF', 20)}<span>${rot}</span></button>`;
+
+// Tabela de preços 2026 (precos_regionais_2026.csv, região GELOPRO). Porte: 12 = 9.000–12.000, 18 = 18.000–30.000, 36 = 36.000+ BTU/h.
+const PORTES = [['12', '9.000–12.000'], ['18', '18.000–30.000'], ['36', '36.000 ou mais']];
+let PRECOS = null;
+const carregarPrecos = () => PRECOS ? Promise.resolve(PRECOS) : csv('precos_regionais_2026.csv').then(L => (PRECOS = L.filter(r => r.regiao === 'GELOPRO')));
+const precoDe = (s, porte) => { const t = { '12': num(s.valor_tipico), '18': num(s.valor_tipico_18000btu), '36': num(s.valor_tipico_36000btu) }[porte]; return t ?? num(s.valor_tipico) ?? 0; };
+const pecaDe = (s, porte) => { const suf = porte === '18' ? '_18000btu' : porte === '36' ? '_36000btu' : ''; return [num(s['custo_peca_min' + suf]) ?? num(s.custo_peca_min), num(s['custo_peca_max' + suf]) ?? num(s.custo_peca_max)]; };
 
 function abrirCausa(f, c, v) {
   const [nm, srv] = f.causas[c - 1], ir = v && f.ir && f.ir[v];
-  abrir(`<h3>Causa confirmada</h3><div class="confirmada"><div class="k">${f.id} · CAUSA ${nn(c)}${v ? ' · VERIFICAÇÃO ' + nn(v) : ''}</div><div class="v">${esc(nm)}</div></div>${blocoServico(srv)}
+  abrir(`<h3>Causa confirmada</h3><div class="confirmada"><div class="k">${f.id} · CAUSA ${nn(c)}${v ? ' · VERIFICAÇÃO ' + nn(v) : ''}</div><div class="v">${esc(nm)}</div></div><div class="servico" data-srv-box><div class="carregando">Carregando a tabela de preços…</div></div>
     <div class="pilha">${teclaOrcar()}${ir ? `<button class="tecla" data-a="ir"><span>Abrir a ficha ${ir}</span></button>` : ''}<button class="tecla clara" data-a="voltar"><span>Voltar à ficha</span></button></div>`, (m) => {
-    $('[data-a=orc]', m).addEventListener('click', () => { fechar(); orcarReal(srv); });
+    carregarPrecos().then(L => { const s = L.find(x => x.servico_id === srv); const box = $('[data-srv-box]', m); if (s && box) box.innerHTML = `<b>${esc(s.servico)}</b><div class="faixa"><span>Faixa: ${brl(s.valor_min)} a ${brl(s.valor_max)}</span><span>Típico: ${brl(s.valor_tipico)}</span></div><div class="ref">Tabela de preços GeloPro 2026 · ${esc(s.unidade)}</div>`; }).catch(() => {});
+    $('[data-a=orc]', m).addEventListener('click', () => abrirOrcamento(srv));
     const b = $('[data-a=ir]', m); if (b) b.addEventListener('click', () => { fechar(); montarFicha(F.findIndex(x => x.id === ir)); });
     $('[data-a=voltar]', m).addEventListener('click', fechar);
   });
 }
 function abrirFim(f) {
   const prox = F[(F.indexOf(f) + 1) % F.length];
-  abrir(`<h3>As 5 verificações deram normal</h3><div class="sub">A ficha ${f.id} descartou as causas mais prováveis. Feche a visita com o diagnóstico instrumentado e siga para a ficha vizinha.</div>${blocoServico('visita_diag')}
+  abrir(`<h3>As 5 verificações deram normal</h3><div class="sub">A ficha ${f.id} descartou as causas mais prováveis. Feche a visita com o diagnóstico instrumentado e siga para a ficha vizinha.</div>
     <div class="pilha">${teclaOrcar('Orçar a visita (PDF Nº 1001 + Pix)')}<button class="tecla" data-a="prox"><span>Abrir ${prox.id} · ${esc(prox.titulo)}</span></button></div>`, (m) => {
-    $('[data-a=orc]', m).addEventListener('click', () => { fechar(); orcarReal('visita_diag'); });
+    $('[data-a=orc]', m).addEventListener('click', () => abrirOrcamento('visita_diag'));
     $('[data-a=prox]', m).addEventListener('click', () => { fechar(); montarFicha(F.indexOf(prox)); });
   });
 }
 
-// Índice (120): busca por sintoma e 8 blocos
+// Índice: as 14 fichas mestras por bloco, com miniatura, código, bloco, sintoma e busca.
 let bloco = 'todos', termo = '';
 function abrirIndice() {
-  abrir(`<h3>Índice · 120+ Diagnósticos</h3><div class="sub">${F.length} fichas com ilustração aprovada. Busque pelo sintoma.</div>
-    <label class="busca">${ic('busca', '#64748B', 18)}<input type="search" placeholder="Sintoma: não gela, desarma, não liga, gelo, barulho..." autocomplete="off" value="${esc(termo)}"></label>
+  abrir(`<h3>Índice · 14 Fichas mestras</h3><div class="sub">Busque pelo sintoma ou filtre pelo bloco.</div>
+    <label class="busca">${ic('busca', '#64748B', 18)}<input type="search" placeholder="Sintoma: não gela, desarma, pingando, cheiro, controle..." autocomplete="off" value="${esc(termo)}"></label>
     <div class="blocos">${BLOCOS.map(([id, r]) => `<button data-b="${id}" aria-pressed="${id === bloco}">${r}</button>`).join('')}</div><div class="lista"></div>`, (m) => {
     const l = $('.lista', m), inp = $('input', m);
     const render = () => {
-      const t = norm(termo.trim()), ids = F.map((f, i) => i).filter(i => { const f = F[i], txt = norm(`${f.id} ${f.titulo} ${f.sub} ${f.busca}`); return (bloco === 'todos' || f.blocos.includes(bloco)) && (!t || txt.includes(t) || t.split(/\s+/).every(w => txt.includes(w))); });
-      l.innerHTML = ids.length ? ids.map(i => { const f = F[i]; return `<button class="item-ficha${i === S.idx ? ' atual' : ''}" data-i="${i}"><span class="ico"><img src="${IMG(f)}" alt=""></span><span><span class="cod">${f.id} · ${f.bloco}</span><br><span class="nm">${esc(f.titulo)}</span></span></button>`; }).join('')
-        : `<div class="vazio">Nenhuma ficha com esse sintoma.<div class="pilha"><button class="tecla" data-a="todas"><span>Ver todas as fichas</span></button><button class="tecla clara" data-a="cod"><span>Buscar nos códigos de erro</span></button></div></div>`;
+      const t = norm(termo.trim());
+      const ok = (f) => { const txt = norm(`${f.id} ${f.titulo} ${f.sub} ${f.busca} ${f.bloco}`); return (bloco === 'todos' || f.blocos.includes(bloco)) && (!t || txt.includes(t) || t.split(/\s+/).every(w => txt.includes(w))); };
+      const grupos = BLOCOS.slice(1).map(([id, rot]) => [rot, F.filter(f => f.blocos[0] === id && ok(f))]).filter(g => g[1].length);
+      l.innerHTML = grupos.length ? grupos.map(([rot, fs]) => `<div class="grupo-h">${rot} · ${fs.length}</div>${fs.map(f => `<button class="item-ficha${F.indexOf(f) === S.idx ? ' atual' : ''}" data-i="${F.indexOf(f)}"><span class="ico"><img src="${IMG(f)}" alt="" loading="lazy"></span><span><span class="cod">${f.id} · ${f.bloco}</span><br><span class="nm">${esc(f.titulo)}</span><br><span class="sb">${esc(f.sub)}</span></span></button>`).join('')}`).join('')
+        : `<div class="vazio">Nenhuma ficha com esse sintoma.<div class="pilha"><button class="tecla" data-a="todas"><span>Ver as 14 fichas</span></button><button class="tecla clara" data-a="cod"><span>Buscar nos códigos de erro</span></button></div></div>`;
       $$('[data-i]', l).forEach(b => b.addEventListener('click', () => { fechar(); montarFicha(+b.dataset.i); }));
       const a = $('[data-a=todas]', l); if (a) a.addEventListener('click', () => { termo = ''; bloco = 'todos'; inp.value = ''; $$('.blocos button', m).forEach(x => x.setAttribute('aria-pressed', x.dataset.b === 'todos')); render(); });
       const c = $('[data-a=cod]', l); if (c) c.addEventListener('click', () => abrirBonus(1));
@@ -479,31 +599,359 @@ function abrirIndice() {
   });
 }
 
-// 6 Bônus & Tabelas (B5 e B6 abrem o motor real do app)
+// ───────────── Orçamento Nº 1001 real, nesta página ─────────────
+// Numeração: a mesma sequência do app neste aparelho (gelopro.seq e os nº já gravados no Cofre gelopro.docs), a partir de 1001.
+const proximoNumero = (gravar) => {
+  let n = Number(ler('gelopro.seq')); n = Number.isSafeInteger(n) && n > 0 && n < 1e9 ? n : 0;
+  const docs = lerJSON('gelopro.docs'); if (Array.isArray(docs)) docs.forEach(d => { const s = String(d && d.numero || ''); if (/^\d{1,9}$/.test(s)) n = Math.max(n, Number(s)); });
+  let n0 = n + 1; if (n0 < 1001) n0 += 1000; if (n0 < 1001) n0 = 1001;
+  if (gravar) guardar('gelopro.seq', String(n0));
+  return String(n0).padStart(4, '0');
+};
+// Titular: o cadastro do app (gelopro.titular) quando existe; senão o que o técnico digitar aqui (guiapro.titular).
+const titularSalvo = () => { const a = lerJSON('gelopro.titular'); if (a && a.nome) return { nome: a.nome, doc: a.docFmt || a.doc || '', docTipo: a.docTipo || 'CPF', cidade: a.cidade || '', pix: a.pix || '', pixTipo: a.pixTipo || 'Chave', doApp: true }; return lerJSON('guiapro.titular') || { nome: '', doc: '', docTipo: 'CPF', cidade: '', pix: '', pixTipo: 'CPF' }; };
+const qrMatriz = (txt) => { try { if (!window.qrcode || !txt) return null; const q = window.qrcode(0, 'M'); q.addData(txt); q.make(); const n = q.getModuleCount(); return Array.from({ length: n }, (_, r) => Array.from({ length: n }, (_, c) => (q.isDark(r, c) ? '1' : '0')).join('')); } catch (e) { return null; } };
+const pixPayload = (t, total, numero) => { try { return window.GeloProPix && t.pix ? window.GeloProPix.payload({ chave: t.pix, nome: t.nome, cidade: t.cidade, valor: total, txid: 'ORC' + numero }) : ''; } catch (e) { return ''; } };
+function desenharQr(cv, txt) {
+  const M = qrMatriz(txt), x = cv.getContext('2d'); if (!M) { cv.width = cv.height = 1; return; }
+  const n = M.length, e = 4; cv.width = cv.height = n + e * 2; x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, n + e * 2, n + e * 2); x.fillStyle = '#091E42';
+  M.forEach((lin, r) => [...lin].forEach((b, c) => { if (b === '1') x.fillRect(c + e, r + e, 1, 1); }));
+}
+function painelAssinatura(cv, aoMudar) {
+  let ult = null, assinado = false;
+  requestAnimationFrame(() => { const r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1; cv.width = r.width * d; cv.height = r.height * d; const c = cv.getContext('2d'); c.scale(d, d); c.lineWidth = 2.4; c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = '#091E42'; });
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); ult = pos(e); const d = cv.parentNode.querySelector('.dica'); if (d) d.style.display = 'none'; });
+  cv.addEventListener('pointermove', (e) => { if (!ult) return; const c = cv.getContext('2d'), q = pos(e); c.beginPath(); c.moveTo(ult[0], ult[1]); c.lineTo(q[0], q[1]); c.stroke(); ult = q; assinado = true; });
+  const soltar = () => { if (ult) { ult = null; aoMudar && aoMudar(); } };
+  cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
+  return { limpar: () => { cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); assinado = false; const d = cv.parentNode.querySelector('.dica'); if (d) d.style.display = ''; }, imagem: () => assinado ? cv.toDataURL('image/png') : null };
+}
+async function compartilharOuZap(r, doc, tel) {
+  const P = window.GeloProPDF, txt = P.resumo(doc);
+  try { if (navigator.canShare && navigator.canShare({ files: [new File([r.blob], r.nome, { type: 'application/pdf' })] })) return await P.compartilhar(r.blob, r.nome, txt); } catch (e) { /* cai no WhatsApp */ }
+  P.baixar(r.blob, r.nome);
+  const fone = String(tel || '').replace(/\D/g, ''); window.open(`https://wa.me/${fone.length >= 10 ? '55' + fone.replace(/^55/, '') : ''}?text=${encodeURIComponent(txt)}`, '_blank', 'noopener');
+}
+function abrirOrcamento(servico) {
+  const f = fichaAtual();
+  // Dentro do app, o pedido vai para o fechamento do próprio app (abrirFech): é o mesmo motor, com o Cofre e a licença do aparelho.
+  if (EMBED) { window.parent.postMessage({ gelopro: 'orcar', servicos: [servico].filter(Boolean), ficha: f.id }, location.origin === 'null' ? '*' : location.origin); return; }
+  const tit = titularSalvo(), numPrev = proximoNumero(false);
+  abrir(`<div class="orc-cab"><b>Orçamento</b><span data-o="num">Nº ${numPrev}</span></div>
+    <div class="sub">${f.id} · ${esc(f.titulo)}. O PDF sai pelo mesmo motor do app (GeloPRO v148), com QR Code Pix e a numeração deste aparelho.</div>
+    <div class="carregando" data-o="carga">Carregando a tabela de preços 2026…</div>
+    <div class="form" data-o="form" hidden>
+      <div class="duas"><label>Cliente<input type="text" data-o="cli" placeholder="Nome do cliente" autocomplete="off"></label><label>WhatsApp do cliente<input type="tel" data-o="tel" placeholder="DDD e número" autocomplete="off"></label></div>
+      <div class="duas"><label>Marca do aparelho<input type="text" data-o="marca" placeholder="Ex.: LG, Midea" autocomplete="off"></label><label>Porte (BTU/h)<select data-o="porte">${PORTES.map(([k, r]) => `<option value="${k}">${r}</option>`).join('')}</select></label></div>
+      <label>Fluido<select data-o="fluido"><option>R410A</option><option>R32</option><option>R22</option></select></label>
+      <div class="itens-orc" data-o="itens"></div>
+      <button type="button" class="tecla clara" data-o="add" style="height:44px">${ic('mais', '#091E42', 18)}<span>Adicionar outro serviço</span></button>
+      <div class="total-orc"><span>Total</span><span data-o="total">${brl(0)}</span></div>
+      <div><div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px">Garantia do serviço</div><div class="prazos" data-o="gar">${['7 dias', '15 dias', '30 dias', '60 dias', '90 dias'].map(g => `<button type="button" data-g="${g}" aria-pressed="${g === '90 dias'}">${g}</button>`).join('')}</div></div>
+      <label>Validade da proposta<select data-o="val">${['3 dias', '5 dias', '7 dias', 'Somente hoje'].map(v => `<option>${v}</option>`).join('')}</select></label>
+      <h4>Seus dados no PDF e no Pix${tit.doApp ? ' (do cadastro do app)' : ''}</h4>
+      <div class="duas"><label>Seu nome ou empresa<input type="text" data-t="nome" value="${esc(tit.nome)}" autocomplete="off"></label><label>CPF ou CNPJ<input type="text" data-t="doc" value="${esc(tit.doc)}" autocomplete="off"></label></div>
+      <div class="duas"><label>Cidade<input type="text" data-t="cidade" value="${esc(tit.cidade)}" autocomplete="off"></label><label>Chave Pix<input type="text" data-t="pix" value="${esc(tit.pix)}" autocomplete="off"></label></div>
+      <div class="pix-prev"><canvas data-o="qr" aria-label="QR Code Pix do valor total"></canvas><p data-o="pixtx">Digite a chave Pix para gerar o QR Code com o valor exato.</p></div>
+      <div><div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px">Assinatura do cliente na tela</div><div class="assinatura"><canvas></canvas><span class="dica">Assine aqui com o dedo</span><button type="button" class="limpar">Limpar</button></div></div>
+    </div>
+    <div class="aviso" data-o="msg" hidden></div>
+    <div class="pilha"><button class="tecla verde" data-a="pdf" disabled>${ic('baixar', '#FFFFFF', 20)}<span>Baixar PDF Nº ${numPrev}</span></button><button class="tecla" data-a="zap" disabled>${ic('chat', '#FFFFFF', 20)}<span>Enviar PDF no WhatsApp</span></button><button class="tecla clara" data-a="voltar"><span>Voltar à ficha</span></button></div>`, (m) => {
+    $('[data-a=voltar]', m).addEventListener('click', fechar);
+    carregarPrecos().then(L => {
+      $('[data-o=carga]', m).remove(); $('[data-o=form]', m).hidden = false; $$('[data-a=pdf],[data-a=zap]', m).forEach(b => b.disabled = false);
+      const itens = [{ sid: L.some(s => s.servico_id === servico) ? servico : L[0].servico_id, v: null }];
+      let garantia = '90 dias'; const porteEl = $('[data-o=porte]', m), boxI = $('[data-o=itens]', m), ass = painelAssinatura($('.assinatura canvas', m), () => {});
+      $('.assinatura .limpar', m).addEventListener('click', () => ass.limpar());
+      const tot = () => itens.reduce((t, i) => t + (Number(i.v) || 0), 0);
+      const tDados = () => ({ nome: $('[data-t=nome]', m).value.trim(), doc: $('[data-t=doc]', m).value.trim(), docTipo: $('[data-t=doc]', m).value.replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: $('[data-t=cidade]', m).value.trim(), pix: $('[data-t=pix]', m).value.trim(), pixTipo: tit.pixTipo || 'Chave' });
+      const pintarPix = () => { const t = tDados(), p = pixPayload(t, tot(), numPrev), cv = $('[data-o=qr]', m); desenharQr(cv, p); $('[data-o=pixtx]', m).textContent = p ? `Pix de ${brl(tot())} para ${t.nome || 'o titular'}. Copia e cola: ${p}` : 'Digite seu nome e a chave Pix para gerar o QR Code com o valor exato.'; };
+      const pintarItens = () => {
+        const porte = porteEl.value;
+        boxI.innerHTML = itens.map((it, k) => { const s = L.find(x => x.servico_id === it.sid); if (it.v === null) it.v = precoDe(s, porte); return `<div class="item-orc" data-k="${k}">
+          <label style="display:grid;gap:4px;font-size:13px;font-weight:700;color:#334155">Serviço ${k + 1}<select data-i="sid">${L.map(x => `<option value="${x.servico_id}" ${x.servico_id === it.sid ? 'selected' : ''}>${esc(x.servico)}</option>`).join('')}</select></label>
+          <div class="lin"><span class="fx">Faixa (9.000–12.000): ${brl(s.valor_min)} a ${brl(s.valor_max)} · típico do porte: ${brl(precoDe(s, porte))}</span><label style="display:grid;gap:4px;font-size:13px;font-weight:700;color:#334155">Valor<input type="number" inputmode="decimal" step="any" data-i="v" value="${it.v}"></label>${itens.length > 1 ? `<button type="button" class="rm" data-i="rm" aria-label="Tirar serviço ${k + 1}">${ic('x', '#B91C1C', 18)}</button>` : '<span></span>'}</div></div>`; }).join('');
+        $$('.item-orc', boxI).forEach(el => { const k = +el.dataset.k;
+          $('[data-i=sid]', el).addEventListener('change', (e) => { itens[k] = { sid: e.target.value, v: null }; pintarItens(); });
+          $('[data-i=v]', el).addEventListener('input', (e) => { itens[k].v = num(e.target.value) ?? 0; $('[data-o=total]', m).textContent = brl(tot()); pintarPix(); });
+          const rm = $('[data-i=rm]', el); if (rm) rm.addEventListener('click', () => { itens.splice(k, 1); pintarItens(); });
+        });
+        $('[data-o=total]', m).textContent = brl(tot()); pintarPix();
+      };
+      porteEl.addEventListener('change', () => { itens.forEach(i => i.v = null); pintarItens(); });
+      $('[data-o=add]', m).addEventListener('click', () => { itens.push({ sid: 'visita_diag', v: null }); pintarItens(); });
+      $$('[data-g]', m).forEach(b => b.addEventListener('click', () => { garantia = b.dataset.g; $$('[data-g]', m).forEach(x => x.setAttribute('aria-pressed', x === b)); }));
+      $$('[data-t]', m).forEach(el => el.addEventListener('input', () => { guardar('guiapro.titular', JSON.stringify(tDados())); pintarPix(); }));
+      pintarItens();
+      const montarDoc = (numero) => {
+        const t = tDados(), cli = $('[data-o=cli]', m).value.trim(), tel = $('[data-o=tel]', m).value.trim(), marca = $('[data-o=marca]', m).value.trim(), porte = porteEl.value, total = tot(), em = Date.now();
+        const btu = { '12': '12.000', '18': '18.000', '36': '36.000' }[porte], fluido = $('[data-o=fluido]', m).value, p = pixPayload(t, total, numero), M = qrMatriz(p), assin = ass.imagem();
+        const gar = `Garantia contratual: ${garantia}. Cobre: Os serviços listados acima. Não cobre: Mau uso, oscilação de energia e peças não trocadas neste atendimento. A garantia legal do Código de Defesa do Consumidor continua valendo.`;
+        const prev = new Date(em); prev.setMonth(prev.getMonth() + 6);
+        return { tipo: 'orc', titulo: 'Orçamento', numero, atend: '', data: dataBR(em), base: 'Outubro/2026', via2: '',
+          titular: { nome: t.nome, doc: t.doc, docTipo: t.docTipo, cidade: t.cidade, pix: t.pix },
+          cliente: { nome: cli || 'Cliente', tel, equip: [marca, btu + ' BTU/h', fluido].filter(Boolean).join(' · ') },
+          itensTitulo: 'Itens', itens: itens.map(i => { const s = L.find(x => x.servico_id === i.sid); return { q: 1, d: s.servico, v: BRL.format(Number(i.v) || 0), j: s.justificativa_tecnica || '', faixa: `Faixa de referência: ${BRL.format(num(s.valor_min) || 0)} a ${BRL.format(num(s.valor_max) || 0)}`, eco: '', condicao: '', escopo: '', resultado: '' }; }),
+          equipDet: { marca, btu, fluido }, ...(M ? { pixQr: M, pixInfo: { copia: p, valor: BRL.format(total), favorecido: t.nome, chave: t.pix } } : {}),
+          limpo: true, garSelo: `GARANTIA ${garantia.toUpperCase()}`, bancada: null, matriz: [],
+          fechamento: { bonif: '', linhas: [], total: ['Total', BRL.format(total)], validade: `Validade desta proposta: ${$('[data-o=val]', m).value.replace(/^Somente/, 'somente')} (garantia de preço e reserva de componentes).` },
+          blocos: [{ t: 'Garantia contratual', x: gar }, ...(p ? [{ t: 'Pagamento por Pix', x: `Chave ${t.pix} (${t.pixTipo}).\nCopia e cola: ${p}\nPix gerado não comprova pagamento.` }] : [])],
+          preventiva: `Próxima manutenção preventiva recomendada: ${dataBR(prev.getTime())} (6 meses) para preservar o rendimento e a economia de energia.`,
+          foto: null, assinatura: assin, assinaturaLegenda: `Assinatura do cliente: ${cli}`, assinaturaNota: assin ? '' : `Assinatura do cliente colhida na aprovação do orçamento em ${dataBR(em)} (1ª via).`,
+          nome: window.GeloProPDF.nomeArquivo('orc', numero, cli) };
+      };
+      const msg = (txt, cls) => { const el = $('[data-o=msg]', m); el.hidden = false; el.className = 'aviso ' + (cls || ''); el.textContent = txt; };
+      const gerar = async (modo) => {
+        if (!window.GeloProPDF) return msg('O motor de PDF do app não carregou. Recarregue a página com sinal.', 'def');
+        if (!tot()) return msg('Coloque o valor do serviço para gerar o orçamento.', 'def');
+        const bt = $$('[data-a=pdf],[data-a=zap]', m); bt.forEach(b => b.disabled = true);
+        try {
+          const numero = proximoNumero(true), doc = montarDoc(numero), r = await window.GeloProPDF.gerar(doc);
+          window.__ultimoPdfGuia = { nome: r.nome, paginas: r.paginas, bytes: r.bytes.length, numero };
+          if (modo === 'zap') await compartilharOuZap(r, doc, $('[data-o=tel]', m).value); else window.GeloProPDF.baixar(r.blob, r.nome);
+          $('[data-o=num]', m).textContent = 'Nº ' + numero; msg(`Orçamento Nº ${numero} gerado: ${r.nome} (${r.paginas} página${r.paginas > 1 ? 's' : ''}).`, 'ok');
+        } catch (e) { msg('Não consegui gerar o PDF: ' + e.message, 'def'); }
+        bt.forEach(b => b.disabled = false);
+      };
+      $('[data-a=pdf]', m).addEventListener('click', () => gerar('pdf'));
+      $('[data-a=zap]', m).addEventListener('click', () => gerar('zap'));
+    }).catch(e => { const c = $('[data-o=carga]', m); if (c) c.textContent = 'Não consegui ler a tabela de preços: ' + e.message; });
+  });
+}
+
+// ───────────── 6 Bônus & Tabelas (dados completos de ../base-tecnica/) ─────────────
+const BONUS = [
+  ['Guias Visuais Exclusivos de Split Inverter', 'Placa, Ponte IPM, barramento 310 V CC, UVW, motor DC, sensores e comunicação'],
+  ['Tradutor Instantâneo de Códigos de Erro e Piscadas de LED', 'Todas as marcas da base, com busca por código e filtro por marca'],
+  ['Tabelas Rápidas em 1 Página', 'Sensores NTC (kΩ × °C) e pressão × temperatura R-410A, R-32 e R-22, com calculadora'],
+  ['Protocolo Blindado "Antes de Condenar a Peça Cara"', 'Placa Inverter e IPM, compressor e motor ventilador, com veredito'],
+  ['Quando o Reparo Não Compensa + Laudo em PDF', 'Matriz de viabilidade e Laudo Técnico de Condenação pronto para baixar'],
+  ['Tabela de Preços 2026 + Orçamento PDF Nº 1001', 'Os 16 serviços por porte, com custo de peça e orçamento em 1 toque'],
+];
 function abrirMenuBonus() {
-  abrir(`<h3>6 Bônus &amp; Tabelas do Plano Completo</h3><div class="sub">Tabelas, códigos e ferramentas que fecham o diagnóstico e o orçamento.</div><div class="menu-bonus">${BONUS.map((b, i) => `<button data-b="${i}"><span class="n">${i + 1}</span><span>${esc(b)}</span></button>`).join('')}</div>`,
+  abrir(`<h3>6 Bônus &amp; Tabelas do Plano Completo</h3><div class="sub">Tudo lido da base técnica conferida do GeloPRO.</div><div class="menu-bonus">${BONUS.map((b, i) => `<button data-b="${i}"><span class="n">${i + 1}</span><span>${esc(b[0])}<small>${esc(b[1])}</small></span></button>`).join('')}</div>`,
     (m) => $$('[data-b]', m).forEach(b => b.addEventListener('click', () => abrirBonus(+b.dataset.b))));
 }
+const cabBonus = (i) => `<div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#92400E">BÔNUS ${i + 1} · PLANO COMPLETO</div><h3>${esc(BONUS[i][0])}</h3><div class="sub">${esc(BONUS[i][1])}.</div>`;
+const fichaPorImg = (img) => F.find(f => f.img === img);
+// Nos bônus o recorte centra na própria peça: ponta da linha ciano = 2 × foco − bolinha.
+const recorte = (img, ponto) => { const f = fichaPorImg(img), [fx, fy] = f.foco[ponto - 1], [ax, ay] = f.alvos[ponto - 1], x = 2 * fx - ax, y = 2 * fy - ay; return `<div class="lupa" style="${lupaEstilo(IMG(f), x, y)}" role="img" aria-label="${f.id} ponto ${nn(ponto)}"><span>${f.id} · ponto ${nn(ponto)}</span></div>`; };
+// Cada etapa do Inverter com o recorte da arte que mostra o ponto de medição.
+const INV_IMG = { seguranca: ['d087', 4], tensao_pn: ['d040', 5], ipm: ['d087', 4], compressor: ['d040', 1], motor_dc: ['s06', 4], sensores: ['d087', 2], fixacao_ipm: ['d087', 4] };
 function abrirBonus(i) {
-  if (i === 5) { fechar(); return orcarReal(servicoAtual()); }
-  if (i === 4) { fechar(); return orcarReal(['desinstalacao', 'instalacao_split']); }
-  const cab = `<div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#92400E">BÔNUS ${i + 1} · PLANO COMPLETO</div><h3>${esc(BONUS[i])}</h3>`;
-  let html = '', depois = null;
-  if (i === 0) html = `<div class="sub">Sequência da placa Inverter (manual de serviço Midea Mission II, F20).</div><table class="tabela"><tr><th>#</th><th>Verificação</th><th>Referência</th></tr>
-      <tr><td>1</td><td>Descarregar os capacitores grandes</td><td>Resistor de cerca de 100 Ω / 40 W entre + e − (p. 73)</td></tr><tr><td>2</td><td>Tensão CC entre P e N do IPM</td><td>Cerca de 310 V CC; espera 290–330 V (p. 10 e 97)</td></tr>
-      <tr><td>3</td><td>Continuidade do IPM</td><td>Infinito (vários MΩ) em todos os pares (p. 85)</td></tr><tr><td>4</td><td>Enrolamentos U-V-W</td><td>Três pares iguais; tabela do compressor a 20 °C (p. 84)</td></tr><tr><td>5</td><td>Sensores T1 a T4</td><td>Curva 10K na ferramenta Sensor NTC (p. 84)</td></tr></table>`;
-  if (i === 1) { html = `<div class="sub">O mesmo código muda de significado entre marcas: veja o E1. Amostra da base conferida, com fonte e página.</div><label class="busca" style="margin-bottom:10px">${ic('busca', '#64748B', 18)}<input type="search" data-cod placeholder="Código ou palavra: E1, IPM, sensor..."></label><table class="tabela" data-tab></table>`;
-    depois = (m) => { const tab = $('[data-tab]', m), inp = $('[data-cod]', m); const f = () => { const q = norm(inp.value.trim()), rs = CODIGOS.filter(c => !q || norm(c.join(' ')).includes(q)); tab.innerHTML = '<tr><th>Código</th><th>Marca / linha</th><th>Significado</th><th>Fonte</th></tr>' + (rs.length ? rs.map(c => `<tr><td><b>${esc(c[2])}</b></td><td>${esc(c[0])}<br><span style="color:#64748B">${esc(c[1])}</span></td><td>${esc(c[3])}</td><td class="f">${esc(c[4])}</td></tr>`).join('') : '<tr><td colspan="4">Código fora da amostra: abra a ficha D-023 (não liga) e meça a placa.</td></tr>'); }; inp.addEventListener('input', f); inp.value = 'E1'; f(); }; }
-  if (i === 2) html = `<div class="sub">Referências de bancada em 1 tela, cada uma com fonte.</div><table class="tabela"><tr><th>Medição</th><th>Faixa</th><th>Fonte</th></tr>
-      <tr><td>Tensão de alimentação</td><td>±10% da placa (220 V: 198 a 242 V)</td><td class="f">F14</td></tr><tr><td>Capacitor</td><td>Dentro de ±5% do valor da etiqueta</td><td class="f">Pedro</td></tr>
-      <tr><td>Superaquecimento R-410A</td><td>7 a 11 °C</td><td class="f">F14</td></tr><tr><td>Barramento P-N (Inverter)</td><td>≈310 V CC; espera 290 a 330 V</td><td class="f">F20</td></tr>
-      <tr><td>NTC 10K a 25 °C</td><td>Samsung ±2% · Midea ±3% · Daikin 9,90 a 10,10 kΩ</td><td class="f">F26 · F18 · F24</td></tr><tr><td>NTC Gree a 25 °C</td><td>15K, 20K ou 50K (curva oficial)</td><td class="f">F01</td></tr></table>`;
-  if (i === 3) { const itens = ['Descarreguei os capacitores antes de medir', 'Tensão L-N dentro de ±10% da placa', 'Capacitor dentro de ±5% da etiqueta', 'Sensores NTC na curva da marca', 'Conectores e chicotes sem oxidação nem folga', 'Condensadora limpa e ventilando', 'Bobinas e isolamento medidos (sem curto e sem massa)'];
-    html = `<div class="sub">Antes de condenar placa ou compressor, os 7 itens marcados. Só então o laudo.</div><div class="progresso"><i style="width:0%"></i></div><div class="form">${itens.map((t, j) => `<label class="chk"><input type="checkbox" data-k="${j}"> ${j + 1}. ${esc(t)}</label>`).join('')}</div><div class="veredito neutro" data-vd>0 de 7 conferidos</div><div class="pilha">${teclaOrcar()}</div>`;
-    depois = (m) => { const cks = $$('[data-k]', m), bar = $('.progresso i', m), v = $('[data-vd]', m); cks.forEach(c => c.addEventListener('change', () => { const n = cks.filter(x => x.checked).length; bar.style.width = (n / 7 * 100) + '%'; v.className = 'veredito ' + (n === 7 ? 'ok' : 'neutro'); v.textContent = n === 7 ? '7 de 7: pode condenar a peça com laudo' : `${n} de 7 conferidos`; })); }; }
-  abrir(cab + html, (m) => {
-    if (depois) depois(m);
-    $$('[data-a=orc]', m).forEach(b => b.addEventListener('click', () => { fechar(); orcarReal(servicoAtual()); }));
+  if (i === 5) return bonusPrecos();
+  if (i === 4) return bonusLaudo();
+  if (i === 3) return bonusProtocolo();
+  abrir(cabBonus(i) + '<div data-corpo><div class="carregando">Carregando a base técnica…</div></div>', (m) => {
+    const corpo = $('[data-corpo]', m), erro = (e) => { corpo.innerHTML = `<div class="aviso def">Não consegui ler a base técnica (${esc(e.message)}). Abra com sinal e tente de novo.</div>`; };
+    if (i === 0) csv('inverter_checklist.csv').then(L => {
+      const fam = [...new Set(L.map(r => r.familia))].sort((a, b) => a === 'universal' ? -1 : b === 'universal' ? 1 : 0);
+      corpo.innerHTML = `<div class="tira"><img src="${IMG(fichaPorImg('d087'))}" alt="Placa e sensores"><img src="${IMG(fichaPorImg('d023'))}" alt="Placa e fonte"><img src="${IMG(fichaPorImg('d040'))}" alt="Compressor, capacitor e placa externa"></div>
+        <div class="aviso">${L.length} procedimentos completos da base, cada um com o recorte do ponto de medição e o valor de referência da fonte.</div>
+        ${fam.map(fm => { const R = L.filter(r => r.familia === fm).sort((a, b) => num(a.ordem) - num(b.ordem)); return `<h4>${esc(R[0].modelos)}</h4><div class="sub" style="margin-bottom:8px">${esc(R[0].marca_escopo)}</div>${R.map(r => { const [im, pt] = INV_IMG[r.etapa_id] || ['d087', 3]; return `<div class="passo-inv">${recorte(im, pt)}<div class="tx"><b class="t">${esc(r.ordem)}. ${esc(r.titulo)}</b>${esc(r.como_verificar)}<div class="ref">${esc(r.referencia)}</div><div class="meta">Ferramenta: ${esc(r.ferramenta)} · Fonte ${esc(r.fonte_id)}</div></div></div>`; }).join('')}`; }).join('')}
+        <div class="pilha"><button class="tecla" data-ir="D-087"><span>Abrir D-087 · Código no display</span></button></div>`;
+      $$('[data-ir]', corpo).forEach(b => b.addEventListener('click', () => { fechar(); montarFicha(F.findIndex(f => f.id === b.dataset.ir)); }));
+    }).catch(erro);
+    if (i === 1) Promise.all([csv('codigos_erro_conferidos.csv'), csv('codigos_erro.csv'), csv('piscadas.csv')]).then(([A, B, C]) => {
+      const T = [...A.map(r => ({ m: r.marca, l: r.linha, c: r.codigo, d: r.descricao, fa: '', f: `${r.fonte_id}${r.pagina ? ' p.' + r.pagina : ''}`, tp: 'Código' })),
+        ...B.map(r => ({ m: r.marca, l: r.linha, c: r.codigo, d: r.descricao, fa: r.faca || '', f: r.fonte_id, tp: 'Código' })),
+        ...C.map(r => ({ m: r.marca, l: r.linha, c: `${r.led}: ${r.padrao}`, d: r.descricao, fa: r.faca || '', f: r.fonte_id, tp: 'Piscada de LED' }))];
+      const vistos = new Set(), U = T.filter(r => { const k = norm(`${r.m}|${r.c}|${r.d}`); if (vistos.has(k)) return false; vistos.add(k); return true; });
+      const marcas = [...new Set(U.map(r => r.m))].sort();
+      corpo.innerHTML = `<div class="aviso">${U.length} códigos e piscadas reais de ${marcas.length} marcas (${marcas.join(', ')}).</div>
+        <div class="form" style="margin-top:0"><label class="busca">${ic('busca', '#64748B', 18)}<input type="search" data-q placeholder="Código ou palavra: E1, CH05, F1, E202, sensor..." autocomplete="off"></label>
+        <select data-mk style="min-height:44px;border:1.5px solid #CBD5E1;border-radius:10px;padding:0 12px;font-size:16px"><option value="">Todas as marcas</option>${marcas.map(x => `<option>${esc(x)}</option>`).join('')}</select></div>
+        <div data-cont class="sub"></div><div data-lista></div><button class="tecla clara" data-mais style="height:44px;width:100%" hidden><span>Mostrar mais</span></button>`;
+      let lim = 40;
+      const f = () => { const q = norm($('[data-q]', corpo).value.trim()), mk = $('[data-mk]', corpo).value;
+        const R = U.filter(r => (!mk || r.m === mk) && (!q || norm(`${r.c} ${r.d} ${r.l} ${r.fa}`).includes(q)));
+        $('[data-cont]', corpo).textContent = `${R.length} resultado${R.length === 1 ? '' : 's'}`;
+        $('[data-lista]', corpo).innerHTML = R.length ? R.slice(0, lim).map(r => `<div class="codigo"><span class="cd">${esc(r.c)}</span> <span class="mk">· ${esc(r.tp)} · ${esc(r.m)} · ${esc(r.l)}</span><div>${esc(r.d)}</div>${r.fa ? `<div class="fa"><b>FAÇA:</b> ${esc(r.fa)}</div>` : ''}<div class="mk">Fonte ${esc(r.f)}</div></div>`).join('')
+          : '<div class="vazio">Código fora da base: abra a ficha D-087 e meça sensores e o cabo de interligação.<div class="pilha"><button class="tecla" data-ir="D-087"><span>Abrir D-087</span></button></div></div>';
+        $('[data-mais]', corpo).hidden = R.length <= lim;
+        $$('[data-ir]', corpo).forEach(b => b.addEventListener('click', () => { fechar(); montarFicha(F.findIndex(x => x.id === b.dataset.ir)); }));
+      };
+      $('[data-q]', corpo).addEventListener('input', () => { lim = 40; f(); }); $('[data-mk]', corpo).addEventListener('change', () => { lim = 40; f(); });
+      $('[data-mais]', corpo).addEventListener('click', () => { lim += 40; f(); });
+      f();
+    }).catch(erro);
+    if (i === 2) bonusTabelas(corpo, erro);
+  });
+}
+// Bônus 3: curvas NTC (ntc_resumo + os arquivos de curva), PT dos 3 fluidos e critérios operacionais, com calculadora.
+function bonusTabelas(corpo, erro) {
+  Promise.all([csv('ntc_resumo.csv'), csv('ntc_tolerancias.csv'), csv('pt_r410a_r32_r22.csv'), csv('criterios_operacionais.csv')]).then(async ([RES, TOL, PT, CRI]) => {
+    // Cada curva = (marca, sensor, arquivo, coluna): a coluna de kΩ do arquivo cujo valor a 25 °C mais se aproxima do R25 da base.
+    const arqs = [...new Set(RES.map(r => r.arquivo_curva).filter(a => /^ntc_[a-z_0-9]+\.csv$/.test(a)))];
+    const tabelas = Object.fromEntries(await Promise.all(arqs.map(a => csv(a).then(t => [a, t]).catch(() => [a, null]))));
+    const curvas = RES.filter(r => tabelas[r.arquivo_curva]).map(r => {
+      const T = tabelas[r.arquivo_curva], cols = Object.keys(T[0] || {}).filter(k => k !== 'temp_c' && /kohm$/.test(k) && !/_(min|max)_kohm$/.test(k)), r25 = num(r.r25_kohm);
+      const a25 = T.find(x => num(x.temp_c) === 25) || T[Math.floor(T.length / 2)];
+      const col = r.coluna_curva && cols.includes(r.coluna_curva) ? r.coluna_curva : cols.sort((a, b) => Math.abs((num(a25[a]) ?? 1e9) - r25) - Math.abs((num(a25[b]) ?? 1e9) - r25))[0];
+      const pts = T.map(x => [num(x.temp_c), num(x[col])]).filter(p => p[0] !== null && p[1] !== null && p[1] > 0).sort((a, b) => a[0] - b[0]);
+      const minC = col.replace(/_kohm$/, '_min_kohm'), maxC = col.replace(/_kohm$/, '_max_kohm'), faixa = T[0] && minC in T[0] ? T.map(x => [num(x.temp_c), num(x[minC]), num(x[maxC])]).filter(p => p[1] && p[2]) : null;
+      const tol = TOL.find(t => norm(r.marca).includes(norm(t.marca).split('/')[0]) && num(t.r25_tol_pct) !== null);
+      return { rot: `${r.marca.split(/[\/;]/)[0]} · ${r.sensor}`, r25, pts, faixa, tol: tol ? num(tol.r25_tol_pct) : null, fonte: r.fonte_id || '', tolF: tol ? tol.fonte_id : '' };
+    }).filter(c => c.pts.length > 3);
+    const interp = (pts, t) => { if (t <= pts[0][0]) return pts[0][1]; for (let k = 1; k < pts.length; k++) if (t <= pts[k][0]) { const [t0, r0] = pts[k - 1], [t1, r1] = pts[k], u = (t - t0) / (t1 - t0); return Math.exp(Math.log(r0) + u * (Math.log(r1) - Math.log(r0))); } return pts[pts.length - 1][1]; };
+    corpo.innerHTML = `<div class="abas" role="group"><button data-aba="ntc" aria-pressed="true">Sensor NTC (${curvas.length} curvas)</button><button data-aba="pt" aria-pressed="false">Pressão × temperatura</button><button data-aba="cri" aria-pressed="false">Critérios de carga</button></div><div data-aba-corpo></div>`;
+    const ac = $('[data-aba-corpo]', corpo);
+    const abaNtc = () => {
+      ac.innerHTML = `<div class="form" style="margin-top:0"><label>Curva da marca<select data-c>${curvas.map((c, k) => `<option value="${k}">${esc(c.rot)}</option>`).join('')}</select></label>
+        <div class="duas"><label>Temperatura no sensor (°C)<input type="number" inputmode="decimal" step="any" data-t value="25"></label><label>Resistência medida (kΩ)<input type="number" inputmode="decimal" step="any" data-r placeholder="Ex.: 10,2"></label></div></div>
+        <div class="veredito neutro" data-v></div><div class="tabela-box" style="max-height:280px;overflow:auto"><table class="tabela" data-tb></table></div>`;
+      const go = () => {
+        const c = curvas[+$('[data-c]', ac).value], t = num($('[data-t]', ac).value), r = num($('[data-r]', ac).value), v = $('[data-v]', ac);
+        $('[data-tb]', ac).innerHTML = `<tr><th>°C</th><th>kΩ</th>${c.faixa ? '<th>Mín – Máx</th>' : ''}</tr>` + c.pts.map(p => { const fx = c.faixa && c.faixa.find(q => q[0] === p[0]); return `<tr${t !== null && Math.round(t) === p[0] ? ' class="marca"' : ''}><td class="n">${p[0]}</td><td class="n">${f1(p[1], p[1] < 10 ? 2 : 1)}</td>${c.faixa ? `<td class="n">${fx ? f1(fx[1], 2) + ' – ' + f1(fx[2], 2) : '—'}</td>` : ''}</tr>`; }).join('');
+        if (t === null) { v.className = 'veredito neutro'; v.textContent = 'Digite a temperatura do sensor.'; return; }
+        const esp = interp(c.pts, t);
+        if (r === null) { v.className = 'veredito neutro'; v.innerHTML = `A ${f1(t)} °C a curva pede ${f1(esp, 2)} kΩ<small>Meça o sensor solto da placa, com o termômetro encostado no mesmo ponto. Fonte ${esc(c.fonte)}.</small>`; return; }
+        const d = (r - esp) / esp * 100, fx = c.faixa && c.faixa.find(q => q[0] === Math.round(t));
+        if (fx) { const ok = r >= fx[1] && r <= fx[2]; v.className = 'veredito ' + (ok ? 'ok' : 'def'); v.innerHTML = `${ok ? 'Sensor dentro da faixa' : 'Sensor fora da faixa: troque o sensor NTC'}<small>Esperado ${f1(fx[1], 2)} a ${f1(fx[2], 2)} kΩ a ${Math.round(t)} °C (tabela mín/máx da fonte ${esc(c.fonte)}); medido ${f1(r, 2)} kΩ.</small>`; return; }
+        if (c.tol !== null) { const ok = Math.abs(d) <= c.tol; v.className = 'veredito ' + (ok ? 'ok' : 'def'); v.innerHTML = `${ok ? 'Sensor dentro da tolerância' : 'Sensor fora da tolerância: troque o sensor NTC'}<small>Curva ${f1(esp, 2)} kΩ a ${f1(t)} °C; medido ${f1(r, 2)} kΩ (${d > 0 ? '+' : ''}${f1(d)}%). Tolerância declarada ±${f1(c.tol, 0)}% (${esc(c.tolF)}).</small>`; return; }
+        v.className = 'veredito alerta'; v.innerHTML = `Desvio de ${d > 0 ? '+' : ''}${f1(d)}% da curva da marca<small>Curva ${f1(esp, 2)} kΩ a ${f1(t)} °C; medido ${f1(r, 2)} kΩ. Confirme aquecendo o sensor na mão: a resistência tem de cair. Se não cair, orce a troca do sensor.</small>`;
+      };
+      $$('input,select', ac).forEach(el => el.addEventListener('input', go)); go();
+    };
+    const abaPt = () => {
+      const FL = [['r410a_psig', 'R-410A'], ['r32_psig', 'R-32'], ['r22_psig', 'R-22']], pts = (k) => PT.map(r => [num(r[k]), num(r.temp_c)]).filter(p => p[0] !== null && p[1] !== null).sort((a, b) => a[0] - b[0]);
+      const crit = CRI.find(c => /Superaquecimento correto/i.test(c.criterio));
+      ac.innerHTML = `<div class="form" style="margin-top:0"><label>Fluido<select data-fl>${FL.map(([k, r]) => `<option value="${k}">${r}</option>`).join('')}</select></label>
+        <div class="duas"><label>Pressão de sucção (psig)<input type="number" inputmode="decimal" step="any" data-p placeholder="Ex.: 118"></label><label>Temperatura do tubo de sucção (°C)<input type="number" inputmode="decimal" step="any" data-tt placeholder="Ex.: 12"></label></div></div>
+        <div class="veredito neutro" data-v></div><div class="tabela-box" style="max-height:280px;overflow:auto"><table class="tabela"><tr><th>°C</th><th>°F</th><th>R-410A psig</th><th>R-32 psig</th><th>R-22 psig</th></tr>${PT.map(r => `<tr><td class="n">${esc(r.temp_c)}</td><td class="n">${esc(r.temp_f)}</td><td class="n">${esc(r.r410a_psig)}</td><td class="n">${esc(r.r32_psig)}</td><td class="n">${esc(r.r22_psig)}</td></tr>`).join('')}</table></div>`;
+      const go = () => {
+        const k = $('[data-fl]', ac).value, p = num($('[data-p]', ac).value), tt = num($('[data-tt]', ac).value), v = $('[data-v]', ac), P = pts(k);
+        if (p === null) { v.className = 'veredito neutro'; v.textContent = 'Digite a pressão de sucção lida no manifold.'; return; }
+        let ts = P[0][1]; for (let j = 1; j < P.length; j++) if (p <= P[j][0]) { const [p0, t0] = P[j - 1], [p1, t1] = P[j]; ts = t0 + (p - p0) / (p1 - p0) * (t1 - t0); break; } else ts = P[j][1];
+        if (tt === null) { v.className = 'veredito neutro'; v.innerHTML = `Temperatura de evaporação: ${f1(ts)} °C<small>Agora meça o tubo de sucção a 20 cm da válvula, com o termopar preso e isolado.</small>`; return; }
+        const sh = tt - ts, r410 = k === 'r410a_psig';
+        if (r410 && crit) { const ok = sh >= 7 && sh <= 11; v.className = 'veredito ' + (ok ? 'ok' : 'def'); v.innerHTML = `Superaquecimento ${f1(sh)} °C · ${ok ? 'carga correta' : sh > 11 ? 'falta fluido: ache o vazamento antes de completar' : 'excesso de fluido: recolha com a recolhedora'}<small>Evaporação ${f1(ts)} °C; tubo ${f1(tt)} °C. Critério ${esc(crit.valor)} (${esc(crit.marca)} ${esc(crit.linha)}, ${esc(crit.fonte_id)}).</small>`; return; }
+        v.className = 'veredito alerta'; v.innerHTML = `Superaquecimento ${f1(sh)} °C<small>Evaporação ${f1(ts)} °C; tubo ${f1(tt)} °C. Referência da base para R-410A: 7 a 11 °C (Elgin, F14); compare com o critério da etiqueta do aparelho.</small>`;
+      };
+      $$('input,select', ac).forEach(el => el.addEventListener('input', go)); go();
+    };
+    const abaCri = () => { ac.innerHTML = `<div class="tabela-box"><table class="tabela"><tr><th>Critério</th><th>Valor</th><th>Fonte</th></tr>${CRI.map(c => `<tr><td>${esc(c.criterio)}<br><span style="color:#64748B">${esc(c.marca)} · ${esc(c.linha)}</span></td><td>${esc(c.valor)}</td><td class="f">${esc(c.fonte_id)}</td></tr>`).join('')}</table></div>`; };
+    const abas = { ntc: abaNtc, pt: abaPt, cri: abaCri };
+    $$('[data-aba]', corpo).forEach(b => b.addEventListener('click', () => { $$('[data-aba]', corpo).forEach(x => x.setAttribute('aria-pressed', x === b)); abas[b.dataset.aba](); }));
+    abaNtc();
+  }).catch(erro);
+}
+// Bônus 4: os 3 protocolos. Cada item: OK / Fora / Não medi. Pré-requisitos fora = corrigir antes; só a peça fora = pode condenar com laudo.
+const PROTOCOLOS = [
+  { t: 'Antes de condenar a Placa Inverter / IPM', srv: 'reparo_placa', img: ['d087', 4], itens: [
+    ['pre', 'Descarreguei os capacitores do barramento', 'Medir em CC entre + e − antes de tocar na placa (protocolo universal da base).'],
+    ['pre', 'Tensão L-N na entrada dentro de ±10% da placa', '220 V: 198 a 242 V (F14).'],
+    ['pre', 'Sensores NTC na curva da marca', 'Medidos soltos da placa, com termômetro no mesmo ponto (Bônus 3).'],
+    ['pre', 'Cabo e borne de comunicação 1-2-3-S conferidos', 'Aperto, continuidade e oxidação nos bornes.'],
+    ['peca', 'Barramento P-N do IPM', 'Cerca de 310 V CC com 220 V CA na entrada (protocolo universal e F20).'],
+    ['peca', 'Ponte IPM no teste de diodo (P, N, U, V e W)', 'Sem curto entre os pares (protocolo universal e F20 p. 85).'],
+    ['pre', 'Enrolamentos UVW do compressor iguais e sem massa', 'Para não trocar placa por compressor ruim.'] ] },
+  { t: 'Antes de condenar o Compressor', srv: 'compressor_troca', img: ['d040', 1], itens: [
+    ['pre', 'Tensão L-N dentro de ±10% da placa', '220 V: 198 a 242 V (F14).'],
+    ['pre', 'Capacitor dentro de ±5% da etiqueta', 'Medido descarregado, com os fios soltos.'],
+    ['pre', 'Condensadora limpa e ventilador girando', 'Sem troca de calor o compressor abre no térmico como se estivesse queimado.'],
+    ['pre', 'Bornes de força firmes e sem escurecimento', 'Mau contato derruba a tensão na partida.'],
+    ['peca', 'Enrolamentos C-S, C-R e S-R', 'S-R tem de dar a soma de C-S com C-R.'],
+    ['peca', 'Isolamento de cada pino contra a carcaça', 'Qualquer continuidade é compressor em massa.'] ] },
+  { t: 'Antes de condenar o Motor Ventilador', srv: 'motor_vent', img: ['s06', 4], itens: [
+    ['pre', 'Turbina gira livre com a mão, sem raspar', 'Turbina presa queima motor novo também.'],
+    ['pre', 'Bucha do mancal lubrificada e sem folga', 'Bucha seca trava a turbina e esquenta o motor.'],
+    ['pre', 'Capacitor do motor dentro de ±5% da etiqueta', 'Capacitor fraco deixa o motor zumbindo sem girar.'],
+    ['pre', 'Tensão chegando no conector do motor na placa', 'Sem tensão o defeito é da placa, não do motor.'],
+    ['peca', 'Enrolamentos do motor (ou U–V, U–W e V–W no motor DC)', 'Enrolamento aberto ou pares diferentes condenam o motor.'] ] },
+];
+function bonusProtocolo() {
+  abrir(cabBonus(3) + `<div class="abas" role="group">${PROTOCOLOS.map((p, k) => `<button data-p="${k}" aria-pressed="${k === 0}">${['Placa / IPM', 'Compressor', 'Motor ventilador'][k]}</button>`).join('')}</div><div data-pc></div>`, (m) => {
+    const box = $('[data-pc]', m), est = PROTOCOLOS.map(p => p.itens.map(() => ''));
+    const pintar = (k) => {
+      const P = PROTOCOLOS[k];
+      box.innerHTML = `<h4>${esc(P.t)}</h4>${recorte(P.img[0], P.img[1])}${P.itens.map(([tp, t, d], j) => `<div class="item-ck"><p>${j + 1}. ${esc(t)}<small>${esc(d)}</small></p><div class="tri3" data-j="${j}"><button class="ok" data-s="ok" aria-pressed="${est[k][j] === 'ok'}">OK</button><button class="fo" data-s="fo" aria-pressed="${est[k][j] === 'fo'}">Fora</button><button class="nm" data-s="nm" aria-pressed="${est[k][j] === 'nm'}">Não medi</button></div></div>`).join('')}<div class="veredito neutro" data-v></div><div class="pilha" data-acoes></div>`;
+      const veredito = () => {
+        const E = est[k], pre = P.itens.map((x, j) => [x, E[j]]).filter(([x]) => x[0] === 'pre'), pec = P.itens.map((x, j) => [x, E[j]]).filter(([x]) => x[0] === 'peca');
+        const preFora = pre.filter(([, e]) => e === 'fo'), faltam = P.itens.filter((x, j) => !E[j] || E[j] === 'nm').length, pecFora = pec.filter(([, e]) => e === 'fo').length;
+        const v = $('[data-v]', box), ac = $('[data-acoes]', box);
+        if (preFora.length) { v.className = 'veredito alerta'; v.innerHTML = `Não condene ainda: corrija antes<small>${preFora.map(([x]) => esc(x[1])).join(' · ')}</small>`; ac.innerHTML = teclaOrcar('Orçar a correção'); }
+        else if (faltam) { v.className = 'veredito neutro'; v.innerHTML = `${P.itens.length - faltam} de ${P.itens.length} medições feitas<small>Complete as medições para o veredito.</small>`; ac.innerHTML = ''; }
+        else if (pecFora) { v.className = 'veredito def'; v.innerHTML = `Pode condenar com laudo<small>Pré-requisitos OK e a peça fora nas medições.</small>`; ac.innerHTML = teclaOrcar() + `<button class="tecla" data-laudo><span>Emitir laudo de condenação (Bônus 5)</span></button>`; }
+        else { v.className = 'veredito ok'; v.innerHTML = `Peça aprovada nas medições: não condene<small>Volte à ficha e siga para a próxima causa.</small>`; ac.innerHTML = ''; }
+        const o = $('[data-a=orc]', ac); if (o) o.addEventListener('click', () => abrirOrcamento(preFora.length ? 'visita_diag' : P.srv));
+        const l = $('[data-laudo]', ac); if (l) l.addEventListener('click', () => bonusLaudo(P.t.replace(/^Antes de condenar (a |o )?/i, '')));
+      };
+      $$('.tri3', box).forEach(g => $$('button', g).forEach(b => b.addEventListener('click', () => { est[k][+g.dataset.j] = b.dataset.s; $$('button', g).forEach(x => x.setAttribute('aria-pressed', x === b)); veredito(); })));
+      veredito();
+    };
+    $$('[data-p]', m).forEach(b => b.addEventListener('click', () => { $$('[data-p]', m).forEach(x => x.setAttribute('aria-pressed', x === b)); pintar(+b.dataset.p); }));
+    pintar(0);
+  });
+}
+// Bônus 5: matriz de viabilidade (reparo × aparelho novo, com os preços da base e o preço do aparelho que o técnico digitar) + Laudo em PDF.
+function bonusLaudo(peca) {
+  abrir(cabBonus(4) + '<div data-corpo><div class="carregando">Carregando a tabela de preços…</div></div>', (m) => {
+    carregarPrecos().then(L => {
+      const corpo = $('[data-corpo]', m), f = fichaAtual(), tit = titularSalvo();
+      const reparos = ['compressor_troca', 'placa_nova', 'reparo_placa', 'carga_fluido', 'motor_vent'].map(id => L.find(s => s.servico_id === id)).filter(Boolean);
+      corpo.innerHTML = `<h4>Matriz de viabilidade</h4><div class="form" style="margin-top:0">
+        <label>Porte (BTU/h)<select data-porte>${PORTES.map(([k, r]) => `<option value="${k}">${r}</option>`).join('')}</select></label>
+        ${reparos.map(s => `<label class="chk"><input type="checkbox" data-rep="${s.servico_id}" ${peca && norm(s.servico).includes(norm(peca).split(' ')[0]) ? 'checked' : ''}> ${esc(s.servico)}</label>`).join('')}
+        <label>Preço do aparelho novo na loja (R$)<input type="number" inputmode="decimal" step="any" data-novo placeholder="Ex.: o preço que o cliente achou"></label></div>
+        <div class="veredito neutro" data-v></div>
+        <h4>Laudo Técnico de Condenação</h4><div class="form">
+          <div class="duas"><label>Cliente<input type="text" data-l="cli" autocomplete="off"></label><label>WhatsApp<input type="tel" data-l="tel" autocomplete="off"></label></div>
+          <label>Equipamento<input type="text" data-l="equip" placeholder="Marca, modelo e BTU/h" autocomplete="off"></label>
+          <label>Defeito constatado<textarea data-l="const">${esc(f.titulo)}: ${esc(f.causas[(S.defeito[f.id] || 1) - 1][0])}.</textarea></label>
+          <label>Medições realizadas<textarea data-l="med">${esc(f.verifs.map((v, j) => `${nn(j + 1)} ${v[0]}: ${(S.estado[f.id] || {})[j + 1] === 'def' ? 'fora' : (S.estado[f.id] || {})[j + 1] === 'ok' ? 'normal' : 'não medido'}`).join('\n'))}</textarea></label>
+          <label>Conclusão<textarea data-l="conc"></textarea></label>
+          <div class="duas"><label>Técnico responsável<input type="text" data-l="tec" value="${esc(tit.nome)}" autocomplete="off"></label><label>CPF ou CNPJ<input type="text" data-l="doc" value="${esc(tit.doc)}" autocomplete="off"></label></div>
+        </div><div class="aviso" data-msg hidden></div>
+        <div class="pilha"><button class="tecla verde" data-a="pdf">${ic('baixar', '#FFFFFF', 20)}<span>Baixar Laudo em PDF</span></button><button class="tecla" data-a="zap">${ic('chat', '#FFFFFF', 20)}<span>Enviar Laudo no WhatsApp</span></button><button class="tecla clara" data-a="orc"><span>Orçar aparelho novo com instalação</span></button></div>`;
+      const conc = $('[data-l=conc]', corpo);
+      const calc = () => {
+        const porte = $('[data-porte]', corpo).value, sel = reparos.filter(s => $(`[data-rep="${s.servico_id}"]`, corpo).checked), rep = sel.reduce((t, s) => t + precoDe(s, porte), 0), novo = num($('[data-novo]', corpo).value);
+        const inst = L.find(s => s.servico_id === 'instalacao_split'), des = L.find(s => s.servico_id === 'desinstalacao'), troca = (novo || 0) + (inst ? precoDe(inst, porte) : 0) + (des ? precoDe(des, porte) : 0);
+        const v = $('[data-v]', corpo);
+        if (!sel.length) { v.className = 'veredito neutro'; v.textContent = 'Marque o reparo que o aparelho precisa.'; return; }
+        if (!novo) { v.className = 'veredito neutro'; v.innerHTML = `Reparo típico: ${brl(rep)}<small>Digite o preço do aparelho novo para comparar com a troca completa (aparelho + desinstalação + instalação da tabela 2026).</small>`; return; }
+        const pct = rep / troca * 100, nao = rep >= troca;
+        v.className = 'veredito ' + (nao ? 'def' : 'ok');
+        v.innerHTML = `${nao ? 'Reparo não compensa' : 'Reparo compensa'}: ${brl(rep)} contra ${brl(troca)} na troca<small>O reparo custa ${f1(pct, 0)}% da troca completa (aparelho ${brl(novo)} + desinstalação e instalação da tabela 2026).</small>`;
+        if (!conc.dataset.mexeu) conc.value = nao ? `Reparo (${brl(rep)}) igual ou acima da troca por aparelho novo instalado (${brl(troca)}). Recomenda-se a substituição do equipamento.` : `Reparo viável: ${brl(rep)}, ${f1(pct, 0)}% do custo da troca por aparelho novo instalado (${brl(troca)}).`;
+      };
+      conc.addEventListener('input', () => { conc.dataset.mexeu = '1'; });
+      $$('[data-rep],[data-novo],[data-porte]', corpo).forEach(el => el.addEventListener('input', calc)); calc();
+      const msg = (t, c) => { const el = $('[data-msg]', corpo); el.hidden = false; el.className = 'aviso ' + c; el.textContent = t; };
+      const gerar = async (modo) => {
+        if (!window.GeloProPDF) return msg('O motor de PDF do app não carregou. Recarregue a página com sinal.', 'def');
+        const g = (k) => $(`[data-l=${k}]`, corpo).value.trim(), numero = proximoNumero(true), em = Date.now();
+        const doc = { tipo: 'laudo', titulo: 'Laudo de inviabilidade', numero, atend: '', data: dataBR(em), base: 'Outubro/2026', via2: '',
+          titular: { nome: g('tec'), doc: g('doc'), docTipo: g('doc').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: tit.cidade || '', pix: '' },
+          cliente: { nome: g('cli') || 'Cliente', tel: g('tel'), equip: g('equip') }, itensTitulo: 'Itens', itens: [], equipDet: null, limpo: true, garSelo: '', bancada: null, matriz: [], fechamento: null,
+          blocos: [{ t: 'Medições registradas', x: g('med') }, { t: 'Constatações', x: g('const') }, { t: 'Conclusão', x: g('conc') }, { t: 'Observação', x: 'Laudo emitido pelo técnico titular com base nas verificações acima. Não substitui laudo de engenheiro quando exigido.' }],
+          preventiva: '', foto: null, assinatura: null, assinaturaLegenda: '', assinaturaNota: '', nome: window.GeloProPDF.nomeArquivo('laudo', numero, g('cli')) };
+        try { const r = await window.GeloProPDF.gerar(doc); window.__ultimoPdfGuia = { nome: r.nome, paginas: r.paginas, bytes: r.bytes.length, numero };
+          if (modo === 'zap') await compartilharOuZap(r, doc, g('tel')); else window.GeloProPDF.baixar(r.blob, r.nome);
+          msg(`Laudo Nº ${numero} gerado: ${r.nome}.`, 'ok'); } catch (e) { msg('Não consegui gerar o laudo: ' + e.message, 'def'); }
+      };
+      $('[data-a=pdf]', corpo).addEventListener('click', () => gerar('pdf'));
+      $('[data-a=zap]', corpo).addEventListener('click', () => gerar('zap'));
+      $('[data-a=orc]', corpo).addEventListener('click', () => abrirOrcamento('instalacao_split'));
+    }).catch(e => { $('[data-corpo]', m).innerHTML = `<div class="aviso def">Não consegui ler a tabela de preços (${esc(e.message)}).</div>`; });
+  });
+}
+// Bônus 6: os 16 serviços por porte, com custo de peça e Orçar em 1 toque.
+function bonusPrecos() {
+  abrir(cabBonus(5) + '<div data-corpo><div class="carregando">Carregando a tabela de preços…</div></div>', (m) => {
+    carregarPrecos().then(L => {
+      const corpo = $('[data-corpo]', m);
+      corpo.innerHTML = `<div class="aviso">${L.length} serviços da tabela GeloPro 2026 (região de referência GELOPRO). Toque em Orçar para abrir o Orçamento Nº 1001 já com o serviço.</div>
+        ${L.map(s => { const p12 = pecaDe(s, '12'), p18 = pecaDe(s, '18'), p36 = pecaDe(s, '36'); return `<div class="item-ck" data-svc="${s.servico_id}"><p>${esc(s.servico)}<small>${esc(s.unidade)}${s.justificativa_tecnica ? ' · ' + esc(s.justificativa_tecnica) : ''}</small></p>
+          <div class="tabela-box"><table class="tabela"><tr><th>Porte</th><th>Mínimo</th><th>Típico</th><th>Máximo</th><th>Peça</th></tr>
+          <tr><td>9.000–12.000</td><td class="n">${brl(s.valor_min)}</td><td class="n"><b>${brl(s.valor_tipico)}</b></td><td class="n">${brl(s.valor_max)}</td><td class="n">${p12[0] !== null ? brl(p12[0]) + ' a ' + brl(p12[1]) : '—'}</td></tr>
+          <tr><td>18.000–30.000</td><td class="n">—</td><td class="n"><b>${num(s.valor_tipico_18000btu) !== null ? brl(s.valor_tipico_18000btu) : '—'}</b></td><td class="n">—</td><td class="n">${p18[0] !== null ? brl(p18[0]) + ' a ' + brl(p18[1]) : '—'}</td></tr>
+          <tr><td>36.000+</td><td class="n">—</td><td class="n"><b>${num(s.valor_tipico_36000btu) !== null ? brl(s.valor_tipico_36000btu) : '—'}</b></td><td class="n">—</td><td class="n">${p36[0] !== null ? brl(p36[0]) + ' a ' + brl(p36[1]) : '—'}</td></tr></table></div>
+          ${s.dica_fechamento ? `<div class="aviso" style="margin-bottom:6px"><b>Fechamento:</b> ${esc(s.dica_fechamento)}</div>` : ''}<button class="tecla verde" data-orc="${s.servico_id}" style="height:44px;width:100%">${ic('doc', '#FFFFFF', 18)}<span>Orçar este serviço (PDF Nº 1001 + Pix)</span></button></div>`; }).join('')}`;
+      $$('[data-orc]', corpo).forEach(b => b.addEventListener('click', () => abrirOrcamento(b.dataset.orc)));
+    }).catch(e => { $('[data-corpo]', m).innerHTML = `<div class="aviso def">Não consegui ler a tabela de preços (${esc(e.message)}).</div>`; });
   });
 }
 
@@ -518,10 +966,10 @@ $('#b-voltar').addEventListener('click', () => { if (EMBED) window.parent.postMe
 $('#b-ficha').addEventListener('click', abrirIndice);
 $('#d-indice').addEventListener('click', abrirIndice);
 $('#d-bonus').addEventListener('click', abrirMenuBonus);
-$('#d-orcar').addEventListener('click', () => orcarReal(servicoAtual()));
+$('#d-orcar').addEventListener('click', () => abrirOrcamento(servicoAtual()));
 
-// Início: #D-001 (padrão), #D-002, #D-003, #D-023, #D-058, #D-073 abrem a ficha direto.
-function iniciar() { const m = location.hash.match(/D-\d{3}/); const i = m ? F.findIndex(f => f.id === m[0]) : 0; montarFicha(i >= 0 ? i : 0); }
+// Início: #D-001 (padrão) ou o código de qualquer uma das 14 fichas no endereço (#D-040, #S-04…).
+function iniciar() { const m = location.hash.match(/[DS]-\d{2,3}/); const i = m ? F.findIndex(f => f.id === m[0]) : 0; montarFicha(i >= 0 ? i : 0); }
 window.addEventListener('hashchange', iniciar);
 iniciar();
 </script>
