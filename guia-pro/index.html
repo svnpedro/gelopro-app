@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#091e42">
+<title>GeloPRO · Guia Pro — Comparativo de Entrada</title>
+<!--
+  Guia Pro (v01-polo): comparativo dos 3 layouts de entrada do app + Prancha de Diagnóstico Interativa Viva.
+  Arquivo isolado: não importa nem altera nada de ../app/. Sem CDN, sem dependência: abre offline.
+  Cores de SVG cravadas em hexadecimal nos atributos fill/stroke (CLAUDE.md regra 5).
+  Encaixe de imagem gerada: preencha "img" na prancha (dados P abaixo); o quadro usa o atributo data-img-slot="prancha-NN".
+-->
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#F4F6F9;color:#0F172A;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{min-height:100dvh;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #0EA5E9;outline-offset:2px}
+
+/* ── Barra discreta de comparação ── */
+#comparar{position:fixed;top:0;left:0;right:0;height:34px;z-index:60;display:flex;align-items:center;gap:8px;padding:0 10px;background:#0A182D;color:#CBD5E1;font-size:12px}
+#comparar .rot{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1;opacity:.8}
+#comparar .seg{display:flex;background:#132744;border-radius:8px;padding:2px;flex-shrink:0}
+#comparar .seg button{padding:4px 9px;border-radius:6px;font-size:12px;font-weight:600;color:#94A3B8;white-space:nowrap}
+#comparar .seg button[aria-pressed="true"]{background:#FFFFFF;color:#091E42}
+.layout{display:none;padding-top:34px}
+.layout.ativo{display:block}
+
+/* ── Layout 1: Painel de Bancada ── */
+#L1{background:#F4F6F9;min-height:100dvh}
+.l1-topo{position:sticky;top:34px;z-index:5;background:#F4F6F9;padding:12px 16px 8px;border-bottom:1px solid #E2E8F0}
+.marca-linha{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.marca{font-weight:800;letter-spacing:-.01em;color:#091E42;font-size:18px}
+.marca small{font-weight:600;color:#64748B;font-size:12px;margin-left:6px}
+.selo-plano{font-size:11px;font-weight:700;color:#166534;background:#DCFCE7;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.busca{display:flex;align-items:center;gap:8px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:12px;padding:0 12px;height:46px}
+.busca:focus-within{border-color:#091E42}
+.busca input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:15px}
+.pilulas{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.pilulas::-webkit-scrollbar{display:none}
+.pilula{flex-shrink:0;padding:7px 12px;border-radius:999px;background:#FFFFFF;border:1px solid #CBD5E1;font-size:13px;font-weight:600;color:#334155;white-space:nowrap}
+.pilula[aria-pressed="true"]{background:#091E42;border-color:#091E42;color:#FFFFFF}
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:14px 16px 40px;max-width:1100px;margin:0 auto}
+.cartao{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;text-align:left;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s}
+.cartao:active{transform:scale(.985)}
+.cartao:hover{box-shadow:0 6px 18px rgba(15,23,42,.08)}
+.cartao .mini{background:#F8FAFC;border-bottom:1px solid #E2E8F0;aspect-ratio:300/260;display:block}
+.cartao .mini svg{width:100%;height:100%;display:block}
+.cartao .corpo{padding:9px 10px 11px;display:flex;flex-direction:column;flex:1}
+.cartao .corpo .barra-mini{margin-top:auto}
+.cartao .num{font-size:11px;font-weight:800;color:#64748B;letter-spacing:.06em}
+.cartao h3{font-size:14px;line-height:1.25;margin:2px 0 8px;color:#091E42}
+.barra-mini{display:flex;height:7px;border-radius:4px;overflow:hidden;background:#E2E8F0}
+.legenda-mini{font-size:11.5px;color:#475569;margin-top:5px;line-height:1.3}
+.vazio{grid-column:1/-1;background:#FFFFFF;border:1px dashed #CBD5E1;border-radius:14px;padding:18px;text-align:center;color:#334155}
+.vazio .acoes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+
+/* ── Layout 2: Prancha Direta ── */
+#L2{background:#E9EEF5}
+.l2-barra{position:sticky;top:34px;z-index:5;height:44px;display:flex;align-items:center;gap:6px;padding:0 8px;background:#091E42;color:#FFFFFF}
+.l2-barra .trocar{flex:1;min-width:0;display:flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:8px;background:#19365C;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l2-barra .trocar span{overflow:hidden;text-overflow:ellipsis}
+.l2-barra .nav{height:32px;padding:0 9px;border-radius:8px;background:#19365C;font-size:12.5px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.l2-folha{height:calc(100dvh - 78px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.gaveta-fundo{position:fixed;inset:0;background:rgba(9,30,66,.45);z-index:70;opacity:0;pointer-events:none;transition:opacity .2s}
+.gaveta-fundo.aberta{opacity:1;pointer-events:auto}
+.gaveta{position:fixed;left:0;right:0;bottom:0;max-height:82dvh;z-index:71;background:#FFFFFF;border-radius:18px 18px 0 0;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;max-width:760px;margin:0 auto}
+.gaveta.aberta{transform:none}
+.gaveta .alca{width:44px;height:5px;border-radius:3px;background:#CBD5E1;margin:8px auto 4px}
+.gaveta .cab{padding:4px 16px 8px}
+.gaveta .lista{overflow-y:auto;padding:0 8px 18px}
+
+/* ── Layout 3: Catálogo em lista ── */
+#L3{background:#FFFFFF;min-height:100dvh}
+.l3-topo{position:sticky;top:34px;z-index:5;background:#FFFFFF;border-bottom:1px solid #E2E8F0}
+.l3-topo .linha{display:flex;align-items:center;gap:8px;padding:10px 12px 6px}
+.l3-topo .busca{height:40px;flex:1;min-width:0}
+.abas{display:flex;gap:2px;overflow-x:auto;padding:0 8px;scrollbar-width:none}
+.abas::-webkit-scrollbar{display:none}
+.aba{flex-shrink:0;padding:9px 10px 8px;font-size:12.5px;font-weight:700;color:#64748B;border-bottom:3px solid transparent;white-space:nowrap}
+.aba[aria-selected="true"]{color:#091E42;border-bottom-color:#091E42}
+.aba .b{display:inline-block;font-size:10px;background:#FEF3C7;color:#92400E;border-radius:4px;padding:1px 4px;margin-right:4px}
+.l3-corpo{max-width:900px;margin:0 auto;padding-bottom:40px}
+.grupo h4{position:sticky;top:122px;z-index:2;background:#F1F5F9;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#475569;padding:6px 14px;border-top:1px solid #E2E8F0}
+.linha-item{display:grid;grid-template-columns:40px 1fr auto;gap:2px 10px;align-items:center;width:100%;text-align:left;padding:10px 14px;border-bottom:1px solid #F1F5F9;min-height:62px}
+.linha-item:active{background:#F1F5F9}
+.linha-item .n{grid-row:1/3;font-size:13px;font-weight:800;color:#091E42;background:#E9F2FF;border-radius:8px;height:36px;display:flex;align-items:center;justify-content:center}
+.linha-item .t{font-size:14.5px;font-weight:700;color:#0F172A;line-height:1.25;min-width:0}
+.linha-item .m{grid-column:2/4;display:flex;gap:6px;flex-wrap:wrap;font-size:11.5px;color:#475569}
+.linha-item .seta{grid-row:1;grid-column:3;color:#94A3B8;font-size:18px}
+.etq{display:inline-flex;align-items:center;gap:3px;border-radius:5px;padding:2px 6px;font-weight:700;white-space:nowrap}
+.etq.c1{background:#FFE4E6;color:#9F1239}
+.etq.t{background:#FEF3C7;color:#92400E}
+.etq.i{background:#E0F2FE;color:#075985}
+
+/* ── Folha (prancha em tela cheia, layouts 1 e 3) ── */
+#folha{position:fixed;top:34px;left:0;right:0;bottom:0;z-index:50;background:#E9EEF5;overflow-y:auto;-webkit-overflow-scrolling:touch;visibility:hidden;opacity:0;transform:scale(.98);transition:opacity .22s,transform .22s,visibility 0s .22s}
+#folha.aberta{visibility:visible;opacity:1;transform:none;transition:opacity .22s,transform .22s}
+#folha.deslizar{transform:translateX(100%);opacity:1}
+#folha.deslizar.aberta{transform:none}
+.folha-nav{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:6px;height:44px;padding:0 8px;background:#FFFFFF;border-bottom:1px solid #E2E8F0}
+.folha-nav .voltar{font-weight:700;color:#091E42;font-size:14px;padding:6px 8px;white-space:nowrap}
+.folha-nav .esp{flex:1}
+.folha-nav .nav{height:32px;padding:0 10px;border-radius:8px;background:#F1F5F9;font-weight:700;font-size:12.5px;white-space:nowrap}
+
+/* ── Prancha Interativa Viva ── */
+.prancha{max-width:880px;margin:0 auto;padding:10px 10px 28px}
+.p-cab{background:#091E42;color:#FFFFFF;border-radius:16px 16px 0 0;padding:12px 14px 12px}
+.p-etq{font-size:11px;font-weight:800;letter-spacing:.08em;color:#67C6FF}
+.p-cab h2{font-size:21px;line-height:1.2;margin:4px 0 0;letter-spacing:-.01em}
+.p-alerta{display:flex;gap:8px;align-items:flex-start;background:#FEF3C7;color:#78350F;font-size:13px;line-height:1.35;font-weight:600;padding:9px 12px;border-left:4px solid #F59E0B}
+.p-folha{background:#FFFFFF;border-radius:0 0 16px 16px;box-shadow:0 2px 10px rgba(9,30,66,.08);overflow:hidden}
+.p-sec{padding:12px 14px}
+.p-tit{font-size:11px;font-weight:800;letter-spacing:.08em;color:#64748B;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.p-tit em{font-style:normal;font-weight:600;letter-spacing:0;text-transform:none;color:#94A3B8}
+.prob{display:grid;gap:6px}
+.prob button{position:relative;display:grid;grid-template-columns:52px 1fr;align-items:center;gap:8px;text-align:left;padding:6px 8px;border-radius:10px;border:1.5px solid #E2E8F0;background:#FFFFFF;transition:border-color .2s,background .2s}
+.prob button .pct{font-size:20px;font-weight:900;letter-spacing:-.02em}
+.prob button .lado{min-width:0}
+.prob button .nome{font-size:12.5px;font-weight:800;letter-spacing:.03em;color:#0F172A;display:flex;justify-content:space-between;gap:6px}
+.prob button .nome small{font-weight:700;color:#64748B;letter-spacing:0;white-space:nowrap}
+.prob button .trilho{height:9px;border-radius:5px;background:#F1F5F9;margin-top:4px;overflow:hidden}
+.prob button .trilho i{display:block;height:100%;border-radius:5px}
+.prob button.ativo{border-color:#091E42;background:#F8FAFC}
+.quadro{position:relative;background:#F8FAFC;border-top:1px solid #E2E8F0;border-bottom:1px solid #E2E8F0}
+.quadro svg.esq{display:block;width:100%;height:auto;max-height:62dvh;touch-action:manipulation}
+.quadro .ver-tudo{position:absolute;right:8px;top:8px;background:#FFFFFF;border:1px solid #CBD5E1;border-radius:8px;font-size:12px;font-weight:700;padding:5px 8px;color:#091E42;opacity:0;pointer-events:none;transition:opacity .2s}
+.quadro.zoom .ver-tudo{opacity:1;pointer-events:auto}
+.quadro .dica{position:absolute;left:8px;top:8px;background:rgba(9,30,66,.86);color:#FFFFFF;border-radius:8px;font-size:11.5px;font-weight:600;padding:5px 8px;pointer-events:none;transition:opacity .3s}
+.quadro.zoom .dica{opacity:0}
+.ponto{cursor:pointer}
+.ponto .pulso{transform-box:fill-box;transform-origin:center;animation:pulso 1.6s ease-out infinite}
+@keyframes pulso{0%{transform:scale(1);opacity:.75}100%{transform:scale(2.1);opacity:0}}
+.ponto.sel .halo{opacity:1}
+.ponto .halo{opacity:0;transition:opacity .25s}
+.lupa{cursor:pointer}
+.lupa.sel circle.vidro{stroke-width:3}
+.sonda{transition:d .5s cubic-bezier(.2,.8,.2,1)}
+.ponta{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.zoom-info{display:none;background:#0F172A;color:#E2E8F0;padding:12px 14px;font-size:13.5px;line-height:1.4}
+.zoom-info.on{display:block;animation:surge .25s ease-out}
+@keyframes surge{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.zoom-info h5{font-size:15px;color:#FFFFFF;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.zoom-info .bol{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#F59E0B;color:#0F172A;font-weight:900;font-size:13px;flex-shrink:0}
+.zoom-info dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px}
+.zoom-info dt{font-weight:800;white-space:nowrap}
+.zoom-info dd{min-width:0}
+.zoom-info .esperado{margin-top:8px;background:#14532D;color:#DCFCE7;border-radius:8px;padding:7px 9px;font-weight:700}
+.zoom-info .fonte{margin-top:6px;font-size:11.5px;color:#94A3B8}
+.zoom-info .ir{margin-top:8px;font-weight:800;color:#67C6FF;padding:4px 0}
+.passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.passo{border:1.5px solid #E2E8F0;border-radius:14px;padding:11px 12px;background:#FFFFFF;display:flex;flex-direction:column;gap:8px;transition:border-color .25s,box-shadow .25s,opacity .25s}
+.passo.foco{border-color:#091E42;box-shadow:0 0 0 3px #BFDBFE}
+.passo.flash{animation:flash 1.1s ease-out}
+@keyframes flash{0%{box-shadow:0 0 0 0 #F59E0B}40%{box-shadow:0 0 0 7px rgba(245,158,11,.55)}100%{box-shadow:0 0 0 3px #BFDBFE}}
+.passo.ok{border-color:#16A34A;background:#F0FDF4}
+.passo.def{border-color:#DC2626;background:#FEF2F2}
+.passo .topo{display:flex;align-items:center;gap:8px}
+.passo .topo .bol{width:26px;height:26px;border-radius:50%;background:#091E42;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0}
+.passo.ok .topo .bol{background:#16A34A}
+.passo.def .topo .bol{background:#DC2626}
+.passo h6{font-size:14.5px;line-height:1.2;color:#091E42;min-width:0}
+.passo p{font-size:13px;line-height:1.38;color:#334155}
+.passo .ref{font-size:12.5px;background:#F1F5F9;border-radius:8px;padding:6px 8px;color:#0F172A}
+.passo .ref b{color:#166534}
+.passo .ver{font-size:12px;font-weight:700;color:#0369A1;text-align:left;padding:0}
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+.btn-ok,.btn-def{border-radius:10px;padding:9px 8px;font-size:12.5px;font-weight:800;line-height:1.2;text-align:center;min-height:56px;color:#FFFFFF}
+.btn-ok{background:#15803D}
+.btn-def{background:#DC2626}
+.btn-ok small,.btn-def small{display:block;font-weight:600;font-size:11.5px;opacity:.95;margin-top:2px}
+.erro-caro{margin:4px 14px 12px;border:2px solid #DC2626;background:#FEF2F2;border-radius:12px;padding:10px 12px;color:#7F1D1D;font-size:13.5px;line-height:1.4}
+.erro-caro b{display:block;color:#B91C1C;font-size:13px;letter-spacing:.04em;margin-bottom:3px}
+.bonus-barra{background:#091E42;padding:10px 12px 12px}
+.bonus-barra .p-tit{color:#93C5FD}
+.bonus-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.bonus-chip{display:flex;align-items:center;gap:7px;background:#19365C;border:1px solid #24466F;color:#FFFFFF;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;text-align:left;line-height:1.2;min-height:44px}
+.bonus-chip .ic{flex-shrink:0;width:24px;height:24px;border-radius:6px;background:#67C6FF;color:#061224;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+
+/* ── Botões gerais ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;padding:12px 14px;font-weight:800;font-size:14.5px;line-height:1.2;text-align:center}
+.btn.verde{background:#00B100;color:#FFFFFF}
+.btn.marinho{background:#091E42;color:#FFFFFF}
+.btn.claro{background:#F1F5F9;color:#091E42;border:1px solid #CBD5E1}
+.btn.cheio{width:100%}
+
+/* ── Modal (folha inferior no celular) ── */
+#modal-fundo{position:fixed;inset:0;background:rgba(9,30,66,.5);z-index:80;opacity:0;pointer-events:none;transition:opacity .2s}
+#modal-fundo.aberto{opacity:1;pointer-events:auto}
+#modal{position:fixed;left:0;right:0;bottom:0;z-index:81;max-height:90dvh;overflow-y:auto;background:#FFFFFF;border-radius:18px 18px 0 0;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-width:640px;margin:0 auto;padding:6px 16px 22px}
+#modal.aberto{transform:none}
+#modal .alca{width:44px;height:5px;border-radius:3px;background:#CBD5E1;margin:4px auto 10px}
+#modal .fechar{position:absolute;right:10px;top:8px;width:36px;height:36px;border-radius:50%;background:#F1F5F9;font-size:18px;font-weight:700;color:#334155}
+#modal h3{font-size:19px;color:#091E42;line-height:1.25;margin:0 40px 8px 0}
+#modal .sub{font-size:13px;color:#475569;margin-bottom:12px;line-height:1.4}
+.confirmada{border-radius:14px;background:#FEF2F2;border:2px solid #DC2626;padding:12px;margin-bottom:12px}
+.confirmada .k{font-size:11px;font-weight:900;letter-spacing:.08em;color:#B91C1C}
+.confirmada .v{font-size:17px;font-weight:800;color:#7F1D1D;margin-top:2px;line-height:1.25}
+.servico{border:1px solid #E2E8F0;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13.5px;line-height:1.4}
+.servico .faixa{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font-weight:800;color:#091E42;flex-wrap:wrap}
+.servico .ref{font-size:11.5px;color:#64748B;margin-top:4px}
+.pilha{display:grid;gap:8px}
+.form{display:grid;gap:10px;margin:6px 0 12px}
+.form label{display:grid;gap:4px;font-size:13px;font-weight:700;color:#334155}
+.form input[type=number],.form select,.form input[type=text]{height:46px;border:1.5px solid #CBD5E1;border-radius:10px;padding:0 12px;font-size:16px;background:#FFFFFF;width:100%;min-width:0}
+.form .chk{display:flex;align-items:center;gap:10px;font-weight:600;border:1px solid #E2E8F0;border-radius:10px;padding:10px 12px}
+.form .chk input{width:22px;height:22px;flex-shrink:0}
+.form .duas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.veredito{border-radius:12px;padding:11px 12px;font-weight:800;font-size:15px;line-height:1.3;margin-bottom:12px}
+.veredito.ok{background:#DCFCE7;color:#14532D}
+.veredito.def{background:#FEE2E2;color:#7F1D1D}
+.veredito.neutro{background:#F1F5F9;color:#334155}
+.veredito small{display:block;font-weight:600;font-size:12.5px;margin-top:3px}
+.tabela{width:100%;border-collapse:collapse;font-size:12.5px;margin-bottom:12px}
+.tabela th,.tabela td{text-align:left;padding:7px 6px;border-bottom:1px solid #E2E8F0;vertical-align:top}
+.tabela th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#64748B}
+.tabela td.f{color:#64748B;font-size:11px;white-space:nowrap}
+.orc{border:1px solid #CBD5E1;border-radius:12px;padding:14px;margin-bottom:12px}
+.orc .cab{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:2px solid #091E42;padding-bottom:8px;margin-bottom:10px}
+.orc .cab b{font-size:18px;color:#091E42}
+.orc .cab span{font-size:12px;color:#475569;text-align:right}
+.orc .item{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-bottom:1px dashed #E2E8F0}
+.orc .total{display:flex;justify-content:space-between;font-size:18px;font-weight:900;color:#091E42;padding-top:8px}
+.orc .pix{display:flex;gap:12px;align-items:center;margin-top:12px;background:#F8FAFC;border-radius:10px;padding:10px}
+.orc .pix svg{width:92px;height:92px;flex-shrink:0}
+.orc .pix p{font-size:12.5px;color:#334155;line-height:1.4}
+.prazos{display:flex;gap:6px;flex-wrap:wrap}
+.prazos button{padding:7px 10px;border-radius:999px;border:1px solid #CBD5E1;font-size:12.5px;font-weight:700}
+.prazos button[aria-pressed="true"]{background:#091E42;color:#FFFFFF;border-color:#091E42}
+.progresso{height:8px;border-radius:4px;background:#E2E8F0;overflow:hidden;margin:4px 0 12px}
+.progresso i{display:block;height:100%;background:#00B100;transition:width .3s}
+
+@media (min-width:760px){
+  .prancha{padding:16px 16px 36px}
+  .p-cab h2{font-size:26px}
+  .prob{grid-template-columns:repeat(3,1fr)}
+  #modal{bottom:auto;top:50%;border-radius:18px;transform:translateY(-40%) scale(.97);opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;max-height:86dvh}
+  #modal.aberto{transform:translateY(-50%);opacity:1;pointer-events:auto}
+  #modal .alca{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{
+  body.imprimir > *{display:none!important}
+  body.imprimir #modal{display:block!important;position:static;transform:none;max-height:none;box-shadow:none;opacity:1}
+  body.imprimir #modal > *:not(.orc){display:none!important}
+}
+</style>
+</head>
+<body>
+
+<header id="comparar" aria-label="Comparar layouts de entrada">
+  <span class="rot">GeloPRO · Guia Pro — escolha a entrada</span>
+  <div class="seg" role="group" aria-label="Layout de entrada">
+    <button data-l="1" aria-pressed="false">1 Painel</button>
+    <button data-l="2" aria-pressed="false">2 Prancha</button>
+    <button data-l="3" aria-pressed="false">3 Lista</button>
+  </div>
+</header>
+
+<!-- LAYOUT 1 — Painel de Bancada Clean com miniaturas -->
+<main id="L1" class="layout" aria-label="Layout 1: Painel de Bancada">
+  <div class="l1-topo">
+    <div class="marca-linha"><span class="marca">GeloPRO<small>Guia Pro</small></span><span class="selo-plano">Plano Completo · 6 bônus</span></div>
+    <label class="busca"><span aria-hidden="true">🔎</span><input id="l1-busca" type="search" placeholder="Digite o sintoma ou código: ex. não gela, E1, pingando..." autocomplete="off"></label>
+    <div class="pilulas" id="l1-pilulas" role="group" aria-label="Blocos de sintomas"></div>
+  </div>
+  <div class="grade" id="l1-grade"></div>
+</main>
+
+<!-- LAYOUT 2 — Prancha Direta (folha de iPad no 1º segundo) -->
+<main id="L2" class="layout" aria-label="Layout 2: Prancha Direta">
+  <div class="l2-barra">
+    <button class="trocar" id="l2-trocar" aria-haspopup="dialog"><b>▾</b><span>Trocar Sintoma [120+ Diagnósticos]</span></button>
+    <button class="nav" id="l2-ant" aria-label="Prancha anterior">◀ Anterior</button>
+    <button class="nav" id="l2-prox" aria-label="Próxima prancha">Próximo ▶</button>
+  </div>
+  <div class="l2-folha" id="l2-folha"></div>
+</main>
+<div class="gaveta-fundo" id="gaveta-fundo"></div>
+<section class="gaveta" id="gaveta" role="dialog" aria-label="Buscar sintoma por bloco">
+  <div class="alca"></div>
+  <div class="cab">
+    <label class="busca"><span aria-hidden="true">🔎</span><input id="gv-busca" type="search" placeholder="Sintoma ou código: não gela, E1, pingando..." autocomplete="off"></label>
+    <div class="pilulas" id="gv-pilulas" role="group" aria-label="Blocos de sintomas"></div>
+  </div>
+  <div class="lista" id="gv-lista"></div>
+</section>
+
+<!-- LAYOUT 3 — Catálogo executivo em lista + abas dos 6 bônus -->
+<main id="L3" class="layout" aria-label="Layout 3: Catálogo em lista">
+  <div class="l3-topo">
+    <div class="linha">
+      <span class="marca" style="font-size:16px">GeloPRO</span>
+      <label class="busca"><span aria-hidden="true">🔎</span><input id="l3-busca" type="search" placeholder="Sintoma ou código..." autocomplete="off"></label>
+    </div>
+    <div class="abas" id="l3-abas" role="tablist"></div>
+  </div>
+  <div class="l3-corpo" id="l3-corpo"></div>
+</main>
+
+<!-- Folha: prancha em tela cheia aberta pelos layouts 1 e 3 -->
+<section id="folha" aria-label="Prancha de diagnóstico" aria-hidden="true">
+  <div class="folha-nav">
+    <button class="voltar" id="folha-voltar">‹ Catálogo</button>
+    <span class="esp"></span>
+    <button class="nav" id="folha-ant" aria-label="Prancha anterior">◀</button>
+    <button class="nav" id="folha-prox" aria-label="Próxima prancha">▶</button>
+  </div>
+  <div id="folha-corpo"></div>
+</section>
+
+<div id="modal-fundo"></div>
+<section id="modal" role="dialog" aria-modal="true" aria-label="Detalhe"></section>
+
+<script>
+'use strict';
+// ───────────── Dados ─────────────
+// Faixas de preço: verticals/v01-polo/base-tecnica/precos_regionais_2026.csv (região GELOPRO, fonte PED01 — tabela de campo do Pedro).
+const PRECOS = {
+  cap_partida: ['Substituição de Capacitor de Partida + Teste de Corrente', 180, 220, 290],
+  sensor_ntc: ['Substituição de Sensor NTC (Ambiente/Serpentina) + Aferição Ôhmica', 190, 240, 320],
+  higienizacao: ['Higienização Técnica Completa (Serpentina, Turbina e Bandeja)', 200, 250, 380],
+  dreno_isol: ['Desobstrução de Dreno + Nivelamento e Isolamento Térmico', 150, 180, 260],
+  carga_fluido: ['Correção de Vazamento na Flange + Vácuo + Carga de Fluido', 350, 450, 650],
+  reparo_placa: ['Reparo / Substituição de Placa Eletrônica ou Módulo IPM', 420, 550, 850],
+  motor_vent: ['Substituição de Motor Ventilador / Turbina ou Coxins', 280, 380, 520],
+  fusivel_eletrica: ['Recuperação de Proteção Elétrica, Fusível e Bornes de Força', 160, 190, 260],
+  placa_nova: ['Fornecimento e Substituição de Placa Eletrônica Nova', 580, 780, 1150],
+  bomba_dreno: ['Instalação / Substituição de Bomba de Condensado (Dreno)', 390, 490, 680],
+  compressor_troca: ['Substituição de Compressor + Limpeza de Linha, Vácuo e Carga', 1100, 1450, 1950],
+  visita_diag: ['Visita Técnica e Diagnóstico Instrumentado', 80, 120, 150],
+};
+const BLOCOS = [['todos', 'Todos'], ['b1', '1. Não Gela'], ['b2', '2. Não Liga'], ['b3', '3. Elétrica'], ['b4', '4. Água e Gelo'], ['b5', '5. Ruídos'], ['b6', '6. Comando'], ['b7', '7. Códigos'], ['b8', '8. Inverter']];
+const COR_PROB = ['#E11D48', '#F59E0B', '#0EA5E9'];
+const BONUS = [
+  ['B1', '+35 Guias Inverter', '+35 Guias Visuais Exclusivos de Split Inverter (Placa, Ponte IPM, PFC e Comunicação)'],
+  ['B2', 'Códigos de Erro', 'Tradutor Instantâneo de Códigos de Erro e Piscadas de LED'],
+  ['B3', 'Tabelas Rápidas + Aferidor', 'Tabelas Rápidas em 1 Página + Aferidor de Sensores NTC e Pressão de Gás'],
+  ['B4', 'Checklist Anti-Prejuízo', 'Protocolo Blindado "Antes de Condenar a Peça Cara"'],
+  ['B5', 'Laudo de Condenação', 'Guia "Quando o Reparo Não Compensa" + Emissor de Laudo Técnico em 1 Toque'],
+  ['B6', 'Orçamento Nº 1001 + Pix', 'Gerador de Orçamento Pronto em PDF (Nº 1001) com Tabela 2026, Garantia e QR Code Pix'],
+];
+// Códigos conferidos (base-tecnica/codigos_erro_conferidos.csv), com fonte e página.
+const CODIGOS = [["Elgin","Eco Inverter II HJ","F1","Falha - Módulo IPM","F29 p.27"],["Elgin","Eco Inverter II HJ","L4","Falha - IPM do módulo drive do compressor","F29 p.27"],["Elgin","Eco Inverter II HJ","F4","Falha - Sensor de temperatura - Descarga","F29 p.27"],["Elgin","Eco Inverter II HJ","E2","Falha - Sensor de temperatura - Condensador","F29 p.27"],["Elgin","Eco Inverter II HJ","F6","Falha - Sensor de temperatura - Ambiente Externo","F29 p.27"],["Elgin","Eco Inverter II HJ","E5 (5E)","Falha - Comunicação Unidade Interna e Externa","F29 p.27"],["EOS","Master Inverter Pro Cassete/Piso Teto","E1","Falha na válvula de quatro vias","F33 p.36"],["Electrolux","Cassete/Piso-Teto Inverter R32","E1","Falha na válvula 4 vias","F32 p.26"],["EOS","Master Inverter Pro Cassete/Piso Teto","A1","Falha no sensor de temperatura ambiente da unidade interna","F33 p.35"],["EOS","Master Inverter Pro Cassete/Piso Teto","A2","Falha no sensor de temperatura no meio do evaporador interno","F33 p.35"],["EOS","Master Inverter Pro Cassete/Piso Teto","A9","Erro de comunicação entre a unidade externa e a unidade interna","F33 p.35"],["Samsung","Cassete/Teto Inverter R32","E121","Erro no sensor de temperatura ambiente da unidade interna (curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E122","Erro no sensor de EVA IN da unidade interna (em curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E123","Erro no sensor de EVA OUT da unidade interna (em curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E202","Erro de comunicação entre a unidade interna e a unidade externa","F31 p.39"],["Electrolux","Cassete/Piso-Teto Inverter R32","A1","Falha no sensor de temperatura ambiente da unidade interna","F32 p.25"],["Electrolux","Cassete/Piso-Teto Inverter R32","A9","Erro de comunicação entre a unidade externa e a unidade interna","F32 p.25"],["Electrolux","Cassete/Piso-Teto Inverter R32","AA","Erro de comunicação entre o controlador com fio e a PCB principal da unidade interna","F32 p.25"]];
+
+// As 6 pranchas-piloto. prob: [pct, NOME, ponto, curto]. Frequência #01 = especificação do Pedro; #02–#06 = ordem de teste de campo a calibrar (data-calibrar).
+const P = [
+{ id: '01', area: 'PARTE ELÉTRICA', titulo: 'Não gela: compressor zumbe e não parte', curto: 'Não Gela / Capacitor', blocos: ['b1', 'b3', 'b5'], desenho: 'd01', img: '',
+  busca: 'nao gela nao esfria compressor nao parte zumbido zumbe capacitor c-herm herm desarma protetor quente ventilador gira',
+  alerta: 'O capacitor guarda carga mesmo desligado: corte o disjuntor e descarregue os terminais HERM-C antes de encostar a mão.',
+  tempo: '3 min', instr: 'Multímetro / Capacímetro', calibrar: false,
+  prob: [[70, 'CAPACITOR', 2, 'Capacitor'], [20, 'ALIMENTAÇÃO', 1, 'Rede'], [10, 'COMPRESSOR', 3, 'Compressor']],
+  pontos: [
+    { n: 1, nome: 'Bornes L-N', x: 160, y: 66, bx: 132, by: 116, r: [146, 66], b: [174, 66], instr: 'MULTÍMETRO', lcd: '220 V~', escala: 'V~ (750 V)', vermelho: 'Borne L (fase)', preto: 'Borne N (neutro ou 2ª fase)', esperado: '198 a 242 V (220 V ±10% do valor de placa)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14): tensão ±10% do valor de placa' },
+    { n: 2, nome: 'Capacitor C-HERM', x: 293, y: 46, bx: 356, by: 30, r: [286, 46], b: [301, 46], instr: 'CAPACÍMETRO', lcd: 'µF', escala: 'µF (capacitância)', vermelho: 'Terminal HERM', preto: 'Terminal C (comum)', esperado: 'No mínimo −5% do µF da etiqueta. Abaixo disso: trocar o capacitor', fonte: 'Regra de bancada GeloPro (Pedro)' },
+    { n: 3, nome: 'Compressor C-S-R', x: 300, y: 198, bx: 366, by: 158, r: [290, 205], b: [310, 205], instr: 'MULTÍMETRO', lcd: 'Ω', escala: 'Ω (200 Ω)', vermelho: 'Pino S (partida)', preto: 'Pino R (trabalho)', esperado: 'S-R = C-S + C-R, e nenhum pino com continuidade para a carcaça', fonte: 'Enrolamentos de partida e trabalho em série entre S e R' },
+  ],
+  passos: [
+    { ponto: 1, titulo: 'Passo 1: Testar Tensão L-N', como: 'Disjuntor ligado, aparelho chamando frio. Pontas nos bornes L e N da condensadora.', normal: '220V OK → Ir ao Passo 2', defeito: 'Fora de 198–242 V → Corrigir alimentação', causa: 'Alimentação fora da faixa no borne L-N', servico: 'fusivel_eletrica', aferidor: 'tensao' },
+    { ponto: 2, titulo: 'Passo 2: Medir Capacitor C-HERM', como: 'Disjuntor desligado, capacitor descarregado e fios soltos. Capacímetro entre HERM e C.', normal: 'µF OK → Ir ao Passo 3', defeito: 'Abaixo de -5% → Trocar Capacitor', causa: 'Capacitor C-HERM abaixo do µF da etiqueta', servico: 'cap_partida', aferidor: 'cap' },
+    { ponto: 3, titulo: 'Passo 3: Testar Compressor C-S-R', como: 'Fios do compressor soltos. Meça C-S, C-R e S-R; depois cada pino contra a carcaça.', normal: 'C-S-R OK → Fechar diagnóstico', defeito: 'Aberto, curto ou em massa → Condenar compressor', causa: 'Enrolamento do compressor aberto, em curto ou em massa', servico: 'compressor_troca', aferidor: 'csr' },
+  ],
+  erro: 'Condenar o compressor (R$ 1.100 a R$ 1.950 na tabela) sem medir o capacitor do Passo 2, um serviço de R$ 180 a R$ 290. Zumbido com desarme no protetor: meça o capacitor primeiro.' },
+
+{ id: '02', area: 'AR E FLUIDO', titulo: 'Tubo congelando: gelo na serpentina e na linha', curto: 'Tubo Congelando', blocos: ['b1', 'b4'], desenho: 'd02', img: '',
+  busca: 'tubo congelando congela gelo serpentina congelada linha branca filtro sujo pouco gas falta fluido ventilador turbina gela pouco',
+  alerta: 'Corte o disjuntor e deixe o gelo derreter antes de lavar o filtro: serpentina congelada esconde a medição.',
+  tempo: '6 min', instr: 'Termômetro / Manifold', calibrar: true,
+  prob: [[70, 'FILTRO / AR', 1, 'Filtro'], [20, 'VENTILADOR', 2, 'Ventilador'], [10, 'CARGA DE FLUIDO', 3, 'Fluido']],
+  pontos: [
+    { n: 1, nome: 'Retorno × Insuflamento', x: 190, y: 58, bx: 128, by: 132, r: [236, 116], b: [236, 32], instr: 'TERMÔMETRO', lcd: 'ΔT °C', escala: '°C (2 canais)', vermelho: 'Saída de ar (insuflamento)', preto: 'Entrada de ar (retorno, sobre o filtro)', esperado: 'Retorno − insuflamento: 10 a 15 °C (velocidade média, refrigeração)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)' },
+    { n: 2, nome: 'Turbina e ventilador', x: 336, y: 95, bx: 372, by: 138, r: [328, 95], b: [344, 95], instr: 'CAPACÍMETRO', lcd: 'µF', escala: 'µF (capacitor do ventilador)', vermelho: 'Terminal do capacitor do ventilador', preto: 'Comum do capacitor do ventilador', esperado: 'Turbina gira livre na velocidade escolhida; capacitor do ventilador no mínimo −5% do µF da etiqueta', fonte: 'Regra de bancada GeloPro (Pedro)' },
+    { n: 3, nome: 'Válvula de serviço (sucção)', x: 378, y: 200, bx: 226, by: 214, r: [372, 212], b: [386, 192], instr: 'MANIFOLD', lcd: 'SH °C', escala: 'Pressão + °C do tubo', vermelho: 'Termopar no tubo de sucção, 20 cm da válvula', preto: 'Mangueira do manifold na válvula de serviço', esperado: 'Superaquecimento 7 a 11 °C (R-410A). Acima de 11 °C falta fluido', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)' },
+  ],
+  passos: [
+    { ponto: 1, titulo: 'Passo 1: Medir ΔT Retorno × Insuflamento', como: 'Gelo derretido, filtro no lugar, 10 min em refrigeração na velocidade média.', normal: 'ΔT 10–15 °C → Ir ao Passo 2', defeito: 'Fora da faixa → Higienizar filtro e serpentina', causa: 'Restrição de ar por filtro e serpentina sujos', servico: 'higienizacao', aferidor: 'deltat' },
+    { ponto: 2, titulo: 'Passo 2: Conferir Turbina e Ventilador', como: 'Turbina girando livre, sem raspar; capacitor do ventilador no capacímetro.', normal: 'Gira livre → Ir ao Passo 3', defeito: 'Lenta ou travada → Trocar motor ou capacitor', causa: 'Ventilador da evaporadora com vazão baixa', servico: 'motor_vent', aferidor: 'cap' },
+    { ponto: 3, titulo: 'Passo 3: Medir Superaquecimento', como: 'Manifold na válvula de sucção e termopar no tubo a 20 cm da válvula.', normal: 'SH 7–11 °C → Fechar diagnóstico', defeito: 'Acima de 11 °C → Achar vazamento e completar', causa: 'Falta de fluido (vazamento) congelando a linha', servico: 'carga_fluido', aferidor: 'sh' },
+  ],
+  erro: 'Completar gás em máquina congelada por filtro sujo (carga de R$ 350 a R$ 650) quando a higienização resolve (R$ 200 a R$ 380). O gelo volta e o cliente chama de novo.' },
+
+{ id: '03', area: 'PLACA INVERTER', titulo: 'Placa Inverter: código E1 / falha no módulo IPM', curto: 'Placa Inverter E1/IPM', blocos: ['b8', 'b7', 'b6'], desenho: 'd03', img: '',
+  busca: 'e1 ipm f1 l4 placa inverter modulo drive compressor nao parte erro codigo pisca led barramento p-n 310',
+  alerta: 'Os capacitores grandes da placa seguram carga desligados: descarregue entre + e − (resistor de cerca de 100 Ω / 40 W) antes de medir o IPM.',
+  tempo: '8 min', instr: 'Multímetro (V CC e Ω)', calibrar: true,
+  prob: [[70, 'MÓDULO IPM', 3, 'IPM'], [20, 'BARRAMENTO CC', 2, 'Barramento'], [10, 'ALIMENTAÇÃO', 1, 'Rede']],
+  pontos: [
+    { n: 1, nome: 'Entrada L-N da placa', x: 148, y: 41, bx: 132, by: 96, r: [134, 41], b: [162, 41], instr: 'MULTÍMETRO', lcd: '220 V~', escala: 'V~ (750 V)', vermelho: 'Borne L da placa externa', preto: 'Borne N da placa externa', esperado: '198 a 242 V (220 V ±10% do valor de placa)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)' },
+    { n: 2, nome: 'Barramento P-N do IPM', x: 255, y: 164, bx: 212, by: 182, r: [244, 164], b: [266, 164], instr: 'MULTÍMETRO', lcd: '310 V⎓', escala: 'V CC (1000 V)', vermelho: 'Terminal P do IPM', preto: 'Terminal N do IPM', esperado: 'Cerca de 310 V CC (aparelho 208–230 V); em espera, 290 a 330 V', fonte: 'Manual de serviço Midea Mission II (F20, p. 10 e 97)' },
+    { n: 3, nome: 'Módulo IPM P → U-V-W', x: 310, y: 164, bx: 372, by: 112, r: [244, 164], b: [310, 164], instr: 'MULTÍMETRO', lcd: 'OL MΩ', escala: 'Ω (maior escala)', vermelho: 'P (depois U, V e W)', preto: 'N, U, V e W (depois N)', esperado: 'Desligado e descarregado: infinito (vários MΩ) em todos os pares. Leitura baixa em qualquer par = IPM em curto', fonte: 'Manual de serviço Midea Mission II (F20, p. 85)' },
+  ],
+  passos: [
+    { ponto: 1, titulo: 'Passo 1: Testar Tensão L-N da Placa', como: 'Aparelho energizado. Pontas nos bornes L e N da placa externa.', normal: '220V OK → Ir ao Passo 2', defeito: 'Fora de 198–242 V → Corrigir alimentação', causa: 'Alimentação fora da faixa na entrada da placa', servico: 'fusivel_eletrica', aferidor: 'tensao' },
+    { ponto: 2, titulo: 'Passo 2: Medir Barramento P-N', como: 'Energizado, escala V CC, pontas nos terminais P e N do IPM.', normal: '≈310 V CC OK → Ir ao Passo 3', defeito: 'Fora de 290–330 V → Ponte ou capacitor da placa', causa: 'Barramento CC fora da faixa (ponte retificadora ou capacitores da placa)', servico: 'reparo_placa', aferidor: 'pn' },
+    { ponto: 3, titulo: 'Passo 3: Testar Módulo IPM', como: 'Desligado, capacitores descarregados, conector do compressor solto. Ω: vermelho em P, preto em N, U, V, W; depois vermelho em U, V, W e preto em N.', normal: 'Tudo infinito → Fechar diagnóstico', defeito: 'Leitura baixa em um par → Trocar IPM/placa', causa: 'Módulo IPM em curto', servico: 'reparo_placa', aferidor: 'ipm' },
+  ],
+  erro: 'Trocar a placa inteira (R$ 580 a R$ 1.150 na tabela) só pelo código no visor. O código aponta o circuito, não a peça: meça P-N e o IPM antes de condenar.' },
+
+{ id: '04', area: 'DRENO E CONDENSAÇÃO', titulo: 'Pingando água pela evaporadora', curto: 'Pingando Água / Dreno', blocos: ['b4'], desenho: 'd04', img: '',
+  busca: 'pingando agua vazando goteira dreno bandeja sifao mangueira isolamento suando escorrendo parede',
+  alerta: 'Desligue o disjuntor antes de mexer na bandeja: a água escorre perto da placa e dos bornes da evaporadora.',
+  tempo: '5 min', instr: 'Copo d’água / Nível / Lanterna', calibrar: true,
+  prob: [[70, 'BANDEJA / MANGUEIRA', 1, 'Bandeja'], [20, 'DESNÍVEL / SIFÃO', 2, 'Sifão'], [10, 'ISOLAMENTO', 3, 'Isolamento']],
+  pontos: [
+    { n: 1, nome: 'Bandeja e saída do dreno', x: 250, y: 92, bx: 196, by: 132, r: null, b: null, instr: 'COPO D’ÁGUA', lcd: 'ÁGUA', escala: 'Teste de escoamento', onde: 'Despeje um copo d’água na bandeja e siga com a lanterna até a saída do dreno', esperado: 'Água escoa contínua até a saída, sem voltar nem transbordar; bandeja sem lodo', fonte: 'Manual Midea/Springer Hi Wall (F05) + base de campo GeloPro (PED01)' },
+    { n: 2, nome: 'Caimento e sifão', x: 345, y: 180, bx: 300, by: 226, r: null, b: null, instr: 'NÍVEL', lcd: 'NÍVEL', escala: 'Nível de bolha', onde: 'Nível em cima da evaporadora e olho no trajeto da mangueira', esperado: 'Evaporadora nivelada; mangueira sempre descendo, sem sifão nem barriga', fonte: 'Manual Midea/Springer Hi Wall (F05)' },
+    { n: 3, nome: 'Isolamento da linha', x: 118, y: 170, bx: 160, by: 206, r: null, b: null, instr: 'INSPEÇÃO', lcd: 'SUOR?', escala: 'Visual e tato', onde: 'Passe a mão em cada linha isolada até a parede', esperado: 'Isolamento contínuo em cada linha, sem ponto suando', fonte: 'Manual Midea/Springer Hi Wall (F05)' },
+  ],
+  passos: [
+    { ponto: 1, titulo: 'Passo 1: Testar Escoamento da Bandeja', como: 'Disjuntor desligado. Um copo d’água na bandeja, lanterna na saída do dreno.', normal: 'Escoou → Ir ao Passo 2', defeito: 'Voltou ou transbordou → Desobstruir dreno', causa: 'Bandeja ou mangueira obstruída por lodo', servico: 'dreno_isol', aferidor: 'lista', check: ['Água voltou ou transbordou da bandeja', 'Lodo ou limo na bandeja ou na saída', 'Saída do dreno sem água depois do copo'] },
+    { ponto: 2, titulo: 'Passo 2: Conferir Nível e Sifão', como: 'Nível de bolha em cima da evaporadora; siga o trajeto da mangueira até a saída.', normal: 'Nivelado → Ir ao Passo 3', defeito: 'Desnível ou sifão → Nivelar e refazer caimento', causa: 'Desnível da evaporadora ou sifão na mangueira', servico: 'dreno_isol', aferidor: 'lista', check: ['Bolha fora do centro (caída para o lado errado)', 'Mangueira faz sifão ou barriga', 'Saída do dreno acima de algum trecho da mangueira'] },
+    { ponto: 3, titulo: 'Passo 3: Inspecionar Isolamento', como: 'Aparelho ligado 10 min. Passe a mão em cada linha isolada até a parede.', normal: 'Sem suor → Fechar diagnóstico', defeito: 'Linha suando → Refazer isolamento', causa: 'Isolamento térmico descontínuo condensando água', servico: 'dreno_isol', aferidor: 'lista', check: ['Ponto molhado ou suando na linha', 'Isolamento rasgado, solto ou faltando', 'Água escorrendo pela parede abaixo da linha'] },
+  ],
+  erro: 'Instalar bomba de condensado (R$ 390 a R$ 680) ou mexer no gás quando é lodo na bandeja. Desobstrução com nivelamento e isolamento: R$ 150 a R$ 260.' },
+
+{ id: '05', area: 'PROTEÇÃO ELÉTRICA', titulo: 'Desarmando o disjuntor ao ligar', curto: 'Desarmando Disjuntor', blocos: ['b2', 'b3'], desenho: 'd05', img: '',
+  busca: 'desarmando disjuntor desarma cai a chave cai o disjuntor nao liga curto massa fuga corrente alta',
+  alerta: 'Não rearme o disjuntor várias vezes: meça isolamento e corrente antes de religar.',
+  tempo: '7 min', instr: 'Multímetro / Alicate Amperímetro', calibrar: true,
+  prob: [[70, 'COMPRESSOR EM MASSA', 1, 'Massa'], [20, 'SOBRECORRENTE', 2, 'Corrente'], [10, 'DISJUNTOR / BORNE', 3, 'Disjuntor']],
+  pontos: [
+    { n: 1, nome: 'Pinos C-S-R × carcaça', x: 330, y: 206, bx: 262, by: 232, r: [330, 198], b: [372, 232], instr: 'MULTÍMETRO', lcd: 'OL Ω', escala: 'Ω (maior escala) ou megômetro', vermelho: 'Cada pino C, S e R', preto: 'Carcaça do compressor (metal limpo, sem tinta)', esperado: 'Nenhuma continuidade pino → carcaça (OL em todos)', fonte: 'Manual Electrolux QI/QE (D02): medir isolamento antes de religar' },
+    { n: 2, nome: 'Corrente no cabo de força', x: 206, y: 162, bx: 232, by: 112, r: null, b: null, instr: 'ALICATE', lcd: 'A~', escala: 'A~ (um fio só na garra)', onde: 'Garra em volta de um único fio do cabo de força', esperado: 'Corrente em funcionamento até a corrente nominal da etiqueta do aparelho', fonte: 'Etiqueta do aparelho + Manual Electrolux QI/QE (D02)' },
+    { n: 3, nome: 'Disjuntor e bornes do quadro', x: 160, y: 76, bx: 126, by: 158, r: null, b: null, instr: 'INSPEÇÃO', lcd: 'BORNE', escala: 'Visual + aperto', onde: 'Bornes de entrada e saída do disjuntor e cabo até a condensadora', esperado: 'Disjuntor e bitola do cabo conforme a etiqueta e o manual do aparelho; bornes firmes, sem escurecimento', fonte: 'Manual Electrolux QI/QE (D02)' },
+  ],
+  passos: [
+    { ponto: 1, titulo: 'Passo 1: Medir Isolamento C-S-R → Carcaça', como: 'Disjuntor desligado, fios do compressor soltos. Ω na maior escala entre cada pino e a carcaça.', normal: 'OL em todos → Ir ao Passo 2', defeito: 'Continuidade com a carcaça → Compressor em massa', causa: 'Compressor em massa (fuga para a carcaça)', servico: 'compressor_troca', aferidor: 'massa' },
+    { ponto: 2, titulo: 'Passo 2: Medir Corrente com Alicate', como: 'Religue uma vez já com o alicate num único fio do cabo de força; compare com a etiqueta.', normal: 'Corrente OK → Ir ao Passo 3', defeito: 'Acima da etiqueta → Capacitor ou ventilador', causa: 'Sobrecorrente na partida (capacitor fraco ou ventilador travado)', servico: 'cap_partida', aferidor: 'corrente' },
+    { ponto: 3, titulo: 'Passo 3: Conferir Disjuntor e Bornes', como: 'Disjuntor desligado. Aperto e cor dos bornes, bitola do cabo e corrente do disjuntor contra a etiqueta.', normal: 'Tudo conforme → Fechar diagnóstico', defeito: 'Borne queimado ou disjuntor errado → Refazer proteção', causa: 'Borne aquecido ou disjuntor fora do especificado', servico: 'fusivel_eletrica', aferidor: 'lista', check: ['Borne escurecido, derretido ou frouxo', 'Disjuntor diferente do pedido na etiqueta/manual', 'Cabo mais fino que o pedido no manual'] },
+  ],
+  erro: 'Trocar o disjuntor por um maior para parar de desarmar: o compressor em massa continua lá, o cabo esquenta e a conta volta para você.' },
+
+{ id: '06', area: 'SENSORES', titulo: 'Sensor NTC fora da curva (erro de sensor no visor)', curto: 'Sensores NTC', blocos: ['b6', 'b7', 'b8'], desenho: 'd06', img: '',
+  busca: 'sensor ntc termistor e2 e4 a1 a2 a3 e121 e122 erro sensor tubo ambiente serpentina resistencia kohm 10k 15k 20k',
+  alerta: 'Desligue o disjuntor antes de soltar o conector do sensor da placa.',
+  tempo: '4 min', instr: 'Multímetro (kΩ) / Termômetro', calibrar: true,
+  prob: [[70, 'SENSOR FORA DA CURVA', 1, 'Sensor'], [20, 'CONECTOR / CHICOTE', 2, 'Chicote'], [10, 'ENTRADA DA PLACA', 3, 'Placa']],
+  pontos: [
+    { n: 1, nome: 'Plugue do sensor (solto)', x: 300, y: 126, bx: 252, by: 112, r: [294, 126], b: [306, 126], instr: 'MULTÍMETRO', lcd: '10,0 kΩ', escala: 'kΩ (20 kΩ)', vermelho: 'Pino 1 do plugue do sensor', preto: 'Pino 2 do plugue do sensor', esperado: 'Sensor 10K a 25 °C: Samsung ±2% (F26) · Daikin 9,90 a 10,10 kΩ (F24) · Midea ±3% (F18). Gree: 15K, 20K ou 50K a 25 °C (F01). Em outra temperatura, compare na curva da marca', fonte: 'Manuais de serviço Samsung (F26), Daikin (F24), Midea (F18), Gree (F01)' },
+    { n: 2, nome: 'Chicote do sensor', x: 334, y: 104, bx: 374, by: 124, r: [356, 86], b: [302, 120], instr: 'MULTÍMETRO', lcd: '0,0 Ω', escala: 'Ω (continuidade)', vermelho: 'Fio na saída do sensor', preto: 'O mesmo fio no plugue', esperado: 'Continuidade em cada fio; mexer o chicote não muda a leitura; pinos sem oxidação', fonte: 'Regra de bancada GeloPro' },
+    { n: 3, nome: 'Soquete T2 na placa', x: 206, y: 157, bx: 166, by: 200, r: [198, 157], b: [214, 157], instr: 'MULTÍMETRO', lcd: 'V⎓', escala: 'V CC', vermelho: 'Pino de sinal do soquete T2', preto: 'Pino comum do soquete T2', esperado: 'Tensão de referência presente no soquete com o sensor solto (diferente de zero)', fonte: 'Regra de bancada GeloPro' },
+  ],
+  passos: [
+    { ponto: 1, titulo: 'Passo 1: Medir Resistência do Sensor', como: 'Sensor solto da placa e parado no ar ambiente; termômetro ao lado para saber a temperatura.', normal: 'Na curva → Ir ao Passo 2', defeito: 'Fora da tolerância → Trocar sensor NTC', causa: 'Sensor NTC fora da curva da marca', servico: 'sensor_ntc', aferidor: 'ntc' },
+    { ponto: 2, titulo: 'Passo 2: Testar Chicote e Conector', como: 'Continuidade fio a fio, do sensor ao plugue, mexendo no chicote durante a medição.', normal: 'Contínuo e firme → Ir ao Passo 3', defeito: 'Fio aberto ou oxidado → Refazer conector', causa: 'Chicote ou conector do sensor com mau contato', servico: 'sensor_ntc', aferidor: 'lista', check: ['Leitura muda ao mexer no chicote', 'Fio aberto (OL) em algum trecho', 'Pino oxidado ou solto no plugue'] },
+    { ponto: 3, titulo: 'Passo 3: Conferir Entrada da Placa', como: 'Energizado, sensor solto. V CC entre os pinos do soquete T2.', normal: 'Tensão presente → Fechar diagnóstico', defeito: 'Zero no soquete → Reparar placa', causa: 'Entrada do sensor sem referência na placa', servico: 'reparo_placa', aferidor: 'lista', check: ['0 V entre os pinos do soquete com o sensor solto', 'Trilha ou solda do soquete rachada', 'Soquete solto da placa'] },
+  ],
+  erro: 'Trocar a placa (R$ 580 a R$ 1.150) por erro de sensor. O sensor NTC aferido e trocado sai por R$ 190 a R$ 320 de serviço.' },
+];
+
+// ───────────── Utilidades ─────────────
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (t) => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const norm = (t) => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const brl = (v) => 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const CIRC = ['①', '②', '③'];
+const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const ler = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+
+// ───────────── Desenhos técnicos (SVG, hex cravado) ─────────────
+const T = (x, y, s, o = {}) => `<text x="${x}" y="${y}" font-size="${o.fs || 9}" font-weight="${o.fw || 700}" fill="${o.c || '#0F172A'}" text-anchor="${o.a || 'middle'}" font-family="system-ui,Segoe UI,Roboto,Arial,sans-serif">${s}</text>`;
+const parafuso = (x, y) => `<circle cx="${x}" cy="${y}" r="7" fill="#CBD5E1" stroke="#334155" stroke-width="1.5"/><path d="M${x - 4} ${y}h8M${x} ${y - 4}v8" stroke="#334155" stroke-width="1.5"/>`;
+const aletas = (x1, x2, y1, y2, passo, cor) => { let s = ''; for (let x = x1; x <= x2; x += passo) s += `M${x} ${y1}V${y2}`; return `<path d="${s}" stroke="${cor}" stroke-width="1.2"/>`; };
+const DESENHOS = {
+  d01: () => `
+    <rect x="104" y="12" width="286" height="238" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    ${T(116, 28, 'CONDENSADORA · TAMPA ELÉTRICA ABERTA', { a: 'start', c: '#64748B', fs: 8 })}
+    <path d="M146 73V100H232V140" stroke="#B91C1C" stroke-width="2.4" fill="none"/>
+    <path d="M174 73V88H250V20H301V40" stroke="#1E3A8A" stroke-width="2.4" fill="none"/>
+    <path d="M286 140V172L290 196" stroke="#475569" stroke-width="2.4" fill="none"/>
+    <path d="M316 40V20H340V120" stroke="#0F766E" stroke-width="2.4" fill="none"/>
+    <path d="M300 186V160H232V140" stroke="#B91C1C" stroke-width="2.4" fill="none"/>
+    <rect x="124" y="40" width="100" height="40" rx="5" fill="#E2E8F0" stroke="#334155" stroke-width="1.5"/>
+    ${T(146, 52, 'L', { fs: 8 })}${T(174, 52, 'N', { fs: 8 })}${T(202, 52, 'TERRA', { fs: 6.5 })}
+    ${parafuso(146, 66)}${parafuso(174, 66)}${parafuso(202, 66)}
+    <rect x="266" y="48" width="62" height="92" rx="14" fill="#E5E7EB" stroke="#334155" stroke-width="1.6"/>
+    <ellipse cx="297" cy="50" rx="31" ry="7" fill="#F1F5F9" stroke="#334155" stroke-width="1.4"/>
+    <rect x="282" y="40" width="9" height="9" rx="1.5" fill="#94A3B8" stroke="#334155"/>
+    <rect x="297" y="40" width="9" height="9" rx="1.5" fill="#94A3B8" stroke="#334155"/>
+    <rect x="312" y="40" width="9" height="9" rx="1.5" fill="#94A3B8" stroke="#334155"/>
+    ${T(286, 36, 'HERM', { fs: 7 })}${T(301, 36, 'C', { fs: 8 })}${T(317, 36, 'FAN', { fs: 7 })}
+    ${T(297, 88, 'CAPACITOR', { fs: 8.5 })}${T(297, 100, 'duplo · µF', { fs: 8, fw: 600, c: '#475569' })}
+    <path d="M250 228c0-30 22-50 50-50s50 20 50 50" fill="#64748B" stroke="#334155" stroke-width="1.6"/>
+    <rect x="250" y="226" width="100" height="16" rx="3" fill="#475569" stroke="#334155"/>
+    <circle cx="300" cy="198" r="20" fill="#1F2937" stroke="#0F172A" stroke-width="1.5"/>
+    <circle cx="300" cy="188" r="4.2" fill="#F59E0B"/><circle cx="290" cy="205" r="4.2" fill="#F59E0B"/><circle cx="310" cy="205" r="4.2" fill="#F59E0B"/>
+    ${T(321, 186, 'C', { fs: 8 })}${T(279, 218, 'S', { fs: 8 })}${T(322, 218, 'R', { fs: 8 })}
+    ${T(300, 250, 'COMPRESSOR', { fs: 8, c: '#334155' })}`,
+  d02: () => `
+    <rect x="110" y="22" width="278" height="100" rx="16" fill="#FFFFFF" stroke="#334155" stroke-width="1.6"/>
+    ${T(122, 16, 'EVAPORADORA · TAMPA FRONTAL ABERTA', { a: 'start', c: '#64748B', fs: 8 })}
+    <rect x="124" y="34" width="250" height="48" rx="4" fill="#E0F2FE" stroke="#94A3B8"/>
+    ${aletas(130, 370, 36, 80, 7, '#93C5FD')}
+    <rect x="132" y="36" width="116" height="44" rx="3" fill="#FFFFFF" fill-opacity="0.55" stroke="#64748B" stroke-dasharray="3 2"/>
+    ${T(190, 62, 'FILTRO SUJO', { fs: 8.5, c: '#334155' })}
+    <path d="M262 44l6 6m0-6l-6 6M300 58l6 6m0-6l-6 6M330 42l6 6m0-6l-6 6M352 66l6 6m0-6l-6 6M282 70l6 6m0-6l-6 6" stroke="#FFFFFF" stroke-width="2"/>
+    <rect x="150" y="88" width="210" height="16" rx="8" fill="#E2E8F0" stroke="#64748B"/>
+    ${aletas(158, 352, 90, 102, 6, '#94A3B8')}
+    ${T(255, 99, 'TURBINA', { fs: 7, c: '#334155' })}
+    <path d="M130 114H370" stroke="#CBD5E1" stroke-width="3" stroke-dasharray="10 4"/>
+    <path d="M388 60H396V200H388" stroke="#93C5FD" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M388 80H392V180" stroke="#B45309" stroke-width="3.5" fill="none"/>
+    <path d="M393 120l-4 4m4 10l-4 4m4 12l-4 4" stroke="#FFFFFF" stroke-width="1.6"/>
+    <rect x="250" y="168" width="124" height="80" rx="9" fill="#F1F5F9" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="302" cy="208" r="28" fill="#E2E8F0" stroke="#64748B"/><path d="M302 208l20-10M302 208l-10 20M302 208l-12-18" stroke="#475569" stroke-width="3" stroke-linecap="round"/>
+    <rect x="370" y="190" width="18" height="18" rx="3" fill="#94A3B8" stroke="#334155"/>
+    ${T(312, 244, 'CONDENSADORA', { fs: 7.5, c: '#334155' })}${T(342, 186, 'VÁLV. SUCÇÃO', { fs: 6.5, c: '#334155' })}`,
+  d03: () => `
+    <rect x="108" y="16" width="282" height="178" rx="8" fill="#14532D" stroke="#052E16" stroke-width="2"/>
+    <path d="M178 41H200M230 45H250M276 52H300V110M200 70V120H230M150 54V140" stroke="#22C55E" stroke-opacity="0.45" stroke-width="2" fill="none"/>
+    ${T(118, 190, 'PLACA INVERTER · CONDENSADORA', { a: 'start', c: '#86EFAC', fs: 7.5 })}
+    <rect x="118" y="28" width="60" height="26" rx="4" fill="#E2E8F0" stroke="#334155"/>
+    ${parafuso(134, 41)}${parafuso(162, 41)}${T(134, 66, 'L', { c: '#FFFFFF' })}${T(162, 66, 'N', { c: '#FFFFFF' })}
+    <rect x="200" y="28" width="30" height="30" rx="3" fill="#111827" stroke="#0F172A"/>${T(215, 47, '~ ±', { c: '#E5E7EB', fs: 8 })}
+    <rect x="250" y="24" width="26" height="58" rx="5" fill="#1E3A8A" stroke="#0F172A"/><rect x="282" y="24" width="26" height="58" rx="5" fill="#1E3A8A" stroke="#0F172A"/>
+    ${T(263, 56, '+', { c: '#FFFFFF', fs: 12 })}${T(295, 56, '−', { c: '#FFFFFF', fs: 12 })}
+    <rect x="320" y="28" width="56" height="34" rx="3" fill="#0F172A"/>${T(348, 49, 'MCU', { c: '#94A3B8', fs: 8 })}
+    <rect x="226" y="108" width="136" height="48" rx="3" fill="#0F172A" stroke="#334155"/>${T(294, 136, 'MÓDULO IPM', { c: '#E5E7EB', fs: 9 })}
+    <rect x="240" y="156" width="8" height="12" fill="#CBD5E1"/><rect x="262" y="156" width="8" height="12" fill="#CBD5E1"/><rect x="284" y="156" width="8" height="12" fill="#CBD5E1"/><rect x="306" y="156" width="8" height="12" fill="#CBD5E1"/><rect x="328" y="156" width="8" height="12" fill="#CBD5E1"/>
+    ${T(244, 180, 'P', { c: '#FFFFFF' })}${T(266, 180, 'N', { c: '#FFFFFF' })}${T(288, 180, 'U', { c: '#FFFFFF' })}${T(310, 180, 'V', { c: '#FFFFFF' })}${T(332, 180, 'W', { c: '#FFFFFF' })}
+    <rect x="126" y="146" width="44" height="24" rx="3" fill="#111827" stroke="#334155"/>${T(148, 163, 'E1', { c: '#EF4444', fs: 14, fw: 900 })}
+    <path d="M288 168V200C288 214 300 216 312 216M310 168V206C310 214 316 222 330 222M332 168V196C332 206 346 210 352 214" stroke="#F59E0B" stroke-width="2" fill="none"/>
+    <ellipse cx="350" cy="232" rx="38" ry="20" fill="#64748B" stroke="#334155"/>${T(350, 236, 'COMPRESSOR', { c: '#FFFFFF', fs: 7 })}`,
+  d04: () => `
+    <rect x="104" y="10" width="286" height="242" rx="8" fill="#F1F5F9" stroke="#E2E8F0"/>
+    ${T(386, 248, 'PAREDE', { a: 'end', c: '#94A3B8', fs: 7.5 })}
+    <rect x="216" y="12" width="64" height="12" rx="6" fill="#FEF3C7" stroke="#B45309"/><circle cx="256" cy="18" r="4" fill="#84CC16" stroke="#3F6212"/><path d="M244 12v12M252 12v12" stroke="#B45309" stroke-width="0.8"/>
+    <rect x="130" y="28" width="232" height="70" rx="16" fill="#FFFFFF" stroke="#334155" stroke-width="1.6"/>
+    ${T(246, 56, 'EVAPORADORA', { fs: 9, c: '#334155' })}
+    <rect x="150" y="84" width="196" height="12" rx="3" fill="#A7F3D0" stroke="#047857"/>
+    <circle cx="190" cy="90" r="3" fill="#3F6212"/><circle cx="214" cy="89" r="2.4" fill="#3F6212"/><circle cx="262" cy="91" r="3.2" fill="#3F6212"/><circle cx="300" cy="89" r="2.2" fill="#3F6212"/>
+    ${T(214, 82, 'BANDEJA COM LODO', { fs: 7, c: '#047857' })}
+    <path d="M152 104q-3 6 0 8q3-2 0-8M146 122q-3 6 0 8q3-2 0-8M156 140q-3 6 0 8q3-2 0-8" fill="#3B82F6"/>
+    <path d="M346 96C350 136 326 146 328 168C330 196 362 196 362 170C362 156 372 196 374 248" stroke="#64748B" stroke-width="5" fill="none" stroke-linecap="round"/>
+    ${T(318, 196, 'SIFÃO', { fs: 7.5, c: '#B91C1C' })}
+    <rect x="110" y="70" width="14" height="182" rx="6" fill="#E5E7EB" stroke="#94A3B8"/><path d="M117 70H134" stroke="#94A3B8" stroke-width="6"/>
+    <rect x="109" y="156" width="16" height="26" fill="#475569"/><path d="M117 160V178" stroke="#B45309" stroke-width="4"/>
+    <circle cx="128" cy="168" r="2" fill="#3B82F6"/><circle cx="130" cy="176" r="1.6" fill="#3B82F6"/><circle cx="127" cy="186" r="2" fill="#3B82F6"/>
+    ${T(136, 248, 'LINHA ISOLADA', { a: 'start', c: '#334155', fs: 7 })}`,
+  d05: () => `
+    <rect x="110" y="20" width="100" height="122" rx="6" fill="#E5E7EB" stroke="#334155" stroke-width="1.5"/>
+    ${T(160, 34, 'QUADRO', { fs: 8, c: '#334155' })}
+    <rect x="135" y="40" width="50" height="72" rx="4" fill="#FFFFFF" stroke="#334155"/>
+    ${parafuso(160, 48)}${parafuso(160, 104)}
+    <rect x="150" y="66" width="20" height="22" rx="3" fill="#DC2626" stroke="#7F1D1D"/>${T(160, 125, 'DESARMOU', { fs: 7, c: '#B91C1C' })}
+    <path d="M160 111V160H250V196" stroke="#1F2937" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <circle cx="206" cy="160" r="15" fill="none" stroke="#F59E0B" stroke-width="6"/><rect x="196" y="174" width="20" height="34" rx="4" fill="#F59E0B" stroke="#B45309"/>${T(206, 194, 'A', { fs: 10, c: '#0F172A' })}
+    <rect x="240" y="150" width="148" height="98" rx="8" fill="#F1F5F9" stroke="#334155" stroke-width="1.5"/>
+    ${T(252, 164, 'CONDENSADORA', { a: 'start', c: '#64748B', fs: 7.5 })}
+    <path d="M286 244c0-26 20-44 44-44s44 18 44 44" fill="#64748B" stroke="#334155"/>
+    <circle cx="330" cy="206" r="16" fill="#1F2937"/>
+    <circle cx="330" cy="198" r="3.6" fill="#F59E0B"/><circle cx="322" cy="212" r="3.6" fill="#F59E0B"/><circle cx="338" cy="212" r="3.6" fill="#F59E0B"/>
+    <path d="M366 226h12m-9 4h6m-4 4h2" stroke="#334155" stroke-width="1.6"/>${T(372, 222, 'CARCAÇA', { fs: 6.5, c: '#334155' })}`,
+  d06: () => `
+    <rect x="112" y="16" width="276" height="76" rx="12" fill="#FFFFFF" stroke="#334155" stroke-width="1.5"/>
+    ${T(122, 30, 'EVAPORADORA · SERPENTINA', { a: 'start', c: '#64748B', fs: 7.5 })}
+    <rect x="124" y="36" width="230" height="44" rx="3" fill="#E0F2FE" stroke="#94A3B8"/>${aletas(130, 350, 38, 78, 7, '#93C5FD')}
+    <path d="M354 44C376 44 376 78 354 78" stroke="#B45309" stroke-width="4" fill="none"/>
+    <rect x="364" y="70" width="18" height="9" rx="4" fill="#1F2937"/><path d="M368 70v9M372 70v9" stroke="#F59E0B" stroke-width="1.2"/>
+    ${T(372, 100, 'SENSOR T2', { fs: 7, c: '#334155' })}
+    <path d="M370 79C366 100 330 104 302 120" stroke="#0EA5E9" stroke-width="2.2" fill="none"/><path d="M376 79C372 104 334 110 306 122" stroke="#64748B" stroke-width="2.2" fill="none"/>
+    <rect x="288" y="120" width="24" height="12" rx="3" fill="#F8FAFC" stroke="#334155"/>${T(300, 144, 'PLUGUE SOLTO', { fs: 6.5, c: '#334155' })}
+    <rect x="150" y="146" width="238" height="102" rx="6" fill="#14532D" stroke="#052E16" stroke-width="2"/>
+    <rect x="188" y="150" width="36" height="14" rx="2" fill="#F8FAFC" stroke="#334155"/><circle cx="198" cy="157" r="2.6" fill="#B45309"/><circle cx="214" cy="157" r="2.6" fill="#B45309"/>
+    ${T(206, 176, 'T2', { c: '#FFFFFF', fs: 8 })}
+    <rect x="236" y="150" width="36" height="14" rx="2" fill="#F8FAFC" stroke="#334155"/>${T(254, 176, 'T1', { c: '#FFFFFF', fs: 8 })}
+    <rect x="290" y="186" width="70" height="40" rx="3" fill="#0F172A"/>${T(325, 210, 'MCU', { c: '#94A3B8', fs: 8 })}
+    <path d="M206 164V196H290M254 164V186" stroke="#22C55E" stroke-opacity="0.45" stroke-width="2" fill="none"/>
+    ${T(160, 242, 'PLACA DA EVAPORADORA', { a: 'start', c: '#86EFAC', fs: 7 })}`,
+};
+// Instrumento (lado esquerdo do quadro): visor muda com o ponto escolhido.
+const INSTR_X = { com: [34, 238], v: [70, 238] };
+function instrumento(uid) {
+  return `<g>
+    <rect x="10" y="116" width="84" height="138" rx="12" fill="#F5B800" stroke="#B45309" stroke-width="1.5"/>
+    <rect x="16" y="122" width="72" height="126" rx="9" fill="#1F2937"/>
+    <rect x="22" y="128" width="60" height="30" rx="4" fill="#C7F0D2" stroke="#0F172A"/>
+    <text id="${uid}-lcd" x="52" y="149" font-size="13" font-weight="800" fill="#0F172A" text-anchor="middle" font-family="ui-monospace,Menlo,Consolas,monospace">---</text>
+    <text id="${uid}-instr" x="52" y="172" font-size="7" font-weight="800" fill="#F5B800" text-anchor="middle" font-family="system-ui,Arial,sans-serif">MULTÍMETRO</text>
+    <circle cx="52" cy="200" r="16" fill="#334155" stroke="#0F172A"/><path d="M52 200l9-9" stroke="#F8FAFC" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="34" cy="238" r="6" fill="#0F172A" stroke="#F8FAFC" stroke-width="1.5"/><circle cx="70" cy="238" r="6" fill="#DC2626" stroke="#F8FAFC" stroke-width="1.5"/>
+    <text x="34" y="228" font-size="6" font-weight="800" fill="#E5E7EB" text-anchor="middle" font-family="system-ui,Arial,sans-serif">COM</text>
+    <text x="70" y="228" font-size="6" font-weight="800" fill="#E5E7EB" text-anchor="middle" font-family="system-ui,Arial,sans-serif">VΩ</text>
+  </g>`;
+}
+const caminhoSonda = (j, t) => `M${j[0]} ${j[1]}C${j[0]} ${j[1] + 26} ${t[0] - 60} ${Math.max(t[1], 200) + 40} ${t[0]} ${t[1]}`;
+const REPOUSO = { r: [112, 226], b: [108, 244] };
+
+function svgPrancha(p, uid, mini) {
+  const fundo = p.img ? `<image href="${esc(p.img)}" x="0" y="0" width="400" height="260" preserveAspectRatio="xMidYMid slice"/>` : DESENHOS[p.desenho]();
+  let s = `<svg class="${mini ? '' : 'esq'}" viewBox="${mini ? '100 0 300 260' : '0 0 400 260'}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Esquema técnico: ${esc(p.titulo)}" id="${uid}-svg">
+    <defs><filter id="${uid}-brilho" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+    <rect x="0" y="0" width="400" height="260" fill="#F8FAFC"/>${fundo}`;
+  if (!mini) {
+    s += instrumento(uid);
+    s += `<path id="${uid}-sb" class="sonda" d="${caminhoSonda(INSTR_X.com, REPOUSO.b)}" stroke="#111827" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path id="${uid}-sr" class="sonda" d="${caminhoSonda(INSTR_X.v, REPOUSO.r)}" stroke="#DC2626" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <g id="${uid}-pb" class="ponta" style="transform:translate(${REPOUSO.b[0]}px,${REPOUSO.b[1]}px)"><circle r="4.5" fill="#111827" stroke="#FFFFFF" stroke-width="1.5"/></g>
+      <g id="${uid}-pr" class="ponta" style="transform:translate(${REPOUSO.r[0]}px,${REPOUSO.r[1]}px)"><circle r="4.5" fill="#DC2626" stroke="#FFFFFF" stroke-width="1.5"/></g>`;
+  }
+  p.pontos.forEach(pt => {
+    if (!mini) s += `<g class="lupa" data-n="${pt.n}" role="button" tabindex="0" aria-label="Lupa no ponto ${pt.n}: ${esc(pt.nome)}">
+        <circle class="vidro" cx="${pt.x}" cy="${pt.y}" r="17" fill="#FFFFFF" fill-opacity="0.08" stroke="#0EA5E9" stroke-width="2" stroke-dasharray="4 3"/>
+        <path d="M${pt.x + 12} ${pt.y + 12}l8 8" stroke="#0EA5E9" stroke-width="3.5" stroke-linecap="round"/></g>`;
+    s += `<path d="M${pt.bx} ${pt.by}L${pt.x} ${pt.y}" stroke="#091E42" stroke-width="1.2" stroke-dasharray="2 2"/>
+      <g class="ponto" data-n="${pt.n}" ${mini ? '' : `role="button" tabindex="0" aria-label="Ponto ${pt.n}: ${esc(pt.nome)}"`}>
+        <circle class="halo" cx="${pt.bx}" cy="${pt.by}" r="17" fill="#F59E0B" fill-opacity="0.35" filter="url(#${uid}-brilho)"/>
+        ${mini ? '' : `<circle class="pulso" cx="${pt.bx}" cy="${pt.by}" r="10" fill="none" stroke="#F59E0B" stroke-width="2.5"/>`}
+        <circle cx="${pt.bx}" cy="${pt.by}" r="10" fill="#091E42" stroke="#F59E0B" stroke-width="2"/>
+        <text x="${pt.bx}" y="${pt.by + 4}" font-size="11" font-weight="900" fill="#FFFFFF" text-anchor="middle" font-family="system-ui,Arial,sans-serif">${pt.n}</text></g>`;
+  });
+  return s + '</svg>';
+}
+
+// ───────────── Prancha Interativa Viva ─────────────
+let UID = 0;
+function montarPrancha(alvo, idx) {
+  const p = P[idx], uid = 'pr' + (++UID);
+  const estado = { passos: p.passos.map(() => 'pend'), foco: 0, ponto: 0 };
+  alvo.innerHTML = `<article class="prancha" data-prancha="${p.id}" ${p.calibrar ? 'data-calibrar="1"' : ''}>
+    <div class="p-cab">
+      <div class="p-etq">DIAGNÓSTICO #${p.id} · ${p.area}</div>
+      <h2>${esc(p.titulo)}</h2>
+    </div>
+    <div class="p-folha">
+      <div class="p-alerta"><span aria-hidden="true">⚡</span><span><b>Segurança:</b> ${esc(p.alerta)}</span></div>
+      <div class="p-sec">
+        <div class="p-tit">Onde está o defeito <em>Toque na barra: o desenho mostra o ponto</em></div>
+        <div class="prob">${p.prob.map((b, i) => `<button data-ponto="${b[2]}" aria-label="${b[0]}% ${esc(b[1])}: ver ponto ${b[2]}">
+          <span class="pct" style="color:${COR_PROB[i]}">${b[0]}%</span>
+          <span class="lado"><span class="nome">${esc(b[1])} <small>${CIRC[b[2] - 1]} Passo ${p.passos.findIndex(s => s.ponto === b[2]) + 1}</small></span><span class="trilho"><i style="width:${b[0]}%;background:${COR_PROB[i]}"></i></span></span></button>`).join('')}</div>
+      </div>
+      <figure class="quadro" data-img-slot="prancha-${p.id}">
+        ${svgPrancha(p, uid, false)}
+        <span class="dica">Toque nos números ①②③ ou nas lupas</span>
+        <button class="ver-tudo">⤢ Esquema inteiro</button>
+      </figure>
+      <div class="zoom-info" aria-live="polite"></div>
+      <div class="p-sec">
+        <div class="p-tit">Passo a passo · se der isso, faz aquilo <em>${esc(p.instr)} · ⚡ ${p.tempo}</em></div>
+        <div class="passos">${p.passos.map((s, i) => {
+          const pt = p.pontos[s.ponto - 1];
+          return `<section class="passo${i === 0 ? ' foco' : ''}" data-i="${i}">
+            <div class="topo"><span class="bol">${i + 1}</span><h6>${esc(s.titulo)}</h6></div>
+            <p>${esc(s.como)}</p>
+            <div class="ref">Normal: <b>${esc(pt.esperado)}</b></div>
+            <button class="ver" data-ponto="${s.ponto}">${CIRC[s.ponto - 1]} Ver onde encostar as pontas ›</button>
+            <div class="dupla">
+              <button class="btn-ok">✓ DEU NORMAL<small>(${esc(s.normal)})</small></button>
+              <button class="btn-def">✗ DEU DEFEITO<small>(${esc(s.defeito)})</small></button>
+            </div></section>`;
+        }).join('')}</div>
+      </div>
+      <div class="erro-caro"><b>🛑 ERRO CARO A EVITAR</b>${esc(p.erro)}</div>
+      <div class="bonus-barra">
+        <div class="p-tit">6 Bônus Exclusivos do Plano Completo</div>
+        <div class="bonus-chips">${BONUS.map((b, i) => `<button class="bonus-chip" data-b="${i}"><span class="ic">${i + 1}</span><span>${esc(b[1])}</span></button>`).join('')}</div>
+      </div>
+    </div></article>`;
+
+  const svg = $('#' + uid + '-svg', alvo), quadro = $('.quadro', alvo), info = $('.zoom-info', alvo);
+  let vb = [0, 0, 400, 260], anim = 0;
+  const animarVB = (alvoVB) => {
+    cancelAnimationFrame(anim);
+    const de = vb.slice(), t0 = performance.now(), dur = 520;
+    const passo = (t) => {
+      const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      vb = de.map((v, i) => v + (alvoVB[i] - v) * e);
+      svg.setAttribute('viewBox', vb.map(v => v.toFixed(1)).join(' '));
+      if (k < 1) anim = requestAnimationFrame(passo);
+    };
+    anim = requestAnimationFrame(passo);
+  };
+  const moverPonta = (cor, alvoXY) => {
+    const j = cor === 'r' ? INSTR_X.v : INSTR_X.com;
+    $('#' + uid + '-s' + cor, alvo).setAttribute('d', caminhoSonda(j, alvoXY));
+    $('#' + uid + '-p' + cor, alvo).style.transform = `translate(${alvoXY[0]}px,${alvoXY[1]}px)`;
+  };
+  const selecionar = (n) => {
+    const pt = p.pontos[n - 1]; estado.ponto = n;
+    $$('.ponto,.lupa', svg).forEach(g => g.classList.toggle('sel', +g.dataset.n === n));
+    $$('.prob button', alvo).forEach(b => b.classList.toggle('ativo', +b.dataset.ponto === n));
+    moverPonta('r', pt.r || REPOUSO.r); moverPonta('b', pt.b || REPOUSO.b);
+    $('#' + uid + '-lcd', alvo).textContent = pt.lcd;
+    $('#' + uid + '-instr', alvo).textContent = pt.instr;
+    // Zoom real no ponto: janela 200×130 (mesma proporção) centrada no alvo, sem sair do quadro.
+    const w = 200, h = 130, xs = [pt.x, pt.bx, ...(pt.r ? [pt.r[0], pt.b[0]] : [])], ys = [pt.y, pt.by, ...(pt.r ? [pt.r[1], pt.b[1]] : [])];
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    animarVB([Math.max(0, Math.min(400 - w, cx - w / 2)), Math.max(0, Math.min(260 - h, cy - h / 2)), w, h]);
+    quadro.classList.add('zoom');
+    const iPasso = p.passos.findIndex(s => s.ponto === n);
+    info.innerHTML = `<h5><span class="bol">${n}</span>${esc(pt.nome)} <span style="font-weight:600;color:#94A3B8;font-size:12px">· ${esc(pt.escala)}</span></h5>
+      <dl>${pt.r ? `<dt style="color:#F87171">● VERMELHA</dt><dd>${esc(pt.vermelho)}</dd><dt style="color:#E5E7EB">● PRETA</dt><dd>${esc(pt.preto)}</dd>` : `<dt style="color:#67C6FF">Onde</dt><dd>${esc(pt.onde)}</dd>`}</dl>
+      <div class="esperado">Valor esperado: ${esc(pt.esperado)}</div>
+      <div class="fonte">Fonte: ${esc(pt.fonte)}</div>
+      <button class="ir" data-passo="${iPasso}">Ir ao Passo ${iPasso + 1} ↓</button>`;
+    info.classList.add('on');
+  };
+  const verTudo = () => {
+    animarVB([0, 0, 400, 260]); quadro.classList.remove('zoom'); info.classList.remove('on');
+    $$('.ponto,.lupa', svg).forEach(g => g.classList.remove('sel')); $$('.prob button', alvo).forEach(b => b.classList.remove('ativo'));
+    moverPonta('r', REPOUSO.r); moverPonta('b', REPOUSO.b); $('#' + uid + '-lcd', alvo).textContent = '---';
+  };
+  const destacarPasso = (i, rolar) => {
+    estado.foco = i;
+    $$('.passo', alvo).forEach((c, k) => c.classList.toggle('foco', k === i));
+    const c = $$('.passo', alvo)[i]; if (!c) return;
+    c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash');
+    if (rolar) setTimeout(() => c.scrollIntoView({ behavior: 'smooth', block: 'center' }), 650);
+  };
+  const marcar = (i, st) => {
+    estado.passos[i] = st;
+    const c = $$('.passo', alvo)[i]; c.classList.remove('ok', 'def'); c.classList.add(st === 'ok' ? 'ok' : 'def');
+    $('.bol', c).textContent = st === 'ok' ? '✓' : '✗';
+  };
+
+  $$('.ponto,.lupa', svg).forEach(g => {
+    g.addEventListener('click', () => selecionar(+g.dataset.n));
+    g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selecionar(+g.dataset.n); } });
+  });
+  $$('.prob button', alvo).forEach(b => b.addEventListener('click', () => {
+    const n = +b.dataset.ponto; selecionar(n); destacarPasso(p.passos.findIndex(s => s.ponto === n), true);
+  }));
+  $('.ver-tudo', alvo).addEventListener('click', verTudo);
+  info.addEventListener('click', (e) => { const b = e.target.closest('.ir'); if (b) destacarPasso(+b.dataset.passo, true); });
+  $$('.passo', alvo).forEach((c, i) => {
+    const s = p.passos[i];
+    $('.ver', c).addEventListener('click', () => { selecionar(s.ponto); destacarPasso(i, false); quadro.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    $('.btn-ok', c).addEventListener('click', () => {
+      marcar(i, 'ok');
+      if (i + 1 < p.passos.length) { destacarPasso(i + 1, true); selecionar(p.passos[i + 1].ponto); }
+      else abrirFim(p, estado);
+    });
+    $('.btn-def', c).addEventListener('click', () => { marcar(i, 'def'); destacarPasso(i, false); abrirCausa(p, i); });
+  });
+  $$('.bonus-chip', alvo).forEach(b => b.addEventListener('click', () => abrirBonus(+b.dataset.b, p)));
+  return { selecionar, verTudo };
+}
+
+// ───────────── Modal ─────────────
+const modal = $('#modal'), mFundo = $('#modal-fundo');
+function abrirModal(html, depois) {
+  modal.innerHTML = `<div class="alca"></div><button class="fechar" aria-label="Fechar">×</button>${html}`;
+  modal.classList.add('aberto'); mFundo.classList.add('aberto'); modal.scrollTop = 0;
+  $('.fechar', modal).addEventListener('click', fecharModal);
+  if (depois) depois(modal);
+}
+function fecharModal() { modal.classList.remove('aberto'); mFundo.classList.remove('aberto'); }
+mFundo.addEventListener('click', fecharModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { if (modal.classList.contains('aberto')) fecharModal(); else if (gaveta.classList.contains('aberta')) fecharGaveta(); else if (folha.classList.contains('aberta')) fecharFolha(); } });
+
+const blocoServico = (id) => {
+  const s = PRECOS[id];
+  return `<div class="servico"><b>${esc(s[0])}</b><div class="faixa"><span>Faixa: ${brl(s[1])} a ${brl(s[3])}</span><span>Típico: ${brl(s[2])}</span></div><div class="ref">Tabela de preços GeloPro 2026 · referência de campo</div></div>`;
+};
+function abrirCausa(p, i) {
+  const s = p.passos[i];
+  abrirModal(`<h3>Causa Confirmada</h3>
+    <div class="confirmada"><div class="k">DIAGNÓSTICO #${p.id} · PASSO ${i + 1}</div><div class="v">${esc(s.causa)}</div></div>
+    ${blocoServico(s.servico)}
+    <div class="pilha">
+      <button class="btn verde cheio" data-acao="orc">📄 Gerar Orçamento PDF Nº 1001 com Pix</button>
+      <button class="btn marinho cheio" data-acao="afer">🧮 Abrir Aferidor Vivo deste componente</button>
+      <button class="btn claro cheio" data-acao="voltar">Voltar à prancha</button>
+    </div>`, (m) => {
+    $('[data-acao=orc]', m).addEventListener('click', () => abrirOrcamento(s.servico, p));
+    $('[data-acao=afer]', m).addEventListener('click', () => abrirAferidor(p, i));
+    $('[data-acao=voltar]', m).addEventListener('click', fecharModal);
+  });
+}
+function abrirFim(p) {
+  const prox = P[(P.findIndex(x => x.id === p.id) + 1) % P.length];
+  abrirModal(`<h3>Os 3 pontos deram normal</h3>
+    <div class="sub">A prancha #${p.id} descartou as 3 causas mais frequentes. Feche a visita com o diagnóstico instrumentado e siga para o sintoma vizinho.</div>
+    ${blocoServico('visita_diag')}
+    <div class="pilha">
+      <button class="btn verde cheio" data-acao="orc">📄 Gerar Orçamento PDF Nº 1001 com Pix</button>
+      <button class="btn marinho cheio" data-acao="prox">Abrir Prancha #${prox.id}: ${esc(prox.curto)} ›</button>
+      <button class="btn claro cheio" data-acao="cod">Conferir Códigos de Erro (Bônus 2)</button>
+    </div>`, (m) => {
+    $('[data-acao=orc]', m).addEventListener('click', () => abrirOrcamento('visita_diag', p));
+    $('[data-acao=prox]', m).addEventListener('click', () => { fecharModal(); irPara(P.indexOf(prox)); });
+    $('[data-acao=cod]', m).addEventListener('click', () => abrirBonus(1, p));
+  });
+}
+
+// ───────────── Aferidores vivos ─────────────
+// Cada um: campos + cálculo → veredito (ok / def / neutro). Faixas com fonte: tensão ±10% e SH/ΔT (F14 Elgin), P-N (F20 Midea), NTC (F18/F24/F26), capacitor −5% (regra do Pedro).
+const NTC_OPS = [['Samsung 10K (±2%)', 10, 2], ['Midea/Springer/Carrier 10K (±3%)', 10, 3], ['Daikin 10K (9,90 a 10,10 kΩ)', 10, 1]];
+const AFERIDORES = {
+  tensao: { tit: 'Aferidor de Tensão L-N', campos: [['nom', 'Tensão de placa do aparelho', 'sel', [['220', '220 V'], ['127', '127 V']]], ['med', 'Tensão medida (V)', 'num']],
+    calc: (v) => { const n = +v.nom, m = +v.med; if (!m) return null; const lo = n * 0.9, hi = n * 1.1; return { ok: m >= lo && m <= hi, txt: `Faixa: ${lo.toFixed(0)} a ${hi.toFixed(0)} V (±10% da placa, F14)` }; } },
+  cap: { tit: 'Aferidor de Capacitor (µF)', campos: [['nom', 'µF da etiqueta', 'num'], ['med', 'µF medido', 'num']],
+    calc: (v) => { const n = +v.nom, m = +v.med; if (!n || !m) return null; const lim = n * 0.95, d = (m - n) / n * 100; return { ok: m >= lim, txt: `Mínimo aceito: ${lim.toFixed(1)} µF (−5% da etiqueta) · desvio medido ${d.toFixed(1)}%` }; } },
+  csr: { tit: 'Aferidor do Compressor C-S-R', campos: [['cs', 'C-S (Ω)', 'num'], ['cr', 'C-R (Ω)', 'num'], ['sr', 'S-R (Ω)', 'num'], ['massa', 'Algum pino tem continuidade com a carcaça', 'chk']],
+    calc: (v) => { if (v.massa) return { ok: false, txt: 'Compressor em massa: condenar com laudo' }; const cs = +v.cs, cr = +v.cr, sr = +v.sr; if (!cs || !cr || !sr) return null; return { ok: null, txt: `C-S + C-R = ${(cs + cr).toFixed(2)} Ω · S-R medido = ${sr.toFixed(2)} Ω. Bateu a soma e sem massa: enrolamentos íntegros. Compare com a tabela do compressor.` }; } },
+  deltat: { tit: 'Aferidor ΔT Retorno × Insuflamento', campos: [['ret', 'Retorno (°C)', 'num'], ['ins', 'Insuflamento (°C)', 'num']],
+    calc: (v) => { if (v.ret === '' || v.ins === '') return null; const d = +v.ret - +v.ins; return { ok: d >= 10 && d <= 15, txt: `ΔT = ${d.toFixed(1)} °C · faixa 10 a 15 °C (F14). Acima de 15 °C: pouca vazão de ar (filtro, serpentina, turbina). Abaixo de 10 °C: pouca troca (fluido ou serpentina congelada).` }; } },
+  sh: { tit: 'Aferidor de Superaquecimento (R-410A)', campos: [['tsuc', 'Temperatura do tubo de sucção (°C)', 'num'], ['tev', 'Temperatura de evaporação pela pressão (°C)', 'num']],
+    calc: (v) => { if (v.tsuc === '' || v.tev === '') return null; const sh = +v.tsuc - +v.tev; return { ok: sh >= 7 && sh <= 11, txt: `SH = ${sh.toFixed(1)} °C · faixa 7 a 11 °C (F14). Acima de 11 °C: adicionar fluido na fase líquida. Abaixo de 7 °C: recolher fluido.` }; } },
+  pn: { tit: 'Aferidor do Barramento P-N', campos: [['med', 'Tensão P-N medida (V CC)', 'num']],
+    calc: (v) => { const m = +v.med; if (!m) return null; return { ok: m >= 290 && m <= 330, txt: 'Faixa em espera: 290 a 330 V CC; cerca de 310 V CC em 208–230 V (F20)' }; } },
+  ipm: { tit: 'Aferidor do Módulo IPM', campos: ['P → N', 'P → U', 'P → V', 'P → W', 'U → N', 'V → N', 'W → N'].map((k, i) => ['p' + i, `${k}: leitura baixa (não deu infinito)`, 'chk']),
+    calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? `${r} par(es) com leitura baixa: IPM em curto (F20 p. 85)` : 'Todos os pares em infinito: IPM sem curto (F20 p. 85)' }; } },
+  ntc: { tit: 'Aferidor de Sensor NTC (a 25 °C)', campos: [['tipo', 'Sensor', 'sel', NTC_OPS.map((o, i) => [String(i), o[0]])], ['med', 'Resistência medida a 25 °C (kΩ)', 'num']],
+    calc: (v) => { const o = NTC_OPS[+v.tipo], m = +v.med; if (!m) return null; const lo = o[1] * (1 - o[2] / 100), hi = o[1] * (1 + o[2] / 100); return { ok: m >= lo && m <= hi, txt: `Faixa a 25 °C: ${lo.toFixed(2).replace('.', ',')} a ${hi.toFixed(2).replace('.', ',')} kΩ. Em outra temperatura, compare na curva da marca (ferramenta Sensor NTC do app).` }; } },
+  massa: { tit: 'Aferidor de Isolamento C-S-R → Carcaça', campos: ['C', 'S', 'R'].map(k => ['m' + k, `Pino ${k} tem continuidade com a carcaça`, 'chk']),
+    calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? 'Compressor em massa: não religar, condenar com laudo' : 'Sem fuga para a carcaça: siga para a corrente (Passo 2)' }; } },
+  corrente: { tit: 'Aferidor de Corrente (alicate)', campos: [['nom', 'Corrente nominal da etiqueta (A)', 'num'], ['med', 'Corrente medida (A)', 'num']],
+    calc: (v) => { const n = +v.nom, m = +v.med; if (!n || !m) return null; return { ok: m <= n, txt: `Medido ${m.toFixed(1)} A · etiqueta ${n.toFixed(1)} A${m > n ? ` · ${((m / n - 1) * 100).toFixed(0)}% acima` : ''}` }; } },
+  lista: { tit: 'Checklist do ponto', campos: [], calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? `${r} sinal(is) de defeito confirmado(s)` : 'Nenhum sinal de defeito marcado' }; } },
+};
+function abrirAferidor(p, i) {
+  const s = p.passos[i], a = AFERIDORES[s.aferidor];
+  const campos = s.aferidor === 'lista' ? s.check.map((t, k) => ['c' + k, t, 'chk']) : a.campos;
+  const html = campos.map(([id, rot, tipo, ops]) => tipo === 'chk' ? `<label class="chk"><input type="checkbox" data-id="${id}"> ${esc(rot)}</label>`
+    : tipo === 'sel' ? `<label>${esc(rot)}<select data-id="${id}">${ops.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('')}</select></label>`
+    : `<label>${esc(rot)}<input type="number" inputmode="decimal" step="any" data-id="${id}"></label>`).join('');
+  abrirModal(`<h3>🧮 ${esc(a.tit)}</h3><div class="sub">Prancha #${p.id} · ${esc(s.titulo)}</div>
+    <div class="form">${html}</div><div class="veredito neutro" aria-live="polite">Preencha a medição para ver o veredito.</div>
+    ${blocoServico(s.servico)}
+    <div class="pilha"><button class="btn verde cheio" data-acao="orc">📄 Gerar Orçamento PDF Nº 1001 com Pix</button><button class="btn claro cheio" data-acao="voltar">Voltar à prancha</button></div>`, (m) => {
+    const ver = $('.veredito', m);
+    const atualizar = () => {
+      const v = {}; $$('[data-id]', m).forEach(el => { v[el.dataset.id] = el.type === 'checkbox' ? el.checked : el.value; });
+      const r = a.calc(v);
+      if (!r) { ver.className = 'veredito neutro'; ver.textContent = 'Preencha a medição para ver o veredito.'; return; }
+      ver.className = 'veredito ' + (r.ok === null ? 'neutro' : r.ok ? 'ok' : 'def');
+      ver.innerHTML = (r.ok === null ? 'Leitura registrada' : r.ok ? '✓ DENTRO DA FAIXA' : '✗ DEFEITO CONFIRMADO: ' + esc(s.causa)) + `<small>${esc(r.txt.replace(/(\d)\.(\d)/g, '$1,$2'))}</small>`;
+    };
+    $$('[data-id]', m).forEach(el => el.addEventListener('input', atualizar));
+    if (s.aferidor === 'lista' || s.aferidor === 'ipm' || s.aferidor === 'massa') atualizar();
+    $('[data-acao=orc]', m).addEventListener('click', () => abrirOrcamento(s.servico, p));
+    $('[data-acao=voltar]', m).addEventListener('click', fecharModal);
+  });
+}
+
+// ───────────── Orçamento Nº 1001 (prévia imprimível) ─────────────
+function qrPrevia(semente) {
+  let h = 2166136261; for (const c of semente) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  const N = 25, rnd = () => { h ^= h << 13; h >>>= 0; h ^= h >> 17; h ^= h << 5; h >>>= 0; return h / 4294967296; };
+  let r = '';
+  const olho = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7" fill="#091E42"/><rect x="${x + 1}" y="${y + 1}" width="5" height="5" fill="#FFFFFF"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" fill="#091E42"/>`;
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const canto = (x < 8 && y < 8) || (x > 16 && y < 8) || (x < 8 && y > 16); if (!canto && rnd() > 0.52) r += `<rect x="${x}" y="${y}" width="1" height="1" fill="#091E42"/>`; }
+  return `<svg viewBox="-1 -1 27 27" xmlns="http://www.w3.org/2000/svg" aria-label="Prévia do QR Pix"><rect x="-1" y="-1" width="27" height="27" fill="#FFFFFF"/>${r}${olho(0, 0)}${olho(18, 0)}${olho(0, 18)}</svg>`;
+}
+function abrirOrcamento(servico, p) {
+  const hoje = new Date().toLocaleDateString('pt-BR');
+  abrirModal(`<h3>Orçamento Nº 1001</h3><div class="sub">Prévia do Bônus 6. No app, sai em PDF com a sua marca, sua chave Pix e o QR do valor.</div>
+    <div class="form">
+      <label>Cliente<input type="text" data-o="cli" placeholder="Nome do cliente" autocomplete="off"></label>
+      <label>Serviço<select data-o="srv">${Object.entries(PRECOS).map(([k, v]) => `<option value="${k}" ${k === servico ? 'selected' : ''}>${esc(v[0])}</option>`).join('')}</select></label>
+      <label>Valor (R$)<input type="number" inputmode="decimal" step="any" data-o="val"></label>
+      <div><div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px">Garantia do serviço</div><div class="prazos">${['7 dias', '15 dias', '30 dias', '60 dias', '90 dias'].map((g, k) => `<button data-g="${g}" aria-pressed="${k === 4}">${g}</button>`).join('')}</div></div>
+    </div>
+    <div class="orc" id="orc-print"></div>
+    <div class="pilha"><button class="btn verde cheio" data-acao="pdf">📄 Gerar PDF (imprimir / salvar)</button><button class="btn marinho cheio" data-acao="zap">💬 Fechar pedido no WhatsApp</button></div>`, (m) => {
+    let garantia = '90 dias';
+    const val = $('[data-o=val]', m), srv = $('[data-o=srv]', m), cli = $('[data-o=cli]', m), orc = $('#orc-print', m);
+    const preencher = () => { val.value = PRECOS[srv.value][2]; };
+    const desenhar = () => {
+      const s = PRECOS[srv.value], v = +val.value || 0;
+      orc.innerHTML = `<div class="cab"><div><b>GeloPRO</b><div style="font-size:12px;color:#475569">Orçamento técnico${p ? ' · Diagnóstico #' + p.id : ''}</div></div><span>Nº 1001<br>${hoje}</span></div>
+        <div class="item"><span>Cliente</span><b>${esc(cli.value || '—')}</b></div>
+        <div class="item"><span>${esc(s[0])}</span><b>${brl(v)}</b></div>
+        <div class="item"><span>Garantia do serviço</span><b>${garantia}</b></div>
+        <div class="total"><span>Total</span><span>${brl(v)}</span></div>
+        <div class="pix">${qrPrevia(srv.value + v)}<p><b>Pague no Pix ao aprovar.</b><br>QR gerado com a sua chave e o valor exato no app. Referência de faixa: ${brl(s[1])} a ${brl(s[3])}.</p></div>`;
+    };
+    preencher(); desenhar();
+    srv.addEventListener('change', () => { preencher(); desenhar(); });
+    [val, cli].forEach(el => el.addEventListener('input', desenhar));
+    $$('.prazos button', m).forEach(b => b.addEventListener('click', () => { garantia = b.dataset.g; $$('.prazos button', m).forEach(x => x.setAttribute('aria-pressed', x === b)); desenhar(); }));
+    $('[data-acao=pdf]', m).addEventListener('click', () => { document.body.classList.add('imprimir'); setTimeout(() => { window.print(); document.body.classList.remove('imprimir'); }, 30); });
+    $('[data-acao=zap]', m).addEventListener('click', () => {
+      const s = PRECOS[srv.value], txt = `Orçamento Nº 1001 · GeloPRO\n${s[0]}\nValor: ${brl(+val.value || 0)}\nGarantia: ${garantia}\nPagamento no Pix ao aprovar.`;
+      window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank', 'noopener');
+    });
+  });
+}
+
+// ───────────── Bônus ─────────────
+function conteudoBonus(i, p) {
+  const b = BONUS[i];
+  const cab = `<div style="font-size:11px;font-weight:900;letter-spacing:.08em;color:#92400E">BÔNUS ${i + 1} · PLANO COMPLETO</div><h3>${esc(b[2])}</h3>`;
+  if (i === 0) return { html: cab + `<div class="sub">Sequência da placa Inverter (manual de serviço Midea Mission II, F20). As pranchas #03 e #06 já seguem este roteiro.</div>
+      <table class="tabela"><tr><th>#</th><th>Verificação</th><th>Referência</th></tr>
+      <tr><td>1</td><td>Descarregar os capacitores grandes</td><td>Resistor de cerca de 100 Ω / 40 W entre + e − (p. 73)</td></tr>
+      <tr><td>2</td><td>Tensão CC entre P e N do IPM</td><td>Cerca de 310 V CC (208–230 V); espera 290–330 V (p. 10 e 97)</td></tr>
+      <tr><td>3</td><td>Continuidade do IPM</td><td>Infinito (vários MΩ) em todos os pares (p. 85)</td></tr>
+      <tr><td>4</td><td>Enrolamentos do compressor U-V-W</td><td>Três pares iguais entre si; compare com a tabela do compressor a 20 °C (p. 84)</td></tr>
+      <tr><td>5</td><td>Sensores T1 a T4</td><td>Curva 10K na ferramenta Sensor NTC (p. 84)</td></tr></table>
+      <div class="pilha"><button class="btn marinho cheio" data-ir="2">Abrir Prancha #03 · Placa Inverter E1/IPM</button><button class="btn claro cheio" data-ir="5">Abrir Prancha #06 · Sensores NTC</button></div>` };
+  if (i === 1) return { html: cab + `<div class="sub">O mesmo código muda de significado entre marcas: veja o E1 abaixo. Amostra da base conferida, com fonte e página.</div>
+      <div class="form"><label class="busca" style="height:44px"><span aria-hidden="true">🔎</span><input type="search" data-cod placeholder="Código ou palavra: E1, IPM, sensor..."></label></div>
+      <table class="tabela" data-tab></table>
+      <div class="pilha"><button class="btn marinho cheio" data-ir="2">Código de IPM? Abrir Prancha #03</button><button class="btn claro cheio" data-ir="5">Código de sensor? Abrir Prancha #06</button></div>`,
+    depois: (m) => { const tab = $('[data-tab]', m), inp = $('[data-cod]', m); const f = () => { const q = norm(inp.value.trim()); const rs = CODIGOS.filter(c => !q || norm(c.join(' ')).includes(q)); tab.innerHTML = '<tr><th>Código</th><th>Marca / linha</th><th>Significado</th><th>Fonte</th></tr>' + (rs.length ? rs.map(c => `<tr><td><b>${esc(c[2])}</b></td><td>${esc(c[0])}<br><span style="color:#64748B">${esc(c[1])}</span></td><td>${esc(c[3])}</td><td class="f">${esc(c[4])}</td></tr>`).join('') : '<tr><td colspan="4">Esse código não está na amostra: abra a prancha do circuito (#03 placa, #06 sensores) e meça.</td></tr>'); }; inp.addEventListener('input', f); inp.value = 'E1'; f(); } };
+  if (i === 2) return { html: cab + `<div class="sub">Referências de bancada em 1 tela, cada uma com fonte. Toque para abrir o aferidor vivo.</div>
+      <table class="tabela"><tr><th>Medição</th><th>Faixa</th><th>Fonte</th></tr>
+      <tr><td>Tensão de alimentação</td><td>±10% do valor de placa (220 V: 198 a 242 V)</td><td class="f">F14</td></tr>
+      <tr><td>Capacitor de partida/ventilador</td><td>No mínimo −5% do µF da etiqueta</td><td class="f">Pedro</td></tr>
+      <tr><td>ΔT retorno × insuflamento</td><td>10 a 15 °C (velocidade média)</td><td class="f">F14</td></tr>
+      <tr><td>Superaquecimento R-410A</td><td>7 a 11 °C</td><td class="f">F14</td></tr>
+      <tr><td>Barramento P-N (Inverter)</td><td>≈310 V CC; espera 290 a 330 V</td><td class="f">F20</td></tr>
+      <tr><td>NTC 10K a 25 °C</td><td>Samsung ±2% · Midea ±3% · Daikin 9,90 a 10,10 kΩ</td><td class="f">F26 · F18 · F24</td></tr>
+      <tr><td>NTC Gree a 25 °C</td><td>15K, 20K ou 50K (curva oficial)</td><td class="f">F01</td></tr></table>
+      <div class="pilha"><button class="btn marinho cheio" data-af="0:1">🧮 Aferidor de Capacitor</button><button class="btn marinho cheio" data-af="5:0">🧮 Aferidor de Sensor NTC</button><button class="btn claro cheio" data-af="1:2">🧮 Aferidor de Superaquecimento</button></div>` };
+  if (i === 3) { const itens = ['Descarreguei os capacitores antes de medir', 'Tensão L-N dentro de ±10% da placa', 'Capacitor dentro de −5% da etiqueta', 'Sensores NTC na curva da marca', 'Conectores e chicotes sem oxidação nem folga', 'Barramento P-N na faixa (Inverter)', 'IPM e enrolamentos medidos (sem curto e sem massa)'];
+    return { html: cab + `<div class="sub">Antes de condenar placa ou compressor, os 7 itens marcados. Só então o laudo.</div><div class="progresso"><i style="width:0%"></i></div>
+      <div class="form">${itens.map((t, k) => `<label class="chk"><input type="checkbox" data-k="${k}"> ${k + 1}. ${esc(t)}</label>`).join('')}</div>
+      <div class="veredito neutro" data-v>0 de 7 conferidos</div>
+      <div class="pilha"><button class="btn verde cheio" data-orc>📄 Gerar Orçamento PDF Nº 1001 com Pix</button><button class="btn marinho cheio" data-b="4">Emitir Laudo de Condenação (Bônus 5)</button></div>`,
+      depois: (m) => { const cks = $$('[data-k]', m), bar = $('.progresso i', m), v = $('[data-v]', m); cks.forEach(c => c.addEventListener('change', () => { const n = cks.filter(x => x.checked).length; bar.style.width = (n / 7 * 100) + '%'; v.className = 'veredito ' + (n === 7 ? 'ok' : 'neutro'); v.textContent = n === 7 ? '✓ 7 de 7: pode condenar a peça com laudo' : `${n} de 7 conferidos`; })); } }; }
+  if (i === 4) return { html: cab + `<div class="sub">Laudo em 1 toque quando o reparo não compensa: peça condenada, medições e recomendação, com a sua assinatura.</div>
+      <div class="orc"><div class="cab"><div><b>Laudo Técnico</b><div style="font-size:12px;color:#475569">Condenação de componente</div></div><span>Nº 1001<br>${new Date().toLocaleDateString('pt-BR')}</span></div>
+      <div class="item"><span>Diagnóstico</span><b>#${p ? p.id : '01'} · ${esc(p ? p.curto : P[0].curto)}</b></div>
+      <div class="item"><span>Medições anexadas</span><b>Passos 1 a 3 da prancha</b></div>
+      <div class="item"><span>Recomendação</span><b>Troca do componente ou aparelho novo</b></div></div>
+      <div class="pilha"><button class="btn verde cheio" data-orc>📄 Gerar Orçamento PDF Nº 1001 com Pix</button></div>` };
+  return null;
+}
+function abrirBonus(i, p) {
+  if (i === 5) return abrirOrcamento(p ? p.passos[0].servico : 'visita_diag', p);
+  const c = conteudoBonus(i, p);
+  abrirModal(c.html, (m) => {
+    if (c.depois) c.depois(m);
+    $$('[data-ir]', m).forEach(b => b.addEventListener('click', () => { fecharModal(); irPara(+b.dataset.ir); }));
+    $$('[data-af]', m).forEach(b => b.addEventListener('click', () => { const [pi, si] = b.dataset.af.split(':').map(Number); abrirAferidor(P[pi], si); }));
+    $$('[data-orc]', m).forEach(b => b.addEventListener('click', () => abrirOrcamento(p ? p.passos[0].servico : 'visita_diag', p)));
+    $$('[data-b]', m).forEach(b => b.addEventListener('click', () => abrirBonus(+b.dataset.b, p)));
+  });
+}
+
+// ───────────── Busca e filtros ─────────────
+const filtrar = (q, bloco) => { const t = norm(q.trim()); return P.map((p, i) => i).filter(i => { const p = P[i]; return (bloco === 'todos' || p.blocos.includes(bloco)) && (!t || norm(`${p.titulo} ${p.curto} ${p.busca} ${p.id} #${p.id}`).includes(t) || t.split(/\s+/).every(w => norm(`${p.titulo} ${p.curto} ${p.busca}`).includes(w))); }); };
+const pilulas = (el, atual, aoTrocar) => {
+  el.innerHTML = BLOCOS.map(([id, rot]) => `<button class="pilula" data-b="${id}" aria-pressed="${id === atual}">${rot}</button>`).join('');
+  $$('.pilula', el).forEach(b => b.addEventListener('click', () => { $$('.pilula', el).forEach(x => x.setAttribute('aria-pressed', x === b)); aoTrocar(b.dataset.b); }));
+};
+const vazio = () => `<div class="vazio">Nenhuma prancha-piloto com esse termo.<div class="acoes"><button class="btn marinho" data-limpar>Ver as 6 pranchas</button><button class="btn claro" data-cod>Buscar nos Códigos de Erro</button></div></div>`;
+const ligarVazio = (el, limpar) => { const a = $('[data-limpar]', el), c = $('[data-cod]', el); if (a) a.addEventListener('click', limpar); if (c) c.addEventListener('click', () => abrirBonus(1, null)); };
+const miniBarra = (p) => `<div class="barra-mini">${p.prob.map((b, i) => `<i style="width:${b[0]}%;background:${COR_PROB[i]}"></i>`).join('')}</div><div class="legenda-mini">${p.prob.map(b => `${b[0]}% ${esc(b[3])}`).join(' · ')}</div>`;
+
+// Layout 1
+let l1Bloco = 'todos';
+function renderL1() {
+  const ids = filtrar($('#l1-busca').value, l1Bloco), g = $('#l1-grade');
+  g.innerHTML = ids.length ? ids.map(i => { const p = P[i]; return `<button class="cartao" data-i="${i}"><span class="mini">${svgPrancha(p, 'mini' + i, true)}</span><span class="corpo"><span class="num">#${p.id} · ${p.area}</span><h3>${esc(p.titulo)}</h3>${miniBarra(p)}</span></button>`; }).join('') : vazio();
+  $$('.cartao', g).forEach(c => c.addEventListener('click', () => abrirFolha(+c.dataset.i, false)));
+  ligarVazio(g, () => { $('#l1-busca').value = ''; renderL1(); });
+}
+pilulas($('#l1-pilulas'), 'todos', (b) => { l1Bloco = b; renderL1(); });
+$('#l1-busca').addEventListener('input', renderL1);
+
+// Layout 2
+let l2Idx = 0, gvBloco = 'todos';
+const gaveta = $('#gaveta'), gFundo = $('#gaveta-fundo');
+function renderL2() { montarPrancha($('#l2-folha'), l2Idx); $('#l2-folha').scrollTop = 0; }
+function renderGaveta() {
+  const ids = filtrar($('#gv-busca').value, gvBloco), el = $('#gv-lista');
+  el.innerHTML = ids.length ? ids.map(i => linhaItem(i)).join('') : vazio();
+  $$('.linha-item', el).forEach(c => c.addEventListener('click', () => { l2Idx = +c.dataset.i; fecharGaveta(); renderL2(); }));
+  ligarVazio(el, () => { $('#gv-busca').value = ''; renderGaveta(); });
+}
+function abrirGaveta() { renderGaveta(); gaveta.classList.add('aberta'); gFundo.classList.add('aberta'); }
+function fecharGaveta() { gaveta.classList.remove('aberta'); gFundo.classList.remove('aberta'); }
+$('#l2-trocar').addEventListener('click', abrirGaveta);
+gFundo.addEventListener('click', fecharGaveta);
+$('#l2-ant').addEventListener('click', () => { l2Idx = (l2Idx + P.length - 1) % P.length; renderL2(); });
+$('#l2-prox').addEventListener('click', () => { l2Idx = (l2Idx + 1) % P.length; renderL2(); });
+pilulas($('#gv-pilulas'), 'todos', (b) => { gvBloco = b; renderGaveta(); });
+$('#gv-busca').addEventListener('input', renderGaveta);
+
+// Layout 3
+const linhaItem = (i) => { const p = P[i], c1 = p.prob[0]; return `<button class="linha-item" data-i="${i}"><span class="n">#${p.id}</span><span class="t">${esc(p.titulo)}</span><span class="seta">›</span><span class="m"><span class="etq c1">${c1[0]}% ${esc(c1[3])}</span><span class="etq t">⚡ ${p.tempo}</span><span class="etq i">${esc(p.instr)}</span></span></button>`; };
+let l3Aba = -1;
+function renderL3() {
+  const abas = $('#l3-abas');
+  abas.innerHTML = `<button class="aba" role="tab" data-a="-1" aria-selected="${l3Aba === -1}">Diagnósticos</button>` + BONUS.map((b, i) => `<button class="aba" role="tab" data-a="${i}" aria-selected="false"><span class="b">B${i + 1}</span>${esc(b[1])}</button>`).join('');
+  $$('.aba', abas).forEach(a => a.addEventListener('click', () => { const k = +a.dataset.a; if (k >= 0) { abrirBonus(k, null); return; } l3Aba = -1; renderL3(); }));
+  const q = $('#l3-busca').value, corpo = $('#l3-corpo');
+  const grupos = BLOCOS.slice(1).map(([id, rot]) => [rot, filtrar(q, id)]).filter(g => g[1].length);
+  corpo.innerHTML = grupos.length ? grupos.map(([rot, ids]) => `<section class="grupo"><h4>${rot} · ${ids.length}</h4>${ids.map(linhaItem).join('')}</section>`).join('') : `<div style="padding:16px">${vazio()}</div>`;
+  $$('.linha-item', corpo).forEach(c => c.addEventListener('click', () => abrirFolha(+c.dataset.i, true)));
+  ligarVazio(corpo, () => { $('#l3-busca').value = ''; renderL3(); });
+}
+$('#l3-busca').addEventListener('input', renderL3);
+
+// Folha em tela cheia (layouts 1 e 3)
+const folha = $('#folha');
+let folhaIdx = 0;
+function abrirFolha(i, deslizar) {
+  folhaIdx = i; folha.classList.toggle('deslizar', deslizar);
+  montarPrancha($('#folha-corpo'), i); folha.scrollTop = 0;
+  requestAnimationFrame(() => { folha.classList.add('aberta'); folha.setAttribute('aria-hidden', 'false'); });
+  atualizarHash(i);
+}
+function fecharFolha() { folha.classList.remove('aberta'); folha.setAttribute('aria-hidden', 'true'); atualizarHash(null); }
+$('#folha-voltar').addEventListener('click', fecharFolha);
+$('#folha-ant').addEventListener('click', () => { folhaIdx = (folhaIdx + P.length - 1) % P.length; montarPrancha($('#folha-corpo'), folhaIdx); folha.scrollTop = 0; atualizarHash(folhaIdx); });
+$('#folha-prox').addEventListener('click', () => { folhaIdx = (folhaIdx + 1) % P.length; montarPrancha($('#folha-corpo'), folhaIdx); folha.scrollTop = 0; atualizarHash(folhaIdx); });
+
+// ───────────── Troca de layout (barra discreta) ─────────────
+let layout = 1;
+function irPara(i) { if (layout === 2) { l2Idx = i; renderL2(); } else abrirFolha(i, layout === 3); }
+function atualizarHash(i) { const h = '#l' + layout + (i !== null && i !== undefined && layout !== 2 ? '&p=' + P[i].id : ''); try { history.replaceState(null, '', h); } catch (e) { location.hash = h; } }
+function trocarLayout(n) {
+  layout = n; guardar('guiapro.layout', String(n));
+  $$('#comparar .seg button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.l === n));
+  $$('.layout').forEach(m => m.classList.toggle('ativo', m.id === 'L' + n));
+  fecharFolha(); fecharGaveta(); fecharModal();
+  if (n === 1) renderL1(); else if (n === 2) renderL2(); else renderL3();
+  window.scrollTo(0, 0); atualizarHash(null);
+}
+$$('#comparar .seg button').forEach(b => b.addEventListener('click', () => trocarLayout(+b.dataset.l)));
+
+// Início: #l1 / #l2 / #l3 (e &p=01 abre a prancha). Sem hash, volta ao último layout escolhido.
+function iniciar() {
+  const h = location.hash.slice(1), m = h.match(/l([123])/), pm = h.match(/p=(\d\d)/);
+  trocarLayout(m ? +m[1] : (+ler('guiapro.layout') || 1));
+  if (pm) { const i = P.findIndex(p => p.id === pm[1]); if (i >= 0) irPara(i); }
+}
+// Link colado na mesma aba (#l2, #l3&p=04) troca o layout sem recarregar.
+window.addEventListener('hashchange', iniciar);
+iniciar();
+</script>
+</body>
+</html>
