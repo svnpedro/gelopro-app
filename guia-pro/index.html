@@ -37,9 +37,9 @@ img{display:block;max-width:100%}
 .marca{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .marca .mascote{width:30px;height:30px;border-radius:8px;background:#0A182D;border:1.5px solid #D4D4D4;padding:1px}
 .marca .wordmark{height:15px;width:auto}
-.voltar{display:none;flex-shrink:0;align-items:center;gap:2px;height:34px;padding:0 8px 0 4px;border-radius:9px;background:#19365C;border:1px solid #24466F;font-family:var(--f-tit);font-size:12.5px;font-weight:800}
-html[data-embed="1"] .voltar{display:flex}
+.voltar{display:flex;flex-shrink:0;align-items:center;gap:2px;height:34px;padding:0 8px 0 4px;border-radius:9px;background:#19365C;border:1px solid #24466F;font-family:var(--f-tit);font-size:12.5px;font-weight:800}
 html[data-embed="1"] .marca .wordmark{display:none}
+@media (max-width:420px){.marca .wordmark{display:none}}
 .ficha-sel{flex:1;min-width:0;height:38px;display:flex;align-items:center;gap:6px;padding:0 8px;border-radius:9px;background:linear-gradient(180deg,#0f1724 0%,#1a2333 100%) #1d2430;border:2px solid #071224;box-shadow:inset 0 3px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.35);text-align:left}
 .ficha-sel .txt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.1}
 .ficha-sel .cod{font-family:var(--f-mono);font-size:10px;font-weight:800;color:#67C6FF;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -165,6 +165,7 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 .item-ficha .nm{font-family:var(--f-tit);font-size:14.5px;font-weight:800;color:#0F172A;line-height:1.2}
 .item-ficha .sb{font-size:12px;color:#64748B;line-height:1.3}
 .item-ficha.atual{background:#E0F2FE;border-radius:10px}
+.item-ficha .tranca{display:inline-block;margin-top:3px;font-size:10px;font-weight:800;letter-spacing:.04em;color:#92400E;background:#FEF3C7;border-radius:5px;padding:1px 6px}
 .vazio{border:1px dashed #CBD5E1;border-radius:12px;padding:14px;text-align:center;font-size:14px;color:#334155}
 .vazio .pilha{margin-top:10px}
 .confirmada{border-radius:12px;background:#FEF2F2;border:2px solid #DC2626;padding:12px;margin-bottom:12px}
@@ -286,6 +287,11 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 <script src="../app/vendor/qrcode-generator-1.4.4.js"></script>
 <script src="../app/gelopro-pix.js"></script>
 <script src="../app/pdf-gelopro.js"></script>
+<!-- Licença: a mesma flag do app. Sem ?testarSeguranca=1 fica tudo liberado (testes do Pedro); com ela, sem crachá ativo, só a D-001 abre. -->
+<!-- O licenca-gelopro.js injeta o offline-gelopro.js (service worker do app) se não achar esta tag. O modo offline é do app, não desta
+     página: a tag type="text/plain" não é baixada nem executada, só avisa que o registro já é tratado no app. -->
+<script type="text/plain" data-offline-do-app src="../app/offline-gelopro.js"></script>
+<script src="../app/licenca-gelopro.js"></script>
 <script>
 'use strict';
 // ───────────── Ícones de interface (SVG 24×24, traço com hex cravado; nunca equipamento) ─────────────
@@ -339,8 +345,7 @@ const BLOCOS = [['todos', 'Todos'], ['b1', '1. Não Gela'], ['b2', '2. Não Liga
 const PIL = [['p1', 'MUITO COMUM'], ['p1', 'MUITO COMUM'], ['p2', 'COMUM'], ['p2', 'COMUM'], ['p3', 'MENOS COMUM']];
 /* alvos = centro de cada bolinha 01–05 (% da arte 1672×941, medido por visão computacional; conferido com 0,2 a 6 px de diferença).
    foco = ponto médio entre a bolinha e a peça onde a linha ciano termina (centro da lupa). vc[N-1] = causa ligada à verificação N.
-   Textos D-001, D-002, D-003, D-023, D-058 e D-073: Pedro (02/11/2026). D-004, D-005, D-040, D-057, D-087, S-04, S-06 e S-07: rascunho
-   a partir das ilustrações aprovadas, sem número novo (marcados com rascunho: true até o Pedro aprovar). */
+   Textos das 14 fichas: definitivos, aprovados pelo Pedro em 02/11/2026 (inclusive os números dos textos, como 10 a 20 min e 1,5 µF). */
 const F = [
 { id: 'D-001', img: 'd001', bloco: 'NÃO GELA', blocos: ['b1'], titulo: 'Liga, mas não gela', sub: 'Evaporadora ligada, ventilação normal, ar saindo na temperatura do ambiente.',
   chips: ['Convencional e Inverter', 'Refrigeração', 'Alicate amperímetro'],
@@ -369,24 +374,24 @@ const F = [
   vc: [4, 2, 3, 4, 1], ir: { 1: 'D-001' },
   proximo: [['a diferença de temperatura (Delta T) está entre 10 e 14 °C', 'O aparelho está bom: emita Laudo de Carga Térmica / Capacidade', null, null, 'laudo'], ['a diferença de temperatura está abaixo de 8 °C', 'Volte ao diagnóstico D-001 de refrigeração e limpeza', null, 'D-001'], ['há infiltração aberta ou sol direto', 'Oriente vedação e cortina antes de mexer no equipamento', 'visita_diag']],
   antes: 'Aparelho que entrega de 10 °C a 14 °C de diferença entre retorno e saída não tem defeito de gás nem de peça. Não mexa na carga à toa.' },
-{ id: 'D-004', img: 'd004', bloco: 'NÃO GELA', blocos: ['b1'], rascunho: true, titulo: 'Gela e para', sub: 'Começa gelando, depois o compressor desliga sozinho e o ar volta à temperatura do ambiente.',
-  chips: ['Convencional e Inverter', 'Refrigeração', 'Alicate amperímetro'],
-  busca: 'gela e para gela depois para desliga sozinho compressor desliga sensor serpentina ntc condensadora suja placa rele ventilador corrente',
+{ id: 'D-004', img: 'd004', bloco: "NÃO GELA", blocos: ["b1"], titulo: "Gela no início e para depois", sub: "Funciona bem nos primeiros minutos e depois perde o frio.",
+  chips: ["Convencional e Inverter", "Refrigeração", "Alicate amperímetro"],
+  busca: "gela no inicio e para depois perde o frio desliga sozinho sensor ambiente ntc condensadora suja abafada rele placa ventilador externo protetor termico sobrecarga",
   alvos: [[16.5, 16.2], [56.3, 16.2], [38.7, 16.2], [52.8, 94.4], [84.2, 15.9]], foco: [[14.08, 31.75], [55.06, 27.76], [36.69, 29.35], [56.01, 79.61], [80.68, 21.23]],
-  causas: [['Condensadora suja sem troca de calor', 'higienizacao'], ['Sensor da serpentina fora da faixa', 'sensor_ntc'], ['Ventilador da condensadora falhando', 'motor_vent'], ['Capacitor fraco elevando a corrente', 'cap_partida'], ['Relé ou conector da placa falhando', 'reparo_placa']],
-  verifs: [['Meça a resistência do sensor da serpentina solto da placa', 'Sensor fora da curva faz a placa desligar o compressor antes da hora'], ['Inspecione e lave a serpentina da condensadora', 'Aletas sujas sobem a pressão e o compressor abre no térmico'], ['Confira o LED e os conectores da placa da evaporadora', 'Conector frouxo ou relé falhando corta o comando do compressor'], ['Veja se o ventilador da condensadora acompanha o compressor', 'Ventilador que para junto deixa o compressor sem troca de calor'], ['Meça a corrente do compressor até ele desligar', 'Corrente subindo até desligar aponta sobrecarga, não falta de comando']],
-  vc: [2, 1, 5, 3, 4],
-  proximo: [['a condensadora está suja', 'Lave a condensadora e meça a corrente de novo', 'higienizacao'], ['o sensor está fora da curva', 'Troque o sensor NTC da serpentina', 'sensor_ntc'], ['a corrente sobe até desarmar com tudo limpo', 'Teste capacitor e ventilador antes de condenar o compressor', 'cap_partida']],
-  antes: 'Compressor que gela e para quase sempre está sem troca de calor ou com sensor ruim. Limpe, meça o sensor e a corrente antes de falar em compressor.' },
-{ id: 'D-005', img: 'd005', bloco: 'NÃO GELA', blocos: ['b1'], rascunho: true, titulo: 'Gela pouco, sem força', sub: 'O aparelho gela, mas fraco: o ambiente demora e não chega à temperatura pedida.',
-  chips: ['Convencional e Inverter', 'Refrigeração', 'Manifold'],
-  busca: 'gela pouco sem forca fraco nao chega na temperatura filtro sujo turbina suja gas baixo vazamento condensadora suja isolamento tubo',
+  causas: [["Sensor de temperatura ambiente lendo errado", "sensor_ntc"], ["Condensadora suja desarmando por alta temperatura", "higienizacao"], ["Relé da placa cortando o compressor antes da hora", "reparo_placa"], ["Ventilador externo parando depois de aquecer", "cap_partida"], ["Compressor abrindo o protetor térmico por sobrecarga", "cap_partida"]],
+  verifs: [["Meça a resistência (kΩ) do sensor na evaporadora", "Sensor descalibrado engana a placa achando que a sala já gelou"], ["Observe se a condensadora está abafada ou com a colmeia suja", "Calor acumulado faz o sistema cortar após 10 a 20 minutos"], ["Meça se a placa continua mandando 220V para a condensadora quando para", "Se cortou 220V na saída da placa, o corte veio do sensor ou relé"], ["Verifique se o ventilador da condensadora perde rotação a quente", "Capacitor do ventilador fraco faz a hélice parar depois de esquentar"], ["Acompanhe a corrente do compressor com alicate amperímetro até o corte", "Corrente subindo acima da etiqueta aponta sobrecarga térmica"]],
+  vc: [1, 2, 3, 4, 5],
+  proximo: [["a placa corta os 220V antes da sala esfriar", "Substitua o sensor NTC de temperatura", "sensor_ntc"], ["chega 220V lá fora e o compressor desarma", "Lave a condensadora e teste o ventilador", "higienizacao"], ["o compressor ferve com condensadora limpa", "Teste o capacitor de marcha e o compressor", "cap_partida"]],
+  antes: "Descubra primeiro quem desligou o compressor: se foi a placa interna que cortou os 220V (sensor) ou se o compressor abriu o térmico sozinho lá fora (calor/capacitor)." },
+{ id: 'D-005', img: 'd005', bloco: "NÃO GELA", blocos: ["b1"], titulo: "Gela pouco, sem força", sub: "Resfria de leve, mas não entrega o desempenho esperado.",
+  chips: ["Convencional e Inverter", "Refrigeração", "Manifold"],
+  busca: "gela pouco sem forca fraco resfria de leve filtro serpentina suja turbina encrostada gas baixo carga condensadora suja isolamento rasgado tubo dobrado amassado",
   alvos: [[12.9, 13.9], [15.6, 80.4], [93.2, 27.4], [58.3, 14.4], [53.8, 93.4]], foco: [[10.67, 26.08], [17.76, 66.87], [92.44, 41.7], [55.32, 25.0], [55.04, 87.51]],
-  causas: [['Filtro de ar entupido', 'higienizacao'], ['Carga de gás baixa por vazamento', 'carga_fluido'], ['Turbina com crosta de sujeira', 'higienizacao'], ['Condensadora suja', 'higienizacao'], ['Isolamento da linha danificado', 'dreno_isol']],
-  verifs: [['Retire e confira o filtro de ar contra a luz', 'Filtro entupido derruba a vazão e o frio não chega à sala'], ['Inspecione as pás da turbina da evaporadora', 'Crosta nas pás reduz o volume de ar mesmo com filtro limpo'], ['Conecte o manifold e confira pressão de sucção e superaquecimento', 'Pressão baixa com superaquecimento alto indica pouco gás'], ['Inspecione a serpentina da condensadora', 'Condensadora suja tira rendimento e sobe a pressão de alta'], ['Confira o isolamento da linha de sucção', 'Tubo descascado perde frio no caminho e sua na parede']],
-  vc: [1, 3, 2, 4, 5],
-  proximo: [['filtro ou turbina estão sujos', 'Faça a higienização completa antes de medir gás', 'higienizacao'], ['a pressão de sucção está baixa', 'Procure o vazamento, corrija e refaça a carga', 'carga_fluido'], ['o isolamento está rasgado', 'Refaça o isolamento térmico da linha', 'dreno_isol']],
-  antes: 'Gela pouco não é sinônimo de falta de gás. Limpe filtro, turbina e condensadora e só então leia a pressão.' },
+  causas: [["Filtro e serpentina interna sujos reduzindo a troca", "higienizacao"], ["Turbina da evaporadora encrostada soprando fraco", "higienizacao"], ["Carga de gás parcialmente baixa", "carga_fluido"], ["Serpentina da condensadora suja perdendo rendimento", "higienizacao"], ["Tubulação com isolamento rasgado ou linha dobrada", "dreno_isol"]],
+  verifs: [["Confira o estado dos filtros e da colmeia da evaporadora", "Sujeira fina no alumínio derruba metade do rendimento térmico"], ["Olhe com lanterna as pás da turbina por dentro da saída de ar", "Turbina com limo gira rápido mas não empurra vento para a sala"], ["Meça a pressão de trabalho e o superaquecimento com manifold", "Pressão levemente baixa reduz a área fria da serpentina"], ["Inspecione a limpeza da serpentina externa na condensadora", "Condensadora suja trabalha com pressão alta e gela pouco"], ["Verifique o isolamento térmico esponjoso e curvas da tubulação", "Tubo exposto ao sol ou amassado perde frio no caminho"]],
+  vc: [1, 2, 3, 4, 5],
+  proximo: [["a turbina e a serpentina estão sujas", "Orce higienização completa antes de mexer no gás", "higienizacao"], ["o aparelho está limpo e a pressão baixa", "Corrija microvazamento nas porcas e ajuste a carga", "carga_fluido"], ["há tubo amassado ou sem isolamento", "Refaça o trecho estrangulado e o isolamento térmico", "dreno_isol"]],
+  antes: "Mais da metade dos chamados de \"gelando fraco\" é turbina interna encrostada de poeira. Limpe o conjunto antes de abrir o manifold." },
 { id: 'D-023', img: 'd023', bloco: 'NÃO LIGA', blocos: ['b2', 'b3'], titulo: 'Não liga, display apagado', sub: 'Aparelho sem nenhuma reação ao comando, sem luz e sem sinal sonoro.',
   chips: ['Todos', 'Elétrica', 'Multímetro'],
   busca: 'nao liga display apagado sem luz sem sinal morto disjuntor tomada fusivel fuse placa fonte 5v 12v varistor cabo interligacao borneira',
@@ -396,24 +401,24 @@ const F = [
   vc: [1, 4, 2, 3, 4],
   proximo: [['não chega 220V na régua de bornes L-N', 'Restabeleça disjuntor, tomada ou cabo de alimentação', 'fusivel_eletrica'], ['o fusível da placa está aberto', 'Verifique varistor em curto antes de trocar o fusível', 'fusivel_eletrica'], ['chega 220V e a fonte não gera 5V/12V', 'Orce reparo ou substituição da placa eletrônica', 'reparo_placa']],
   antes: 'Fusível queimado é consequência de surto ou curto. Trocar o fusível sem testar o varistor e a linha faz queimar de novo na hora.' },
-{ id: 'D-040', img: 'd040', bloco: 'ELÉTRICA', blocos: ['b3', 'b2'], rascunho: true, titulo: 'Desarma o disjuntor', sub: 'O disjuntor cai quando o compressor tenta partir ou poucos segundos depois.',
-  chips: ['Convencional e Inverter', 'Elétrica', 'Multímetro'],
-  busca: 'desarma disjuntor cai a chave desarmando curto massa compressor capacitor em curto borne queimado varistor fusivel placa cabo fino',
+{ id: 'D-040', img: 'd040', bloco: "ELÉTRICA", blocos: ["b3", "b2"], titulo: "Desarma o disjuntor ao ligar", sub: "O disjuntor cai na hora ou poucos segundos após ligar o aparelho.",
+  chips: ["Convencional e Inverter", "Elétrica", "Multímetro"],
+  busca: "desarma disjuntor ao ligar cai a chave desarmando curto massa carcaca compressor capacitor em curto estufado borne derretido fio encostando lata varistor ponte retificadora",
   alvos: [[36.2, 5.1], [6.8, 12.1], [55.6, 5.1], [71.2, 5.1], [88.1, 5.1]], foco: [[38.52, 24.23], [8.63, 29.54], [55.7, 24.23], [69.48, 27.36], [85.41, 23.8]],
-  causas: [['Compressor em massa ou em curto', 'compressor_troca'], ['Borne de força queimado ou frouxo', 'fusivel_eletrica'], ['Capacitor em curto', 'cap_partida'], ['Disjuntor ou cabo abaixo do pedido', 'fusivel_eletrica'], ['Varistor ou placa em curto', 'reparo_placa']],
-  verifs: [['Meça os pinos S, C e R entre si e cada pino contra a carcaça', 'Pino com continuidade para a carcaça é compressor em massa'], ['Confira o disjuntor e o cabo pela etiqueta do aparelho', 'Disjuntor fraco ou cabo fino desarma mesmo com o aparelho bom'], ['Teste o capacitor com o capacímetro', 'Capacitor em curto puxa corrente alta e derruba o disjuntor'], ['Inspecione os bornes de força da condensadora', 'Borne escurecido ou derretido indica mau contato e aquecimento'], ['Confira fusível e varistor da placa externa', 'Varistor estourado ou trilha queimada mostra surto na rede']],
-  vc: [1, 4, 3, 2, 5],
-  proximo: [['há continuidade de pino para a carcaça', 'Condene o compressor com laudo técnico', 'compressor_troca'], ['o borne está escurecido ou derretido', 'Refaça bornes e conexões de força', 'fusivel_eletrica'], ['capacitor e compressor estão bons', 'Confira disjuntor, cabo e varistor da placa', 'reparo_placa']],
-  antes: 'Não rearme o disjuntor várias vezes nem troque por um maior: meça o isolamento do compressor antes de religar.' },
-{ id: 'D-057', img: 'd057', bloco: 'ÁGUA E GELO', blocos: ['b4'], rascunho: true, titulo: 'Pingando água na evaporadora', sub: 'Água escorrendo pela frente do aparelho ou pela parede com o ar-condicionado ligado.',
-  chips: ['Todos', 'Dreno', 'Nível e lanterna'],
-  busca: 'pingando agua vazando goteira dreno bandeja cheia transbordando lodo mangueira subida sifao desnivelado nivel calha trincada parede',
+  causas: [["Compressor em curto ou com fuga para a carcaça", "compressor_troca"], ["Disjuntor fraco, velho ou subdimensionado no quadro", "fusivel_eletrica"], ["Capacitor em curto-circuito na condensadora", "cap_partida"], ["Borne derretido ou fio encostando na lata", "fusivel_eletrica"], ["Varistor ou ponte retificadora em curto na placa", "reparo_placa"]],
+  verifs: [["Desligue os fios do compressor (S-C-R) e teste se o disjuntor segura", "Se parar de cair com o compressor solto, o curto está no compressor"], ["Confira a corrente do disjuntor e o aperto dos cabos no quadro", "Disjuntor cansado ou frouxo esquenta e desarma sem haver curto"], ["Inspecione visualmente e meça o capacitor de partida", "Capacitor estufado ou em curto derruba o disjuntor na partida"], ["Inspecione a régua de bornes e o chicote procurando fio derretido", "Borne carbonizado ou fio encostando na chaparia fecha curto direto"], ["Verifique o fusível e o varistor de proteção na placa eletrônica", "Surto de rede estoura o varistor em curto para proteger a placa"]],
+  vc: [1, 2, 3, 4, 5],
+  proximo: [["há continuidade entre S-C-R e a carcaça", "Condene o compressor por curto à massa e orce a troca", "compressor_troca"], ["o capacitor está estufado ou o borne derretido", "Substitua o capacitor e refaça a borneira de força", "cap_partida"], ["o varistor da placa entrou em curto", "Substitua varistor e fusível ou recupere a placa", "reparo_placa"]],
+  antes: "Não fique rearmando o disjuntor várias vezes seguidas: se for apenas um fio encostando na lata, insistir pode terminar de queimar a placa ou o compressor." },
+{ id: 'D-057', img: 'd057', bloco: "ÁGUA E GELO", blocos: ["b4"], titulo: "Pingando água pela evaporadora", sub: "Água escorrendo pela parede ou pingando pela frente da unidade interna.",
+  chips: ["Todos", "Dreno", "Nível e lanterna"],
+  busca: "pingando agua pela evaporadora vazando escorrendo parede calha cheia transbordando lodo entupida mangueira barriga sifao torta desnivelada bandeja trincada condensacao",
   alvos: [[10.2, 93.8], [62.8, 93.9], [82.2, 15.3], [31.3, 5.7], [4.1, 62.8]], foco: [[14.31, 85.53], [60.8, 86.43], [84.97, 24.12], [34.34, 12.25], [9.53, 66.04]],
-  causas: [['Saída do dreno entupida por lodo', 'dreno_isol'], ['Mangueira com subida ou sifão', 'dreno_isol'], ['Evaporadora desnivelada', 'dreno_isol'], ['Bandeja transbordando por sujeira acumulada', 'higienizacao'], ['Bandeja trincada ou fora do encaixe', 'visita_diag']],
-  verifs: [['Confira se a bandeja está cheia ou transbordando', 'Bandeja cheia mostra que a água não está saindo pelo dreno'], ['Desobstrua a saída da bandeja e despeje um copo de água', 'Água que não escoa confirma lodo na saída ou na mangueira'], ['Siga a mangueira do dreno até o fim', 'Subida, barriga ou sifão seguram a água dentro da bandeja'], ['Coloque o nível em cima da evaporadora', 'Aparelho caído para o lado errado joga a água para fora da bandeja'], ['Inspecione a calha e o encaixe da bandeja', 'Bandeja trincada ou fora do encaixe pinga mesmo com dreno livre']],
-  vc: [4, 1, 2, 3, 5],
-  proximo: [['a água não escoa pela saída', 'Desobstrua bandeja e mangueira do dreno', 'dreno_isol'], ['a mangueira sobe ou faz sifão', 'Refaça o caimento da mangueira', 'dreno_isol'], ['o aparelho está desnivelado', 'Nivele a evaporadora no suporte', 'dreno_isol']],
-  antes: 'Bomba de condensado não resolve lodo nem desnível. Desobstrua, nivele e teste com água antes de orçar bomba.' },
+  causas: [["Calha de dreno cheia transbordando pela frente", "higienizacao"], ["Saída da calha ou mangueira entupida por lodo", "dreno_isol"], ["Mangueira externa fazendo barriga ou sifão para cima", "dreno_isol"], ["Evaporadora instalada torta contra a queda do dreno", "dreno_isol"], ["Bandeja trincada ou condensação traseira", "higienizacao"]],
+  verifs: [["Jogue água limpa na calha com uma garrafa e veja se escoa livre", "Se a calha encher rápido e transbordar, a saída está bloqueada"], ["Inspecione o bico de saída da calha onde acumula lodo e sujeira", "Gelatina de fungo e poeira costuma fechar o bico de saída"], ["Olhe o caminho da mangueira pelo lado de fora da parede", "Mangueira subindo faz sifão de ar e devolve a água para dentro"], ["Coloque o nível de bolha no topo da evaporadora", "Máquina caída para o lado oposto ao dreno acumula água no canto"], ["Inspecione a bandeja e o encaixe traseiro junto ao suporte", "Bandeja trincada ou mal encaixada pinga direto pela parede"]],
+  vc: [1, 2, 3, 4, 5],
+  proximo: [["a água não desce no teste da garrafa", "Desobstrua a saída e faça higienização completa da bandeja", "higienizacao"], ["a máquina está desnivelada ou a mangueira alta", "Nivele o suporte e corrija o caimento externo do dreno", "dreno_isol"], ["a bandeja está trincada ou desencaixada", "Desmonte, recupere a bandeja e faça higienização", "higienizacao"]],
+  antes: "Assoprar a mangueira só empurra a gosma de volta para a calha e entope de novo na semana seguinte. Desmonte, lave a bandeja e teste com 1 litro de água." },
 { id: 'D-058', img: 'd058', bloco: 'ÁGUA E GELO', blocos: ['b4', 'b1'], titulo: 'Serpentina congelando na evaporadora', sub: 'Camada de gelo bloqueando a serpentina interna e queda forte no vento.',
   chips: ['Convencional e Inverter', 'Refrigeração', 'Manifold e alicate'],
   busca: 'serpentina congelando gelo evaporadora congela vento fraco filtro turbina suja gas baixo vazamento sensor degelo ntc restricao tubo dobrado',
@@ -432,42 +437,42 @@ const F = [
   vc: [2, 1, 4, 5, 3],
   proximo: [['há sujeira acumulada ou objeto raspando', 'Realize desmontagem e higienização completa da turbina', 'higienizacao'], ['a bucha do lado oposto ao motor está seca ou gasta', 'Lubrifique com graxa apropriada ou substitua a bucha do mancal', 'motor_vent'], ['o rolamento interno do motor ronca com folga', 'Orce a substituição do motor ventilador da evaporadora', 'motor_vent']],
   antes: 'Antes de condenar o motor da evaporadora, limpe a turbina, alinhe a bucha lateral e aperte a carcaça. Boa parte do ruído some aí.' },
-{ id: 'D-087', img: 'd087', bloco: 'CÓDIGOS', blocos: ['b7', 'b6', 'b8'], rascunho: true, titulo: 'Código de erro no display', sub: 'O visor mostra um código (E1, por exemplo) ou o LED pisca e o aparelho não gela.',
-  chips: ['Convencional e Inverter', 'Comando', 'Multímetro'],
-  busca: 'codigo de erro display e1 e2 e5 led piscando pisca sensor ntc comunicacao borneira 1 2 3 s placa externa ventilador condensadora',
+{ id: 'D-087', img: 'd087', bloco: "CÓDIGOS", blocos: ["b7", "b6", "b8"], titulo: "Código de erro piscando no display", sub: "Aparelho trava e mostra letras, números ou piscadas repetidas no painel.",
+  chips: ["Convencional e Inverter", "Comando", "Multímetro"],
+  busca: "codigo de erro piscando display e1 e5 f1 e202 led piscadas sensor ntc comunicacao cabo s borneira 1 2 3 s placa inverter ipm ventilador compressor uvw",
   alvos: [[9.8, 80.3], [23.7, 11.3], [44.5, 23.1], [94.4, 15.5], [60.6, 89.8]], foco: [[12.38, 73.36], [19.33, 19.84], [42.94, 34.13], [92.06, 27.68], [62.96, 74.12]],
-  causas: [['Sensor de temperatura aberto ou em curto', 'sensor_ntc'], ['Cabo de interligação com mau contato', 'fusivel_eletrica'], ['Ventilador da condensadora parado', 'motor_vent'], ['Falha de comunicação entre as placas', 'reparo_placa'], ['Placa eletrônica com defeito', 'placa_nova']],
-  verifs: [['Anote o código do display e consulte o Tradutor de Códigos (Bônus 2)', 'O código aponta o circuito com problema, não a peça'], ['Meça os sensores de ambiente e de serpentina soltos da placa', 'Sensor aberto ou em curto é a causa mais barata de código'], ['Meça tensão e sinal na borneira de interligação 1-2-3-S', 'Sem tensão ou sinal no S, a falha está no cabo de comunicação'], ['Conte as piscadas do LED da placa externa', 'A piscada da condensadora confirma o código da evaporadora'], ['Veja se o ventilador da condensadora parte junto', 'Ventilador parado gera código de proteção por temperatura']],
-  vc: [5, 1, 2, 4, 3],
-  proximo: [['o sensor está fora da curva', 'Troque o sensor NTC', 'sensor_ntc'], ['falta tensão ou sinal no borne S', 'Refaça o cabo de interligação', 'fusivel_eletrica'], ['sensores e cabo estão bons', 'Orce o reparo da placa eletrônica', 'reparo_placa']],
-  antes: 'Código não condena placa. Meça sensores e o cabo de interligação antes de orçar placa nova.' },
-{ id: 'S-04', img: 's04', bloco: 'HIGIENE', blocos: ['b4'], rascunho: true, titulo: 'Cheiro ruim no ar', sub: 'Ar com cheiro de mofo, umidade ou esgoto quando o aparelho liga.',
-  chips: ['Todos', 'Higienização', 'Inspeção visual'],
-  busca: 'cheiro ruim mau cheiro mofo bolor umidade esgoto fedor biofilme serpentina turbina bandeja agua parada filtro dreno sifao ralo higienizacao',
+  causas: [["Sensor de ambiente ou de serpentina aberto ou fora de faixa", "sensor_ntc"], ["Falha de comunicação no cabo de sinal S entre unidades", "reparo_placa"], ["Defeito na placa Inverter externa ou módulo IPM", "placa_nova"], ["Mau contato ou oxidação na borneira 1-2-3-S", "fusivel_eletrica"], ["Sobrecarga no ventilador externo ou compressor Inverter", "motor_vent"]],
+  verifs: [["Anote o código exato no visor (ex.: E1, E5, F1) e consulte o Tradutor", "O código já aponta se a falha é sensor, comunicação ou placa externa"], ["Desconecte os dois sensores NTC e meça a resistência em kΩ", "Sensor em curto (0 Ω) ou aberto trava a placa imediatamente"], ["Meça com multímetro a tensão pulsante entre os bornes 2(N) e S", "Tensão oscilante mostra que as duas placas estão conversando"], ["Observe o LED de diagnóstico piscando na placa da condensadora", "A contagem de piscadas do LED externo revela o defeito exato do Inverter"], ["Teste o ventilador e as bobinas U-V-W do compressor na condensadora", "Curto no compressor ou ventilador queima o IPM da placa nova"]],
+  vc: [2, 1, 4, 3, 5],
+  proximo: [["o código aponta sensor NTC fora da faixa", "Confira a tabela em kΩ e substitua o sensor defeituoso", "sensor_ntc"], ["o código aponta comunicação (E1/E5/E202)", "Elimine emendas no cabo S ou repare a fonte da placa", "reparo_placa"], ["a placa externa queimou o módulo IPM", "Teste o compressor e orce reparo ou troca da placa Inverter", "placa_nova"]],
+  antes: "Erro de comunicação quase sempre é cabo com emenda oxidada, borne frouxo ou fonte da placa externa morta. Nunca troque placa sem medir o fio S primeiro." },
+{ id: 'S-04', img: 's04', bloco: "HIGIENE", blocos: ["b4"], titulo: "Mau cheiro forte ao ligar o ar", sub: "Cheiro de mofo, azedo ou esgoto saindo junto com o vento.",
+  chips: ["Todos", "Higienização", "Inspeção visual"],
+  busca: "mau cheiro forte ao ligar cheiro ruim mofo azedo esgoto fedor fungo biofilme serpentina agua parada lodo bandeja turbina mofada filtro saturado dreno ralo sem sifao",
   alvos: [[36.2, 7.7], [35.1, 83.2], [65.9, 7.7], [10.5, 8.0], [93.5, 73.9]], foco: [[34.79, 21.23], [37.97, 70.93], [63.36, 23.4], [12.49, 23.13], [88.62, 79.09]],
-  causas: [['Biofilme na serpentina', 'higienizacao'], ['Turbina com mofo', 'higienizacao'], ['Água parada na bandeja', 'dreno_isol'], ['Filtro sujo e úmido', 'higienizacao'], ['Dreno no esgoto sem sifão', 'dreno_isol']],
-  verifs: [['Inspecione a serpentina da evaporadora com lanterna', 'Mancha escura entre as aletas é biofilme e solta cheiro de mofo'], ['Confira se há água parada na bandeja', 'Água parada apodrece e o cheiro sai junto com o ar'], ['Inspecione as pás da turbina', 'Crosta escura nas pás espalha mofo pela sala'], ['Retire o filtro e veja a tela contra a luz', 'Filtro com poeira e gordura segura umidade e cheiro'], ['Veja onde a mangueira do dreno termina', 'Dreno ligado ao esgoto sem sifão puxa cheiro de esgoto para dentro']],
-  vc: [1, 3, 2, 4, 5],
-  proximo: [['há biofilme na serpentina ou na turbina', 'Faça a higienização completa com desmontagem', 'higienizacao'], ['há água parada na bandeja', 'Desobstrua e nivele o dreno', 'dreno_isol'], ['o cheiro é de esgoto', 'Refaça a saída do dreno com sifão ou fora do esgoto', 'dreno_isol']],
-  antes: 'Spray perfumado só mascara o cheiro por alguns dias. Sem limpar serpentina, turbina e bandeja, o cliente chama de volta.' },
-{ id: 'S-06', img: 's06', bloco: 'VENTILAÇÃO', blocos: ['b1', 'b5'], rascunho: true, titulo: 'Ventilador interno parado', sub: 'O aparelho liga e o compressor funciona, mas a turbina da evaporadora não gira.',
-  chips: ['Todos', 'Ventilação', 'Multímetro'],
-  busca: 'ventilador interno parado turbina nao gira motor ventilador capacitor do motor queimado bucha mancal travada conector placa evaporadora',
+  causas: [["Fungo e biofilme acumulados na serpentina úmida", "higienizacao"], ["Água parada com lodo na bandeja de dreno", "higienizacao"], ["Crosta de poeira mofada nas pás da turbina", "higienizacao"], ["Tela do filtro saturada de poeira e gordura", "limpeza_simples"], ["Mangueira de dreno ligada direto em ralo sem sifão", "dreno_isol"]],
+  verifs: [["Inspecione as aletas de alumínio da serpentina procurando manchas escuras", "Biofilme úmido no alumínio solta cheiro azedo assim que o compressor parte"], ["Verifique se há água parada acumulada no fundo da calha de dreno", "Água empoçada apodrece e contamina todo o ar que passa pela máquina"], ["Olhe as pás da turbina cilíndrica procurando crosta aveludada", "Turbina mofada joga esporos e mau cheiro direto no rosto do cliente"], ["Avalie a saturação das telas de filtro da evaporadora", "Filtro entupido retém umidade e gordura dentro do gabinete"], ["Siga a ponta da mangueira de dreno até o ponto de descarte", "Mangueira enfiada em ralo sem sifão puxa ar de esgoto para dentro da sala"]],
+  vc: [1, 2, 3, 4, 5],
+  proximo: [["há biofilme na serpentina, calha e turbina", "Orce higienização técnica completa com bactericida", "higienizacao"], ["o dreno está conectado direto no ralo", "Separe o dreno do ralo ou instale sifão hidráulico", "dreno_isol"], ["apenas os filtros estão sujos superficialmente", "Lave os filtros e aplique higienizador técnico", "limpeza_simples"]],
+  antes: "Spray perfumado no filtro só disfarça o cheiro por 2 horas. Para resolver de verdade, tem que lavar a turbina e a bandeja de dreno ou separar o dreno do ralo." },
+{ id: 'S-06', img: 's06', bloco: "VENTILAÇÃO", blocos: ["b1", "b5"], titulo: "Ventilador da evaporadora não gira", sub: "O aparelho liga, mas não sai vento nenhum pela unidade interna.",
+  chips: ["Todos", "Ventilação", "Multímetro"],
+  busca: "ventilador da evaporadora nao gira nao sai vento turbina presa pesada capacitor do ventilador fraco placa conector motor bobina aberta fusivel termico bucha mancal travado",
   alvos: [[31.8, 38.2], [63.1, 5.4], [81.9, 5.4], [71.9, 92.5], [3.1, 41.3]], foco: [[32.86, 50.08], [65.19, 19.07], [79.83, 19.07], [68.34, 79.03], [7.02, 51.63]],
-  causas: [['Capacitor do motor ventilador fraco', 'cap_partida'], ['Turbina travada por sujeira ou bucha', 'higienizacao'], ['Motor ventilador queimado', 'motor_vent'], ['Bucha do mancal seca ou gasta', 'motor_vent'], ['Placa sem saída para o motor', 'reparo_placa']],
-  verifs: [['Com o aparelho desligado, gire a turbina com a mão', 'Turbina presa ou dura aponta bucha ou sujeira travando'], ['Teste o capacitor do motor ventilador com o capacímetro', 'Capacitor fraco deixa o motor zumbindo sem girar'], ['Meça a tensão no conector do motor na placa', 'Tensão chegando e motor parado condena o motor'], ['Meça a resistência dos enrolamentos do motor', 'Enrolamento aberto mostra motor queimado'], ['Confira a bucha do mancal do lado oposto ao motor', 'Bucha seca trava a turbina e esquenta o motor']],
-  vc: [2, 1, 5, 3, 4],
-  proximo: [['a turbina está presa', 'Limpe a turbina e lubrifique ou troque a bucha', 'motor_vent'], ['o capacitor está fraco', 'Troque o capacitor do motor ventilador', 'cap_partida'], ['chega tensão e o motor não gira', 'Orce a troca do motor ventilador', 'motor_vent']],
-  antes: 'Antes de condenar o motor, gire a turbina com a mão e teste o capacitor. Turbina presa queima motor novo também.' },
-{ id: 'S-07', img: 's07', bloco: 'COMANDO', blocos: ['b6'], rascunho: true, titulo: 'Controle não responde', sub: 'O aparelho não obedece ao controle remoto: não liga, não muda a temperatura nem o modo.',
-  chips: ['Todos', 'Comando', 'Câmera do celular'],
-  busca: 'controle nao responde controle remoto nao funciona pilha fraca invertida infravermelho receptor sensor ir camera celular botao auto emergencia',
+  causas: [["Turbina presa ou pesada sem conseguir partir", "motor_vent"], ["Capacitor de partida do ventilador fraco na placa", "reparo_placa"], ["Falta de tensão no conector do motor na placa", "reparo_placa"], ["Motor ventilador da evaporadora com bobina aberta", "motor_vent"], ["Bucha ou mancal do lado esquerdo ressecado ou travado", "motor_vent"]],
+  verifs: [["Com o aparelho desligado, gire a turbina manualmente", "Se girar livre e leve, a parte mecânica está boa e o defeito é elétrico"], ["Inspecione e meça o capacitor retangular do ventilador (1,2 a 2,5 µF) na placa", "Capacitor esgotado deixa o motor roncando sem força para girar"], ["Meça com multímetro a tensão nos pinos do conector do motor na placa", "Presença de tensão na placa + motor parado confirma falha no motor"], ["Meça a continuidade das bobinas do motor ventilador pelo chicote", "Bobina aberta ou fusível térmico interno queimado exige troca do motor"], ["Verifique a bucha de borracha do mancal esquerdo da turbina", "Bucha colada de graxa velha trava o eixo na hora da partida"]],
+  vc: [1, 2, 3, 4, 5],
+  proximo: [["a turbina embala ao receber leve impulso", "Substitua o capacitor do ventilador na placa interna", "reparo_placa"], ["chega tensão da placa e o motor não gira", "Substitua o motor ventilador da evaporadora", "motor_vent"], ["o eixo está travado na bucha lateral", "Desmonte, limpe e substitua a bucha do mancal", "motor_vent"]],
+  antes: "Sempre faça o teste do impulso na turbina antes de condenar o motor: 7 em cada 10 motores internos que \"param de girar\" são apenas o capacitor de 1,5 µF fraco na placa." },
+{ id: 'S-07', img: 's07', bloco: "COMANDO", blocos: ["b6"], titulo: "Controle remoto não responde", sub: "Você aperta os botões do controle e a máquina não apita nem obedece.",
+  chips: ["Todos", "Comando", "Câmera do celular"],
+  busca: "controle remoto nao responde nao apita nao obedece sem emissao tecla travada pilhas fracas molas oxidadas zinabre led emissor infravermelho queimado receptor display botao auto camera celular",
   alvos: [[6.5, 50.3], [26.1, 83.2], [73.4, 76.2], [75.4, 6.1], [90.7, 65.8]], foco: [[9.74, 56.23], [30.01, 83.74], [68.61, 82.89], [77.56, 17.29], [88.95, 56.7]],
-  causas: [['Pilhas fracas ou invertidas', 'visita_diag'], ['Controle remoto com defeito', 'visita_diag'], ['Receptor infravermelho com defeito', 'reparo_placa'], ['Teclado do controle gasto', 'visita_diag'], ['Placa da evaporadora sem comando', 'reparo_placa']],
-  verifs: [['Aperte os botões e veja se o visor do controle acende', 'Visor apagado ou fraco aponta pilha ou controle com defeito'], ['Troque as pilhas por novas e confira a polaridade', 'Pilha fraca ou invertida é a causa mais comum'], ['Aponte o controle para a câmera do celular e aperte um botão', 'Luz piscando na tela prova que o controle está transmitindo'], ['Inspecione o receptor infravermelho e o conector na placa', 'Receptor solto ou oxidado não recebe o sinal do controle'], ['Ligue pelo botão AUTO ou de emergência do aparelho', 'Ligando pelo botão, a placa está boa e o problema é controle ou receptor']],
-  vc: [4, 1, 2, 3, 5],
-  proximo: [['o controle não aparece na câmera', 'Troque as pilhas ou o controle remoto', 'visita_diag'], ['o controle transmite e o aparelho não recebe', 'Troque o receptor infravermelho da placa', 'reparo_placa'], ['nem o botão AUTO liga o aparelho', 'Abra a ficha D-023 (não liga)', null, 'D-023']],
-  antes: 'Controle que não responde quase nunca é placa. Teste pilha, câmera do celular e botão AUTO antes de orçar placa.' },
+  causas: [["Controle remoto sem emissão ou com tecla travada", "visita_diag"], ["Pilhas fracas ou molas oxidadas por vazamento", "visita_diag"], ["LED emissor infravermelho do controle queimado", "visita_diag"], ["Placa receptora do display da evaporadora com defeito", "reparo_placa"], ["Microprocessador travado exigindo teste no botão AUTO", "reparo_placa"]],
+  verifs: [["Aponte o controle para a evaporadora de perto e observe se há sinal", "Teste a menos de 1 metro alinhado com o visor frontal da máquina"], ["Abra a tampa traseira do controle, teste as pilhas e limpe as molas", "Zinabre verde nas molas corta a energia do controle ao apertar o botão"], ["Aponte a frente do controle para a câmera do celular e aperte ON/OFF", "Se o LED piscar luz azulada ou roxa na tela do celular, o controle está bom"], ["Inspecione o sensor receptor na plaquinha do display da evaporadora", "Se o controle pisca na câmera mas a máquina não apita, o receptor falhou"], ["Aperte o botão manual AUTO dentro da tampa da evaporadora", "Se ligar no botão AUTO, a placa principal está perfeita e o defeito é só recepção"]],
+  vc: [1, 2, 3, 4, 5],
+  proximo: [["o controle não pisca na câmera do celular", "Troque as pilhas, limpe os contatos ou troque o controle", "visita_diag"], ["o controle pisca e a máquina liga no botão AUTO", "Recupere ou substitua a placa receptora do display", "reparo_placa"], ["não liga nem pelo botão manual AUTO", "Abra a ficha D-023 (Não liga, display apagado)", "fusivel_eletrica", "D-023"]],
+  antes: "O teste da câmera do celular resolve a dúvida em 5 segundos na frente do cliente: mostrou luz piscando na câmera, o controle está bom e o defeito é no receptor da máquina." },
 ];
 
 const ICO = (f, n) => `imagens/icones/${f.img}_${n}.webp`;
@@ -475,6 +480,12 @@ const IMG = (f) => `imagens/${f.img}.webp`;
 const EMBED = (() => { try { return new URLSearchParams(location.search).get('embed') === '1' && window.parent !== window; } catch (e) { return false; } })();
 if (EMBED) document.documentElement.dataset.embed = '1';
 const visor = $('#visor');
+// Trava de licença ligada à flag do licenca-gelopro.js (BLINDADO só com ?testarSeguranca=1). Dentro do app (?embed=1) quem trava é o portão do app.
+const LICENCA = window.GeloProLicenca;
+const LIVRE = (() => { if (EMBED || !LICENCA || !LICENCA.blindado) return true; try { const c = LICENCA.cracha(); return !!(c && LICENCA.confere(c) && !c.bloqueado && c.plano); } catch (e) { return false; } })();
+const AMOSTRA = 'D-001';
+const liberado = (id) => LIVRE || id === AMOSTRA;
+const APP_URL = '../app/GeloPro%20App%20v5.2.dc.html' + (LICENCA && LICENCA.blindado ? '?testarSeguranca=1' : '');
 const S = { idx: 0, sel: 0, estado: {}, defeito: {} };
 const fichaAtual = () => F[S.idx];
 const servicoAtual = () => { const f = fichaAtual(), c = S.defeito[f.id]; return f.causas[(c || 1) - 1][1]; };
@@ -485,10 +496,11 @@ const lupaEstilo = (img, x, y) => `background-image:url('${img}');background-pos
 
 // ───────────── Ficha em 7 camadas ─────────────
 function montarFicha(i) {
+  if (!liberado(F[i].id)) { if (!visor.querySelector('.ficha')) montarFicha(F.findIndex(f => f.id === AMOSTRA)); return convite(`A ficha ${F[i].id} (${F[i].titulo}) faz parte do Plano Completo.`); }
   S.idx = i; S.sel = 0; const f = F[i]; S.estado[f.id] = S.estado[f.id] || {};
   const st = S.estado[f.id], conf = S.defeito[f.id];
   const chipK = ['Sistema', 'Aplicação', 'Ferramenta'], chipI = ['sistema', 'aplicacao', 'ferramenta'];
-  visor.innerHTML = `<article class="ficha" data-ficha="${f.id}" ${f.rascunho ? 'data-rascunho="1"' : ''}>
+  visor.innerHTML = `<article class="ficha" data-ficha="${f.id}">
     <div class="c1"><span>+14 Fichas mestras · Ar-condicionado split</span><b>${f.id} · ${f.bloco}</b></div>
     <div class="c2"><h1>${esc(f.titulo)}</h1><p>${esc(f.sub)}</p></div>
     <div class="c3">${f.chips.map((v, k) => `<div class="chip"><span class="tile"><img src="${ICO(f, chipI[k])}" alt=""></span><span class="t"><span class="k">${chipK[k]}</span><span class="v">${caixaAlta(v)}</span></span></div>`).join('')}</div>
@@ -576,6 +588,16 @@ function abrirFim(f) {
   });
 }
 
+// Convite de ativação: aparece com ?testarSeguranca=1 para quem não tem crachá ativo no aparelho.
+function convite(motivo) {
+  abrir(`<div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#92400E">PLANO COMPLETO</div><h3>Ative o GeloPRO para liberar tudo</h3>
+    <div class="sub">${esc(motivo)} A D-001 fica aberta como amostra grátis. Com o acesso ativo você libera as 14 fichas, os 6 bônus, o Orçamento Nº 1001 com Pix e o Laudo em PDF.</div>
+    <div class="pilha"><button class="tecla verde" data-a="ativar">${ic('check', '#FFFFFF', 20)}<span>Ativar meu acesso</span></button><button class="tecla" data-a="amostra"><span>Ver a amostra grátis D-001</span></button></div>`, (m) => {
+    $('[data-a=ativar]', m).addEventListener('click', () => { location.href = APP_URL; });
+    $('[data-a=amostra]', m).addEventListener('click', () => { fechar(); montarFicha(F.findIndex(f => f.id === AMOSTRA)); });
+  });
+}
+
 // Índice: as 14 fichas mestras por bloco, com miniatura, código, bloco, sintoma e busca.
 let bloco = 'todos', termo = '';
 function abrirIndice() {
@@ -587,7 +609,7 @@ function abrirIndice() {
       const t = norm(termo.trim());
       const ok = (f) => { const txt = norm(`${f.id} ${f.titulo} ${f.sub} ${f.busca} ${f.bloco}`); return (bloco === 'todos' || f.blocos.includes(bloco)) && (!t || txt.includes(t) || t.split(/\s+/).every(w => txt.includes(w))); };
       const grupos = BLOCOS.slice(1).map(([id, rot]) => [rot, F.filter(f => f.blocos[0] === id && ok(f))]).filter(g => g[1].length);
-      l.innerHTML = grupos.length ? grupos.map(([rot, fs]) => `<div class="grupo-h">${rot} · ${fs.length}</div>${fs.map(f => `<button class="item-ficha${F.indexOf(f) === S.idx ? ' atual' : ''}" data-i="${F.indexOf(f)}"><span class="ico"><img src="${IMG(f)}" alt="" loading="lazy"></span><span><span class="cod">${f.id} · ${f.bloco}</span><br><span class="nm">${esc(f.titulo)}</span><br><span class="sb">${esc(f.sub)}</span></span></button>`).join('')}`).join('')
+      l.innerHTML = grupos.length ? grupos.map(([rot, fs]) => `<div class="grupo-h">${rot} · ${fs.length}</div>${fs.map(f => `<button class="item-ficha${F.indexOf(f) === S.idx ? ' atual' : ''}" data-i="${F.indexOf(f)}"><span class="ico"><img src="${IMG(f)}" alt="" loading="lazy"></span><span><span class="cod">${f.id} · ${f.bloco}</span><br><span class="nm">${esc(f.titulo)}</span><br><span class="sb">${esc(f.sub)}</span>${liberado(f.id) ? '' : '<br><span class="tranca">PLANO COMPLETO</span>'}</span></button>`).join('')}`).join('')
         : `<div class="vazio">Nenhuma ficha com esse sintoma.<div class="pilha"><button class="tecla" data-a="todas"><span>Ver as 14 fichas</span></button><button class="tecla clara" data-a="cod"><span>Buscar nos códigos de erro</span></button></div></div>`;
       $$('[data-i]', l).forEach(b => b.addEventListener('click', () => { fechar(); montarFicha(+b.dataset.i); }));
       const a = $('[data-a=todas]', l); if (a) a.addEventListener('click', () => { termo = ''; bloco = 'todos'; inp.value = ''; $$('.blocos button', m).forEach(x => x.setAttribute('aria-pressed', x.dataset.b === 'todos')); render(); });
@@ -635,6 +657,7 @@ async function compartilharOuZap(r, doc, tel) {
 }
 function abrirOrcamento(servico) {
   const f = fichaAtual();
+  if (!LIVRE) return convite('O Orçamento Nº 1001 com Pix faz parte do Plano Completo.');
   // Dentro do app, o pedido vai para o fechamento do próprio app (abrirFech): é o mesmo motor, com o Cofre e a licença do aparelho.
   if (EMBED) { window.parent.postMessage({ gelopro: 'orcar', servicos: [servico].filter(Boolean), ficha: f.id }, location.origin === 'null' ? '*' : location.origin); return; }
   const tit = titularSalvo(), numPrev = proximoNumero(false);
@@ -730,6 +753,7 @@ const BONUS = [
   ['Tabela de Preços 2026 + Orçamento PDF Nº 1001', 'Os 16 serviços por porte, com custo de peça e orçamento em 1 toque'],
 ];
 function abrirMenuBonus() {
+  if (!LIVRE) return convite('Os 6 Bônus & Tabelas fazem parte do Plano Completo.');
   abrir(`<h3>6 Bônus &amp; Tabelas do Plano Completo</h3><div class="sub">Tudo lido da base técnica conferida do GeloPRO.</div><div class="menu-bonus">${BONUS.map((b, i) => `<button data-b="${i}"><span class="n">${i + 1}</span><span>${esc(b[0])}<small>${esc(b[1])}</small></span></button>`).join('')}</div>`,
     (m) => $$('[data-b]', m).forEach(b => b.addEventListener('click', () => abrirBonus(+b.dataset.b))));
 }
@@ -740,6 +764,7 @@ const recorte = (img, ponto) => { const f = fichaPorImg(img), [fx, fy] = f.foco[
 // Cada etapa do Inverter com o recorte da arte que mostra o ponto de medição.
 const INV_IMG = { seguranca: ['d087', 4], tensao_pn: ['d040', 5], ipm: ['d087', 4], compressor: ['d040', 1], motor_dc: ['s06', 4], sensores: ['d087', 2], fixacao_ipm: ['d087', 4] };
 function abrirBonus(i) {
+  if (!LIVRE) return convite('Os 6 Bônus & Tabelas fazem parte do Plano Completo.');
   if (i === 5) return bonusPrecos();
   if (i === 4) return bonusLaudo();
   if (i === 3) return bonusProtocolo();
@@ -962,7 +987,8 @@ $('#ic-d1').innerHTML = ic('lista', '#FFFFFF', 20); $('#ic-d2').innerHTML = ic('
 const aplicarTema = (t) => { document.documentElement.dataset.tema = t; guardar('guiapro.tema', t); };
 aplicarTema(ler('guiapro.tema') === 'lua' ? 'lua' : 'sol');
 $('#b-tema').addEventListener('click', () => aplicarTema(document.documentElement.dataset.tema === 'lua' ? 'sol' : 'lua'));
-$('#b-voltar').addEventListener('click', () => { if (EMBED) window.parent.postMessage({ gelopro: 'fechar' }, location.origin === 'null' ? '*' : location.origin); });
+// App: dentro do app fecha o visualizador; aberto direto em /guia-pro/, vai para a Home do GeloPro App v5.2.
+$('#b-voltar').addEventListener('click', () => { if (EMBED) window.parent.postMessage({ gelopro: 'fechar' }, location.origin === 'null' ? '*' : location.origin); else location.href = APP_URL; });
 $('#b-ficha').addEventListener('click', abrirIndice);
 $('#d-indice').addEventListener('click', abrirIndice);
 $('#d-bonus').addEventListener('click', abrirMenuBonus);
