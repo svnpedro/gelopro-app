@@ -1,199 +1,180 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-tema="sol">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#091e42">
-<title>GeloPRO · Guia Pro — Comparativo de Entrada</title>
+<title>GeloPRO · Guia de Diagnóstico</title>
 <!--
-  Guia Pro (v01-polo): Prancha de Diagnóstico Interativa dentro da moldura oficial do app GeloPRO
-  (topo fixo 52px + corpo rolável com chassi de 8px + dock fixo 60px) e 3 variações de entrada (V1 · V2 · V3).
-  Arquivo isolado: lê imagens de ../app/imagens/cenas/ e ../app/marca/ sem alterar nada de ../app/.
-  Nenhum equipamento desenhado em SVG: os pontos ①②③ usam as cenas reais .webp (pares Normal ✓ × Defeito ✗).
-  Imagem principal opcional: se existir guia-pro/imagens/prancha_NN.webp (ou .png), ela assume o quadro principal.
+  Guia Pro (v01-polo) — Tela única: ficha de diagnóstico em 7 camadas (DNA da prancha de fundo branco do Pedro)
+  dentro da moldura do GeloPRO v148 (chassi acetinado, topo 50px #091E42, dock 3D 58px).
+  Isolado: lê ../app/ref, ../app/marca, ../app/fontes e ../app/imagens/cenas sem alterar nada de ../app/.
+  Sem emoji e sem equipamento desenhado em SVG: equipamento só em arte .webp (imagens/) ou cena real; SVG só para ícone de interface 24×24 (class="ic").
 -->
 <style>
+@font-face{font-family:'Roboto';font-style:normal;font-display:swap;font-weight:400 800;src:url(../app/fontes/roboto-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Roboto';font-style:normal;font-display:swap;font-weight:400 800;src:url(../app/fontes/roboto-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2113,U+A720-A7FF;}
+@font-face{font-family:'Figtree';font-style:normal;font-display:swap;font-weight:700 800;src:url(../app/fontes/figtree-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Figtree';font-style:normal;font-display:swap;font-weight:700 800;src:url(../app/fontes/figtree-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2113,U+A720-A7FF;}
+@font-face{font-family:'Roboto Mono';font-style:normal;font-display:swap;font-weight:600 800;src:url(../app/fontes/roboto-mono-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+2212;}
+
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#091E42;color:#0F172A;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
-body{overflow:hidden}
+:root{--f-tit:'Figtree','Roboto',system-ui,sans-serif;--f-txt:'Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--f-mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;
+  --azul:#1D9BF0;--navy:#091E42;--folha:#F4F6F9;--cartao:#FFFFFF;--linha:#CBD5E1;--linha2:#E2E8F0;--txt:#0F172A;--txt2:#334155;--txt3:#64748B;--sel:#E0F2FE;--cab-claro:#DCE3EC}
+html[data-tema="lua"]{--folha:#0F172A;--cartao:#111C2E;--linha:#24466F;--linha2:#1E2E48;--txt:#E2E8F0;--txt2:#CBD5E1;--txt3:#94A3B8;--sel:#173463;--cab-claro:#19365C}
+html,body{height:100%}
+body{overflow:hidden;font-family:var(--f-txt);color:var(--txt);background-color:#c1c0c1;background-image:url("../app/ref/acetinado-sedoso.svg");background-repeat:no-repeat;background-position:center;background-size:100% 100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input,select{font:inherit;color:inherit}
-:focus-visible{outline:3px solid #67C6FF;outline-offset:2px}
 img{display:block;max-width:100%}
+:focus-visible{outline:3px solid #67C6FF;outline-offset:2px}
+.ic{display:block;flex-shrink:0}
 
-/* ── Moldura do app: topo 52px · corpo rolável · dock 60px ── */
-#topo{position:fixed;top:0;left:0;right:0;height:52px;z-index:40;display:flex;align-items:center;gap:5px;padding:0 6px;background:linear-gradient(180deg,#0E2A57 0%,#091E42 100%);color:#FFFFFF}
-#topo::after,#dock::before{content:"";position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,#8E959E 0%,#F3F4F6 30%,#D4D4D4 55%,#F8FAFC 75%,#8E959E 100%)}
-#topo::after{bottom:0}
-#dock::before{top:0}
-.cracha{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.cracha img.mascote{width:30px;height:30px;border-radius:9px;background:#0A182D;border:1.5px solid #D4D4D4;padding:1px}
-.cracha img.wordmark{height:17px;width:auto;display:none}
-.indice{flex-shrink:0;height:34px;padding:0 6px;border-radius:8px;background:#19365C;border:1px solid #24466F;font-size:10.5px;font-weight:800;line-height:1.1;text-align:center}
-.seletor{flex:1;min-width:0;display:flex;align-items:center;gap:2px;height:36px;background:#0A182D;border:1px solid #24466F;border-radius:10px;padding:0 2px}
-.seletor .seta{flex-shrink:0;width:22px;height:30px;border-radius:7px;font-size:18px;font-weight:800;color:#67C6FF;line-height:1}
-.seletor .atual{flex:1;min-width:0;height:34px;display:flex;align-items:center;justify-content:center;gap:3px;font-size:10.5px;font-weight:800;line-height:1.15;padding:0 1px;text-align:center}
-.seletor .atual span{overflow:hidden;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
-.seletor .atual b{color:#67C6FF;flex-shrink:0}
-.variacoes{flex-shrink:0;display:flex;background:#0A182D;border:1px solid #24466F;border-radius:8px;padding:2px}
-.variacoes button{width:22px;height:26px;border-radius:6px;font-size:11px;font-weight:900;color:#94A3B8}
-.variacoes button[aria-pressed="true"]{background:linear-gradient(180deg,#F8FAFC,#D4D4D4);color:#091E42}
-#corpo{position:fixed;top:52px;left:0;right:0;bottom:calc(60px + env(safe-area-inset-bottom));z-index:10;background:#E9EEF5;border-left:8px solid #D4D4D4;border-right:8px solid #D4D4D4;box-shadow:inset 1px 0 0 #A3A3A3,inset -1px 0 0 #A3A3A3;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-#dock{position:fixed;left:0;right:0;bottom:0;z-index:40;height:calc(60px + env(safe-area-inset-bottom));padding:7px 8px calc(6px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:6px;background:linear-gradient(180deg,#0E2A57 0%,#091E42 100%)}
-.doc{display:flex;align-items:center;justify-content:center;gap:5px;border-radius:11px;background:#19365C;border:1px solid #24466F;color:#FFFFFF;font-size:11.5px;font-weight:800;line-height:1.15;text-align:left;padding:0 6px;min-width:0}
-.doc .ic{font-size:17px;flex-shrink:0}
-.doc span:last-child{min-width:0}
-.doc.verde{background:linear-gradient(180deg,#1ED41E 0%,#00B100 55%,#009A00 100%);border:1px solid #007A00;box-shadow:0 3px 0 #006400,inset 0 1px 0 rgba(255,255,255,.45);text-shadow:0 1px 0 rgba(0,0,0,.25);transform:translateY(-2px)}
-.doc.verde:active{transform:translateY(0);box-shadow:0 1px 0 #006400,inset 0 1px 0 rgba(255,255,255,.35)}
+/* ── Moldura GeloPRO: topo 50px · visor rolável no chassi acetinado · dock 3D 58px ── */
+#topo{position:fixed;top:0;left:0;right:0;height:50px;z-index:40;display:flex;align-items:center;gap:8px;padding:0 10px;background:#091E42;color:#FFFFFF;box-shadow:0 2px 0 #D4D4D4,0 3px 6px rgba(4,12,28,.35)}
+.marca{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.marca .mascote{width:30px;height:30px;border-radius:8px;background:#0A182D;border:1.5px solid #D4D4D4;padding:1px}
+.marca .wordmark{height:15px;width:auto}
+.ficha-sel{flex:1;min-width:0;height:38px;display:flex;align-items:center;gap:6px;padding:0 8px;border-radius:9px;background:linear-gradient(180deg,#0f1724 0%,#1a2333 100%) #1d2430;border:2px solid #071224;box-shadow:inset 0 3px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.35);text-align:left}
+.ficha-sel .txt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.1}
+.ficha-sel .cod{font-family:var(--f-mono);font-size:10px;font-weight:800;color:#67C6FF;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ficha-sel .nome{font-family:var(--f-tit);font-size:12.5px;font-weight:800;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tema{flex-shrink:0;position:relative;width:52px;height:28px;border-radius:999px;background:#0A182D;border:2px solid #24466F;display:flex;align-items:center;justify-content:space-between;padding:0 5px}
+.tema .bola{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#F8FAFC,#D4D4D4);box-shadow:0 1px 2px rgba(0,0,0,.5);transition:transform .2s}
+html[data-tema="lua"] .tema .bola{transform:translateX(24px)}
+#visor{position:fixed;top:50px;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:10;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:10px 8px 16px}
+#dock{position:fixed;left:0;right:0;bottom:0;z-index:40;height:calc(58px + env(safe-area-inset-bottom));padding:6px 8px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr 1.45fr;gap:7px;background:#091E42;box-shadow:0 -2px 0 #D4D4D4}
+.tecla{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;border-radius:11px;color:#FFFFFF;font-family:var(--f-tit);font-size:11.5px;font-weight:800;line-height:1.1;text-align:left;padding:0 7px;
+  background:linear-gradient(180deg,#28559e 0%,#1c3f7a 54%,#122a54 100%);border:2px solid #071633;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633,0 5.5px 0 rgba(255,255,255,.68),0 8px 14px rgba(4,12,28,.42);transition:transform .08s,box-shadow .08s}
+.tecla:active{transform:translateY(3px);box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 1px 0 #071633,0 2px 0 rgba(255,255,255,.5)}
+.tecla.verde{background:linear-gradient(180deg,#00b100 0%,#009900 54%,#006b00 100%);border-color:#003d00;box-shadow:inset 0 2px 1px rgba(187,247,208,.48),inset 0 -4px 6px rgba(0,35,0,.58),0 4px 0 #003d00,0 5.5px 0 rgba(255,255,255,.68),0 8px 14px rgba(0,40,0,.38)}
+.tecla.verde:active{box-shadow:inset 0 2px 1px rgba(187,247,208,.48),inset 0 -4px 6px rgba(0,35,0,.58),0 1px 0 #003d00,0 2px 0 rgba(255,255,255,.5)}
+.tecla.vermelha{background:linear-gradient(180deg,#DC2626 0%,#B91C1C 54%,#7F1D1D 100%);border-color:#450A0A;box-shadow:inset 0 2px 1px rgba(254,202,202,.45),inset 0 -4px 6px rgba(40,0,0,.55),0 4px 0 #450A0A,0 5.5px 0 rgba(255,255,255,.6),0 8px 14px rgba(40,0,0,.35)}
+.tecla span{min-width:0}
+.tecla span:has(> .ic){flex-shrink:0;min-width:auto;display:flex}
 
-/* ── V1: Painel de bancada (grade com miniatura real) ── */
-.v-topo{padding:10px 10px 6px;background:#F4F6F9;border-bottom:1px solid #E2E8F0;position:sticky;top:0;z-index:4}
-.busca{display:flex;align-items:center;gap:8px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:12px;padding:0 12px;height:44px}
-.busca:focus-within{border-color:#091E42}
-.busca input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:15px}
-.pilulas{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none}
-.pilulas::-webkit-scrollbar{display:none}
-.pilula{flex-shrink:0;padding:7px 11px;border-radius:999px;background:#FFFFFF;border:1px solid #CBD5E1;font-size:12.5px;font-weight:700;color:#334155;white-space:nowrap}
-.pilula[aria-pressed="true"]{background:#091E42;border-color:#091E42;color:#FFFFFF}
-.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding:10px 10px 24px;background:#F4F6F9}
-.cartao{background:#FFFFFF;border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;text-align:left;display:flex;flex-direction:column;box-shadow:0 1px 2px rgba(15,23,42,.05)}
-.cartao:active{transform:scale(.985)}
-.cartao .mini{position:relative;aspect-ratio:1/1;background:#F8FAFC;overflow:hidden}
-.cartao .mini img{width:100%;height:100%;object-fit:cover}
-.cartao .mini .pct{position:absolute;right:6px;bottom:6px;background:#E11D48;color:#FFFFFF;font-size:12px;font-weight:900;border-radius:7px;padding:3px 6px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-.cartao .corpo{padding:8px 10px 10px;display:flex;flex-direction:column;flex:1;gap:6px}
-.cartao .num{font-size:10.5px;font-weight:900;color:#64748B;letter-spacing:.06em}
-.cartao h3{font-size:13.5px;line-height:1.25;color:#091E42}
-.barra-mini{display:flex;height:7px;border-radius:4px;overflow:hidden;background:#E2E8F0;margin-top:auto}
-.legenda-mini{font-size:11px;color:#475569;line-height:1.3}
-.vazio{grid-column:1/-1;background:#FFFFFF;border:1px dashed #CBD5E1;border-radius:14px;padding:16px;text-align:center;color:#334155;font-size:14px}
-.vazio .acoes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+/* ── Ficha em 7 camadas ── */
+.ficha{max-width:760px;margin:0 auto;background:var(--folha);border-radius:14px;overflow:hidden;box-shadow:0 2px 0 rgba(255,255,255,.7),0 8px 22px rgba(4,12,28,.28);border:2px solid #071633}
+.c1{display:flex;justify-content:space-between;gap:10px;background:#091E42;color:#FFFFFF;padding:7px 12px;font-family:var(--f-tit);font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
+.c1 span{min-width:0}
+.c1 b{white-space:nowrap}
+.c2{padding:12px 12px 4px}
+.c2 h1{font-family:var(--f-tit);font-weight:800;text-transform:uppercase;color:var(--navy);font-size:clamp(30px,9.4vw,62px);line-height:.95;letter-spacing:-.02em}
+html[data-tema="lua"] .c2 h1{color:#FFFFFF}
+.c2 p{font-family:var(--f-txt);font-weight:800;font-size:clamp(15px,4.3vw,24px);line-height:1.2;color:var(--txt);margin-top:6px}
+.c3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 12px 10px}
+.chip{display:flex;align-items:center;gap:6px;min-width:0;background:var(--cartao);border:1.5px solid var(--linha);border-radius:8px;padding:5px 6px}
+.chip .tile{width:34px;height:34px;flex-shrink:0;border-radius:6px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.chip .tile img{max-width:30px;max-height:30px;object-fit:contain}
+.chip .tile img.foto{max-width:none;max-height:none;width:34px;height:34px;object-fit:cover}
+.chip .t{min-width:0;display:flex;flex-direction:column;line-height:1.15}
+.chip .k{font-size:9.5px;font-weight:700;color:var(--txt3);letter-spacing:.04em;text-transform:uppercase}
+.chip .v{font-size:10.5px;font-weight:800;color:var(--txt);overflow-wrap:anywhere}
+.c4{margin:0 12px;background:#FFFFFF;border:1.5px solid var(--linha);border-radius:10px;overflow:hidden}
+.ilustra{position:relative}
+.ilustra img{width:100%;height:auto}
+.alvo{position:absolute;width:12%;max-width:58px;aspect-ratio:1/1;transform:translate(-50%,-50%);border-radius:50%;}
+.alvo::after{content:"";position:absolute;inset:18%;border-radius:50%;border:3px solid #1D9BF0;opacity:0;animation:pulso 1.8s ease-out infinite}
+.alvo.sel::after{border-color:#F59E0B;opacity:1;animation:none;box-shadow:0 0 0 4px rgba(245,158,11,.45),0 0 18px rgba(245,158,11,.75)}
+@keyframes pulso{0%{opacity:.85;transform:scale(.9)}100%{opacity:0;transform:scale(1.7)}}
+.fotos{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px}
+.fotos button{position:relative;border-radius:8px;overflow:hidden;aspect-ratio:1/1;border:2px solid transparent}
+.fotos button img{width:100%;height:100%;object-fit:cover}
+.fotos button.sel{border-color:#F59E0B}
+.fotos .n,.num{display:inline-flex;align-items:center;justify-content:center;font-family:var(--f-tit);font-weight:800;color:#FFFFFF;background:#1D9BF0}
+.fotos .n{position:absolute;right:5px;top:18%;width:28px;height:28px;border-radius:50%;font-size:12.5px;border:2px solid #FFFFFF;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.det{display:none;margin:8px 12px 0;border-radius:12px;background:#0F172A;color:#E2E8F0;padding:11px 12px;font-size:13px;line-height:1.4}
+.det.on{display:block;animation:surge .22s ease-out}
+@keyframes surge{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.det .cab{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.det .cab .num{width:28px;height:28px;border-radius:6px;font-size:13px;flex-shrink:0}
+.det .cab h4{font-family:var(--f-tit);font-size:15px;font-weight:800;color:#FFFFFF;flex:1 1 150px;min-width:0}
+.det .par{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.det .par figure{position:relative;border-radius:8px;overflow:hidden;background:#FFFFFF}
+.det .par img{width:100%;aspect-ratio:1/1;object-fit:cover}
+.det .par figcaption{position:absolute;left:0;right:0;bottom:0;font-size:10.5px;font-weight:800;text-align:center;padding:3px;color:#FFFFFF}
+.det .par .ok figcaption{background:rgba(21,128,61,.92)}
+.det .par .df figcaption{background:rgba(185,28,28,.92)}
+.det dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px}
+.det dt{font-weight:800;white-space:nowrap}
+.det dd{min-width:0}
+.det .esp{margin-top:8px;background:#14532D;color:#DCFCE7;border-radius:8px;padding:7px 9px;font-weight:700}
+.det .fonte{font-size:11px;color:#94A3B8;margin-top:6px}
+.det .teclas{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.det .teclas .tecla{height:46px;font-size:12.5px;justify-content:center;text-align:center}
+.c5{display:grid;grid-template-columns:1fr;gap:10px;padding:12px 12px 0}
+.bloco-h{background:#091E42;color:#FFFFFF;font-family:var(--f-tit);font-weight:800;font-size:14px;letter-spacing:.03em;text-transform:uppercase;padding:6px 10px}
+.freq{display:flex;height:22px;margin:6px 0 4px;border-radius:6px;overflow:hidden;font-size:10.5px;font-weight:800;color:#FFFFFF}
+.freq button{display:flex;align-items:center;justify-content:center;min-width:0;white-space:nowrap;overflow:hidden;padding:0 4px}
+.freq-leg{font-size:10.5px;color:var(--txt3);margin-bottom:2px}
+.causa{display:grid;grid-template-columns:34px 46px 1fr;align-items:center;gap:8px;width:100%;text-align:left;padding:7px 6px;border-bottom:1px solid var(--linha2);border-radius:6px;transition:background .2s}
+.causa .num{width:34px;height:34px;border-radius:5px;font-size:15px}
+.causa .ico{width:46px;height:46px;border-radius:6px;background:#FFFFFF;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.causa .ico img{max-width:44px;max-height:44px;object-fit:contain}
+.causa .ico img.foto{width:46px;height:46px;max-width:none;max-height:none;object-fit:cover}
+.causa .t{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.causa .nm{font-family:var(--f-tit);font-weight:800;font-size:14.5px;color:var(--txt);line-height:1.2}
+.pilula{font-family:var(--f-tit);font-size:10.5px;font-weight:800;letter-spacing:.04em;border-radius:999px;padding:2px 12px;border:1.5px solid var(--linha);color:var(--txt2);background:var(--cartao);white-space:nowrap}
+.pilula.medir{border-color:#F97316;color:#EA580C}
+.pilula.ok{border-color:#16A34A;background:#DCFCE7;color:#14532D}
+.pilula.def{border-color:#DC2626;background:#FEE2E2;color:#7F1D1D}
+.causa.sel,.verif.sel{background:var(--sel)}
+.verifs{position:relative;padding:4px 0 0}
+.verif{position:relative;display:grid;grid-template-columns:40px 1fr;gap:10px;width:100%;text-align:left;padding:7px 6px;border-bottom:1px solid var(--linha2);border-radius:6px;transition:background .2s}
+.verif .bol{position:relative;z-index:1;width:36px;height:36px;border-radius:50%;background:#1D9BF0;color:#FFFFFF;font-family:var(--f-tit);font-weight:800;font-size:13.5px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px var(--folha)}
+.verif.ok .bol{background:#16A34A}.verif.def .bol{background:#DC2626}
+.verif:not(:last-child)::before{content:"";position:absolute;left:23px;top:40px;bottom:-10px;width:3px;background:#1D9BF0}
+.verif .tt{font-family:var(--f-tit);font-weight:800;font-size:14.5px;color:var(--txt);line-height:1.2}
+.verif .ln{display:flex;gap:6px;align-items:flex-start;font-size:13px;color:var(--txt2);margin-top:3px;line-height:1.3}
+.c6{margin:12px 12px 0;border:1.5px solid var(--linha);border-radius:8px;overflow:hidden;background:var(--cartao)}
+.c6 h3{background:var(--cab-claro);color:var(--navy);font-family:var(--f-tit);font-weight:800;font-size:17px;text-transform:uppercase;padding:6px 12px}
+html[data-tema="lua"] .c6 h3{color:#FFFFFF}
+.prox{display:grid;grid-template-columns:1fr 22px 1.15fr;align-items:center;gap:8px;width:100%;text-align:left;padding:8px 12px;border-top:1px solid var(--linha2);font-size:13px}
+.prox .se{font-weight:700;color:var(--txt)}
+.prox .se b{font-weight:800}
+.prox .entao{color:var(--txt2)}
+.prox .preco{display:block;font-size:11.5px;font-weight:800;color:#008A00;margin-top:2px}
+.c7{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:center;margin:12px 12px 0;background:linear-gradient(180deg,#F07A12,#E2650A);border-radius:8px;padding:10px 12px;color:#FFFFFF}
+.c7 .tri{border-right:2px solid rgba(255,255,255,.45);padding-right:10px}
+.c7 b{display:block;font-family:var(--f-tit);font-weight:800;font-size:15px;letter-spacing:.03em;text-transform:uppercase}
+.c7 p{font-size:13px;font-weight:700;line-height:1.35;margin-top:2px}
+.rodape{display:flex;justify-content:space-between;gap:10px;margin-top:12px;background:#091E42;color:#FFFFFF;padding:8px 12px;font-family:var(--f-tit);font-size:11px;font-weight:800;letter-spacing:.03em}
+.rodape span{min-width:0}
 
-/* ── V3: Lista escaneável ── */
-.bonus-linha{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none}
-.bonus-linha::-webkit-scrollbar{display:none}
-.bonus-linha button{flex-shrink:0;font-size:12px;font-weight:800;color:#92400E;background:#FEF3C7;border:1px solid #FDE68A;border-radius:8px;padding:6px 9px;white-space:nowrap}
-.grupo h4{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#475569;padding:7px 12px;background:#F1F5F9;border-top:1px solid #E2E8F0}
-.lista-v3{background:#FFFFFF;padding-bottom:20px}
-.linha-item{display:grid;grid-template-columns:52px 1fr 14px;gap:3px 10px;align-items:center;width:100%;text-align:left;padding:9px 12px;border-bottom:1px solid #F1F5F9;background:#FFFFFF}
-.linha-item:active{background:#F1F5F9}
-.linha-item .foto{grid-row:1/3;width:52px;height:52px;border-radius:10px;overflow:hidden;position:relative;background:#F1F5F9}
-.linha-item .foto img{width:100%;height:100%;object-fit:cover}
-.linha-item .foto b{position:absolute;left:3px;top:3px;background:#091E42;color:#FFFFFF;font-size:10px;border-radius:5px;padding:1px 4px}
-.linha-item .t{font-size:14px;font-weight:800;color:#0F172A;line-height:1.25;min-width:0}
-.linha-item .m{grid-column:2/4;display:flex;gap:5px;flex-wrap:wrap;font-size:11px}
-.linha-item .seta{grid-row:1;grid-column:3;color:#94A3B8;font-size:18px}
-.etq{display:inline-flex;align-items:center;gap:3px;border-radius:5px;padding:2px 6px;font-weight:800;white-space:nowrap}
-.etq.c1{background:#FFE4E6;color:#9F1239}
-.etq.t{background:#FEF3C7;color:#92400E}
-.etq.i{background:#E0F2FE;color:#075985}
-
-/* ── Prancha de Diagnóstico Limpa ── */
-.prancha{max-width:900px;margin:0 auto;padding:8px 6px 22px}
-.p-cab{background:#091E42;color:#FFFFFF;border-radius:14px 14px 0 0;padding:11px 13px}
-.p-etq{font-size:10.5px;font-weight:900;letter-spacing:.08em;color:#67C6FF}
-.p-cab h2{font-size:20px;line-height:1.2;margin-top:3px;letter-spacing:-.01em}
-.p-alerta{display:flex;gap:7px;align-items:flex-start;background:#FEF3C7;color:#78350F;font-size:12.5px;line-height:1.35;font-weight:600;padding:8px 12px;border-left:4px solid #F59E0B}
-.p-folha{background:#FFFFFF;border-radius:0 0 14px 14px;box-shadow:0 2px 10px rgba(9,30,66,.08);overflow:hidden}
-.p-sec{padding:11px 12px}
-.p-tit{font-size:10.5px;font-weight:900;letter-spacing:.08em;color:#64748B;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
-.p-tit em{font-style:normal;font-weight:600;letter-spacing:0;text-transform:none;color:#94A3B8;font-size:11.5px}
-.prob{display:grid;gap:6px}
-.prob button{display:grid;grid-template-columns:50px 1fr;align-items:center;gap:8px;text-align:left;padding:6px 8px;border-radius:10px;border:1.5px solid #E2E8F0;background:#FFFFFF;transition:border-color .2s,background .2s}
-.prob .pct{font-size:20px;font-weight:900;letter-spacing:-.02em}
-.prob .lado{min-width:0}
-.prob .nome{font-size:12px;font-weight:900;letter-spacing:.03em;color:#0F172A;display:flex;justify-content:space-between;gap:6px}
-.prob .nome small{font-weight:800;color:#64748B;letter-spacing:0;white-space:nowrap}
-.prob .trilho{height:10px;border-radius:5px;background:#EEF2F6;margin-top:4px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(15,23,42,.12)}
-.prob .trilho i{display:block;height:100%;border-radius:5px}
-.prob button.ativo{border-color:#091E42;background:#F8FAFC}
-
-/* Painel visual de 3 pontos (cenas reais) */
-.painel{padding:0 12px 12px}
-.painel-grade{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:1fr 1fr;gap:6px}
-.painel.com-heroi .painel-grade{grid-template-columns:repeat(3,1fr);grid-template-rows:auto}
-.heroi{display:none;border-radius:12px;overflow:hidden;margin-bottom:6px;border:1px solid #CBD5E1;background:#F8FAFC}
-.painel.com-heroi .heroi{display:block}
-.heroi img{width:100%;height:auto}
-.quadro{position:relative;border-radius:12px;overflow:hidden;background:#F8FAFC;border:2px solid #CBD5E1;aspect-ratio:1/1;text-align:left;transition:border-color .2s,box-shadow .2s}
-.quadro.principal{grid-row:1/3}
-.painel.com-heroi .quadro.principal{grid-row:auto}
-.quadro img{width:100%;height:100%;object-fit:cover}
-.quadro.sel{border-color:#F59E0B;box-shadow:0 0 0 3px rgba(245,158,11,.35)}
-.selo{position:absolute;right:6px;top:16%;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#FFFFFF;background:radial-gradient(circle at 35% 30%,#24466F 0%,#091E42 70%);border:2.5px solid #F59E0B;box-shadow:0 0 0 2px #D4D4D4,0 2px 6px rgba(0,0,0,.35)}
-.quadro.sel .selo{animation:pulso 1.6s ease-out infinite}
-@keyframes pulso{0%{box-shadow:0 0 0 2px #D4D4D4,0 0 0 0 rgba(245,158,11,.7)}100%{box-shadow:0 0 0 2px #D4D4D4,0 0 0 12px rgba(245,158,11,0)}}
-.legenda{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:5px;padding:18px 7px 6px;background:linear-gradient(180deg,rgba(9,30,66,0) 0%,rgba(9,30,66,.9) 40%);color:#FFFFFF}
-.legenda .linha1{display:flex;justify-content:space-between;align-items:center;gap:6px;min-width:0}
-.legenda .nm{min-width:0;font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.visor{flex-shrink:0;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12px;font-weight:800;color:#0F172A;background:#C7F0D2;border:2px solid #1F2937;border-radius:6px;padding:2px 6px;white-space:nowrap;box-shadow:inset 0 1px 2px rgba(0,0,0,.2)}
-.quadro:not(.principal) .linha1{display:none}
-.painel.com-heroi .quadro .linha1{display:none!important}
-.quadro:not(.principal) .legenda .nm{font-size:10.5px}
-.estado{flex-shrink:0;font-size:10.5px;font-weight:900;border-radius:6px;padding:2px 6px;color:#FFFFFF;white-space:nowrap}
-.estado.ok{background:#15803D}.estado.def{background:#DC2626}
-.detalhe{margin-top:8px;border-radius:12px;background:#0F172A;color:#E2E8F0;padding:11px 12px;font-size:13px;line-height:1.4}
-.detalhe .cab{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
-.detalhe .cab .n{width:24px;height:24px;border-radius:50%;background:#F59E0B;color:#0F172A;font-weight:900;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.detalhe .cab h5{font-size:14.5px;color:#FFFFFF;flex:1 1 140px;min-width:0;overflow-wrap:anywhere}
-.alterna{display:flex;background:#1E293B;border-radius:8px;padding:2px;flex-shrink:0}
-.alterna button{font-size:11.5px;font-weight:800;padding:5px 8px;border-radius:6px;color:#94A3B8;white-space:nowrap}
-.alterna button[aria-pressed="true"].ok{background:#15803D;color:#FFFFFF}
-.alterna button[aria-pressed="true"].def{background:#DC2626;color:#FFFFFF}
-.detalhe dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px}
-.detalhe dt{font-weight:900;white-space:nowrap}
-.detalhe dd{min-width:0}
-.detalhe .esperado{margin-top:8px;background:#14532D;color:#DCFCE7;border-radius:8px;padding:7px 9px;font-weight:700}
-.detalhe .rodape{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap}
-.detalhe .fonte{font-size:11px;color:#94A3B8;min-width:0}
-.detalhe .ir{font-weight:900;color:#67C6FF;font-size:12.5px;white-space:nowrap}
-
-/* Passos */
-.passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:9px}
-.passo{border:1.5px solid #E2E8F0;border-radius:13px;padding:10px 11px;background:#FFFFFF;display:flex;flex-direction:column;gap:7px;transition:border-color .25s,box-shadow .25s}
-.passo.foco{border-color:#091E42;box-shadow:0 0 0 3px #BFDBFE}
-.passo.flash{animation:flash 1.1s ease-out}
-@keyframes flash{0%{box-shadow:0 0 0 0 #F59E0B}40%{box-shadow:0 0 0 7px rgba(245,158,11,.55)}100%{box-shadow:0 0 0 3px #BFDBFE}}
-.passo.ok{border-color:#16A34A;background:#F0FDF4}
-.passo.def{border-color:#DC2626;background:#FEF2F2}
-.passo .topo{display:flex;align-items:center;gap:8px}
-.passo .bol{width:26px;height:26px;border-radius:50%;background:#091E42;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;flex-shrink:0}
-.passo.ok .bol{background:#16A34A}.passo.def .bol{background:#DC2626}
-.passo h6{font-size:14px;line-height:1.2;color:#091E42;min-width:0}
-.passo p{font-size:12.5px;line-height:1.38;color:#334155}
-.passo .ref{font-size:12px;background:#F1F5F9;border-radius:8px;padding:6px 8px;color:#0F172A}
-.passo .ref b{color:#166534}
-.passo .ver{font-size:12px;font-weight:800;color:#0369A1;text-align:left}
-.dupla{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:auto}
-.btn-ok,.btn-def{border-radius:10px;padding:8px 7px;font-size:12.5px;font-weight:900;line-height:1.2;text-align:center;min-height:54px;color:#FFFFFF}
-.btn-ok{background:#15803D}.btn-def{background:#DC2626}
-.btn-ok small,.btn-def small{display:block;font-weight:600;font-size:11px;opacity:.95;margin-top:2px}
-.erro-caro{margin:2px 12px 14px;border:2px solid #DC2626;background:#FEF2F2;border-radius:12px;padding:10px 12px;color:#7F1D1D;font-size:13px;line-height:1.4}
-.erro-caro b{display:block;color:#B91C1C;font-size:12.5px;letter-spacing:.04em;margin-bottom:3px}
-
-/* ── Botões, gaveta e modal ── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:12px;padding:12px 14px;font-weight:800;font-size:14.5px;line-height:1.2;text-align:center}
-.btn.verde{background:#00B100;color:#FFFFFF;box-shadow:0 3px 0 #006400}
-.btn.marinho{background:#091E42;color:#FFFFFF}
-.btn.claro{background:#F1F5F9;color:#091E42;border:1px solid #CBD5E1}
-.btn.cheio{width:100%}
-.fundo{position:fixed;inset:0;background:rgba(9,30,66,.5);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
+/* ── Folhas (índice, causa, orçamento, bônus) ── */
+.fundo{position:fixed;inset:0;background:rgba(9,30,66,.55);z-index:60;opacity:0;pointer-events:none;transition:opacity .2s}
 .fundo.aberto{opacity:1;pointer-events:auto}
-.folha-baixo{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:88dvh;overflow-y:auto;background:#FFFFFF;border-radius:18px 18px 0 0;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-width:640px;margin:0 auto;padding:6px 14px calc(20px + env(safe-area-inset-bottom))}
-.folha-baixo.aberto{transform:none}
-.folha-baixo .alca{width:44px;height:5px;border-radius:3px;background:#CBD5E1;margin:4px auto 10px}
-.folha-baixo .fechar{position:absolute;right:10px;top:8px;width:36px;height:36px;border-radius:50%;background:#F1F5F9;font-size:18px;font-weight:800;color:#334155}
-.folha-baixo h3{font-size:18.5px;color:#091E42;line-height:1.25;margin:0 42px 8px 0}
-.folha-baixo .sub{font-size:13px;color:#475569;margin-bottom:12px;line-height:1.4}
-#gaveta .lista{margin:0 -14px}
-.confirmada{border-radius:14px;background:#FEF2F2;border:2px solid #DC2626;padding:12px;margin-bottom:12px}
-.confirmada .k{font-size:11px;font-weight:900;letter-spacing:.08em;color:#B91C1C}
-.confirmada .v{font-size:17px;font-weight:800;color:#7F1D1D;margin-top:2px;line-height:1.25}
+.folha{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:88dvh;overflow-y:auto;background:#FFFFFF;color:#0F172A;border-radius:18px 18px 0 0;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-width:640px;margin:0 auto;padding:8px 14px calc(22px + env(safe-area-inset-bottom))}
+.folha.aberto{transform:none}
+.folha .alca{width:44px;height:5px;border-radius:3px;background:#CBD5E1;margin:2px auto 10px}
+.folha .fechar{position:absolute;right:10px;top:8px;width:36px;height:36px;border-radius:50%;background:#F1F5F9;display:flex;align-items:center;justify-content:center}
+.folha h3{font-family:var(--f-tit);font-size:19px;font-weight:800;color:#091E42;line-height:1.25;margin:0 44px 8px 0}
+.folha .sub{font-size:13px;color:#475569;margin-bottom:12px;line-height:1.4}
+.folha .pilha{display:grid;gap:10px}
+.folha .tecla{height:50px;font-size:14px;justify-content:center;text-align:center}
+.folha .tecla.clara{background:#F1F5F9;color:#091E42;border:1.5px solid #CBD5E1;box-shadow:none}
+.busca{display:flex;align-items:center;gap:8px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:12px;padding:0 12px;height:44px}
+.busca input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:15px}
+.blocos{display:flex;gap:6px;overflow-x:auto;padding:8px 0 4px;scrollbar-width:none}
+.blocos::-webkit-scrollbar{display:none}
+.blocos button{flex-shrink:0;padding:6px 11px;border-radius:999px;border:1px solid #CBD5E1;font-size:12.5px;font-weight:700;white-space:nowrap}
+.blocos button[aria-pressed="true"]{background:#091E42;border-color:#091E42;color:#FFFFFF}
+.item-ficha{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:center;width:100%;text-align:left;padding:9px 2px;border-bottom:1px solid #F1F5F9}
+.item-ficha .ico{width:52px;height:52px;border-radius:10px;overflow:hidden;background:#F1F5F9}
+.item-ficha .ico img{width:100%;height:100%;object-fit:cover}
+.item-ficha .cod{font-family:var(--f-mono);font-size:10.5px;font-weight:800;color:#1D9BF0}
+.item-ficha .nm{font-family:var(--f-tit);font-size:14.5px;font-weight:800;color:#0F172A;line-height:1.2}
+.item-ficha .sb{font-size:12px;color:#64748B}
+.item-ficha.atual{background:#E0F2FE;border-radius:10px}
+.vazio{border:1px dashed #CBD5E1;border-radius:12px;padding:14px;text-align:center;font-size:14px;color:#334155}
+.vazio .pilha{margin-top:10px}
+.confirmada{border-radius:12px;background:#FEF2F2;border:2px solid #DC2626;padding:12px;margin-bottom:12px}
+.confirmada .k{font-size:11px;font-weight:800;letter-spacing:.08em;color:#B91C1C}
+.confirmada .v{font-family:var(--f-tit);font-size:17px;font-weight:800;color:#7F1D1D;margin-top:2px;line-height:1.25}
 .servico{border:1px solid #E2E8F0;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13.5px;line-height:1.4}
 .servico .faixa{display:flex;justify-content:space-between;gap:8px;margin-top:6px;font-weight:800;color:#091E42;flex-wrap:wrap}
 .servico .ref{font-size:11.5px;color:#64748B;margin-top:4px}
-.pilha{display:grid;gap:8px}
 .form{display:grid;gap:10px;margin:6px 0 12px}
 .form label{display:grid;gap:4px;font-size:13px;font-weight:700;color:#334155}
 .form input[type=number],.form select,.form input[type=text]{height:46px;border:1.5px solid #CBD5E1;border-radius:10px;padding:0 12px;font-size:16px;background:#FFFFFF;width:100%;min-width:0}
@@ -207,14 +188,14 @@ img{display:block;max-width:100%}
 .tabela th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:#64748B}
 .tabela td.f{color:#64748B;font-size:11px;white-space:nowrap}
 .menu-bonus{display:grid;gap:8px}
-.menu-bonus button{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid #E2E8F0;border-radius:12px;padding:10px 12px;font-size:13.5px;font-weight:700;color:#0F172A}
-.menu-bonus .ic{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:#091E42;color:#67C6FF;display:flex;align-items:center;justify-content:center;font-weight:900}
+.menu-bonus button{display:flex;align-items:center;gap:10px;text-align:left;border:1px solid #E2E8F0;border-radius:12px;padding:10px 12px;font-size:13.5px;font-weight:700}
+.menu-bonus .n{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:#091E42;color:#67C6FF;display:flex;align-items:center;justify-content:center;font-family:var(--f-tit);font-weight:800}
 .orc{border:1px solid #CBD5E1;border-radius:12px;padding:14px;margin-bottom:12px;background:#FFFFFF}
 .orc .cab{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:2px solid #091E42;padding-bottom:8px;margin-bottom:10px}
-.orc .cab b{font-size:18px;color:#091E42}
+.orc .cab b{font-family:var(--f-tit);font-size:18px;color:#091E42}
 .orc .cab span{font-size:12px;color:#475569;text-align:right}
 .orc .item{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-bottom:1px dashed #E2E8F0}
-.orc .total{display:flex;justify-content:space-between;font-size:18px;font-weight:900;color:#091E42;padding-top:8px}
+.orc .total{display:flex;justify-content:space-between;font-size:18px;font-weight:800;color:#091E42;padding-top:8px}
 .orc .pix{display:flex;gap:12px;align-items:center;margin-top:12px;background:#F8FAFC;border-radius:10px;padding:10px}
 .orc .pix canvas{width:92px;height:92px;flex-shrink:0;image-rendering:pixelated}
 .orc .pix p{font-size:12.5px;color:#334155;line-height:1.4}
@@ -231,24 +212,20 @@ img{display:block;max-width:100%}
 .progresso{height:8px;border-radius:4px;background:#E2E8F0;overflow:hidden;margin:4px 0 12px}
 .progresso i{display:block;height:100%;background:#00B100;transition:width .3s}
 
-@media (min-width:600px){
-  .cracha img.wordmark{display:block}
-  .indice{font-size:12.5px;padding:0 10px;white-space:nowrap}
-  .indice br{display:none}
-  .seletor .atual{font-size:13px}
-  .seletor .atual span{-webkit-line-clamp:1;display:block;white-space:nowrap;text-overflow:ellipsis}
-  .variacoes button{width:30px}
-  .doc{font-size:13px;justify-content:center}
-  .prancha{padding:14px 14px 30px}
-  .p-cab h2{font-size:25px}
-  .prob{grid-template-columns:repeat(3,1fr)}
-  .painel-grade{grid-template-columns:repeat(3,1fr);grid-template-rows:auto}
-  .quadro.principal{grid-row:auto}
-  .quadro .linha1{display:flex!important}
-  .quadro .legenda .nm{font-size:12px!important}
-  .folha-baixo{bottom:auto;top:50%;border-radius:18px;transform:translateY(-40%) scale(.97);opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;max-height:84dvh}
-  .folha-baixo.aberto{transform:translateY(-50%);opacity:1;pointer-events:auto}
-  .folha-baixo .alca{display:none}
+@media (max-width:639px){
+  .c1{font-size:9.5px;letter-spacing:.02em;padding:7px 10px}
+  .chip{flex-direction:column;align-items:flex-start;gap:4px;padding:6px}
+  .chip .tile{width:30px;height:30px}.chip .tile img{max-width:28px;max-height:28px}.chip .tile img.foto{width:30px;height:30px}
+}
+@media (min-width:640px){
+  .c5{grid-template-columns:1fr 1fr}
+  .c3{gap:10px}
+  .chip .k{font-size:11px}.chip .v{font-size:12.5px}
+  .chip .tile{width:44px;height:44px}.chip .tile img{max-width:40px;max-height:40px}.chip .tile img.foto{width:44px;height:44px}
+  .tecla{font-size:13px}
+  .folha{bottom:auto;top:50%;border-radius:18px;transform:translateY(-40%) scale(.97);opacity:0;pointer-events:none;transition:transform .22s,opacity .22s;max-height:84dvh}
+  .folha.aberto{transform:translateY(-50%);opacity:1;pointer-events:auto}
+  .folha .alca{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{
@@ -262,37 +239,49 @@ img{display:block;max-width:100%}
 <body>
 
 <header id="topo">
-  <div class="cracha"><img class="mascote" src="../app/marca/gelopro-mascote.png" alt="GeloPRO" width="32" height="32"><img class="wordmark" src="../app/marca/gelopro-wordmark.png" alt="" width="93" height="17"></div>
-  <button class="indice" id="b-indice">◀ Índice<br>(120)</button>
-  <div class="seletor">
-    <button class="seta" id="b-ant" aria-label="Diagnóstico anterior">‹</button>
-    <button class="atual" id="b-atual" aria-haspopup="dialog"><span id="atual-txt">#01 Não gela</span><b>▾</b></button>
-    <button class="seta" id="b-prox" aria-label="Próximo diagnóstico">›</button>
-  </div>
-  <div class="variacoes" role="group" aria-label="Variação de entrada">
-    <button data-v="1" aria-pressed="false" title="V1 · Painel de bancada">V1</button>
-    <button data-v="2" aria-pressed="false" title="V2 · Prancha direta">V2</button>
-    <button data-v="3" aria-pressed="false" title="V3 · Lista escaneável">V3</button>
-  </div>
+  <div class="marca"><img class="mascote" src="../app/marca/gelopro-mascote.png" alt="GeloPRO" width="30" height="30"><img class="wordmark" src="../app/marca/gelopro-wordmark.png" alt="" width="82" height="15"></div>
+  <button class="ficha-sel" id="b-ficha" aria-haspopup="dialog" aria-label="Trocar ficha de diagnóstico">
+    <span class="txt"><span class="cod" id="sel-cod">D-001 · ELÉTRICA</span><span class="nome" id="sel-nome">Split liga, mas não gela</span></span>
+    <span id="sel-seta"></span>
+  </button>
+  <button class="tema" id="b-tema" aria-label="Alternar tema claro ou escuro"><span id="ic-sol"></span><span id="ic-lua"></span><span class="bola"></span></button>
 </header>
 
-<main id="corpo" aria-live="polite"></main>
+<main id="visor"></main>
 
 <nav id="dock" aria-label="Dock do app">
-  <button class="doc" id="d-diag"><span class="ic">📑</span><span>120 Diagnósticos</span></button>
-  <button class="doc" id="d-bonus"><span class="ic">🎁</span><span>6 Bônus / Tabelas</span></button>
-  <button class="doc verde" id="d-orcar"><span class="ic">📄</span><span>Orçar Reparo (PDF + Pix)</span></button>
+  <button class="tecla" id="d-indice"><span id="ic-d1"></span><span>Índice (120)</span></button>
+  <button class="tecla" id="d-bonus"><span id="ic-d2"></span><span>6 Bônus &amp; Tabelas</span></button>
+  <button class="tecla verde" id="d-orcar"><span id="ic-d3"></span><span>Orçar este Reparo (PDF Nº 1001 + Pix)</span></button>
 </nav>
 
 <div class="fundo" id="fundo"></div>
-<section class="folha-baixo" id="gaveta" role="dialog" aria-label="Índice de diagnósticos"></section>
-<section class="folha-baixo" id="modal" role="dialog" aria-modal="true" aria-label="Detalhe"></section>
+<section class="folha" id="modal" role="dialog" aria-modal="true" aria-label="Detalhe"></section>
 
 <script>
 'use strict';
+// ───────────── Ícones de interface (SVG 24×24, traço com hex cravado; nunca equipamento) ─────────────
+const PATHS = {
+  lista: '<path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+  presente: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+  x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  seta: '<path d="M4 12h15M13 6l6 6-6 6"/>',
+  baixo: '<path d="M6 9l6 6 6-6"/>',
+  lua: '<path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z"/>',
+  sol: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M2 12h2.5M19.5 12H22M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/>',
+  busca: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  calc: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/>',
+  chat: '<path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/>',
+};
+const ic = (n, cor, t = 20) => `<svg class="ic" viewBox="0 0 24 24" width="${t}" height="${t}" fill="none" stroke="${cor}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${PATHS[n]}</svg>`;
+const alerta = (t = 44) => `<svg class="ic" viewBox="0 0 24 24" width="${t}" height="${t}" aria-hidden="true"><path d="M12 2.5L1.5 21h21z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 9v6" stroke="#E2650A" stroke-width="2.6" stroke-linecap="round"/><circle cx="12" cy="18" r="1.5" fill="#E2650A"/></svg>`;
+
 // ───────────── Dados ─────────────
 const CENA = (n) => `../app/imagens/cenas/${n}.webp`;
-// Faixas de preço: base-tecnica/precos_regionais_2026.csv (região GELOPRO, fonte PED01 — tabela de campo do Pedro).
+const ICO = (n) => `imagens/icones/${n}.webp`;
+// Faixas: base-tecnica/precos_regionais_2026.csv (região GELOPRO, fonte PED01 — tabela de campo do Pedro).
 const PRECOS = {
   cap_partida: ['Substituição de Capacitor de Partida + Teste de Corrente', 180, 220, 290],
   sensor_ntc: ['Substituição de Sensor NTC (Ambiente/Serpentina) + Aferição Ôhmica', 190, 240, 320],
@@ -308,513 +297,369 @@ const PRECOS = {
   visita_diag: ['Visita Técnica e Diagnóstico Instrumentado', 80, 120, 150],
 };
 const BLOCOS = [['todos', 'Todos'], ['b1', '1. Não Gela'], ['b2', '2. Não Liga'], ['b3', '3. Elétrica'], ['b4', '4. Água e Gelo'], ['b5', '5. Ruídos'], ['b6', '6. Comando'], ['b7', '7. Códigos'], ['b8', '8. Inverter']];
-const COR_PROB = ['#E11D48', '#F59E0B', '#0EA5E9'];
-const CIRC = ['①', '②', '③'];
+const COR_FREQ = ['#E11D48', '#F59E0B', '#0EA5E9'];
 const BONUS = [
-  ['+35 Guias Inverter', '+35 Guias Visuais Exclusivos de Split Inverter (Placa, Ponte IPM, PFC e Comunicação)'],
-  ['Códigos de Erro', 'Tradutor Instantâneo de Códigos de Erro e Piscadas de LED'],
-  ['Tabelas Rápidas + Aferidor', 'Tabelas Rápidas em 1 Página + Aferidor de Sensores NTC e Pressão de Gás'],
-  ['Checklist Anti-Prejuízo', 'Protocolo Blindado "Antes de Condenar a Peça Cara"'],
-  ['Laudo de Condenação', 'Guia "Quando o Reparo Não Compensa" + Emissor de Laudo Técnico em 1 Toque'],
-  ['Orçamento Nº 1001 + Pix', 'Gerador de Orçamento Pronto em PDF (Nº 1001) com Tabela 2026, Garantia e QR Code Pix'],
+  '+35 Guias Visuais Exclusivos de Split Inverter (Placa, Ponte IPM, PFC e Comunicação)',
+  'Tradutor Instantâneo de Códigos de Erro e Piscadas de LED',
+  'Tabelas Rápidas em 1 Página + Aferidor de Sensores NTC e Pressão de Gás',
+  'Protocolo Blindado "Antes de Condenar a Peça Cara"',
+  'Guia "Quando o Reparo Não Compensa" + Emissor de Laudo Técnico em 1 Toque',
+  'Gerador de Orçamento Pronto em PDF (Nº 1001) com Tabela 2026, Garantia e QR Code Pix',
 ];
-// Códigos conferidos (base-tecnica/codigos_erro_conferidos.csv), com fonte e página.
-const CODIGOS = [["Elgin","Eco Inverter II HJ","F1","Falha - Módulo IPM","F29 p.27"],["Elgin","Eco Inverter II HJ","L4","Falha - IPM do módulo drive do compressor","F29 p.27"],["Elgin","Eco Inverter II HJ","F4","Falha - Sensor de temperatura - Descarga","F29 p.27"],["Elgin","Eco Inverter II HJ","E2","Falha - Sensor de temperatura - Condensador","F29 p.27"],["Elgin","Eco Inverter II HJ","F6","Falha - Sensor de temperatura - Ambiente Externo","F29 p.27"],["Elgin","Eco Inverter II HJ","E5 (5E)","Falha - Comunicação Unidade Interna e Externa","F29 p.27"],["EOS","Master Inverter Pro Cassete/Piso Teto","E1","Falha na válvula de quatro vias","F33 p.36"],["Electrolux","Cassete/Piso-Teto Inverter R32","E1","Falha na válvula 4 vias","F32 p.26"],["EOS","Master Inverter Pro Cassete/Piso Teto","A1","Falha no sensor de temperatura ambiente da unidade interna","F33 p.35"],["EOS","Master Inverter Pro Cassete/Piso Teto","A2","Falha no sensor de temperatura no meio do evaporador interno","F33 p.35"],["EOS","Master Inverter Pro Cassete/Piso Teto","A9","Erro de comunicação entre a unidade externa e a unidade interna","F33 p.35"],["Samsung","Cassete/Teto Inverter R32","E121","Erro no sensor de temperatura ambiente da unidade interna (curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E122","Erro no sensor de EVA IN da unidade interna (em curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E123","Erro no sensor de EVA OUT da unidade interna (em curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E202","Erro de comunicação entre a unidade interna e a unidade externa","F31 p.39"],["Electrolux","Cassete/Piso-Teto Inverter R32","A1","Falha no sensor de temperatura ambiente da unidade interna","F32 p.25"],["Electrolux","Cassete/Piso-Teto Inverter R32","A9","Erro de comunicação entre a unidade externa e a unidade interna","F32 p.25"],["Electrolux","Cassete/Piso-Teto Inverter R32","AA","Erro de comunicação entre o controlador com fio e a PCB principal da unidade interna","F32 p.25"]];
+const CODIGOS = [["Elgin","Eco Inverter II HJ","F1","Falha - Módulo IPM","F29 p.27"],["Elgin","Eco Inverter II HJ","L4","Falha - IPM do módulo drive do compressor","F29 p.27"],["Elgin","Eco Inverter II HJ","F4","Falha - Sensor de temperatura - Descarga","F29 p.27"],["Elgin","Eco Inverter II HJ","E2","Falha - Sensor de temperatura - Condensador","F29 p.27"],["Elgin","Eco Inverter II HJ","E5 (5E)","Falha - Comunicação Unidade Interna e Externa","F29 p.27"],["EOS","Master Inverter Pro Cassete/Piso Teto","E1","Falha na válvula de quatro vias","F33 p.36"],["Electrolux","Cassete/Piso-Teto Inverter R32","E1","Falha na válvula 4 vias","F32 p.26"],["EOS","Master Inverter Pro Cassete/Piso Teto","A1","Falha no sensor de temperatura ambiente da unidade interna","F33 p.35"],["EOS","Master Inverter Pro Cassete/Piso Teto","A9","Erro de comunicação entre a unidade externa e a unidade interna","F33 p.35"],["Samsung","Cassete/Teto Inverter R32","E121","Erro no sensor de temperatura ambiente da unidade interna (curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E122","Erro no sensor de EVA IN da unidade interna (em curto ou aberto)","F31 p.39"],["Samsung","Cassete/Teto Inverter R32","E202","Erro de comunicação entre a unidade interna e a unidade externa","F31 p.39"],["Electrolux","Cassete/Piso-Teto Inverter R32","AA","Erro de comunicação entre o controlador com fio e a PCB principal da unidade interna","F32 p.25"]];
 
-// As 6 pranchas-piloto. prob: [pct, NOME, ponto, curto]. Frequência #01 = especificação do Pedro; #02–#06 = ordem de teste de campo a calibrar (data-calibrar).
-// Cada ponto: img [normal ✓, defeito ✗] das cenas reais do app; visor = leitura esperada no instrumento.
-const P = [
-{ id: '01', area: 'PARTE ELÉTRICA', titulo: 'Não gela: compressor zumbe e não parte', curto: 'Não gela: compressor zumbe', blocos: ['b1', 'b3', 'b5'],
-  busca: 'nao gela nao esfria compressor nao parte zumbido zumbe capacitor c-herm herm desarma protetor quente borneira 220',
-  alerta: 'O capacitor guarda carga mesmo desligado: corte o disjuntor e descarregue os terminais HERM-C antes de encostar a mão.',
-  tempo: '3 min', instr: 'Multímetro / Capacímetro', calibrar: false,
-  prob: [[70, 'CAPACITOR', 2, 'Capacitor'], [20, 'ALIMENTAÇÃO', 1, 'Rede'], [10, 'COMPRESSOR', 3, 'Compressor']],
-  pontos: [
-    { n: 1, nome: 'Borneira L-N 220V', img: ['t_ng03_sim', 't_ng03_nao'], visor: '220 V CA', escala: 'V~ (750 V)', vermelho: 'Borne L (fase)', preto: 'Borne N (neutro ou 2ª fase)', esperado: '198 a 242 V (220 V ±10% do valor de placa)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)' },
-    { n: 2, nome: 'Capacitor C-HERM µF', img: ['t_ng04_nao', 't_ng04_sim'], visor: '35 µF ±5%', escala: 'µF (capacímetro)', vermelho: 'Terminal HERM', preto: 'Terminal C (comum)', esperado: 'O µF da etiqueta (ex.: 35 µF). Abaixo de −5% da etiqueta: trocar o capacitor', fonte: 'Regra de bancada GeloPro (Pedro)' },
-    { n: 3, nome: 'Bornes C-S-R Compressor', img: ['inv_compressor_certo', 'inv_compressor_erro'], visor: 'C-S + C-R = S-R', escala: 'Ω (200 Ω)', vermelho: 'Pino S (partida)', preto: 'Pino R (trabalho)', esperado: 'S-R = C-S + C-R, e nenhum pino com continuidade para a carcaça', fonte: 'Enrolamentos de partida e trabalho em série entre S e R' },
+/* Fichas. freq = [pct, rótulo, causas do grupo]. D-001: 70/20/10 do Pedro (capacitor · rede e contatos · compressor e protetor).
+   D-002 a D-006: ordem de teste de campo a calibrar (data-calibrar). Cada causa: foto [normal, defeito] de app/imagens/cenas/ quando existe. */
+const F = [
+{ id: 'D-001', n: '01', area: 'ELÉTRICA', titulo: 'Split liga, mas não gela', sub: 'Compressor zumbe e desarma pelo protetor térmico', blocos: ['b1', 'b3', 'b5'], calibrar: false,
+  busca: 'split liga nao gela nao esfria compressor zumbe zumbido desarma protetor termico capacitor c-herm borneira disjuntor 220',
+  chips: [[ICO('topo_sistema'), 'Sistema', 'Convencional · On/Off'], [ICO('topo_aplicacao'), 'Aplicação', 'Condensadora'], [ICO('topo_ferramenta'), 'Ferramenta', 'Multímetro com µF']],
+  ilustra: { src: 'imagens/ilustra_01_nao_gela.webp', w: 1024, h: 474, alvos: [[12.79, 12.66], [61.43, 12.87], [84.28, 20.46], [79.69, 57.81], [80.96, 79.32]] },
+  freq: [[70, 'Capacitor', [3]], [20, 'Rede e contatos', [1, 2]], [10, 'Compressor', [4, 5]]],
+  causas: [
+    { nome: 'Alimentação inadequada', ico: ICO('causa_01_disjuntor'), foto: ['t_ng03_sim', 't_ng03_nao'], verif: 'Confira a alimentação', linha: '198 a 242 V entre L e N (220 V ±10%).', vermelho: 'Borne L (fase)', preto: 'Borne N (neutro ou 2ª fase)', escala: 'V~ (750 V)', esperado: '198 a 242 V entre L e N (220 V ±10% do valor de placa)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)', servico: 'fusivel_eletrica', aferidor: 'tensao' },
+    { nome: 'Mau contato elétrico', ico: ICO('causa_02_borneira'), foto: ['ld_lg04_nao', 'ld_lg04_sim'], verif: 'Inspecione as conexões', linha: 'Bornes firmes, sem escurecimento nem folga.', onde: 'Cada parafuso da borneira da condensadora e os terminais do capacitor', escala: 'Visual + aperto', esperado: 'Bornes firmes, sem escurecimento, fio derretido ou terminal frouxo', fonte: 'Regra de bancada GeloPro', servico: 'fusivel_eletrica', aferidor: 'lista', check: ['Borne frouxo ou parafuso sem aperto', 'Borne escurecido ou fio derretido', 'Terminal do capacitor solto ou oxidado'] },
+    { nome: 'Capacitor fora da faixa', ico: ICO('causa_03_capacitor'), foto: ['t_ng04_nao', 't_ng04_sim'], verif: 'Meça a capacitância', linha: 'Após descarga: até −5% do µF do rótulo.', vermelho: 'Terminal HERM', preto: 'Terminal C (comum)', escala: 'µF (capacímetro)', esperado: 'No mínimo −5% do µF da etiqueta, medido com o capacitor descarregado e os fios soltos', fonte: 'Regra de bancada GeloPro (Pedro)', servico: 'cap_partida', aferidor: 'cap' },
+    { nome: 'Proteção térmica aberta', ico: ICO('causa_04_protetor'), foto: null, verif: 'Cheque a proteção térmica', linha: 'Compressor frio: protetor com continuidade.', vermelho: 'Terminal 1 do protetor térmico', preto: 'Terminal 2 do protetor térmico', escala: 'Ω (continuidade)', esperado: 'Com o compressor frio, continuidade entre os 2 terminais do protetor. Aberto com o compressor frio: trocar o protetor', fonte: 'Regra de bancada GeloPro', servico: 'fusivel_eletrica', aferidor: 'lista', check: ['Protetor aberto (OL) com o compressor frio', 'Terminal do protetor queimado ou solto', 'Protetor desarma logo após a partida'] },
+    { nome: 'Falha no compressor', ico: ICO('causa_05_compressor'), foto: ['inv_compressor_certo', 'inv_compressor_erro'], verif: 'Teste bobinas e isolamento', linha: 'S-R = C-S + C-R; pino × carcaça: OL.', vermelho: 'Pino S (partida)', preto: 'Pino R (trabalho)', escala: 'Ω (200 Ω)', esperado: 'S-R = C-S + C-R, e nenhum pino com continuidade para a carcaça', fonte: 'Enrolamentos de partida e trabalho em série entre S e R', servico: 'compressor_troca', aferidor: 'csr' },
   ],
-  passos: [
-    { ponto: 1, titulo: 'Passo 1: Testar Tensão L-N', como: 'Disjuntor ligado, aparelho chamando frio. Pontas nos bornes L e N da condensadora.', normal: '220V OK → Ir ao Passo 2', defeito: 'Fora de 198–242 V → Corrigir alimentação', causa: 'Alimentação fora da faixa no borne L-N', servico: 'fusivel_eletrica', aferidor: 'tensao' },
-    { ponto: 2, titulo: 'Passo 2: Medir Capacitor C-HERM', como: 'Disjuntor desligado, capacitor descarregado e fios soltos. Capacímetro entre HERM e C.', normal: 'µF OK → Ir ao Passo 3', defeito: 'Abaixo de -5% → Trocar Capacitor', causa: 'Capacitor C-HERM abaixo do µF da etiqueta', servico: 'cap_partida', aferidor: 'cap' },
-    { ponto: 3, titulo: 'Passo 3: Testar Compressor C-S-R', como: 'Fios do compressor soltos. Meça C-S, C-R e S-R; depois cada pino contra a carcaça.', normal: 'C-S-R OK → Fechar diagnóstico', defeito: 'Aberto, curto ou em massa → Condenar compressor', causa: 'Enrolamento do compressor aberto, em curto ou em massa', servico: 'compressor_troca', aferidor: 'csr' },
-  ],
-  erro: 'Condenar o compressor (R$ 1.100 a R$ 1.950 na tabela) sem medir o capacitor do Passo 2, um serviço de R$ 180 a R$ 290. Zumbido com desarme no protetor: meça o capacitor primeiro.' },
+  proximo: [['alimentação ou contatos falharem', 'Corrija e repita o teste.', 'fusivel_eletrica'], ['capacitância abaixo de −5%', 'Troque o capacitor.', 'cap_partida'], ['a falha persistir', 'Conclua o teste do compressor e condene com laudo.', 'compressor_troca']],
+  antes: 'Desligue o disjuntor e descarregue o capacitor entre HERM e C antes de medir. Condenar o compressor (R$ 1.100 a R$ 1.950) sem medir o capacitor (R$ 180 a R$ 290) é o erro mais caro desta ficha.',
+  rodape: 'Split convencional' },
 
-{ id: '02', area: 'AR E FLUIDO', titulo: 'Tubo congelando: gelo na serpentina e na linha', curto: 'Tubo congelando', blocos: ['b1', 'b4'],
-  busca: 'tubo congelando congela gelo serpentina congelada linha branca filtro sujo pouco gas falta fluido ventilador turbina gela pouco',
-  alerta: 'Corte o disjuntor e deixe o gelo derreter antes de lavar o filtro: serpentina congelada esconde a medição.',
-  tempo: '6 min', instr: 'Termômetro / Manifold', calibrar: true,
-  prob: [[70, 'FILTRO / AR', 1, 'Filtro'], [20, 'VENTILADOR', 2, 'Ventilador'], [10, 'CARGA DE FLUIDO', 3, 'Fluido']],
-  pontos: [
-    { n: 1, nome: 'Filtro e fluxo de ar', img: ['ng05_nao', 'ng05_sim'], visor: 'ΔT 10–15 °C', escala: '°C (2 canais)', vermelho: 'Saída de ar (insuflamento)', preto: 'Entrada de ar (retorno, sobre o filtro)', esperado: 'Retorno − insuflamento: 10 a 15 °C (velocidade média, refrigeração)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)' },
-    { n: 2, nome: 'Turbina da evaporadora', img: ['t_ge01_sim', 't_ge01_nao'], visor: 'GIRA LIVRE', escala: 'Visual + µF do capacitor', vermelho: 'Terminal do capacitor do ventilador', preto: 'Comum do capacitor do ventilador', esperado: 'Turbina gira livre na velocidade escolhida; capacitor do ventilador no mínimo −5% do µF da etiqueta', fonte: 'Regra de bancada GeloPro (Pedro)' },
-    { n: 3, nome: 'Superaquecimento (sucção)', img: ['med_sh_ponto_certo', 'med_sh_ponto_erro'], visor: 'SH 7–11 °C', escala: 'Pressão + °C do tubo', vermelho: 'Termopar no tubo de sucção, 20 cm da válvula, preso e isolado', preto: 'Manifold na válvula de serviço (pressão de sucção)', esperado: 'Superaquecimento 7 a 11 °C (R-410A). Acima de 11 °C falta fluido', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)' },
+{ id: 'D-002', n: '02', area: 'AR E FLUIDO', titulo: 'Tubo congelando', sub: 'Gelo na serpentina e na linha de sucção', blocos: ['b1', 'b4'], calibrar: true,
+  busca: 'tubo congelando congela gelo serpentina congelada linha branca filtro sujo falta fluido pouco gas turbina gela pouco',
+  chips: [[ICO('topo_sistema'), 'Sistema', 'Convencional e Inverter'], [CENA('ng05_nao'), 'Aplicação', 'Evaporadora'], [ICO('topo_ferramenta'), 'Ferramenta', 'Termômetro + manifold']],
+  freq: [[70, 'Filtro / ar', [1]], [20, 'Turbina', [2]], [10, 'Fluido', [3]]],
+  causas: [
+    { nome: 'Filtro e serpentina sujos', foto: ['ng05_nao', 'ng05_sim'], verif: 'Meça o ΔT do ar', linha: 'Retorno − insuflamento: 10 a 15 °C.', vermelho: 'Saída de ar (insuflamento)', preto: 'Entrada de ar (retorno)', escala: '°C (2 canais)', esperado: 'Retorno − insuflamento: 10 a 15 °C (velocidade média, refrigeração)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)', servico: 'higienizacao', aferidor: 'deltat' },
+    { nome: 'Turbina com vazão baixa', foto: ['t_ge01_sim', 't_ge01_nao'], verif: 'Confira a turbina', linha: 'Gira livre; capacitor até −5% do rótulo.', vermelho: 'Terminal do capacitor do ventilador', preto: 'Comum do capacitor do ventilador', escala: 'Visual + µF', esperado: 'Turbina gira livre na velocidade escolhida; capacitor do ventilador no mínimo −5% do µF da etiqueta', fonte: 'Regra de bancada GeloPro (Pedro)', servico: 'motor_vent', aferidor: 'cap' },
+    { nome: 'Falta de fluido', foto: ['med_sh_ponto_certo', 'med_sh_ponto_erro'], verif: 'Meça o superaquecimento', linha: 'SH 7 a 11 °C, termopar preso e isolado.', vermelho: 'Termopar no tubo de sucção, 20 cm da válvula', preto: 'Manifold na válvula de serviço', escala: 'Pressão + °C', esperado: 'Superaquecimento 7 a 11 °C (R-410A). Acima de 11 °C falta fluido', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)', servico: 'carga_fluido', aferidor: 'sh' },
   ],
-  passos: [
-    { ponto: 1, titulo: 'Passo 1: Medir ΔT Retorno × Insuflamento', como: 'Gelo derretido, filtro no lugar, 10 min em refrigeração na velocidade média.', normal: 'ΔT 10–15 °C → Ir ao Passo 2', defeito: 'Fora da faixa → Higienizar filtro e serpentina', causa: 'Restrição de ar por filtro e serpentina sujos', servico: 'higienizacao', aferidor: 'deltat' },
-    { ponto: 2, titulo: 'Passo 2: Conferir Turbina e Ventilador', como: 'Turbina girando livre, sem raspar; capacitor do ventilador no capacímetro.', normal: 'Gira livre → Ir ao Passo 3', defeito: 'Lenta ou travada → Trocar motor ou capacitor', causa: 'Ventilador da evaporadora com vazão baixa', servico: 'motor_vent', aferidor: 'cap' },
-    { ponto: 3, titulo: 'Passo 3: Medir Superaquecimento', como: 'Manifold na válvula de sucção e termopar preso e isolado no tubo a 20 cm da válvula.', normal: 'SH 7–11 °C → Fechar diagnóstico', defeito: 'Acima de 11 °C → Achar vazamento e completar', causa: 'Falta de fluido (vazamento) congelando a linha', servico: 'carga_fluido', aferidor: 'sh' },
-  ],
-  erro: 'Completar gás em máquina congelada por filtro sujo (carga de R$ 350 a R$ 650) quando a higienização resolve (R$ 200 a R$ 380). O gelo volta e o cliente chama de novo.' },
+  proximo: [['o ΔT sair de 10 a 15 °C', 'Higienize filtro e serpentina.', 'higienizacao'], ['a turbina girar lenta', 'Troque motor ou capacitor.', 'motor_vent'], ['o SH passar de 11 °C', 'Ache o vazamento e complete.', 'carga_fluido']],
+  antes: 'Deixe o gelo derreter antes de medir. Completar gás (R$ 350 a R$ 650) em máquina com filtro sujo faz o gelo voltar; a higienização resolve por R$ 200 a R$ 380.',
+  rodape: 'Split convencional e Inverter' },
 
-{ id: '03', area: 'PLACA INVERTER', titulo: 'Placa Inverter: código E1 / falha no módulo IPM', curto: 'Placa Inverter E1/IPM', blocos: ['b8', 'b7', 'b6'],
+{ id: 'D-003', n: '03', area: 'PLACA INVERTER', titulo: 'Placa Inverter: E1 / IPM', sub: 'Compressor não parte e o visor mostra código de falha', blocos: ['b8', 'b7', 'b6'], calibrar: true,
   busca: 'e1 ipm f1 l4 placa inverter modulo drive compressor nao parte erro codigo pisca led barramento p-n 310',
-  alerta: 'Os capacitores grandes da placa seguram carga desligados: descarregue entre + e − (resistor de cerca de 100 Ω / 40 W) antes de medir o IPM.',
-  tempo: '8 min', instr: 'Multímetro (V CC e Ω)', calibrar: true,
-  prob: [[70, 'MÓDULO IPM', 3, 'IPM'], [20, 'BARRAMENTO CC', 2, 'Barramento'], [10, 'ALIMENTAÇÃO', 1, 'Rede']],
-  pontos: [
-    { n: 1, nome: 'Entrada L-N da placa', img: ['t_nl01_sim', 't_nl01_nao'], visor: '220 V CA', escala: 'V~ (750 V)', vermelho: 'Borne L de entrada', preto: 'Borne N de entrada', esperado: '198 a 242 V (220 V ±10% do valor de placa)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)' },
-    { n: 2, nome: 'Barramento P-N', img: ['inv_tensao_pn_certo', 'inv_tensao_pn_erro'], visor: '≈310 V CC', escala: 'V CC (1000 V)', vermelho: 'Terminal P do IPM', preto: 'Terminal N do IPM', esperado: 'Cerca de 310 V CC (aparelho 208–230 V); em espera, 290 a 330 V', fonte: 'Manual de serviço Midea Mission II (F20, p. 10 e 97)' },
-    { n: 3, nome: 'Módulo IPM P→U-V-W', img: ['inv_ipm_certo', 'inv_ipm_erro'], visor: 'P→UVW: OL', escala: 'Ω (maior escala)', vermelho: 'P (depois U, V e W)', preto: 'N, U, V e W (depois N)', esperado: 'Desligado e descarregado: infinito (vários MΩ) em todos os pares. Leitura baixa em qualquer par = IPM em curto', fonte: 'Manual de serviço Midea Mission II (F20, p. 85)' },
+  chips: [[ICO('topo_sistema'), 'Sistema', 'Inverter'], [ICO('topo_aplicacao'), 'Aplicação', 'Condensadora (placa)'], [ICO('topo_ferramenta'), 'Ferramenta', 'Multímetro V CC + Ω']],
+  freq: [[70, 'Módulo IPM', [3]], [20, 'Barramento', [2]], [10, 'Rede', [1]]],
+  causas: [
+    { nome: 'Alimentação na placa', foto: ['t_nl01_sim', 't_nl01_nao'], verif: 'Confira a entrada L-N', linha: '198 a 242 V entre L e N.', vermelho: 'Borne L de entrada', preto: 'Borne N de entrada', escala: 'V~ (750 V)', esperado: '198 a 242 V (220 V ±10% do valor de placa)', fonte: 'Manual Elgin Eco Inverter HVFC/HVQC (F14)', servico: 'fusivel_eletrica', aferidor: 'tensao' },
+    { nome: 'Barramento P-N fora', foto: ['inv_tensao_pn_certo', 'inv_tensao_pn_erro'], verif: 'Meça o barramento P-N', linha: '≈310 V CC (espera 290 a 330 V).', vermelho: 'Terminal P do IPM', preto: 'Terminal N do IPM', escala: 'V CC (1000 V)', esperado: 'Cerca de 310 V CC (aparelho 208–230 V); em espera, 290 a 330 V', fonte: 'Manual de serviço Midea Mission II (F20, p. 10 e 97)', servico: 'reparo_placa', aferidor: 'pn' },
+    { nome: 'Módulo IPM em curto', foto: ['inv_ipm_certo', 'inv_ipm_erro'], verif: 'Teste o módulo IPM', linha: 'Desligado e descarregado: infinito nos pares.', vermelho: 'P (depois U, V e W)', preto: 'N, U, V e W (depois N)', escala: 'Ω (maior escala)', esperado: 'Infinito (vários MΩ) em todos os pares. Leitura baixa em qualquer par = IPM em curto', fonte: 'Manual de serviço Midea Mission II (F20, p. 85)', servico: 'reparo_placa', aferidor: 'ipm' },
   ],
-  passos: [
-    { ponto: 1, titulo: 'Passo 1: Testar Tensão L-N da Placa', como: 'Aparelho energizado. Pontas nos bornes L e N de entrada.', normal: '220V OK → Ir ao Passo 2', defeito: 'Fora de 198–242 V → Corrigir alimentação', causa: 'Alimentação fora da faixa na entrada da placa', servico: 'fusivel_eletrica', aferidor: 'tensao' },
-    { ponto: 2, titulo: 'Passo 2: Medir Barramento P-N', como: 'Energizado, escala V CC, pontas nos terminais P e N do IPM.', normal: '≈310 V CC OK → Ir ao Passo 3', defeito: 'Fora de 290–330 V → Ponte ou capacitor da placa', causa: 'Barramento CC fora da faixa (ponte retificadora ou capacitores da placa)', servico: 'reparo_placa', aferidor: 'pn' },
-    { ponto: 3, titulo: 'Passo 3: Testar Módulo IPM', como: 'Desligado, capacitores descarregados, conector do compressor solto. Ω: vermelho em P, preto em N, U, V, W; depois vermelho em U, V, W e preto em N.', normal: 'Tudo infinito → Fechar diagnóstico', defeito: 'Leitura baixa em um par → Trocar IPM/placa', causa: 'Módulo IPM em curto', servico: 'reparo_placa', aferidor: 'ipm' },
-  ],
-  erro: 'Trocar a placa inteira (R$ 580 a R$ 1.150 na tabela) só pelo código no visor. O código aponta o circuito, não a peça: meça P-N e o IPM antes de condenar.' },
+  proximo: [['a entrada L-N sair da faixa', 'Corrija a alimentação.', 'fusivel_eletrica'], ['o P-N sair de 290 a 330 V', 'Repare ponte e capacitores da placa.', 'reparo_placa'], ['o IPM der leitura baixa', 'Troque o IPM ou a placa.', 'reparo_placa']],
+  antes: 'Descarregue os capacitores grandes da placa entre + e − (resistor de cerca de 100 Ω / 40 W) antes de medir o IPM. Trocar a placa (R$ 580 a R$ 1.150) só pelo código no visor é o erro mais caro.',
+  rodape: 'Split Inverter' },
 
-{ id: '04', area: 'DRENO E CONDENSAÇÃO', titulo: 'Pingando água pela evaporadora', curto: 'Pingando água / dreno', blocos: ['b4'],
+{ id: 'D-004', n: '04', area: 'DRENO', titulo: 'Pingando água', sub: 'Água escorrendo pela evaporadora ou pela parede', blocos: ['b4'], calibrar: true,
   busca: 'pingando agua vazando goteira dreno bandeja sifao mangueira solta escorrendo parede lodo',
-  alerta: 'Desligue o disjuntor antes de mexer na bandeja: a água escorre perto da placa e dos bornes da evaporadora.',
-  tempo: '5 min', instr: 'Copo d’água / Nível / Lanterna', calibrar: true,
-  prob: [[70, 'BANDEJA / MANGUEIRA', 1, 'Bandeja'], [20, 'DESNÍVEL / SIFÃO', 2, 'Sifão'], [10, 'CONEXÃO DO DRENO', 3, 'Conexão']],
-  pontos: [
-    { n: 1, nome: 'Bandeja e saída do dreno', img: ['t_pi01_nao', 't_pi01_sim'], visor: 'ESCOA ✓', escala: 'Teste do copo d’água', onde: 'Despeje um copo d’água na bandeja e siga com a lanterna até a saída do dreno', esperado: 'Água escoa contínua até a saída, sem voltar nem transbordar; bandeja sem lodo', fonte: 'Manual Midea/Springer Hi Wall (F05) + base de campo GeloPro (PED01)' },
-    { n: 2, nome: 'Caimento e sifão', img: ['pi04_nao', 'pi04_sim'], visor: 'SEM SIFÃO', escala: 'Nível de bolha + trajeto', onde: 'Nível em cima da evaporadora e olho no trajeto da mangueira', esperado: 'Evaporadora nivelada; mangueira sempre descendo, sem sifão nem subida logo após a saída', fonte: 'Manual Midea/Springer Hi Wall (F05)' },
-    { n: 3, nome: 'Conexão da mangueira', img: ['pi03_nao', 'pi03_sim'], visor: 'ENCAIXADO', escala: 'Visual + tato', onde: 'Emenda da mangueira na saída da bandeja e abraçadeira', esperado: 'Mangueira encaixada até o fim e presa com abraçadeira, sem gotejar na emenda', fonte: 'Manual Midea/Springer Hi Wall (F05)' },
+  chips: [[ICO('topo_sistema'), 'Sistema', 'Convencional e Inverter'], [CENA('t_pi02_sim'), 'Aplicação', 'Evaporadora'], [CENA('t_pi02_sim'), 'Ferramenta', 'Nível + lanterna']],
+  freq: [[70, 'Bandeja', [1]], [20, 'Sifão', [2]], [10, 'Conexão', [3]]],
+  causas: [
+    { nome: 'Bandeja ou mangueira com lodo', foto: ['t_pi01_nao', 't_pi01_sim'], verif: 'Teste o escoamento', linha: 'Copo d’água na bandeja escoa até a saída.', onde: 'Despeje um copo d’água na bandeja e siga com a lanterna até a saída do dreno', escala: 'Teste do copo d’água', esperado: 'Água escoa contínua até a saída, sem voltar nem transbordar', fonte: 'Manual Midea/Springer Hi Wall (F05) + base de campo GeloPro (PED01)', servico: 'dreno_isol', aferidor: 'lista', check: ['Água voltou ou transbordou da bandeja', 'Lodo ou limo na bandeja ou na saída', 'Saída do dreno sem água depois do copo'] },
+    { nome: 'Desnível ou sifão', foto: ['pi04_nao', 'pi04_sim'], verif: 'Confira nível e caimento', linha: 'Bolha centrada; mangueira sempre descendo.', onde: 'Nível em cima da evaporadora e trajeto da mangueira', escala: 'Nível de bolha', esperado: 'Evaporadora nivelada; mangueira sempre descendo, sem sifão', fonte: 'Manual Midea/Springer Hi Wall (F05)', servico: 'dreno_isol', aferidor: 'lista', check: ['Bolha fora do centro', 'Mangueira faz sifão ou barriga', 'Mangueira sobe logo depois da saída'] },
+    { nome: 'Mangueira solta', foto: ['pi03_nao', 'pi03_sim'], verif: 'Cheque a conexão', linha: 'Mangueira encaixada e com abraçadeira.', onde: 'Emenda da mangueira na saída da bandeja', escala: 'Visual + tato', esperado: 'Mangueira encaixada até o fim e presa com abraçadeira, sem gotejar', fonte: 'Manual Midea/Springer Hi Wall (F05)', servico: 'dreno_isol', aferidor: 'lista', check: ['Mangueira sai com puxão leve', 'Emenda molhada ou gotejando', 'Sem abraçadeira na conexão'] },
   ],
-  passos: [
-    { ponto: 1, titulo: 'Passo 1: Testar Escoamento da Bandeja', como: 'Disjuntor desligado. Um copo d’água na bandeja, lanterna na saída do dreno.', normal: 'Escoou → Ir ao Passo 2', defeito: 'Voltou ou transbordou → Desobstruir dreno', causa: 'Bandeja ou mangueira obstruída por lodo', servico: 'dreno_isol', aferidor: 'lista', check: ['Água voltou ou transbordou da bandeja', 'Lodo ou limo na bandeja ou na saída', 'Saída do dreno sem água depois do copo'] },
-    { ponto: 2, titulo: 'Passo 2: Conferir Nível e Sifão', como: 'Nível de bolha em cima da evaporadora; siga o trajeto da mangueira até a saída.', normal: 'Nivelado → Ir ao Passo 3', defeito: 'Desnível ou sifão → Nivelar e refazer caimento', causa: 'Desnível da evaporadora ou sifão na mangueira', servico: 'dreno_isol', aferidor: 'lista', check: ['Bolha fora do centro (caída para o lado errado)', 'Mangueira faz sifão ou barriga', 'Mangueira sobe logo depois da saída'] },
-    { ponto: 3, titulo: 'Passo 3: Conferir Conexão do Dreno', como: 'Disjuntor desligado. Puxe de leve a mangueira na saída da bandeja e olhe a emenda com a lanterna.', normal: 'Firme e seca → Fechar diagnóstico', defeito: 'Solta ou pingando → Refixar com abraçadeira', causa: 'Mangueira do dreno solta na conexão', servico: 'dreno_isol', aferidor: 'lista', check: ['Mangueira sai com puxão leve', 'Emenda molhada ou gotejando', 'Sem abraçadeira na conexão'] },
-  ],
-  erro: 'Instalar bomba de condensado (R$ 390 a R$ 680) ou mexer no gás quando é lodo na bandeja. Desobstrução com nivelamento e isolamento: R$ 150 a R$ 260.' },
+  proximo: [['a água voltar da bandeja', 'Desobstrua bandeja e mangueira.', 'dreno_isol'], ['houver desnível ou sifão', 'Nivele e refaça o caimento.', 'dreno_isol'], ['a emenda pingar', 'Refixe com abraçadeira.', 'dreno_isol']],
+  antes: 'Desligue o disjuntor antes de mexer na bandeja. Bomba de condensado (R$ 390 a R$ 680) não resolve lodo: desobstrução e nivelamento saem por R$ 150 a R$ 260.',
+  rodape: 'Split convencional e Inverter' },
 
-{ id: '05', area: 'PROTEÇÃO ELÉTRICA', titulo: 'Desarmando o disjuntor ao ligar', curto: 'Desarmando disjuntor', blocos: ['b2', 'b3'],
+{ id: 'D-005', n: '05', area: 'PROTEÇÃO', titulo: 'Desarmando o disjuntor', sub: 'O disjuntor cai assim que o aparelho liga', blocos: ['b2', 'b3'], calibrar: true,
   busca: 'desarmando disjuntor desarma cai a chave cai o disjuntor nao liga curto massa fuga corrente alta cabo derretido',
-  alerta: 'Não rearme o disjuntor várias vezes: meça isolamento e corrente antes de religar.',
-  tempo: '7 min', instr: 'Multímetro / Alicate Amperímetro', calibrar: true,
-  prob: [[70, 'COMPRESSOR EM MASSA', 1, 'Massa'], [20, 'SOBRECORRENTE', 2, 'Corrente'], [10, 'DISJUNTOR / BORNE', 3, 'Disjuntor']],
-  pontos: [
-    { n: 1, nome: 'Pinos C-S-R × carcaça', img: ['inv_compressor_certo', 'inv_compressor_erro'], visor: 'PINO→CARCAÇA: OL', escala: 'Ω (maior escala) ou megômetro', vermelho: 'Cada pino C, S e R', preto: 'Carcaça do compressor (metal limpo, sem tinta)', esperado: 'Nenhuma continuidade pino → carcaça (OL em todos)', fonte: 'Manual Electrolux QI/QE (D02): medir isolamento antes de religar' },
-    { n: 2, nome: 'Cabo de força (alicate)', img: ['nl02_nao', 'nl02_sim'], visor: 'A ≤ ETIQUETA', escala: 'A~ (um fio só na garra)', onde: 'Garra do alicate em volta de um único fio do cabo de força; cabo inteiro, sem emenda derretida', esperado: 'Corrente em funcionamento até a corrente nominal da etiqueta do aparelho', fonte: 'Etiqueta do aparelho + Manual Electrolux QI/QE (D02)' },
-    { n: 3, nome: 'Disjuntor e bornes', img: ['de02_nao', 'de02_sim'], visor: 'BORNE FIRME', escala: 'Visual + aperto', onde: 'Bornes de entrada e saída do disjuntor e cabo até a condensadora', esperado: 'Disjuntor e bitola do cabo conforme a etiqueta e o manual do aparelho; bornes firmes, sem escurecimento', fonte: 'Manual Electrolux QI/QE (D02)' },
+  chips: [[ICO('topo_sistema'), 'Sistema', 'Convencional · On/Off'], [ICO('topo_aplicacao'), 'Aplicação', 'Quadro + condensadora'], [ICO('topo_ferramenta'), 'Ferramenta', 'Alicate + multímetro']],
+  freq: [[70, 'Compressor em massa', [1]], [20, 'Corrente', [2]], [10, 'Disjuntor', [3]]],
+  causas: [
+    { nome: 'Compressor em massa', foto: ['inv_compressor_certo', 'inv_compressor_erro'], verif: 'Meça o isolamento', linha: 'Cada pino × carcaça: OL.', vermelho: 'Cada pino C, S e R', preto: 'Carcaça do compressor (metal limpo)', escala: 'Ω (maior escala)', esperado: 'Nenhuma continuidade pino → carcaça (OL em todos)', fonte: 'Manual Electrolux QI/QE (D02)', servico: 'compressor_troca', aferidor: 'massa' },
+    { nome: 'Sobrecorrente na partida', foto: ['nl02_nao', 'nl02_sim'], verif: 'Meça a corrente', linha: 'Alicate num fio: até a corrente da etiqueta.', onde: 'Garra do alicate em volta de um único fio do cabo de força', escala: 'A~ (um fio na garra)', esperado: 'Corrente em funcionamento até a corrente nominal da etiqueta do aparelho', fonte: 'Etiqueta do aparelho + Manual Electrolux QI/QE (D02)', servico: 'cap_partida', aferidor: 'corrente' },
+    { nome: 'Disjuntor ou borne', foto: ['de02_nao', 'de02_sim'], verif: 'Confira disjuntor e bornes', linha: 'Bornes firmes; disjuntor conforme a etiqueta.', onde: 'Bornes do disjuntor e cabo até a condensadora', escala: 'Visual + aperto', esperado: 'Disjuntor e bitola do cabo conforme a etiqueta e o manual do aparelho; bornes firmes', fonte: 'Manual Electrolux QI/QE (D02)', servico: 'fusivel_eletrica', aferidor: 'lista', check: ['Borne escurecido, derretido ou frouxo', 'Disjuntor diferente do pedido na etiqueta', 'Cabo mais fino que o pedido no manual'] },
   ],
-  passos: [
-    { ponto: 1, titulo: 'Passo 1: Medir Isolamento C-S-R → Carcaça', como: 'Disjuntor desligado, fios do compressor soltos. Ω na maior escala entre cada pino e a carcaça.', normal: 'OL em todos → Ir ao Passo 2', defeito: 'Continuidade com a carcaça → Compressor em massa', causa: 'Compressor em massa (fuga para a carcaça)', servico: 'compressor_troca', aferidor: 'massa' },
-    { ponto: 2, titulo: 'Passo 2: Medir Corrente com Alicate', como: 'Religue uma vez já com o alicate num único fio do cabo de força; compare com a etiqueta.', normal: 'Corrente OK → Ir ao Passo 3', defeito: 'Acima da etiqueta → Capacitor ou ventilador', causa: 'Sobrecorrente na partida (capacitor fraco ou ventilador travado)', servico: 'cap_partida', aferidor: 'corrente' },
-    { ponto: 3, titulo: 'Passo 3: Conferir Disjuntor e Bornes', como: 'Disjuntor desligado. Aperto e cor dos bornes, bitola do cabo e corrente do disjuntor contra a etiqueta.', normal: 'Tudo conforme → Fechar diagnóstico', defeito: 'Borne queimado ou disjuntor errado → Refazer proteção', causa: 'Borne aquecido ou disjuntor fora do especificado', servico: 'fusivel_eletrica', aferidor: 'lista', check: ['Borne escurecido, derretido ou frouxo', 'Disjuntor diferente do pedido na etiqueta/manual', 'Cabo mais fino que o pedido no manual'] },
-  ],
-  erro: 'Trocar o disjuntor por um maior para parar de desarmar: o compressor em massa continua lá, o cabo esquenta e a conta volta para você.' },
+  proximo: [['algum pino tiver continuidade com a carcaça', 'Condene o compressor com laudo.', 'compressor_troca'], ['a corrente passar da etiqueta', 'Troque capacitor ou motor travado.', 'cap_partida'], ['o borne estiver queimado', 'Refaça a proteção elétrica.', 'fusivel_eletrica']],
+  antes: 'Não rearme o disjuntor várias vezes: meça isolamento e corrente antes de religar. Trocar por um disjuntor maior esconde o compressor em massa e esquenta o cabo.',
+  rodape: 'Split convencional' },
 
-{ id: '06', area: 'SENSORES', titulo: 'Sensor NTC fora da curva (erro de sensor no visor)', curto: 'Sensores NTC', blocos: ['b6', 'b7', 'b8'],
+{ id: 'D-006', n: '06', area: 'SENSORES', titulo: 'Erro de sensor NTC', sub: 'Visor ou LED acusa sensor de temperatura', blocos: ['b6', 'b7', 'b8'], calibrar: true,
   busca: 'sensor ntc termistor e2 e4 a1 a2 a3 e121 e122 erro sensor tubo ambiente serpentina resistencia kohm 10k 15k 20k led piscando',
-  alerta: 'Desligue o disjuntor antes de soltar o conector do sensor da placa.',
-  tempo: '4 min', instr: 'Multímetro (kΩ) / Termômetro', calibrar: true,
-  prob: [[70, 'SENSOR FORA DA CURVA', 1, 'Sensor'], [20, 'FIXAÇÃO / CHICOTE', 2, 'Chicote'], [10, 'ENTRADA DA PLACA', 3, 'Placa']],
-  pontos: [
-    { n: 1, nome: 'Sensor NTC (kΩ)', img: ['inv_sensores_certo', 'inv_sensores_erro'], visor: '10 kΩ @ 25 °C', escala: 'kΩ (20 kΩ)', vermelho: 'Pino 1 do plugue do sensor', preto: 'Pino 2 do plugue do sensor', esperado: 'Sensor 10K a 25 °C: Samsung ±2% (F26) · Daikin 9,90 a 10,10 kΩ (F24) · Midea ±3% (F18). Gree: 15K, 20K ou 50K a 25 °C (F01). Em outra temperatura, compare na curva da marca', fonte: 'Manuais de serviço Samsung (F26), Daikin (F24), Midea (F18), Gree (F01)' },
-    { n: 2, nome: 'Fixação e chicote', img: ['desm_sensor_degelo_certo', 'desm_sensor_degelo_erro'], visor: 'CONTÍNUO', escala: 'Ω (continuidade)', vermelho: 'Fio na saída do sensor', preto: 'O mesmo fio no plugue', esperado: 'Sensor firme no poço; continuidade em cada fio; mexer o chicote não muda a leitura', fonte: 'Regra de bancada GeloPro' },
-    { n: 3, nome: 'Placa lê o sensor', img: ['ld_lg02_nao', 'ld_lg02_sim'], visor: 'LED ESTÁVEL', escala: 'Teste de troca no soquete', onde: 'Sensor aferido (ou de bancada) no soquete da placa; religue e observe o LED ou o visor', esperado: 'Com sensor bom no soquete, o código apaga e o LED fica estável', fonte: 'Regra de bancada GeloPro' },
+  chips: [[ICO('topo_sistema'), 'Sistema', 'Convencional e Inverter'], [CENA('ld_lg02_nao'), 'Aplicação', 'Evaporadora (placa)'], [ICO('topo_ferramenta'), 'Ferramenta', 'Multímetro kΩ']],
+  freq: [[70, 'Sensor', [1]], [20, 'Chicote', [2]], [10, 'Placa', [3]]],
+  causas: [
+    { nome: 'Sensor fora da curva', foto: ['inv_sensores_certo', 'inv_sensores_erro'], verif: 'Meça o sensor solto', linha: '10K a 25 °C: Samsung ±2%, Midea ±3%.', vermelho: 'Pino 1 do plugue do sensor', preto: 'Pino 2 do plugue do sensor', escala: 'kΩ (20 kΩ)', esperado: 'Sensor 10K a 25 °C: Samsung ±2% (F26) · Daikin 9,90 a 10,10 kΩ (F24) · Midea ±3% (F18). Gree: 15K, 20K ou 50K a 25 °C (F01)', fonte: 'Manuais de serviço Samsung, Daikin, Midea e Gree', servico: 'sensor_ntc', aferidor: 'ntc' },
+    { nome: 'Sensor solto ou chicote', foto: ['desm_sensor_degelo_certo', 'desm_sensor_degelo_erro'], verif: 'Confira fixação e chicote', linha: 'Firme no poço; continuidade fio a fio.', vermelho: 'Fio na saída do sensor', preto: 'O mesmo fio no plugue', escala: 'Ω (continuidade)', esperado: 'Sensor firme no poço; continuidade em cada fio; mexer o chicote não muda a leitura', fonte: 'Regra de bancada GeloPro', servico: 'sensor_ntc', aferidor: 'lista', check: ['Sensor solto fora do poço', 'Leitura muda ao mexer no chicote', 'Pino oxidado ou fio aberto (OL)'] },
+    { nome: 'Placa não lê o sensor', foto: ['ld_lg02_nao', 'ld_lg02_sim'], verif: 'Teste com sensor bom', linha: 'Código apaga e o LED fica estável.', onde: 'Sensor aferido no soquete da placa; religue e observe o LED', escala: 'Teste de troca', esperado: 'Com sensor bom no soquete, o código apaga e o LED fica estável', fonte: 'Regra de bancada GeloPro', servico: 'reparo_placa', aferidor: 'lista', check: ['Código continua com sensor aferido no soquete', 'Trilha ou solda do soquete rachada', 'Soquete solto da placa'] },
   ],
-  passos: [
-    { ponto: 1, titulo: 'Passo 1: Medir Resistência do Sensor', como: 'Sensor solto da placa e parado no ar ambiente; termômetro ao lado para saber a temperatura.', normal: 'Na curva → Ir ao Passo 2', defeito: 'Fora da tolerância → Trocar sensor NTC', causa: 'Sensor NTC fora da curva da marca', servico: 'sensor_ntc', aferidor: 'ntc' },
-    { ponto: 2, titulo: 'Passo 2: Testar Fixação e Chicote', como: 'Sensor no poço; continuidade fio a fio, do sensor ao plugue, mexendo no chicote durante a medição.', normal: 'Firme e contínuo → Ir ao Passo 3', defeito: 'Solto, aberto ou oxidado → Refazer fixação/conector', causa: 'Sensor solto do poço ou chicote com mau contato', servico: 'sensor_ntc', aferidor: 'lista', check: ['Sensor solto fora do poço', 'Leitura muda ao mexer no chicote', 'Pino oxidado ou fio aberto (OL)'] },
-    { ponto: 3, titulo: 'Passo 3: Conferir se a Placa Lê o Sensor', como: 'Sensor aferido no soquete; religue e veja o LED ou o visor.', normal: 'LED estável → Fechar diagnóstico', defeito: 'Mesmo código com sensor bom → Reparar placa', causa: 'Entrada do sensor na placa sem leitura', servico: 'reparo_placa', aferidor: 'lista', check: ['Código continua com sensor aferido no soquete', 'Trilha ou solda do soquete rachada', 'Soquete solto da placa'] },
-  ],
-  erro: 'Trocar a placa (R$ 580 a R$ 1.150) por erro de sensor. O sensor NTC aferido e trocado sai por R$ 190 a R$ 320 de serviço.' },
+  proximo: [['o sensor sair da tolerância', 'Troque o sensor NTC.', 'sensor_ntc'], ['o chicote falhar', 'Refaça a fixação e o conector.', 'sensor_ntc'], ['o código continuar com sensor bom', 'Repare a entrada da placa.', 'reparo_placa']],
+  antes: 'Desligue o disjuntor antes de soltar o conector. Trocar a placa (R$ 580 a R$ 1.150) por erro de sensor: o sensor aferido e trocado sai por R$ 190 a R$ 320.',
+  rodape: 'Split convencional e Inverter' },
 ];
 
-// ───────────── Utilidades ─────────────
+// ───────────── Utilidades e estado ─────────────
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (t) => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const norm = (t) => String(t).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const brl = (v) => 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const faixa = (id) => `R$\u00A0${PRECOS[id][1].toLocaleString('pt-BR')}\u00A0a R$\u00A0${PRECOS[id][3].toLocaleString('pt-BR')}`;
+const nn = (i) => String(i).padStart(2, '0');
+// Caixa alta preservando µ (toUpperCase/text-transform transformam µ em Μ grego, que lê como "M").
+const caixaAlta = (t) => esc(t).split('µ').map(x => x.toUpperCase()).join('µ');
+// R$ e o valor nunca quebram de linha.
+const reais = (t) => esc(t).replace(/R\$ /g, 'R$\u00A0').replace(/ a R\$/g, '\u00A0a R$');
 const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 const ler = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
-const corpo = $('#corpo');
+const visor = $('#visor');
+const S = { idx: 0, sel: 0, estado: {}, defeito: {} };   // estado[ficha][causa] = 'ok' | 'def'
+const fichaAtual = () => F[S.idx];
+const servicoAtual = () => { const f = fichaAtual(); return S.defeito[f.id] || f.causas[f.freq[0][2][0] - 1].servico; };
+const icoCausa = (c) => c.ico ? `<img src="${c.ico}" alt="">` : `<img class="foto" src="${CENA(c.foto[1])}" alt="">`;
 
-// Estado global: variação (V1/V2/V3), prancha atual e o defeito confirmado em cada prancha (preenche o Orçar Reparo do dock).
-const S = { v: 1, idx: 0, aberta: false, defeito: {} };
-const servicoAtual = () => { const p = P[S.idx]; if (S.defeito[p.id]) return S.defeito[p.id]; const pt = p.prob[0][2]; return p.passos.find(s => s.ponto === pt).servico; };
-
-// Imagem principal opcional (pacote GPT): guia-pro/imagens/prancha_NN.webp ou .png. Cacheia o resultado da tentativa.
-const HEROI = {};
-function procurarHeroi(id, cb) {
-  if (id in HEROI) return cb(HEROI[id]);
-  const tentar = (exts) => { if (!exts.length) { HEROI[id] = null; return cb(null); }
-    const src = `imagens/prancha_${id}.${exts[0]}`, im = new Image();
-    im.onload = () => { HEROI[id] = src; cb(src); }; im.onerror = () => tentar(exts.slice(1)); im.src = src; };
-  tentar(['webp', 'png']);
+// ───────────── Ficha em 7 camadas ─────────────
+function montarFicha(i) {
+  S.idx = i; S.sel = 0; const f = F[i]; S.estado[f.id] = S.estado[f.id] || {};
+  const st = S.estado[f.id];
+  const pil = (k) => st[k] === 'ok' ? '<span class="pilula ok">DESCARTADA</span>' : st[k] === 'def' ? '<span class="pilula def">CONFIRMADA</span>' : `<span class="pilula${k === f.causas.findIndex((c, j) => !st[j + 1]) + 1 ? ' medir' : ''}">A VALIDAR</span>`;
+  const quadro = f.ilustra
+    ? `<div class="ilustra"><img src="${f.ilustra.src}" alt="Condensadora aberta com os 5 pontos de medição" width="${f.ilustra.w}" height="${f.ilustra.h}">${f.ilustra.alvos.map(([x, y], k) => `<button class="alvo" data-k="${k + 1}" style="left:${x}%;top:${y}%" aria-label="Ponto ${nn(k + 1)}: ${esc(f.causas[k].nome)}"></button>`).join('')}</div>`
+    : `<div class="fotos">${f.causas.map((c, k) => `<button data-k="${k + 1}" aria-label="Ponto ${nn(k + 1)}: ${esc(c.nome)}"><img src="${CENA(c.foto[0])}" alt="${esc(c.nome)}"><span class="n">${nn(k + 1)}</span></button>`).join('')}</div>`;
+  visor.innerHTML = `<article class="ficha" data-ficha="${f.id}" ${f.calibrar ? 'data-calibrar="1"' : ''}>
+    <div class="c1"><span>+120 Diagnósticos · Ar-condicionado split</span><b>${f.n} · ${f.area}</b></div>
+    <div class="c2"><h1>${esc(f.titulo)}</h1><p>${esc(f.sub)}</p></div>
+    <div class="c3">${f.chips.map(([src, k, v]) => `<div class="chip"><span class="tile"><img ${src.includes('/cenas/') ? 'class="foto" ' : ''}src="${src}" alt=""></span><span class="t"><span class="k">${esc(k)}</span><span class="v">${caixaAlta(v)}</span></span></div>`).join('')}</div>
+    <div class="c4" data-img-slot="ficha-${f.id}">${quadro}</div>
+    <div class="det" aria-live="polite"></div>
+    <div class="c5">
+      <section><div class="bloco-h">Causas mais prováveis</div>
+        <div class="freq" role="group" aria-label="Frequência das causas">${f.freq.map(([p, r, ks], j) => `<button data-k="${ks[0]}" style="width:${p}%;background:${COR_FREQ[j]}" aria-label="${p}% ${esc(r)}">${p}%</button>`).join('')}</div>
+        <div class="freq-leg">${f.freq.map(([p, r]) => `${p}% ${esc(r)}`).join(' · ')}</div>
+        ${f.causas.map((c, k) => `<button class="causa" data-k="${k + 1}"><span class="num">${nn(k + 1)}</span><span class="ico">${icoCausa(c)}</span><span class="t"><span class="nm">${esc(c.nome)}</span>${pil(k + 1)}</span></button>`).join('')}
+      </section>
+      <section><div class="bloco-h">Verificações na ordem</div>
+        <div class="verifs">${f.causas.map((c, k) => `<button class="verif${st[k + 1] ? ' ' + st[k + 1] : ''}" data-k="${k + 1}"><span class="bol">${nn(k + 1)}</span><span><span class="tt">${esc(c.verif)}</span><span class="ln">${ic('check', '#16A34A', 18)}<span>${esc(c.linha)}</span></span></span></button>`).join('')}</div>
+      </section>
+    </div>
+    <section class="c6"><h3>Próximo passo</h3>${f.proximo.map(([se, entao, srv]) => `<button class="prox" data-srv="${srv}"><span class="se"><b>SE</b> ${esc(se)}</span>${ic('seta', '#1D9BF0', 22)}<span class="entao">${esc(entao)}<span class="preco">Orçar: ${faixa(srv)}</span></span></button>`).join('')}</section>
+    <div class="c7"><span class="tri">${alerta(42)}</span><div><b>Antes de trocar a peça:</b><p>${reais(f.antes)}</p></div></div>
+    <div class="rodape"><span>GELOPRO · GUIA DE DIAGNÓSTICO</span><span>${esc(f.rodape)} · ${f.id}</span></div>
+  </article>`;
+  visor.scrollTop = 0;
+  $('#sel-cod').textContent = `${f.id} · ${f.area}`; $('#sel-nome').textContent = f.titulo;
+  $$('[data-k]', visor).forEach(b => b.addEventListener('click', () => selecionar(+b.dataset.k, !b.closest('.c4'))));
+  $$('.prox', visor).forEach(b => b.addEventListener('click', () => abrirOrcamento(b.dataset.srv)));
+  try { history.replaceState(null, '', '#' + f.id); } catch (e) {}
+}
+function selecionar(k, rolarAoQuadro) {
+  const f = fichaAtual(), c = f.causas[k - 1]; S.sel = k;
+  $$('.alvo,.fotos button,.causa,.verif', visor).forEach(e => e.classList.toggle('sel', +e.dataset.k === k));
+  const det = $('.det', visor), st = S.estado[f.id];
+  det.innerHTML = `<div class="cab"><span class="num">${nn(k)}</span><h4>${esc(c.nome)}</h4></div>
+    ${c.foto ? `<div class="par"><figure class="ok"><img src="${CENA(c.foto[0])}" alt="Normal"><figcaption>NORMAL</figcaption></figure><figure class="df"><img src="${CENA(c.foto[1])}" alt="Defeito"><figcaption>DEFEITO</figcaption></figure></div>` : ''}
+    <dl>${c.vermelho ? `<dt style="color:#F87171">Ponta vermelha</dt><dd>${esc(c.vermelho)}</dd><dt style="color:#E5E7EB">Ponta preta</dt><dd>${esc(c.preto)}</dd>` : `<dt style="color:#67C6FF">Onde</dt><dd>${esc(c.onde)}</dd>`}<dt style="color:#94A3B8">Escala</dt><dd>${esc(c.escala)}</dd></dl>
+    <div class="esp">Leitura esperada: ${esc(c.esperado)}</div>
+    <div class="fonte">Fonte: ${esc(c.fonte)}</div>
+    <div class="teclas"><button class="tecla" data-r="ok">${ic('check', '#FFFFFF', 18)}<span>Normal</span></button><button class="tecla vermelha" data-r="def">${ic('x', '#FFFFFF', 18)}<span>Defeito</span></button></div>`;
+  det.classList.add('on');
+  $('[data-r=ok]', det).addEventListener('click', () => marcar(k, 'ok'));
+  $('[data-r=def]', det).addEventListener('click', () => marcar(k, 'def'));
+  if (rolarAoQuadro) $('.c4', visor).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function marcar(k, r) {
+  const f = fichaAtual(), st = S.estado[f.id]; st[k] = r;
+  const sel = k; montarFicha(S.idx);
+  if (r === 'def') { S.defeito[f.id] = f.causas[k - 1].servico; selecionar(sel); abrirCausa(f, k); return; }
+  const prox = f.causas.findIndex((c, j) => !st[j + 1]) + 1;
+  if (prox) { selecionar(prox); $('.c4', visor).scrollIntoView({ block: 'start' }); } else abrirFim(f);
 }
 
-// ───────────── Prancha de Diagnóstico Limpa ─────────────
-function montarPrancha(idx) {
-  const p = P[idx];
-  const est = { passos: p.passos.map(() => 'pend'), ponto: p.prob[0][2], lado: 0 };
-  const quadro = (pt) => `<button class="quadro" data-n="${pt.n}" aria-label="Ponto ${pt.n}: ${esc(pt.nome)}">
-      <img src="${CENA(pt.img[0])}" alt="${esc(pt.nome)}" loading="lazy" decoding="async">
-      <span class="selo">${pt.n}</span>
-      <span class="legenda"><span class="linha1"><span class="estado ok">✓ NORMAL</span><span class="visor">${esc(pt.visor)}</span></span><span class="nm">${CIRC[pt.n - 1]} ${esc(pt.nome)}</span></span></button>`;
-  corpo.innerHTML = `<article class="prancha" data-prancha="${p.id}" ${p.calibrar ? 'data-calibrar="1"' : ''}>
-    <div class="p-cab"><div class="p-etq">DIAGNÓSTICO #${p.id} · ${p.area}</div><h2>${esc(p.titulo)}</h2></div>
-    <div class="p-folha">
-      <div class="p-alerta"><span aria-hidden="true">⚡</span><span>${esc(p.alerta)}</span></div>
-      <div class="p-sec">
-        <div class="p-tit">Onde está o defeito <em>toque na barra</em></div>
-        <div class="prob">${p.prob.map((b, i) => `<button data-ponto="${b[2]}" aria-label="${b[0]}% ${esc(b[1])}">
-          <span class="pct" style="color:${COR_PROB[i]}">${b[0]}%</span>
-          <span class="lado"><span class="nome">${esc(b[1])}<small>${CIRC[b[2] - 1]} Passo ${p.passos.findIndex(s => s.ponto === b[2]) + 1}</small></span><span class="trilho"><i style="width:${b[0]}%;background:${COR_PROB[i]}"></i></span></span></button>`).join('')}</div>
-      </div>
-      <div class="painel" data-img-slot="prancha-${p.id}">
-        <div class="p-tit">Os 3 pontos de medição <em>toque no quadro</em></div>
-        <div class="heroi"></div>
-        <div class="painel-grade">${p.pontos.map(quadro).join('')}</div>
-        <div class="detalhe"></div>
-      </div>
-      <div class="p-sec">
-        <div class="p-tit">Passo a passo · se der isso, faz aquilo <em>${esc(p.instr)} · ⚡ ${p.tempo}</em></div>
-        <div class="passos">${p.passos.map((s, i) => `<section class="passo${i === 0 ? ' foco' : ''}" data-i="${i}">
-            <div class="topo"><span class="bol">${i + 1}</span><h6>${esc(s.titulo)}</h6></div>
-            <p>${esc(s.como)}</p>
-            <div class="ref">Normal: <b>${esc(p.pontos[s.ponto - 1].esperado)}</b></div>
-            <button class="ver" data-ponto="${s.ponto}">${CIRC[s.ponto - 1]} Ver o ponto na foto ›</button>
-            <div class="dupla"><button class="btn-ok">✓ Normal<small>(${esc(s.normal)})</small></button><button class="btn-def">✗ Defeito<small>(${esc(s.defeito)})</small></button></div>
-          </section>`).join('')}</div>
-      </div>
-      <div class="erro-caro"><b>🛑 ERRO CARO A EVITAR</b>${esc(p.erro)}</div>
-    </div></article>`;
-  corpo.scrollTop = 0;
-  const painel = $('.painel', corpo), grade = $('.painel-grade', corpo), det = $('.detalhe', corpo);
-
-  procurarHeroi(p.id, (src) => { if (!src || !painel.isConnected) return; $('.heroi', painel).innerHTML = `<img src="${src}" alt="Prancha ${p.id}">`; painel.classList.add('com-heroi'); });
-
-  const pintarDetalhe = () => {
-    const pt = p.pontos[est.ponto - 1], iP = p.passos.findIndex(s => s.ponto === pt.n);
-    det.innerHTML = `<div class="cab"><span class="n">${pt.n}</span><h5>${esc(pt.nome)}</h5>
-        <div class="alterna" role="group" aria-label="Ver normal ou defeito"><button class="ok" data-l="0" aria-pressed="${est.lado === 0}">✓ Normal</button><button class="def" data-l="1" aria-pressed="${est.lado === 1}">✗ Defeito</button></div></div>
-      <dl>${pt.vermelho ? `<dt style="color:#F87171">● VERMELHA</dt><dd>${esc(pt.vermelho)}</dd><dt style="color:#E5E7EB">● PRETA</dt><dd>${esc(pt.preto)}</dd>` : `<dt style="color:#67C6FF">Onde</dt><dd>${esc(pt.onde)}</dd>`}<dt style="color:#94A3B8">Escala</dt><dd>${esc(pt.escala)}</dd></dl>
-      <div class="esperado">Leitura esperada: ${esc(pt.esperado)}</div>
-      <div class="rodape"><span class="fonte">Fonte: ${esc(pt.fonte)}</span><button class="ir" data-passo="${iP}">Ir ao Passo ${iP + 1} ↓</button></div>`;
-    $$('.alterna button', det).forEach(b => b.addEventListener('click', () => { est.lado = +b.dataset.l; pintarQuadros(); pintarDetalhe(); }));
-    $('.ir', det).addEventListener('click', () => destacarPasso(iP, true));
-  };
-  const pintarQuadros = () => {
-    // O ponto escolhido vira o quadro principal (primeiro da grade); a foto alterna Normal ✓ / Defeito ✗.
-    const ordem = [est.ponto, ...[1, 2, 3].filter(n => n !== est.ponto)];
-    ordem.forEach(n => grade.appendChild($(`.quadro[data-n="${n}"]`, grade)));
-    $$('.quadro', grade).forEach(q => {
-      const n = +q.dataset.n, pt = p.pontos[n - 1], sel = n === est.ponto, lado = sel ? est.lado : 0;
-      q.classList.toggle('principal', sel); q.classList.toggle('sel', sel);
-      const img = $('img', q), alvo = CENA(pt.img[lado]); if (!img.src.endsWith(alvo.slice(2))) img.src = alvo;
-      const e = $('.estado', q); e.className = 'estado ' + (lado ? 'def' : 'ok'); e.textContent = lado ? '✗ DEFEITO' : '✓ NORMAL';
-    });
-    $$('.prob button', corpo).forEach(b => b.classList.toggle('ativo', +b.dataset.ponto === est.ponto));
-  };
-  const selecionar = (n, lado = 0) => { est.ponto = n; est.lado = lado; pintarQuadros(); pintarDetalhe(); };
-  const destacarPasso = (i, rolar) => {
-    $$('.passo', corpo).forEach((c, k) => c.classList.toggle('foco', k === i));
-    const c = $$('.passo', corpo)[i]; if (!c) return;
-    c.classList.remove('flash'); void c.offsetWidth; c.classList.add('flash');
-    if (rolar) setTimeout(() => c.scrollIntoView({ behavior: 'smooth', block: 'center' }), 450);
-  };
-  const marcar = (i, st) => { est.passos[i] = st; const c = $$('.passo', corpo)[i]; c.classList.remove('ok', 'def'); c.classList.add(st); $('.bol', c).textContent = st === 'ok' ? '✓' : '✗'; };
-
-  $$('.quadro', grade).forEach(q => q.addEventListener('click', () => selecionar(+q.dataset.n, +q.dataset.n === est.ponto ? est.lado : 0)));
-  $$('.prob button', corpo).forEach(b => b.addEventListener('click', () => { const n = +b.dataset.ponto; selecionar(n); destacarPasso(p.passos.findIndex(s => s.ponto === n), true); }));
-  $$('.passo', corpo).forEach((c, i) => {
-    const s = p.passos[i];
-    $('.ver', c).addEventListener('click', () => { selecionar(s.ponto); painel.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
-    $('.btn-ok', c).addEventListener('click', () => { marcar(i, 'ok'); if (i + 1 < p.passos.length) { selecionar(p.passos[i + 1].ponto); destacarPasso(i + 1, true); } else abrirFim(p); });
-    $('.btn-def', c).addEventListener('click', () => { marcar(i, 'def'); selecionar(s.ponto, 1); S.defeito[p.id] = s.servico; abrirCausa(p, i); });
-  });
-  selecionar(est.ponto);
+// ───────────── Folhas ─────────────
+const fundo = $('#fundo'), modal = $('#modal');
+const fechar = () => { modal.classList.remove('aberto'); fundo.classList.remove('aberto'); };
+function abrir(html, depois) {
+  modal.innerHTML = `<div class="alca"></div><button class="fechar" aria-label="Fechar">${ic('x', '#334155', 18)}</button>${html}`;
+  modal.classList.add('aberto'); fundo.classList.add('aberto'); modal.scrollTop = 0;
+  $('.fechar', modal).addEventListener('click', fechar);
+  if (depois) depois(modal);
 }
-
-// ───────────── Folhas (gaveta e modal) ─────────────
-const fundo = $('#fundo'), modal = $('#modal'), gaveta = $('#gaveta');
-const fecharTudo = () => { [modal, gaveta].forEach(f => f.classList.remove('aberto')); fundo.classList.remove('aberto'); };
-function abrirFolha(el, html, depois) {
-  [modal, gaveta].forEach(f => f !== el && f.classList.remove('aberto'));
-  el.innerHTML = `<div class="alca"></div><button class="fechar" aria-label="Fechar">×</button>${html}`;
-  el.classList.add('aberto'); fundo.classList.add('aberto'); el.scrollTop = 0;
-  $('.fechar', el).addEventListener('click', fecharTudo);
-  if (depois) depois(el);
-}
-const abrirModal = (html, depois) => abrirFolha(modal, html, depois);
-fundo.addEventListener('click', fecharTudo);
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharTudo(); });
-
+fundo.addEventListener('click', fechar);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fechar(); });
 const blocoServico = (id) => { const s = PRECOS[id]; return `<div class="servico"><b>${esc(s[0])}</b><div class="faixa"><span>Faixa: ${brl(s[1])} a ${brl(s[3])}</span><span>Típico: ${brl(s[2])}</span></div><div class="ref">Tabela de preços GeloPro 2026 · referência de campo</div></div>`; };
-function abrirCausa(p, i) {
-  const s = p.passos[i];
-  abrirModal(`<h3>Causa Confirmada</h3>
-    <div class="confirmada"><div class="k">DIAGNÓSTICO #${p.id} · PASSO ${i + 1}</div><div class="v">${esc(s.causa)}</div></div>
-    ${blocoServico(s.servico)}
-    <div class="pilha"><button class="btn verde cheio" data-a="orc">📄 Gerar Orçamento PDF Nº 1001 com Pix</button><button class="btn marinho cheio" data-a="afer">🧮 Abrir Aferidor Vivo deste componente</button><button class="btn claro cheio" data-a="voltar">Voltar à prancha</button></div>`, (m) => {
-    $('[data-a=orc]', m).addEventListener('click', () => abrirOrcamento(s.servico, p));
-    $('[data-a=afer]', m).addEventListener('click', () => abrirAferidor(p, i));
-    $('[data-a=voltar]', m).addEventListener('click', fecharTudo);
+const teclaOrcar = (rot = 'Orçar este Reparo (PDF Nº 1001 + Pix)') => `<button class="tecla verde" data-a="orc">${ic('doc', '#FFFFFF', 20)}<span>${rot}</span></button>`;
+
+function abrirCausa(f, k) {
+  const c = f.causas[k - 1];
+  abrir(`<h3>Causa confirmada</h3><div class="confirmada"><div class="k">${f.id} · PONTO ${nn(k)}</div><div class="v">${esc(c.nome)}</div></div>${blocoServico(c.servico)}
+    <div class="pilha">${teclaOrcar()}<button class="tecla" data-a="afer">${ic('calc', '#FFFFFF', 20)}<span>Aferidor deste componente</span></button><button class="tecla clara" data-a="voltar"><span>Voltar à ficha</span></button></div>`, (m) => {
+    $('[data-a=orc]', m).addEventListener('click', () => abrirOrcamento(c.servico));
+    $('[data-a=afer]', m).addEventListener('click', () => abrirAferidor(f, k));
+    $('[data-a=voltar]', m).addEventListener('click', fechar);
   });
 }
-function abrirFim(p) {
-  const prox = P[(P.indexOf(p) + 1) % P.length];
-  abrirModal(`<h3>Os 3 pontos deram normal</h3><div class="sub">A prancha #${p.id} descartou as 3 causas mais frequentes. Feche a visita com o diagnóstico instrumentado e siga para o sintoma vizinho.</div>
-    ${blocoServico('visita_diag')}
-    <div class="pilha"><button class="btn verde cheio" data-a="orc">📄 Gerar Orçamento PDF Nº 1001 com Pix</button><button class="btn marinho cheio" data-a="prox">Abrir #${prox.id}: ${esc(prox.curto)} ›</button><button class="btn claro cheio" data-a="cod">Conferir Códigos de Erro (Bônus 2)</button></div>`, (m) => {
-    $('[data-a=orc]', m).addEventListener('click', () => abrirOrcamento('visita_diag', p));
-    $('[data-a=prox]', m).addEventListener('click', () => { fecharTudo(); abrirPrancha(P.indexOf(prox)); });
+function abrirFim(f) {
+  const prox = F[(F.indexOf(f) + 1) % F.length];
+  abrir(`<h3>Todos os pontos deram normal</h3><div class="sub">A ficha ${f.id} descartou as causas mais prováveis. Feche a visita com o diagnóstico instrumentado e siga para a ficha vizinha.</div>${blocoServico('visita_diag')}
+    <div class="pilha">${teclaOrcar('Orçar a visita (PDF Nº 1001 + Pix)')}<button class="tecla" data-a="prox"><span>Abrir ${prox.id} · ${esc(prox.titulo)}</span></button><button class="tecla clara" data-a="cod"><span>Conferir códigos de erro (Bônus 2)</span></button></div>`, (m) => {
+    $('[data-a=orc]', m).addEventListener('click', () => abrirOrcamento('visita_diag'));
+    $('[data-a=prox]', m).addEventListener('click', () => { fechar(); montarFicha(F.indexOf(prox)); });
     $('[data-a=cod]', m).addEventListener('click', () => abrirBonus(1));
   });
 }
 
-// ───────────── Aferidores vivos ─────────────
-// Faixas com fonte: tensão ±10% e SH/ΔT (F14 Elgin), P-N (F20 Midea), NTC (F18/F24/F26), capacitor −5% (regra do Pedro).
+// Índice (120): busca por sintoma ou código e 8 blocos
+let bloco = 'todos', termo = '';
+function abrirIndice() {
+  abrir(`<h3>Índice · 120+ Diagnósticos</h3><div class="sub">${F.length} fichas prontas neste teste. Busque por sintoma ou código.</div>
+    <label class="busca">${ic('busca', '#64748B', 18)}<input type="search" placeholder="Sintoma ou código: não gela, E1, pingando..." autocomplete="off" value="${esc(termo)}"></label>
+    <div class="blocos">${BLOCOS.map(([id, r]) => `<button data-b="${id}" aria-pressed="${id === bloco}">${r}</button>`).join('')}</div><div class="lista"></div>`, (m) => {
+    const l = $('.lista', m), inp = $('input', m);
+    const render = () => {
+      const t = norm(termo.trim()), ids = F.map((f, i) => i).filter(i => { const f = F[i], txt = norm(`${f.id} ${f.titulo} ${f.sub} ${f.busca}`); return (bloco === 'todos' || f.blocos.includes(bloco)) && (!t || txt.includes(t) || t.split(/\s+/).every(w => txt.includes(w))); });
+      l.innerHTML = ids.length ? ids.map(i => { const f = F[i], c = f.causas[f.freq[0][2][0] - 1]; return `<button class="item-ficha${i === S.idx ? ' atual' : ''}" data-i="${i}"><span class="ico"><img src="${c.foto ? CENA(c.foto[1]) : c.ico}" alt=""></span><span><span class="cod">${f.id} · ${f.area}</span><br><span class="nm">${esc(f.titulo)}</span><br><span class="sb">${f.freq[0][0]}% ${esc(f.freq[0][1])}</span></span></button>`; }).join('')
+        : `<div class="vazio">Nenhuma ficha com esse termo.<div class="pilha"><button class="tecla" data-a="todas"><span>Ver todas as fichas</span></button><button class="tecla clara" data-a="cod"><span>Buscar nos códigos de erro</span></button></div></div>`;
+      $$('[data-i]', l).forEach(b => b.addEventListener('click', () => { fechar(); montarFicha(+b.dataset.i); }));
+      const a = $('[data-a=todas]', l); if (a) a.addEventListener('click', () => { termo = ''; bloco = 'todos'; inp.value = ''; $$('.blocos button', m).forEach(x => x.setAttribute('aria-pressed', x.dataset.b === 'todos')); render(); });
+      const c = $('[data-a=cod]', l); if (c) c.addEventListener('click', () => abrirBonus(1));
+    };
+    inp.addEventListener('input', () => { termo = inp.value; render(); });
+    $$('.blocos button', m).forEach(b => b.addEventListener('click', () => { bloco = b.dataset.b; $$('.blocos button', m).forEach(x => x.setAttribute('aria-pressed', x === b)); render(); }));
+    render();
+  });
+}
+
+// Aferidores vivos. Faixas com fonte: tensão ±10%, SH e ΔT (F14 Elgin), P-N (F20 Midea), NTC (F18/F24/F26), capacitor −5% (regra do Pedro).
 const NTC_OPS = [['Samsung 10K (±2%)', 10, 2], ['Midea/Springer/Carrier 10K (±3%)', 10, 3], ['Daikin 10K (9,90 a 10,10 kΩ)', 10, 1]];
 const AFERIDORES = {
-  tensao: { tit: 'Aferidor de Tensão L-N', campos: [['nom', 'Tensão de placa do aparelho', 'sel', [['220', '220 V'], ['127', '127 V']]], ['med', 'Tensão medida (V)', 'num']],
-    calc: (v) => { const n = +v.nom, m = +v.med; if (!m) return null; const lo = n * 0.9, hi = n * 1.1; return { ok: m >= lo && m <= hi, txt: `Faixa: ${lo.toFixed(0)} a ${hi.toFixed(0)} V (±10% da placa, F14)` }; } },
-  cap: { tit: 'Aferidor de Capacitor (µF)', campos: [['nom', 'µF da etiqueta', 'num'], ['med', 'µF medido', 'num']],
-    calc: (v) => { const n = +v.nom, m = +v.med; if (!n || !m) return null; const lim = n * 0.95, d = (m - n) / n * 100; return { ok: m >= lim, txt: `Mínimo aceito: ${lim.toFixed(1)} µF (−5% da etiqueta) · desvio medido ${d.toFixed(1)}%` }; } },
-  csr: { tit: 'Aferidor do Compressor C-S-R', campos: [['cs', 'C-S (Ω)', 'num'], ['cr', 'C-R (Ω)', 'num'], ['sr', 'S-R (Ω)', 'num'], ['massa', 'Algum pino tem continuidade com a carcaça', 'chk']],
-    calc: (v) => { if (v.massa) return { ok: false, txt: 'Compressor em massa: condenar com laudo' }; const cs = +v.cs, cr = +v.cr, sr = +v.sr; if (!cs || !cr || !sr) return null; return { ok: null, txt: `C-S + C-R = ${(cs + cr).toFixed(2)} Ω · S-R medido = ${sr.toFixed(2)} Ω. Bateu a soma e sem massa: enrolamentos íntegros. Compare com a tabela do compressor.` }; } },
-  deltat: { tit: 'Aferidor ΔT Retorno × Insuflamento', campos: [['ret', 'Retorno (°C)', 'num'], ['ins', 'Insuflamento (°C)', 'num']],
-    calc: (v) => { if (v.ret === '' || v.ins === '') return null; const d = +v.ret - +v.ins; return { ok: d >= 10 && d <= 15, txt: `ΔT = ${d.toFixed(1)} °C · faixa 10 a 15 °C (F14). Acima de 15 °C: pouca vazão de ar (filtro, serpentina, turbina). Abaixo de 10 °C: pouca troca (fluido ou serpentina congelada).` }; } },
-  sh: { tit: 'Aferidor de Superaquecimento (R-410A)', campos: [['tsuc', 'Temperatura do tubo de sucção (°C)', 'num'], ['tev', 'Temperatura de evaporação pela pressão (°C)', 'num']],
-    calc: (v) => { if (v.tsuc === '' || v.tev === '') return null; const sh = +v.tsuc - +v.tev; return { ok: sh >= 7 && sh <= 11, txt: `SH = ${sh.toFixed(1)} °C · faixa 7 a 11 °C (F14). Acima de 11 °C: adicionar fluido na fase líquida. Abaixo de 7 °C: recolher fluido.` }; } },
-  pn: { tit: 'Aferidor do Barramento P-N', campos: [['med', 'Tensão P-N medida (V CC)', 'num']],
-    calc: (v) => { const m = +v.med; if (!m) return null; return { ok: m >= 290 && m <= 330, txt: 'Faixa em espera: 290 a 330 V CC; cerca de 310 V CC em 208–230 V (F20)' }; } },
-  ipm: { tit: 'Aferidor do Módulo IPM', campos: ['P → N', 'P → U', 'P → V', 'P → W', 'U → N', 'V → N', 'W → N'].map((k, i) => ['p' + i, `${k}: leitura baixa (não deu infinito)`, 'chk']),
-    calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? `${r} par(es) com leitura baixa: IPM em curto (F20 p. 85)` : 'Todos os pares em infinito: IPM sem curto (F20 p. 85)' }; } },
-  ntc: { tit: 'Aferidor de Sensor NTC (a 25 °C)', campos: [['tipo', 'Sensor', 'sel', NTC_OPS.map((o, i) => [String(i), o[0]])], ['med', 'Resistência medida a 25 °C (kΩ)', 'num']],
-    calc: (v) => { const o = NTC_OPS[+v.tipo], m = +v.med; if (!m) return null; const lo = o[1] * (1 - o[2] / 100), hi = o[1] * (1 + o[2] / 100); return { ok: m >= lo && m <= hi, txt: `Faixa a 25 °C: ${lo.toFixed(2)} a ${hi.toFixed(2)} kΩ. Em outra temperatura, compare na curva da marca (ferramenta Sensor NTC do app).` }; } },
-  massa: { tit: 'Aferidor de Isolamento C-S-R → Carcaça', campos: ['C', 'S', 'R'].map(k => ['m' + k, `Pino ${k} tem continuidade com a carcaça`, 'chk']),
-    calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? 'Compressor em massa: não religar, condenar com laudo' : 'Sem fuga para a carcaça: siga para a corrente (Passo 2)' }; } },
-  corrente: { tit: 'Aferidor de Corrente (alicate)', campos: [['nom', 'Corrente nominal da etiqueta (A)', 'num'], ['med', 'Corrente medida (A)', 'num']],
-    calc: (v) => { const n = +v.nom, m = +v.med; if (!n || !m) return null; return { ok: m <= n, txt: `Medido ${m.toFixed(1)} A · etiqueta ${n.toFixed(1)} A${m > n ? ` · ${((m / n - 1) * 100).toFixed(0)}% acima` : ''}` }; } },
-  lista: { tit: 'Checklist do ponto', campos: [], calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? `${r} sinal(is) de defeito confirmado(s)` : 'Nenhum sinal de defeito marcado' }; } },
+  tensao: { tit: 'Aferidor de tensão L-N', campos: [['nom', 'Tensão de placa do aparelho', 'sel', [['220', '220 V'], ['127', '127 V']]], ['med', 'Tensão medida (V)', 'num']], calc: (v) => { const n = +v.nom, m = +v.med; if (!m) return null; return { ok: m >= n * 0.9 && m <= n * 1.1, txt: `Faixa: ${(n * 0.9).toFixed(0)} a ${(n * 1.1).toFixed(0)} V (±10% da placa, F14)` }; } },
+  cap: { tit: 'Aferidor de capacitor (µF)', campos: [['nom', 'µF da etiqueta', 'num'], ['med', 'µF medido', 'num']], calc: (v) => { const n = +v.nom, m = +v.med; if (!n || !m) return null; return { ok: m >= n * 0.95, txt: `Mínimo aceito: ${(n * 0.95).toFixed(1)} µF (−5% da etiqueta) · desvio ${((m - n) / n * 100).toFixed(1)}%` }; } },
+  csr: { tit: 'Aferidor do compressor C-S-R', campos: [['cs', 'C-S (Ω)', 'num'], ['cr', 'C-R (Ω)', 'num'], ['sr', 'S-R (Ω)', 'num'], ['massa', 'Algum pino tem continuidade com a carcaça', 'chk']], calc: (v) => { if (v.massa) return { ok: false, txt: 'Compressor em massa: condenar com laudo' }; const cs = +v.cs, cr = +v.cr, sr = +v.sr; if (!cs || !cr || !sr) return null; return { ok: null, txt: `C-S + C-R = ${(cs + cr).toFixed(2)} Ω · S-R medido = ${sr.toFixed(2)} Ω. Bateu a soma e sem massa: enrolamentos íntegros.` }; } },
+  deltat: { tit: 'Aferidor ΔT retorno × insuflamento', campos: [['ret', 'Retorno (°C)', 'num'], ['ins', 'Insuflamento (°C)', 'num']], calc: (v) => { if (v.ret === '' || v.ins === '') return null; const d = +v.ret - +v.ins; return { ok: d >= 10 && d <= 15, txt: `ΔT = ${d.toFixed(1)} °C · faixa 10 a 15 °C (F14)` }; } },
+  sh: { tit: 'Aferidor de superaquecimento (R-410A)', campos: [['tsuc', 'Tubo de sucção (°C)', 'num'], ['tev', 'Evaporação pela pressão (°C)', 'num']], calc: (v) => { if (v.tsuc === '' || v.tev === '') return null; const s = +v.tsuc - +v.tev; return { ok: s >= 7 && s <= 11, txt: `SH = ${s.toFixed(1)} °C · faixa 7 a 11 °C (F14)` }; } },
+  pn: { tit: 'Aferidor do barramento P-N', campos: [['med', 'Tensão P-N medida (V CC)', 'num']], calc: (v) => { const m = +v.med; if (!m) return null; return { ok: m >= 290 && m <= 330, txt: 'Espera: 290 a 330 V CC; cerca de 310 V CC em 208–230 V (F20)' }; } },
+  ipm: { tit: 'Aferidor do módulo IPM', campos: ['P → N', 'P → U', 'P → V', 'P → W', 'U → N', 'V → N', 'W → N'].map((k, i) => ['p' + i, `${k}: leitura baixa (não deu infinito)`, 'chk']), calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? `${r} par(es) com leitura baixa: IPM em curto (F20 p. 85)` : 'Todos os pares em infinito: IPM sem curto (F20 p. 85)' }; } },
+  ntc: { tit: 'Aferidor de sensor NTC (a 25 °C)', campos: [['tipo', 'Sensor', 'sel', NTC_OPS.map((o, i) => [String(i), o[0]])], ['med', 'Resistência a 25 °C (kΩ)', 'num']], calc: (v) => { const o = NTC_OPS[+v.tipo], m = +v.med; if (!m) return null; const lo = o[1] * (1 - o[2] / 100), hi = o[1] * (1 + o[2] / 100); return { ok: m >= lo && m <= hi, txt: `Faixa a 25 °C: ${lo.toFixed(2)} a ${hi.toFixed(2)} kΩ. Em outra temperatura, compare na curva da marca (ferramenta Sensor NTC do app).` }; } },
+  massa: { tit: 'Aferidor de isolamento C-S-R → carcaça', campos: ['C', 'S', 'R'].map(k => ['m' + k, `Pino ${k} tem continuidade com a carcaça`, 'chk']), calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? 'Compressor em massa: não religar, condenar com laudo' : 'Sem fuga para a carcaça' }; } },
+  corrente: { tit: 'Aferidor de corrente (alicate)', campos: [['nom', 'Corrente da etiqueta (A)', 'num'], ['med', 'Corrente medida (A)', 'num']], calc: (v) => { const n = +v.nom, m = +v.med; if (!n || !m) return null; return { ok: m <= n, txt: `Medido ${m.toFixed(1)} A · etiqueta ${n.toFixed(1)} A` }; } },
+  lista: { tit: 'Checklist do ponto', campos: [], calc: (v) => { const r = Object.values(v).filter(Boolean).length; return { ok: r === 0, txt: r ? `${r} sinal(is) de defeito marcado(s)` : 'Nenhum sinal de defeito marcado' }; } },
 };
-function abrirAferidor(p, i) {
-  const s = p.passos[i], a = AFERIDORES[s.aferidor];
-  const campos = s.aferidor === 'lista' ? s.check.map((t, k) => ['c' + k, t, 'chk']) : a.campos;
+function abrirAferidor(f, k) {
+  const c = f.causas[k - 1], a = AFERIDORES[c.aferidor];
+  const campos = c.aferidor === 'lista' ? c.check.map((t, j) => ['c' + j, t, 'chk']) : a.campos;
   const html = campos.map(([id, rot, tipo, ops]) => tipo === 'chk' ? `<label class="chk"><input type="checkbox" data-id="${id}"> ${esc(rot)}</label>`
     : tipo === 'sel' ? `<label>${esc(rot)}<select data-id="${id}">${ops.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('')}</select></label>`
     : `<label>${esc(rot)}<input type="number" inputmode="decimal" step="any" data-id="${id}"></label>`).join('');
-  abrirModal(`<h3>🧮 ${esc(a.tit)}</h3><div class="sub">Prancha #${p.id} · ${esc(s.titulo)}</div>
-    <div class="form">${html}</div><div class="veredito neutro" aria-live="polite">Preencha a medição para ver o veredito.</div>
-    ${blocoServico(s.servico)}
-    <div class="pilha"><button class="btn verde cheio" data-a="orc">📄 Gerar Orçamento PDF Nº 1001 com Pix</button><button class="btn claro cheio" data-a="voltar">Voltar à prancha</button></div>`, (m) => {
+  abrir(`<h3>${esc(a.tit)}</h3><div class="sub">${f.id} · ponto ${nn(k)} · ${esc(c.nome)}</div><div class="form">${html}</div><div class="veredito neutro" aria-live="polite">Preencha a medição para ver o veredito.</div>${blocoServico(c.servico)}
+    <div class="pilha">${teclaOrcar()}<button class="tecla clara" data-a="voltar"><span>Voltar à ficha</span></button></div>`, (m) => {
     const ver = $('.veredito', m);
     const atualizar = () => {
       const v = {}; $$('[data-id]', m).forEach(el => { v[el.dataset.id] = el.type === 'checkbox' ? el.checked : el.value; });
       const r = a.calc(v);
       if (!r) { ver.className = 'veredito neutro'; ver.textContent = 'Preencha a medição para ver o veredito.'; return; }
       ver.className = 'veredito ' + (r.ok === null ? 'neutro' : r.ok ? 'ok' : 'def');
-      ver.innerHTML = (r.ok === null ? 'Leitura registrada' : r.ok ? '✓ DENTRO DA FAIXA' : '✗ DEFEITO CONFIRMADO: ' + esc(s.causa)) + `<small>${esc(r.txt.replace(/(\d)\.(\d)/g, '$1,$2'))}</small>`;
+      ver.innerHTML = (r.ok === null ? 'Leitura registrada' : r.ok ? 'DENTRO DA FAIXA' : 'DEFEITO CONFIRMADO: ' + esc(c.nome)) + `<small>${esc(r.txt.replace(/(\d)\.(\d)/g, '$1,$2'))}</small>`;
     };
     $$('[data-id]', m).forEach(el => el.addEventListener('input', atualizar));
-    if (['lista', 'ipm', 'massa'].includes(s.aferidor)) atualizar();
-    $('[data-a=orc]', m).addEventListener('click', () => abrirOrcamento(s.servico, p));
-    $('[data-a=voltar]', m).addEventListener('click', fecharTudo);
+    if (['lista', 'ipm', 'massa'].includes(c.aferidor)) atualizar();
+    $('[data-a=orc]', m).addEventListener('click', () => abrirOrcamento(c.servico));
+    $('[data-a=voltar]', m).addEventListener('click', fechar);
   });
 }
 
-// ───────────── Orçamento Nº 1001 com assinatura na tela ─────────────
+// Orçamento Nº 1001 com assinatura na tela e prévia do QR Pix (canvas)
 function qrPrevia(cv, semente) {
-  // Prévia visual do QR (o QR Pix real sai no app com a chave e o valor). Desenhado em canvas, sem SVG.
-  let h = 2166136261; for (const c of semente) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
+  let h = 2166136261; for (const ch of semente) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; }
   const rnd = () => { h ^= h << 13; h >>>= 0; h ^= h >> 17; h ^= h << 5; h >>>= 0; return h / 4294967296; };
-  const N = 25, ctx = cv.getContext('2d'); cv.width = N + 2; cv.height = N + 2;
-  ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, N + 2, N + 2); ctx.fillStyle = '#091E42';
-  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const canto = (x < 8 && y < 8) || (x > 16 && y < 8) || (x < 8 && y > 16); if (!canto && rnd() > 0.52) ctx.fillRect(x + 1, y + 1, 1, 1); }
-  [[0, 0], [18, 0], [0, 18]].forEach(([x, y]) => { ctx.fillStyle = '#091E42'; ctx.fillRect(x + 1, y + 1, 7, 7); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(x + 2, y + 2, 5, 5); ctx.fillStyle = '#091E42'; ctx.fillRect(x + 3, y + 3, 3, 3); });
+  const N = 25, x = cv.getContext('2d'); cv.width = N + 2; cv.height = N + 2;
+  x.fillStyle = '#FFFFFF'; x.fillRect(0, 0, N + 2, N + 2); x.fillStyle = '#091E42';
+  for (let y = 0; y < N; y++) for (let z = 0; z < N; z++) { const canto = (z < 8 && y < 8) || (z > 16 && y < 8) || (z < 8 && y > 16); if (!canto && rnd() > 0.52) x.fillRect(z + 1, y + 1, 1, 1); }
+  [[0, 0], [18, 0], [0, 18]].forEach(([a, b]) => { x.fillStyle = '#091E42'; x.fillRect(a + 1, b + 1, 7, 7); x.fillStyle = '#FFFFFF'; x.fillRect(a + 2, b + 2, 5, 5); x.fillStyle = '#091E42'; x.fillRect(a + 3, b + 3, 3, 3); });
 }
-function abrirOrcamento(servico, p) {
-  const hoje = new Date().toLocaleDateString('pt-BR');
-  abrirModal(`<h3>Orçar Reparo · Nº 1001</h3><div class="sub">${p ? `Diagnóstico #${p.id} · ${esc(p.curto)}. ` : ''}Serviço já preenchido pelo defeito da prancha. No app, sai em PDF com a sua marca, sua chave Pix e o QR do valor.</div>
+function abrirOrcamento(servico) {
+  const f = fichaAtual(), hoje = new Date().toLocaleDateString('pt-BR');
+  abrir(`<h3>Orçar este reparo · Nº 1001</h3><div class="sub">${f.id} · ${esc(f.titulo)}. Serviço já preenchido pelo defeito da ficha. No app, sai em PDF com a sua marca, sua chave Pix e o QR do valor.</div>
     <div class="form">
       <label>Cliente<input type="text" data-o="cli" placeholder="Nome do cliente" autocomplete="off"></label>
       <label>Serviço<select data-o="srv">${Object.entries(PRECOS).map(([k, v]) => `<option value="${k}" ${k === servico ? 'selected' : ''}>${esc(v[0])}</option>`).join('')}</select></label>
       <label>Valor (R$)<input type="number" inputmode="decimal" step="any" data-o="val"></label>
-      <div><div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px">Garantia do serviço</div><div class="prazos">${['7 dias', '15 dias', '30 dias', '60 dias', '90 dias'].map((g, k) => `<button data-g="${g}" aria-pressed="${k === 4}">${g}</button>`).join('')}</div></div>
+      <div><div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px">Garantia do serviço</div><div class="prazos">${['7 dias', '15 dias', '30 dias', '60 dias', '90 dias'].map((g, j) => `<button data-g="${g}" aria-pressed="${j === 4}">${g}</button>`).join('')}</div></div>
       <div><div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:6px">Assinatura do cliente na tela</div><div class="assinatura"><canvas></canvas><span class="dica">Assine aqui com o dedo</span><button class="limpar">Limpar</button></div></div>
     </div>
     <div class="orc" id="orc-print"></div>
-    <div class="pilha"><button class="btn verde cheio" data-a="pdf">📄 Gerar PDF (imprimir / salvar)</button><button class="btn marinho cheio" data-a="zap">💬 Fechar pedido no WhatsApp</button></div>`, (m) => {
-    let garantia = '90 dias', assinado = false;
-    const val = $('[data-o=val]', m), srv = $('[data-o=srv]', m), cli = $('[data-o=cli]', m), orc = $('#orc-print', m);
-    const cv = $('.assinatura canvas', m), dica = $('.assinatura .dica', m);
-    const ajustar = () => { const r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1; cv.width = r.width * d; cv.height = r.height * d; const c = cv.getContext('2d'); c.scale(d, d); c.lineWidth = 2.4; c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = '#091E42'; };
-    requestAnimationFrame(ajustar);
-    let ult = null;
+    <div class="pilha"><button class="tecla verde" data-a="pdf">${ic('doc', '#FFFFFF', 20)}<span>Gerar PDF (imprimir / salvar)</span></button><button class="tecla" data-a="zap">${ic('chat', '#FFFFFF', 20)}<span>Fechar pedido no WhatsApp</span></button></div>`, (m) => {
+    let garantia = '90 dias', assinado = false, ult = null;
+    const val = $('[data-o=val]', m), srv = $('[data-o=srv]', m), cli = $('[data-o=cli]', m), orc = $('#orc-print', m), cv = $('.assinatura canvas', m), dica = $('.assinatura .dica', m);
+    requestAnimationFrame(() => { const r = cv.getBoundingClientRect(), d = window.devicePixelRatio || 1; cv.width = r.width * d; cv.height = r.height * d; const c = cv.getContext('2d'); c.scale(d, d); c.lineWidth = 2.4; c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = '#091E42'; });
     const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.addEventListener('pointerdown', (e) => { cv.setPointerCapture(e.pointerId); ult = pos(e); dica.style.display = 'none'; });
     cv.addEventListener('pointermove', (e) => { if (!ult) return; const c = cv.getContext('2d'), q = pos(e); c.beginPath(); c.moveTo(ult[0], ult[1]); c.lineTo(q[0], q[1]); c.stroke(); ult = q; assinado = true; });
     const soltar = () => { if (ult) { ult = null; desenhar(); } };
     cv.addEventListener('pointerup', soltar); cv.addEventListener('pointercancel', soltar);
     $('.assinatura .limpar', m).addEventListener('click', () => { cv.getContext('2d').clearRect(0, 0, cv.width, cv.height); assinado = false; dica.style.display = ''; desenhar(); });
-    const preencher = () => { val.value = PRECOS[srv.value][2]; };
     const desenhar = () => {
       const s = PRECOS[srv.value], v = +val.value || 0;
-      orc.innerHTML = `<div class="cab"><div><b>GeloPRO</b><div style="font-size:12px;color:#475569">Orçamento técnico${p ? ' · Diagnóstico #' + p.id : ''}</div></div><span>Nº 1001<br>${hoje}</span></div>
-        <div class="item"><span>Cliente</span><b>${esc(cli.value || '—')}</b></div>
-        <div class="item"><span>${esc(s[0])}</span><b>${brl(v)}</b></div>
-        <div class="item"><span>Garantia do serviço</span><b>${garantia}</b></div>
+      orc.innerHTML = `<div class="cab"><div><b>GeloPRO</b><div style="font-size:12px;color:#475569">Orçamento técnico · ${f.id}</div></div><span>Nº 1001<br>${hoje}</span></div>
+        <div class="item"><span>Cliente</span><b>${esc(cli.value || '—')}</b></div><div class="item"><span>${esc(s[0])}</span><b>${brl(v)}</b></div><div class="item"><span>Garantia do serviço</span><b>${garantia}</b></div>
         <div class="total"><span>Total</span><span>${brl(v)}</span></div>
         <div class="pix"><canvas></canvas><p><b>Pague no Pix ao aprovar.</b><br>QR gerado com a sua chave e o valor exato no app. Referência de faixa: ${brl(s[1])} a ${brl(s[3])}.</p></div>
         <div class="ass">${assinado ? `<img src="${cv.toDataURL('image/png')}" alt="Assinatura do cliente">` : '<div style="height:40px;border-bottom:1px solid #334155"></div>'}<small>Assinatura do cliente · aprovo o orçamento</small></div>`;
       qrPrevia($('.pix canvas', orc), srv.value + v);
     };
-    preencher(); desenhar();
-    srv.addEventListener('change', () => { preencher(); desenhar(); });
+    val.value = PRECOS[srv.value][2]; desenhar();
+    srv.addEventListener('change', () => { val.value = PRECOS[srv.value][2]; desenhar(); });
     [val, cli].forEach(el => el.addEventListener('input', desenhar));
     $$('.prazos button', m).forEach(b => b.addEventListener('click', () => { garantia = b.dataset.g; $$('.prazos button', m).forEach(x => x.setAttribute('aria-pressed', x === b)); desenhar(); }));
     $('[data-a=pdf]', m).addEventListener('click', () => { desenhar(); document.body.classList.add('imprimir'); setTimeout(() => { window.print(); document.body.classList.remove('imprimir'); }, 30); });
-    $('[data-a=zap]', m).addEventListener('click', () => {
-      const s = PRECOS[srv.value], txt = `Orçamento Nº 1001 · GeloPRO\n${s[0]}\nValor: ${brl(+val.value || 0)}\nGarantia: ${garantia}\nPagamento no Pix ao aprovar.`;
-      window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank', 'noopener');
-    });
+    $('[data-a=zap]', m).addEventListener('click', () => { const s = PRECOS[srv.value]; window.open('https://wa.me/?text=' + encodeURIComponent(`Orçamento Nº 1001 · GeloPRO\n${s[0]}\nValor: ${brl(+val.value || 0)}\nGarantia: ${garantia}\nPagamento no Pix ao aprovar.`), '_blank', 'noopener'); });
   });
 }
 
-// ───────────── Bônus ─────────────
+// 6 Bônus & Tabelas
 function abrirMenuBonus() {
-  abrirModal(`<h3>🎁 6 Bônus do Plano Completo</h3><div class="sub">Tabelas, códigos e ferramentas que fecham o diagnóstico e o orçamento.</div>
-    <div class="menu-bonus">${BONUS.map((b, i) => `<button data-b="${i}"><span class="ic">${i + 1}</span><span>${esc(b[1])}</span></button>`).join('')}</div>`,
+  abrir(`<h3>6 Bônus &amp; Tabelas do Plano Completo</h3><div class="sub">Tabelas, códigos e ferramentas que fecham o diagnóstico e o orçamento.</div><div class="menu-bonus">${BONUS.map((b, i) => `<button data-b="${i}"><span class="n">${i + 1}</span><span>${esc(b)}</span></button>`).join('')}</div>`,
     (m) => $$('[data-b]', m).forEach(b => b.addEventListener('click', () => abrirBonus(+b.dataset.b))));
 }
 function abrirBonus(i) {
-  const p = P[S.idx];
-  if (i === 5) return abrirOrcamento(servicoAtual(), p);
-  const cab = `<div style="font-size:11px;font-weight:900;letter-spacing:.08em;color:#92400E">BÔNUS ${i + 1} · PLANO COMPLETO</div><h3>${esc(BONUS[i][1])}</h3>`;
+  if (i === 5) return abrirOrcamento(servicoAtual());
+  const cab = `<div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#92400E">BÔNUS ${i + 1} · PLANO COMPLETO</div><h3>${esc(BONUS[i])}</h3>`;
   let html = '', depois = null;
-  if (i === 0) html = `<div class="sub">Sequência da placa Inverter (manual de serviço Midea Mission II, F20). As pranchas #03 e #06 seguem este roteiro.</div>
-      <table class="tabela"><tr><th>#</th><th>Verificação</th><th>Referência</th></tr>
-      <tr><td>1</td><td>Descarregar os capacitores grandes</td><td>Resistor de cerca de 100 Ω / 40 W entre + e − (p. 73)</td></tr>
-      <tr><td>2</td><td>Tensão CC entre P e N do IPM</td><td>Cerca de 310 V CC (208–230 V); espera 290–330 V (p. 10 e 97)</td></tr>
-      <tr><td>3</td><td>Continuidade do IPM</td><td>Infinito (vários MΩ) em todos os pares (p. 85)</td></tr>
-      <tr><td>4</td><td>Enrolamentos do compressor U-V-W</td><td>Três pares iguais entre si; compare com a tabela do compressor a 20 °C (p. 84)</td></tr>
-      <tr><td>5</td><td>Sensores T1 a T4</td><td>Curva 10K na ferramenta Sensor NTC (p. 84)</td></tr></table>
-      <div class="pilha"><button class="btn marinho cheio" data-ir="2">Abrir #03 · Placa Inverter E1/IPM</button><button class="btn claro cheio" data-ir="5">Abrir #06 · Sensores NTC</button></div>`;
-  if (i === 1) { html = `<div class="sub">O mesmo código muda de significado entre marcas: veja o E1 abaixo. Amostra da base conferida, com fonte e página.</div>
-      <div class="form"><label class="busca"><span aria-hidden="true">🔎</span><input type="search" data-cod placeholder="Código ou palavra: E1, IPM, sensor..."></label></div>
-      <table class="tabela" data-tab></table>
-      <div class="pilha"><button class="btn marinho cheio" data-ir="2">Código de IPM? Abrir #03</button><button class="btn claro cheio" data-ir="5">Código de sensor? Abrir #06</button></div>`;
-    depois = (m) => { const tab = $('[data-tab]', m), inp = $('[data-cod]', m); const f = () => { const q = norm(inp.value.trim()); const rs = CODIGOS.filter(c => !q || norm(c.join(' ')).includes(q)); tab.innerHTML = '<tr><th>Código</th><th>Marca / linha</th><th>Significado</th><th>Fonte</th></tr>' + (rs.length ? rs.map(c => `<tr><td><b>${esc(c[2])}</b></td><td>${esc(c[0])}<br><span style="color:#64748B">${esc(c[1])}</span></td><td>${esc(c[3])}</td><td class="f">${esc(c[4])}</td></tr>`).join('') : '<tr><td colspan="4">Esse código não está na amostra: abra a prancha do circuito (#03 placa, #06 sensores) e meça.</td></tr>'); }; inp.addEventListener('input', f); inp.value = 'E1'; f(); }; }
-  if (i === 2) html = `<div class="sub">Referências de bancada em 1 tela, cada uma com fonte. Toque para abrir o aferidor vivo.</div>
-      <table class="tabela"><tr><th>Medição</th><th>Faixa</th><th>Fonte</th></tr>
-      <tr><td>Tensão de alimentação</td><td>±10% do valor de placa (220 V: 198 a 242 V)</td><td class="f">F14</td></tr>
-      <tr><td>Capacitor de partida/ventilador</td><td>No mínimo −5% do µF da etiqueta</td><td class="f">Pedro</td></tr>
-      <tr><td>ΔT retorno × insuflamento</td><td>10 a 15 °C (velocidade média)</td><td class="f">F14</td></tr>
-      <tr><td>Superaquecimento R-410A</td><td>7 a 11 °C</td><td class="f">F14</td></tr>
-      <tr><td>Barramento P-N (Inverter)</td><td>≈310 V CC; espera 290 a 330 V</td><td class="f">F20</td></tr>
-      <tr><td>NTC 10K a 25 °C</td><td>Samsung ±2% · Midea ±3% · Daikin 9,90 a 10,10 kΩ</td><td class="f">F26 · F18 · F24</td></tr>
-      <tr><td>NTC Gree a 25 °C</td><td>15K, 20K ou 50K (curva oficial)</td><td class="f">F01</td></tr></table>
-      <div class="pilha"><button class="btn marinho cheio" data-af="0:1">🧮 Aferidor de Capacitor</button><button class="btn marinho cheio" data-af="5:0">🧮 Aferidor de Sensor NTC</button><button class="btn claro cheio" data-af="1:2">🧮 Aferidor de Superaquecimento</button></div>`;
+  if (i === 0) html = `<div class="sub">Sequência da placa Inverter (manual de serviço Midea Mission II, F20). A ficha D-003 segue este roteiro.</div><table class="tabela"><tr><th>#</th><th>Verificação</th><th>Referência</th></tr>
+      <tr><td>1</td><td>Descarregar os capacitores grandes</td><td>Resistor de cerca de 100 Ω / 40 W entre + e − (p. 73)</td></tr><tr><td>2</td><td>Tensão CC entre P e N do IPM</td><td>Cerca de 310 V CC; espera 290–330 V (p. 10 e 97)</td></tr>
+      <tr><td>3</td><td>Continuidade do IPM</td><td>Infinito (vários MΩ) em todos os pares (p. 85)</td></tr><tr><td>4</td><td>Enrolamentos U-V-W</td><td>Três pares iguais; tabela do compressor a 20 °C (p. 84)</td></tr><tr><td>5</td><td>Sensores T1 a T4</td><td>Curva 10K na ferramenta Sensor NTC (p. 84)</td></tr></table>
+      <div class="pilha"><button class="tecla" data-ir="2"><span>Abrir D-003 · Placa Inverter</span></button></div>`;
+  if (i === 1) { html = `<div class="sub">O mesmo código muda de significado entre marcas: veja o E1. Amostra da base conferida, com fonte e página.</div><label class="busca" style="margin-bottom:10px">${ic('busca', '#64748B', 18)}<input type="search" data-cod placeholder="Código ou palavra: E1, IPM, sensor..."></label><table class="tabela" data-tab></table>
+      <div class="pilha"><button class="tecla" data-ir="2"><span>Código de IPM: abrir D-003</span></button><button class="tecla clara" data-ir="5"><span>Código de sensor: abrir D-006</span></button></div>`;
+    depois = (m) => { const tab = $('[data-tab]', m), inp = $('[data-cod]', m); const f = () => { const q = norm(inp.value.trim()), rs = CODIGOS.filter(c => !q || norm(c.join(' ')).includes(q)); tab.innerHTML = '<tr><th>Código</th><th>Marca / linha</th><th>Significado</th><th>Fonte</th></tr>' + (rs.length ? rs.map(c => `<tr><td><b>${esc(c[2])}</b></td><td>${esc(c[0])}<br><span style="color:#64748B">${esc(c[1])}</span></td><td>${esc(c[3])}</td><td class="f">${esc(c[4])}</td></tr>`).join('') : '<tr><td colspan="4">Código fora da amostra: abra a ficha do circuito (D-003 placa, D-006 sensores) e meça.</td></tr>'); }; inp.addEventListener('input', f); inp.value = 'E1'; f(); }; }
+  if (i === 2) html = `<div class="sub">Referências de bancada em 1 tela, cada uma com fonte.</div><table class="tabela"><tr><th>Medição</th><th>Faixa</th><th>Fonte</th></tr>
+      <tr><td>Tensão de alimentação</td><td>±10% da placa (220 V: 198 a 242 V)</td><td class="f">F14</td></tr><tr><td>Capacitor</td><td>No mínimo −5% do µF da etiqueta</td><td class="f">Pedro</td></tr>
+      <tr><td>ΔT retorno × insuflamento</td><td>10 a 15 °C</td><td class="f">F14</td></tr><tr><td>Superaquecimento R-410A</td><td>7 a 11 °C</td><td class="f">F14</td></tr>
+      <tr><td>Barramento P-N</td><td>≈310 V CC; espera 290 a 330 V</td><td class="f">F20</td></tr><tr><td>NTC 10K a 25 °C</td><td>Samsung ±2% · Midea ±3% · Daikin 9,90 a 10,10 kΩ</td><td class="f">F26 · F18 · F24</td></tr></table>
+      <div class="pilha"><button class="tecla" data-af="0:3">${ic('calc', '#FFFFFF', 20)}<span>Aferidor de capacitor</span></button><button class="tecla" data-af="5:1">${ic('calc', '#FFFFFF', 20)}<span>Aferidor de sensor NTC</span></button></div>`;
   if (i === 3) { const itens = ['Descarreguei os capacitores antes de medir', 'Tensão L-N dentro de ±10% da placa', 'Capacitor dentro de −5% da etiqueta', 'Sensores NTC na curva da marca', 'Conectores e chicotes sem oxidação nem folga', 'Barramento P-N na faixa (Inverter)', 'IPM e enrolamentos medidos (sem curto e sem massa)'];
-    html = `<div class="sub">Antes de condenar placa ou compressor, os 7 itens marcados. Só então o laudo.</div><div class="progresso"><i style="width:0%"></i></div>
-      <div class="form">${itens.map((t, k) => `<label class="chk"><input type="checkbox" data-k="${k}"> ${k + 1}. ${esc(t)}</label>`).join('')}</div>
-      <div class="veredito neutro" data-v>0 de 7 conferidos</div>
-      <div class="pilha"><button class="btn verde cheio" data-orc>📄 Gerar Orçamento PDF Nº 1001 com Pix</button><button class="btn marinho cheio" data-b="4">Emitir Laudo de Condenação (Bônus 5)</button></div>`;
-    depois = (m) => { const cks = $$('[data-k]', m), bar = $('.progresso i', m), v = $('[data-v]', m); cks.forEach(c => c.addEventListener('change', () => { const n = cks.filter(x => x.checked).length; bar.style.width = (n / 7 * 100) + '%'; v.className = 'veredito ' + (n === 7 ? 'ok' : 'neutro'); v.textContent = n === 7 ? '✓ 7 de 7: pode condenar a peça com laudo' : `${n} de 7 conferidos`; })); }; }
-  if (i === 4) html = `<div class="sub">Laudo em 1 toque quando o reparo não compensa: peça condenada, medições e recomendação, com a sua assinatura.</div>
-      <div class="orc"><div class="cab"><div><b>Laudo Técnico</b><div style="font-size:12px;color:#475569">Condenação de componente</div></div><span>Nº 1001<br>${new Date().toLocaleDateString('pt-BR')}</span></div>
-      <div class="item"><span>Diagnóstico</span><b>#${p.id} · ${esc(p.curto)}</b></div>
-      <div class="item"><span>Medições anexadas</span><b>Passos 1 a 3 da prancha</b></div>
-      <div class="item"><span>Recomendação</span><b>Troca do componente ou aparelho novo</b></div></div>
-      <div class="pilha"><button class="btn verde cheio" data-orc>📄 Gerar Orçamento PDF Nº 1001 com Pix</button></div>`;
-  abrirModal(cab + html, (m) => {
+    html = `<div class="sub">Antes de condenar placa ou compressor, os 7 itens marcados. Só então o laudo.</div><div class="progresso"><i style="width:0%"></i></div><div class="form">${itens.map((t, j) => `<label class="chk"><input type="checkbox" data-c="${j}"> ${j + 1}. ${esc(t)}</label>`).join('')}</div><div class="veredito neutro" data-v>0 de 7 conferidos</div>
+      <div class="pilha">${teclaOrcar()}<button class="tecla" data-b="4"><span>Emitir laudo de condenação (Bônus 5)</span></button></div>`;
+    depois = (m) => { const cks = $$('[data-c]', m), bar = $('.progresso i', m), v = $('[data-v]', m); cks.forEach(c => c.addEventListener('change', () => { const n = cks.filter(x => x.checked).length; bar.style.width = (n / 7 * 100) + '%'; v.className = 'veredito ' + (n === 7 ? 'ok' : 'neutro'); v.textContent = n === 7 ? '7 de 7: pode condenar a peça com laudo' : `${n} de 7 conferidos`; })); }; }
+  if (i === 4) { const f = fichaAtual(); html = `<div class="sub">Laudo em 1 toque quando o reparo não compensa: peça condenada, medições e recomendação, com a sua assinatura.</div><div class="orc"><div class="cab"><div><b>Laudo técnico</b><div style="font-size:12px;color:#475569">Condenação de componente</div></div><span>Nº 1001<br>${new Date().toLocaleDateString('pt-BR')}</span></div>
+      <div class="item"><span>Ficha</span><b>${f.id} · ${esc(f.titulo)}</b></div><div class="item"><span>Medições anexadas</span><b>Pontos 01 a ${nn(f.causas.length)}</b></div><div class="item"><span>Recomendação</span><b>Troca do componente ou aparelho novo</b></div></div><div class="pilha">${teclaOrcar()}</div>`; }
+  abrir(cab + html, (m) => {
     if (depois) depois(m);
-    $$('[data-ir]', m).forEach(b => b.addEventListener('click', () => { fecharTudo(); abrirPrancha(+b.dataset.ir); }));
-    $$('[data-af]', m).forEach(b => b.addEventListener('click', () => { const [pi, si] = b.dataset.af.split(':').map(Number); abrirAferidor(P[pi], si); }));
-    $$('[data-orc]', m).forEach(b => b.addEventListener('click', () => abrirOrcamento(servicoAtual(), p)));
+    $$('[data-ir]', m).forEach(b => b.addEventListener('click', () => { fechar(); montarFicha(+b.dataset.ir); }));
+    $$('[data-af]', m).forEach(b => b.addEventListener('click', () => { const [fi, k] = b.dataset.af.split(':').map(Number); abrirAferidor(F[fi], k); }));
+    $$('[data-a=orc]', m).forEach(b => b.addEventListener('click', () => abrirOrcamento(servicoAtual())));
     $$('[data-b]', m).forEach(b => b.addEventListener('click', () => abrirBonus(+b.dataset.b)));
   });
 }
 
-// ───────────── Catálogo (busca por sintoma / código e 8 blocos) ─────────────
-const filtrar = (q, bloco) => { const t = norm(q.trim()); return P.map((p, i) => i).filter(i => { const p = P[i], txt = norm(`${p.titulo} ${p.curto} ${p.busca} ${p.id} #${p.id}`); return (bloco === 'todos' || p.blocos.includes(bloco)) && (!t || txt.includes(t) || t.split(/\s+/).every(w => txt.includes(w))); }); };
-const fotoCapa = (p) => { const pt = p.pontos[p.prob[0][2] - 1]; return CENA(pt.img[1]); };
-const pilulas = (atual) => BLOCOS.map(([id, rot]) => `<button class="pilula" data-b="${id}" aria-pressed="${id === atual}">${rot}</button>`).join('');
-const vazio = () => `<div class="vazio">Nenhuma prancha-piloto com esse termo.<div class="acoes"><button class="btn marinho" data-limpar>Ver as 6 pranchas</button><button class="btn claro" data-cod>Buscar nos Códigos de Erro</button></div></div>`;
-const miniBarra = (p) => `<div class="barra-mini">${p.prob.map((b, i) => `<i style="width:${b[0]}%;background:${COR_PROB[i]}"></i>`).join('')}</div><div class="legenda-mini">${p.prob.map(b => `${b[0]}% ${esc(b[3])}`).join(' · ')}</div>`;
-const linhaItem = (i) => { const p = P[i], c1 = p.prob[0]; return `<button class="linha-item" data-i="${i}"><span class="foto"><img src="${fotoCapa(p)}" alt="" loading="lazy"><b>#${p.id}</b></span><span class="t">${esc(p.titulo)}</span><span class="seta">›</span><span class="m"><span class="etq c1">${c1[0]}% ${esc(c1[3])}</span><span class="etq t">⚡ ${p.tempo}</span><span class="etq i">${esc(p.instr)}</span></span></button>`; };
-let bloco = 'todos', termo = '';
-function ligarCatalogo(raiz, render) {
-  const inp = $('input[type=search]', raiz);
-  if (inp) inp.addEventListener('input', () => { termo = inp.value; render(); });
-  $$('.pilula', raiz).forEach(b => b.addEventListener('click', () => { bloco = b.dataset.b; $$('.pilula', raiz).forEach(x => x.setAttribute('aria-pressed', x === b)); render(); }));
-}
-function ligarLista(el, aoEscolher, limpar) {
-  $$('[data-i]', el).forEach(c => c.addEventListener('click', () => aoEscolher(+c.dataset.i)));
-  const a = $('[data-limpar]', el), c = $('[data-cod]', el); if (a) a.addEventListener('click', limpar); if (c) c.addEventListener('click', () => abrirBonus(1));
-}
-function catalogoV1() {
-  corpo.innerHTML = `<div class="v-topo"><label class="busca"><span aria-hidden="true">🔎</span><input type="search" placeholder="Digite o sintoma ou código: ex. não gela, E1, pingando..." autocomplete="off" value="${esc(termo)}"></label><div class="pilulas">${pilulas(bloco)}</div></div><div class="grade"></div>`;
-  const g = $('.grade', corpo);
-  const render = () => { const ids = filtrar(termo, bloco);
-    g.innerHTML = ids.length ? ids.map(i => { const p = P[i]; return `<button class="cartao" data-i="${i}"><span class="mini"><img src="${fotoCapa(p)}" alt="" loading="lazy"><span class="pct">${p.prob[0][0]}% ${esc(p.prob[0][3])}</span></span><span class="corpo"><span class="num">#${p.id} · ${p.area}</span><h3>${esc(p.titulo)}</h3>${miniBarra(p)}</span></button>`; }).join('') : vazio();
-    ligarLista(g, abrirPrancha, () => { termo = ''; $('input', corpo).value = ''; render(); }); };
-  ligarCatalogo(corpo, render); render();
-}
-function catalogoV3() {
-  corpo.innerHTML = `<div class="v-topo"><label class="busca"><span aria-hidden="true">🔎</span><input type="search" placeholder="Sintoma ou código..." autocomplete="off" value="${esc(termo)}"></label><div class="bonus-linha">${BONUS.map((b, i) => `<button data-bn="${i}">B${i + 1} · ${esc(b[0])}</button>`).join('')}</div></div><div class="lista-v3"></div>`;
-  $$('[data-bn]', corpo).forEach(b => b.addEventListener('click', () => abrirBonus(+b.dataset.bn)));
-  const l = $('.lista-v3', corpo);
-  const render = () => { const grupos = BLOCOS.slice(1).map(([id, rot]) => [rot, filtrar(termo, id)]).filter(g => g[1].length);
-    l.innerHTML = grupos.length ? grupos.map(([rot, ids]) => `<section class="grupo"><h4>${rot} · ${ids.length}</h4>${ids.map(linhaItem).join('')}</section>`).join('') : `<div style="padding:12px">${vazio()}</div>`;
-    ligarLista(l, abrirPrancha, () => { termo = ''; $('input', corpo).value = ''; render(); }); };
-  ligarCatalogo(corpo, render); render();
-}
-function abrirGaveta() {
-  abrirFolha(gaveta, `<h3>📑 Índice · 120+ Diagnósticos</h3><div class="sub">6 pranchas-piloto prontas neste comparativo. Busque por sintoma ou código.</div>
-    <label class="busca"><span aria-hidden="true">🔎</span><input type="search" placeholder="Sintoma ou código: não gela, E1, pingando..." autocomplete="off" value="${esc(termo)}"></label>
-    <div class="pilulas">${pilulas(bloco)}</div><div class="lista"></div>`, (g) => {
-    const l = $('.lista', g);
-    const render = () => { const ids = filtrar(termo, bloco); l.innerHTML = ids.length ? ids.map(linhaItem).join('') : `<div style="padding:12px">${vazio()}</div>`; ligarLista(l, (i) => { fecharTudo(); abrirPrancha(i); }, () => { termo = ''; $('input', g).value = ''; render(); }); };
-    ligarCatalogo(g, render); render();
-  });
-}
-
-// ───────────── Navegação da moldura ─────────────
-function atualizarTopo() {
-  const p = P[S.idx];
-  $('#atual-txt').textContent = `#${p.id} ${p.curto}`;
-  $$('.variacoes button').forEach(b => b.setAttribute('aria-pressed', +b.dataset.v === S.v));
-}
-function hash() { const h = '#v' + S.v + (S.aberta ? '&p=' + P[S.idx].id : ''); try { history.replaceState(null, '', h); } catch (e) {} }
-function abrirPrancha(i) { S.idx = i; S.aberta = true; fecharTudo(); montarPrancha(i); atualizarTopo(); hash(); }
-function abrirIndice() {
-  fecharTudo();
-  if (S.v === 1) { S.aberta = false; catalogoV1(); corpo.scrollTop = 0; }
-  else if (S.v === 3) { S.aberta = false; catalogoV3(); corpo.scrollTop = 0; }
-  else abrirGaveta();
-  atualizarTopo(); hash();
-}
-function trocarVariacao(v) {
-  S.v = v; guardar('guiapro.v', String(v)); fecharTudo();
-  if (v === 2) abrirPrancha(S.idx); else { S.aberta = false; v === 1 ? catalogoV1() : catalogoV3(); corpo.scrollTop = 0; }
-  atualizarTopo(); hash();
-}
-$('#b-indice').addEventListener('click', abrirIndice);
-$('#d-diag').addEventListener('click', abrirIndice);
-$('#b-atual').addEventListener('click', abrirGaveta);
-$('#b-ant').addEventListener('click', () => abrirPrancha((S.idx + P.length - 1) % P.length));
-$('#b-prox').addEventListener('click', () => abrirPrancha((S.idx + 1) % P.length));
+// ───────────── Moldura: ícones, tema e dock ─────────────
+$('#sel-seta').innerHTML = ic('baixo', '#67C6FF', 18);
+$('#ic-sol').innerHTML = ic('sol', '#F5B800', 14); $('#ic-lua').innerHTML = ic('lua', '#CBD5E1', 14);
+$('#ic-d1').innerHTML = ic('lista', '#FFFFFF', 20); $('#ic-d2').innerHTML = ic('presente', '#FFFFFF', 20); $('#ic-d3').innerHTML = ic('doc', '#FFFFFF', 20);
+const aplicarTema = (t) => { document.documentElement.dataset.tema = t; guardar('guiapro.tema', t); };
+aplicarTema(ler('guiapro.tema') === 'lua' ? 'lua' : 'sol');
+$('#b-tema').addEventListener('click', () => aplicarTema(document.documentElement.dataset.tema === 'lua' ? 'sol' : 'lua'));
+$('#b-ficha').addEventListener('click', abrirIndice);
+$('#d-indice').addEventListener('click', abrirIndice);
 $('#d-bonus').addEventListener('click', abrirMenuBonus);
-$('#d-orcar').addEventListener('click', () => abrirOrcamento(servicoAtual(), P[S.idx]));
-$$('.variacoes button').forEach(b => b.addEventListener('click', () => trocarVariacao(+b.dataset.v)));
+$('#d-orcar').addEventListener('click', () => abrirOrcamento(servicoAtual()));
 
-// Início: #v1 / #v2 / #v3 (e &p=04 abre a prancha). Sem hash, volta à última variação escolhida (padrão V2).
-function iniciar() {
-  const h = location.hash.slice(1), m = h.match(/[vl]([123])/), pm = h.match(/p=(\d\d)/);
-  const i = pm ? P.findIndex(p => p.id === pm[1]) : -1; if (i >= 0) S.idx = i;
-  trocarVariacao(m ? +m[1] : (+ler('guiapro.v') || 2));
-  if (i >= 0 && S.v !== 2) abrirPrancha(i);
-}
+// Início: #D-001 (padrão) até #D-006 abrem a ficha direto.
+function iniciar() { const m = location.hash.match(/D-00(\d)/); const i = m ? F.findIndex(f => f.id === 'D-00' + m[1]) : 0; montarFicha(i >= 0 ? i : 0); }
 window.addEventListener('hashchange', iniciar);
 iniciar();
 </script>
