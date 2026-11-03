@@ -358,10 +358,15 @@ html.com-sumario #visor{visibility:hidden}
 <script src="../app/gelopro-pix.js"></script>
 <script src="../app/pdf-gelopro.js"></script>
 <!-- Licença: a mesma flag do app. Sem ?testarSeguranca=1 fica tudo liberado (testes do Pedro); com ela, sem crachá ativo, só a D-001 abre. -->
-<!-- O licenca-gelopro.js injeta o offline-gelopro.js (service worker do app) se não achar esta tag. O modo offline é do app, não desta
-     página: a tag type="text/plain" não é baixada nem executada, só avisa que o registro já é tratado no app. -->
+<!-- O licenca-gelopro.js injeta o offline-gelopro.js (service worker do app, escopo /app/) se não achar esta tag. Esta página fica fora
+     desse escopo: a tag type="text/plain" não é baixada nem executada, só impede a injeção. O modo avião daqui é o guia-pro/sw.js, abaixo. -->
 <script type="text/plain" data-offline-do-app src="../app/offline-gelopro.js"></script>
 <script src="../app/licenca-gelopro.js"></script>
+<!-- Modo avião (03/11/2026): o guia-pro/sw.js guarda no 1º acesso com sinal a página, o motor do orçamento, as fontes, a base técnica e as
+     126 artes. Depois disso as 120 fichas, as tabelas e o Orçamento em PDF com Pix abrem sem sinal, na casa do cliente. -->
+<script>
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => null);
+</script>
 <script>
 'use strict';
 // ───────────── Ícones de interface (SVG 24×24, traço com hex cravado; nunca equipamento) ─────────────
