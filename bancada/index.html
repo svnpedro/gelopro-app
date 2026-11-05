@@ -48,7 +48,7 @@ button{border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:trans
 /* Tokens semânticos de 2 segundos (skills/ui-design/semantic-color-tokens-2s-and-daltonism.md): 4 camadas de profundidade, nada de branco sobre branco. */
 .folha{background:#E2E8F0;border:1.5px solid #94A3B8;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 10px rgba(9,30,66,.10)}
 .cartao{background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 2px 6px rgba(9,30,66,.08)}
-h1{font:800 22px/1.2 var(--f-tit);color:#091E42}
+h1{font:800 24px/1.15 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
 h2{font:800 18px/1.25 var(--f-tit);color:#091E42}
 h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .tx{font-size:15px;color:#0F172A}
@@ -78,18 +78,20 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .bt-sel[aria-pressed="true"]{background:linear-gradient(180deg,#2563EB 0%,#1D4ED8 100%);border:2px solid #091E42;color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 2px #67C6FF}
 .bt-sel:disabled{opacity:.45;cursor:not-allowed}
 .bt-grande{min-height:60px;font-size:16px;border-radius:14px}
-.capsula{border-radius:999px;width:100%}
+.capsula{border-radius:999px;width:100%;min-height:58px;padding:6px 14px 6px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;font:800 16.5px/1.2 var(--f-tit)}
+.cap-medalhao{width:38px;height:38px;border-radius:50%;background:#091930;border:1.5px solid #67C6FF;display:flex;align-items:center;justify-content:center;flex:none}
+.cap-tx{flex:1;min-width:0;text-align:center}
 .capsula[aria-pressed=true]{border-color:#67c6ff;box-shadow:0 0 0 2px #67c6ff,0 3px 0 #071633}
 
 /* Pílula de equipamento */
 .eq-pilula{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;background:#FFFFFF;border:1.5px solid #19365C;border-radius:14px;padding:4px;align-items:stretch}
-.eq-bt{min-height:48px;min-width:0;border-radius:10px;background:#FFFFFF;border:1px solid #CBD5E1;color:#091E42;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px;text-align:center}
+.eq-bt{min-height:54px;min-width:0;border-radius:10px;background:#FFFFFF;border:1px solid #CBD5E1;color:#091E42;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:5px 4px;text-align:center}
 .eq-bt:active{transform:translateY(1px)}
 .tag.eq-rot{background:transparent;border:0;padding:0;color:#19365C;letter-spacing:.04em}
 .eq-bt[data-eq-abrir="marca"]{background:#EFF6FF;border:1.5px solid #2563EB}.eq-bt[data-eq-abrir="marca"] .eq-rot{color:#1E40AF}
 .eq-bt[data-eq-abrir="btu"]{background:#FFFBEB;border:1.5px solid #D97706}.eq-bt[data-eq-abrir="btu"] .eq-rot{color:#92400E}
 .eq-bt[data-eq-abrir="fluido"]{background:#ECFEFF;border:1.5px solid #0891B2}.eq-bt[data-eq-abrir="fluido"] .eq-rot{color:#155E75}
-.eq-val{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;font:800 14px/1.2 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
+.eq-val{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;font:800 15.5px/1.15 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
 .eq-seta{flex:none;font:800 18px/1 var(--f-txt);color:#19365C}
 .wordmark{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:28px;height:28px;padding:0 4px;border-radius:6px;background:#FFFFFF;border:1px solid #CBD5E1;font:800 14px/1 Arial,Helvetica,sans-serif;color:#091E42;letter-spacing:.04em}
 
@@ -151,8 +153,14 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 
 /* Tecla 1 · Sintomas */
 .placas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}
-.placa{min-height:112px;padding:12px 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633}
-.placa b{font:800 15px/1.2 var(--f-tit);color:#FFFFFF}
+.placa{min-height:124px;padding:12px 10px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-align:center;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633}
+.placa b{font:800 17.5px/1.15 var(--f-tit);color:#FFFFFF;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.placa-poco{width:46px;height:46px;border-radius:13px;background:#091930;border:1.5px solid rgba(103,198,255,.4);box-shadow:inset 0 2px 5px rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;flex:none}
+/* Cor de 2 segundos por família de sintoma: frio e água (ciano), energia (âmbar), som e comando (esmeralda), código e placa (laranja). */
+.placa[data-bloco="b1"] .placa-poco,.placa[data-bloco="b4"] .placa-poco{border-color:#38BDF8;box-shadow:inset 0 2px 5px rgba(0,0,0,.65),0 0 8px rgba(56,189,248,.35)}
+.placa[data-bloco="b2"] .placa-poco,.placa[data-bloco="b3"] .placa-poco{border-color:#FBBF24;box-shadow:inset 0 2px 5px rgba(0,0,0,.65),0 0 8px rgba(251,191,36,.35)}
+.placa[data-bloco="b5"] .placa-poco,.placa[data-bloco="b6"] .placa-poco{border-color:#4ADE80;box-shadow:inset 0 2px 5px rgba(0,0,0,.65),0 0 8px rgba(74,222,128,.35)}
+.placa[data-bloco="b7"] .placa-poco,.placa[data-bloco="b8"] .placa-poco{border-color:#FB923C;box-shadow:inset 0 2px 5px rgba(0,0,0,.65),0 0 8px rgba(251,146,60,.35)}
 .placa-badge{background:rgba(6,18,36,.55);border:1px solid rgba(103,198,255,.3);color:#9FD3FF;border-radius:999px;padding:2px 10px;font:700 12px/1.2 var(--f-mono);white-space:nowrap;max-height:30px}
 .placa[aria-pressed=true]{border-color:#67c6ff;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 0 0 2px #67c6ff,0 4px 0 #071633}
 .lista{display:flex;flex-direction:column;gap:8px}
@@ -160,10 +168,10 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .opcao b{font:800 15px/1.25 var(--f-tit)}
 .opcao span{font:500 14px/1.3 var(--f-txt)}
 .bt.bt-sel.item-caso{display:grid;grid-template-columns:auto minmax(0,1fr) 52px;grid-template-areas:'cod meio img' 'tags tags tags';align-items:center;gap:8px 10px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #1D4ED8;box-shadow:0 2px 0 #CBD5E1}
-.cod-badge{background:#1E3A8A;color:#FFFFFF;font:800 13px/1.2 var(--f-mono);padding:5px 8px;border-radius:8px;white-space:nowrap;max-height:30px}
+.cod-badge{background:#1E3A8A;color:#FFFFFF;font:800 14px/1.2 var(--f-mono);padding:6px 9px;border-radius:8px;white-space:nowrap;max-height:30px}
 .item-caso .meio{grid-area:meio;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
 .item-caso .cod-badge{grid-area:cod}.item-caso img{grid-area:img}.item-caso .tags{grid-area:tags}
-.item-caso .meio b{font:800 15px/1.25 var(--f-tit);color:#091E42}
+.item-caso .meio b{font:800 17px/1.2 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
 .item-caso .meio .s{font:500 14px/1.3 var(--f-txt);color:#334155}
 .item-caso img{width:52px;height:52px;border-radius:10px;border:1px solid #CBD5E1;object-fit:contain;background:#F8FAFC}
 .tag-sis{background:#DBEAFE;color:#1E3A8A;border-color:#93C5FD}
@@ -195,7 +203,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .causa .num,.verif .num{flex:none;width:30px;height:30px;border-radius:50%;background:#19365C;color:#FFFFFF;font:800 14px/30px var(--f-mono);text-align:center}
 .causa img{flex:none;width:38px;height:38px;object-fit:contain;border-radius:8px;background:#F4F6F9}
 .causa .t,.verif .t{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-.causa .nm,.verif .tt{font:700 15px/1.25 var(--f-txt)}
+.causa .nm,.verif .tt{font:800 16px/1.22 var(--f-tit);color:#091E42}
 .verif .ln{font:500 14px/1.3 var(--f-txt)}
 .bloco-h{background:#091E42;color:#FFFFFF;padding:8px 12px;border-radius:10px;font:800 14px/1.2 var(--f-tit);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .bloco-h span{color:#67C6FF;flex:none}
@@ -446,6 +454,8 @@ const esc = (t) => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<':
 // Regra do Pedro: nenhuma tela, busca, WhatsApp ou PDF mostra a palavra antiga da base; todo texto da base passa por aqui.
 const limpa = (t) => String(t ?? '').replace(/fichas?/gi, 'diagnóstico').replace(/\b([Aa])bra a diagnóstico/g, '$1bra o diagnóstico').replace(/\b([Aa])brir a diagnóstico/g, '$1brir diagnóstico');
 const tx = (t) => esc(limpa(t));
+// Título com lista de códigos (P0/P4/F1/…): ponto de quebra depois de cada barra, para nunca estourar o cartão em 360 px.
+const quebraBarra = (h) => h.replace(/\//g, '/<wbr>');
 const norm = (t) => String(t ?? '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const BRL = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const brl = (v) => BRL.format(Number(v) || 0).replace(/\s/, ' ');
@@ -692,8 +702,8 @@ function convite(motivo) {
 const casosDoBloco = (id) => F.filter(f => f.blocos.includes(id));
 function telaSintomas() {
   montar(`${campo('', `type="search" data-busca placeholder="Buscar sintoma, peça ou D-001" autocomplete="off" enterkeyhint="search" aria-label="Buscar sintoma" value="${esc(S.termo)}"`, true)}
-    <div class="placas">${BLOCOS.map(([id, , curto, longo]) => `<button class="bt bt-cobalto placa" data-bloco="${id}" aria-pressed="${S.bloco === id}" aria-label="${esc(longo)}: ${casosDoBloco(id).length} casos">${ico(BLOCO_ICO[id], '#67C6FF', 32)}<b>${esc(curto)}</b><span class="placa-badge">${casosDoBloco(id).length} casos</span></button>`).join('')}</div>
-    <button class="bt bt-cobalto capsula" data-todos aria-pressed="${S.todos}">${ico('prancheta', '#67C6FF', 22)}<span>Ver Todos os Sintomas</span></button>
+    <div class="placas">${BLOCOS.map(([id, , curto, longo]) => `<button class="bt bt-cobalto placa" data-bloco="${id}" aria-pressed="${S.bloco === id}" aria-label="${esc(longo)}: ${casosDoBloco(id).length} casos"><span class="placa-poco">${ico(BLOCO_ICO[id], '#67C6FF', 32)}</span><b>${esc(curto)}</b><span class="placa-badge">${casosDoBloco(id).length} casos</span></button>`).join('')}</div>
+    <button class="bt bt-cobalto capsula" data-todos aria-pressed="${S.todos}"><span class="cap-medalhao">${ico('prancheta', '#67C6FF', 22)}</span><span class="cap-tx">Ver Todos os Sintomas</span>${ico('avancar', '#67C6FF', 20)}</button>
     <div data-resultado></div>`);
   const busca = $('[data-busca]', tela);
   busca.addEventListener('input', () => { S.termo = busca.value; listar(); });
@@ -708,7 +718,7 @@ function listar(rolar) {
   if (q && S.bloco) L = L.filter(f => f.blocos.includes(S.bloco));
   if (!L) { box.innerHTML = '<div class="cartao"><p class="tx">Toque numa placa de sintoma, em <b>Ver Todos os Sintomas</b> ou busque pelo que o cliente relatou. Cada caso abre a ilustração com as 5 verificações e leva direto ao Laudo.</p></div>'; return; }
   const titulo = q ? `${L.length} casos para “${esc(S.termo.trim())}”` : S.bloco ? `${esc(BLOCOS.find(b => b[0] === S.bloco)[3])} · ${L.length} casos` : `Todos os Sintomas · ${L.length} casos`;
-  box.innerHTML = `<div class="cartao"><h3>${titulo}</h3><div class="lista">${L.length ? L.map(f => `<button class="bt bt-sel item-caso" data-caso="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}"><span class="cod-badge">${f.id}</span><span class="meio"><b>${tx(f.titulo)}</b><span class="s">${tx(f.sub)}</span><span class="tags"><span class="tag tag-sis">${tx(f.chips[0])}</span><span class="tag tag-fer">${tx(f.chips[2])}</span></span></span><img src="${ICO(f, 'sistema')}" alt="" width="52" height="52" loading="lazy"></button>`).join('')
+  box.innerHTML = `<div class="cartao"><h3>${titulo}</h3><div class="lista">${L.length ? L.map(f => `<button class="bt bt-sel item-caso" data-caso="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}"><span class="cod-badge">${f.id}</span><span class="meio"><b>${quebraBarra(tx(f.titulo))}</b><span class="s">${tx(f.sub)}</span><span class="tags"><span class="tag tag-sis">${tx(f.chips[0])}</span><span class="tag tag-fer">${tx(f.chips[2])}</span></span></span><img src="${ICO(f, 'sistema')}" alt="" width="52" height="52" loading="lazy"></button>`).join('')
     : `<p class="tx">Nada com esse termo. Abra o Diagnóstico D-099 (códigos sem tabela) ou monte o laudo de visita.</p><div class="dupla"><button class="bt bt-sel" data-caso="${F.findIndex(f => f.id === 'D-099')}">Abrir D-099</button><button class="bt bt-cobalto" data-ir-laudo>Tabela & Laudo</button></div>`}</div></div>`;
   $$('[data-caso]', box).forEach(b => b.addEventListener('click', () => abrirCaso(+b.dataset.caso)));
   const il = $('[data-ir-laudo]', box); if (il) il.addEventListener('click', () => irTecla('laudo', { servico: 'visita_diag' }));
@@ -740,7 +750,7 @@ function telaCaso(i) {
   montar(`<article class="cartao caso" data-diag="${f.id}" style="background:transparent;border:0;padding:0;gap:12px;box-shadow:none">
     <div class="c1"><span>Bancada GeloPRO · Split &amp; Inverter</span><b>Diagnóstico ${f.id} · ${tx(f.bloco)}</b></div>
     <div class="navc"><button class="bt bt-sel" data-nav="indice">Sintomas</button><button class="bt bt-sel" data-nav="${ant ? i - 1 : 'indice'}">${ant ? '‹ ' + ant.id : 'Início'}</button><button class="bt bt-sel" data-nav="${prx ? i + 1 : 'indice'}">${prx ? prx.id + ' ›' : 'Fim'}</button></div>
-    <div class="c2 cartao"><h1>${tx(f.titulo)}</h1><p>${tx(f.sub)}</p></div>
+    <div class="c2 cartao"><h1>${quebraBarra(tx(f.titulo))}</h1><p>${tx(f.sub)}</p></div>
     <div class="c3">${f.chips.map((v, k) => `<div class="chip chip-${['sis', 'apl', 'fer'][k]}"><img src="${ICO(f, chipI[k])}" alt=""><span class="chip-k">${['SISTEMA', 'APLICAÇÃO', 'INSTRUMENTO'][k]}</span><span class="v">${tx(v)}</span></div>`).join('')}</div>
     <div class="c4"><div class="ilustra"><img src="${IMG(f)}" alt="Ilustração de fábrica do Diagnóstico ${f.id} com os 5 pontos de verificação" width="1672" height="941">${f.alvos.map(([x, y], k) => `<button class="alvo" data-v="${k + 1}" style="left:${x}%;top:${y}%" aria-label="Ponto ${nn(k + 1)}: ${tx(f.verifs[k][0])}"></button>`).join('')}</div></div>
     <div data-quadro aria-live="polite"></div>
