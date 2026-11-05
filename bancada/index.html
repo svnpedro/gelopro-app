@@ -22,6 +22,7 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 [hidden]{display:none!important}
+:focus-visible{outline:3px solid #2563EB;outline-offset:2px}
 :root{--f-tit:'Figtree','Roboto',system-ui,sans-serif;--f-txt:'Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--f-mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace}
 html{overflow-y:scroll;-webkit-text-size-adjust:100%;scroll-padding-top:68px}
 body{min-height:100vh;background:#c1c0c1 url(../app/ref/acetinado-sedoso.svg) center/100% 100% no-repeat fixed;font:400 15px/1.45 var(--f-txt);color:#0F172A;padding-bottom:calc(66px + env(safe-area-inset-bottom) + 16px)}
@@ -264,6 +265,7 @@ details.dados>summary::-webkit-details-marker{display:none}
 #gaveta{position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:86vh;overflow-y:auto;background:#F4F6F9;border-top:1px solid #CBD5E1;border-radius:18px 18px 0 0;padding:14px 0 calc(16px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .2s ease-out;box-shadow:0 -6px 20px rgba(9,30,66,.25)}
 #gaveta.on{transform:none}
 #gaveta .trilho{display:flex;flex-direction:column;gap:12px}
+#gaveta .trilho>.cab-sec:first-child{position:sticky;top:-14px;z-index:2;background:#F4F6F9;padding:10px 0 8px;margin-top:-10px;border-bottom:1px solid #CBD5E1}
 #toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50;background:#19365C;color:#FFFFFF;font:700 14px/1.3 var(--f-txt);padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 24px);text-align:center}
 #toast.on{opacity:1}
 .carregando{font-size:15px;color:#334155;padding:12px}
@@ -576,6 +578,18 @@ const S = {
   leituras: [], srvSug: null, causaSug: null, laudo: null, numero: null, numeroGravado: false,
   equip: (() => { const e = lerJSON('bancada.equip'); return e && MARCAS.includes(e.marca) && BTUS.includes(e.btu) && FLS.includes(e.fluido) ? e : { marca: 'LG', btu: '12.000', fluido: 'R32' }; })(),
 };
+// Sessão de bancada no aparelho: leituras enviadas, sugestão de serviço, laudo em montagem, Trava 30s e Inverter sobrevivem a recarregar a
+// página. Fora na passada de estresse da sonda (?largura=360).
+const SESSAO_OFF = /[?&]largura=360\b/.test(location.search);
+const salvarSessao = () => { if (!SESSAO_OFF) guardar('bancada.sessao', JSON.stringify({ leituras: S.leituras, srvSug: S.srvSug, causaSug: S.causaSug, laudo: S.laudo, trava: S.trava, inv: S.inv })); };
+(() => {
+  if (SESSAO_OFF) return; const z = lerJSON('bancada.sessao'); if (!z || typeof z !== 'object') return;
+  const obj = (o) => (o && typeof o === 'object' && !Array.isArray(o) ? o : null), txt = (v) => (typeof v === 'string' ? v : null);
+  if (Array.isArray(z.leituras)) S.leituras = z.leituras.filter(a => a && typeof a.k === 'string' && typeof a.txt === 'string');
+  S.srvSug = txt(z.srvSug); S.causaSug = txt(z.causaSug);
+  if (obj(z.laudo)) S.laudo = { sid: null, v: null, causa: '', cli: '', tel: '', mala: false, tecnico: false, pmoc: '', ...z.laudo, tecnico: false };
+  if (obj(z.trava)) S.trava = z.trava; if (obj(z.inv)) S.inv = z.inv;
+})();
 const equipTx = () => `${S.equip.marca} · ${S.equip.btu} BTU/h · ${S.equip.fluido}`;
 const marcaCurva = (m) => (['Midea', 'Springer', 'Carrier'].includes(m) ? 'Midea' : m);
 const marcaCodigo = (m) => (['Midea', 'Springer'].includes(m) ? 'Midea/Springer' : m);
@@ -602,8 +616,16 @@ const CAUSA_EXCESSO = 'Excesso de fluido refrigerante (superaquecimento abaixo d
 function mandar(k, texto, x = {}) {
   S.leituras = S.leituras.filter(a => a.k !== k); S.leituras.push({ k, txt: limpa(texto), ...x });
   if (x.srv) { S.srvSug = x.srv; S.causaSug = limpa(x.causa || CAUSA_PADRAO[x.srv] || ''); if (S.laudo) { S.laudo.sid = x.srv; S.laudo.v = null; S.laudo.causa = S.causaSug; } }
-  toast('✓ Enviado ao Laudo');
+  toast('✓ Enviado ao Laudo'); pintarDock(); salvarSessao();
 }
+// 2º toque em “✓ Já está no Laudo”: vai direto para a Tabela & Laudo (fase de captura, antes do envio de cada tela).
+document.addEventListener('click', (e) => {
+  const b = e.target.closest && e.target.closest('[data-mandar]');
+  if (!b || !jaNoLaudo(b.dataset.mandar) || !b.textContent.trim().startsWith('✓')) return;
+  e.preventDefault(); e.stopPropagation(); irTecla('laudo');
+}, true);
+// Assinatura da leitura enviada (NTC e gás): mudou a medida depois do envio, o botão volta a “+ Mandar” para atualizar o laudo.
+const ASSIN = {};
 const jaNoLaudo = (k) => S.leituras.some(a => a.k === k);
 const btMandar = (k, extra = '') => `<button class="bt bt-cat largo" ${AMARELO} data-mandar="${esc(k)}" ${extra}>${jaNoLaudo(k) ? '✓ Já está no Laudo' : '+ Mandar para o Laudo'}</button>`;
 const marcarMandado = (b) => { if (b) b.textContent = '✓ Já está no Laudo'; };
@@ -621,24 +643,29 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharGave
 function abrirEquip(sec) {
   const g = $('#gaveta-in');
   const pinta = () => {
-    g.innerHTML = `<h2>Equipamento na bancada</h2>
+    g.innerHTML = `<div class="cab-sec"><h2>Equipamento na bancada</h2><button class="bt bt-sel" data-fechar-gaveta aria-label="Fechar">✕ Fechar</button></div>
       <div class="sub">A marca, o porte (${PORTE_TX[porteDe(S.equip.btu)]}) e o fluido já entram no Sensor NTC, no Gás, nos Códigos e na Tabela & Laudo.</div>
       <h3 data-sec="marca">Marca</h3><div class="marcas">${MARCAS.map(m => `<button class="bt bt-sel" data-eq-marca="${m}" aria-pressed="${m === S.equip.marca}">${logo(m, 28)}<span>${m}</span></button>`).join('')}</div>
       <h3 data-sec="btu">Capacidade (BTU/h)</h3><div class="grade4">${BTUS.map(b => `<button class="bt bt-sel" data-eq-btu="${b}" aria-pressed="${b === S.equip.btu}">${b}</button>`).join('')}</div>
       <h3 data-sec="fluido">Fluido</h3><div class="grade4" style="grid-template-columns:repeat(3,minmax(0,1fr))">${FLS.map(x => `<button class="bt bt-sel" data-eq-fl="${x}" aria-pressed="${x === S.equip.fluido}">${x}</button>`).join('')}</div>
       <button class="bt bt-cobalto bt-grande largo" data-eq-ok>Pronto · ${esc(equipTx())}</button>`;
-    const muda = (k, v) => { S.equip[k] = v; guardar('bancada.equip', JSON.stringify(S.equip)); S.ntc = null; S.gas = null; S.cod.marca = null; if (S.laudo) S.laudo.v = null; fecharGaveta(); render(); toast(equipTx()); };
+    const muda = (k, v) => { S.equip[k] = v; guardar('bancada.equip', JSON.stringify(S.equip)); S.cod.marca = null; if (S.laudo) S.laudo.v = null;
+      if (S.ntc && k === 'marca') { S.ntc.alvo = marcaCurva(v); S.ntc.ci = 0; }
+      if (S.gas) { S.gas.fl = S.equip.fluido; if (!S.gas.gpmManual) S.gas.gpm = gpmPadrao(S.equip.fluido, S.equip.btu); }
+      fecharGaveta(); render(); toast(equipTx()); };
     $$('[data-eq-marca]', g).forEach(b => b.addEventListener('click', () => muda('marca', b.dataset.eqMarca)));
     $$('[data-eq-btu]', g).forEach(b => b.addEventListener('click', () => muda('btu', b.dataset.eqBtu)));
     $$('[data-eq-fl]', g).forEach(b => b.addEventListener('click', () => muda('fluido', b.dataset.eqFl)));
     $('[data-eq-ok]', g).addEventListener('click', () => { fecharGaveta(); render(); toast(equipTx()); });
+    $('[data-fechar-gaveta]', g).addEventListener('click', fecharGaveta);
   };
   pinta(); fundo.classList.add('on'); gaveta.classList.add('on');
-  const alvo = sec && $(`[data-sec="${sec}"]`, gaveta); gaveta.scrollTop = alvo ? Math.max(0, alvo.offsetTop - 12) : 0;
+  const alvo = sec && $(`[data-sec="${sec}"]`, gaveta); const cab = $('.cab-sec', gaveta); gaveta.scrollTop = alvo ? Math.max(0, alvo.offsetTop - 12 - (cab ? cab.offsetHeight : 0)) : 0;
 }
 function pintarDock() {
   $$('#dock [data-tecla]').forEach(b => { if (b.dataset.tecla === S.tecla) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#modo').hidden = S.tecla !== 'laudo';
+  const rot = $('#dock [data-tecla="laudo"] span:last-child'); if (rot) rot.textContent = S.leituras.length ? `Laudo (${S.leituras.length})` : 'Tabela & Laudo';
 }
 function irTecla(t, op) {
   fecharGaveta(); S.tecla = t; if (t === 'sintomas' && !op) S.caso = -1;
@@ -800,14 +827,15 @@ function veredictoNtc(c, t, r) {
   if (r <= 0) return { esp, d: -100, estado: 'curto', ref: 'leitura de 0 kΩ' };
   if (c.faixa) { const lo = interp(c.faixa.map(p => [p[0], p[1]]), t), hi = interp(c.faixa.map(p => [p[0], p[2]]), t); return { esp, d, estado: r >= lo && r <= hi ? 'ok' : 'def', ref: `faixa ${f1(lo, 2)} a ${f1(hi, 2)} kΩ a ${f1(t)} °C (fonte ${c.fonte})` }; }
   if (c.tol !== null) return { esp, d, estado: Math.abs(d) <= c.tol ? 'ok' : 'def', ref: `curva ${f1(esp, 2)} kΩ ±${f1(c.tol, 0)}% (${c.tolF})` };
-  return { esp, d, estado: Math.abs(d) <= TOL_CAMPO ? 'ok' : 'def', ref: `curva ${f1(esp, 2)} kΩ a ${f1(t)} °C ±${TOL_CAMPO}% (critério de campo GeloPRO sobre a curva da fonte ${c.fonte})` };
+  return { esp, d, estado: Math.abs(d) <= TOL_CAMPO ? 'ok' : Math.abs(d) <= 2 * TOL_CAMPO ? 'alerta' : 'def', ref: `curva ${f1(esp, 2)} kΩ a ${f1(t)} °C ±${TOL_CAMPO}% (critério de campo GeloPRO sobre a curva da fonte ${c.fonte})` };
 }
-const ESTADO_NTC = { ok: 'SENSOR BOM', def: 'SENSOR ALTERADO — Substituir', curto: '0 kΩ = SENSOR EM CURTO' };
+const ESTADO_NTC = { ok: 'SENSOR BOM', alerta: 'ATENÇÃO — Desvio moderado (5% a 10%): confira conexão e poço térmico', def: 'SENSOR ALTERADO — Substituir', curto: '0 kΩ = SENSOR EM CURTO' };
 function afNtc(corpo) {
   carregarCurvas().then(C => {
     if (!corpo.isConnected) return;
     const marcas = [...new Set(C.map(c => c.marca))];
     const st = S.ntc || (S.ntc = { m: marcas.includes(marcaCurva(S.equip.marca)) ? marcaCurva(S.equip.marca) : 'LG', nom: 10, ci: 0, t: 35, r: '' });
+    if (st.alvo) { if (marcas.includes(st.alvo)) { st.m = st.alvo; st.ci = 0; } delete st.alvo; }
     const lista = () => C.filter(c => c.marca === st.m);
     const disp = () => new Set(lista().map(c => c.nom));
     if (!disp().has(st.nom)) { st.nom = [...disp()][0]; st.ci = 0; }
@@ -828,7 +856,7 @@ function afNtc(corpo) {
     const go = () => {
       const c = curva(), t = num(q('t').value), r = num(q('r').value), v = q('v'); st.t = q('t').value; st.r = q('r').value;
       $$('[data-t]', corpo).forEach(b => b.setAttribute('aria-pressed', String(t !== null && +b.dataset.t === t)));
-      const R = t !== null && r !== null ? veredictoNtc(c, t, r) : null, cls = R ? (R.estado === 'ok' ? 'ok' : 'def') : '';
+      const R = t !== null && r !== null ? veredictoNtc(c, t, r) : null, cls = R ? (R.estado === 'ok' ? 'ok' : R.estado === 'alerta' ? 'alerta' : 'def') : '';
       q('pocos').innerHTML = mostrador(t !== null ? `Esperada a ${f1(t, Number.isInteger(t) ? 0 : 1)} °C` : 'Resistência esperada', t !== null ? f1(interp(c.pts, t), 2) : '—', 'kΩ') + mostrador('Desvio', R ? `${R.d > 0 ? '+' : ''}${f1(R.d)}` : '—', '%', cls);
       if (t === null) { v.className = 'veredito neutro'; v.textContent = 'Toque na temperatura ambiente real ou digite a do termômetro.'; q('cmp').hidden = true; return; }
       const esp = interp(c.pts, t), r25 = interp(c.pts, 25), dq = (r25 - esp) / r25 * 100;
@@ -838,7 +866,7 @@ function afNtc(corpo) {
       if (r === null) { v.className = 'veredito neutro'; v.innerHTML = `A ${f1(t, Number.isInteger(t) ? 0 : 1)} °C a curva real pede ${f1(esp, 2)} kΩ<small>Digite o kΩ medido para o veredito.</small>`; tkSmall(v); return; }
       v.className = 'veredito ' + cls;
       v.innerHTML = `${ESTADO_NTC[R.estado]}<small>${R.estado === 'curto' ? 'Resistência zero: sensor ou chicote em curto. Substitua o sensor e confira o conector da placa.' : `Medido ${f1(r, 2)} kΩ a ${f1(t)} °C (${R.d > 0 ? '+' : ''}${f1(R.d)}% da curva). Referência: ${esc(R.ref)}.`}</small>`; tkSmall(v);
-      const b = $('[data-mandar]', corpo); if (b) b.textContent = jaNoLaudo('ntc') ? '✓ Já está no Laudo' : '+ Mandar para o Laudo';
+      const b = $('[data-mandar]', corpo); if (b) b.textContent = jaNoLaudo('ntc') && ASSIN.ntc === `${c.rot}|${t}|${r}` ? '✓ Já está no Laudo' : '+ Mandar para o Laudo';
     };
     $$('[data-m]', corpo).forEach(b => b.addEventListener('click', () => { st.m = b.dataset.m; st.ci = 0; afNtc(corpo); }));
     $$('[data-nom]', corpo).forEach(b => b.addEventListener('click', () => { st.nom = +b.dataset.nom; st.ci = 0; afNtc(corpo); }));
@@ -849,8 +877,8 @@ function afNtc(corpo) {
       const c = curva(), t = num(q('t').value), r = num(q('r').value);
       if (t === null || r === null) { q('r').focus(); return toast('Digite a temperatura e o kΩ medido'); }
       const R = veredictoNtc(c, t, r);
-      mandar('ntc', `Sensor NTC ${c.rot}: ${f1(r, 2)} kΩ a ${f1(t)} °C (curva real ${f1(R.esp, 2)} kΩ) — ${ESTADO_NTC[R.estado]}`, R.estado === 'ok' ? {} : { srv: 'sensor_ntc', causa: R.estado === 'curto' ? 'Sensor NTC em curto (0 kΩ)' : CAUSA_PADRAO.sensor_ntc });
-      marcarMandado(e.currentTarget);
+      mandar('ntc', `Sensor NTC ${c.rot}: ${f1(r, 2)} kΩ a ${f1(t)} °C (curva real ${f1(R.esp, 2)} kΩ) — ${ESTADO_NTC[R.estado]}`, R.estado === 'ok' || R.estado === 'alerta' ? {} : { srv: 'sensor_ntc', causa: R.estado === 'curto' ? 'Sensor NTC em curto (0 kΩ)' : CAUSA_PADRAO.sensor_ntc });
+      ASSIN.ntc = `${c.rot}|${t}|${r}`; marcarMandado(e.currentTarget);
     });
     go();
   }).catch(e => erroBase(corpo, e));
@@ -899,6 +927,7 @@ function afGas(corpo) {
       const g = num(q('gpm').value) || 0, ex = Math.max(0, st.lin - 3), ad = q('ad');
       ad.className = 'veredito ' + (ex ? 'alerta' : 'ok');
       ad.innerHTML = ex ? `Adicional: ${f1(ex * g, 0)} g de ${st.fl} na balança<small>${ex} m acima de 3 m × ${f1(g, 0)} g/m. ${AVISO_GPM}.</small>` : 'Linha até 3 m: carga de fábrica<small>Sem fluido adicional. Toque no comprimento real se a linha passar de 3 m.</small>'; tkSmall(ad);
+      const bm = $('[data-mandar]', corpo); if (bm && jaNoLaudo('gas')) bm.textContent = ASSIN.gas === [st.fl, q('p').value, q('tt').value, st.lin, q('gpm').value].join('|') ? '✓ Já está no Laudo' : '+ Mandar para o Laudo';
     };
     $$('[data-fl]', corpo).forEach(b => b.addEventListener('click', () => { st.fl = b.dataset.fl; $$('[data-fl]', corpo).forEach(x => x.setAttribute('aria-pressed', String(x === b))); if (!st.gpmManual) q('gpm').value = gpmPadrao(st.fl, S.equip.btu); q('gpmref').textContent = refGpm(); go(); }));
     $$('[data-lin]', corpo).forEach(b => b.addEventListener('click', () => { st.lin = +b.dataset.lin; $$('[data-lin]', corpo).forEach(x => x.setAttribute('aria-pressed', String(x === b))); go(); }));
@@ -906,9 +935,10 @@ function afGas(corpo) {
     $('[data-mandar]', corpo).addEventListener('click', (e) => {
       const R = calc(); if (!R) { q('p').focus(); return toast('Digite a pressão de sucção'); }
       const ex = Math.max(0, st.lin - 3), g = num(q('gpm').value) || 0, extra = ex ? `; adicional de ${f1(ex * g, 0)} g para ${ex} m acima de 3 m` : '';
-      if (R.p <= 0) { mandar('gas', `Pressão de sucção 0 PSI (${st.fl}) — SEM PRESSÃO / VAZAMENTO${extra}`, { srv: 'carga_fluido', causa: 'Sistema sem pressão: vazamento total de fluido refrigerante' }); return marcarMandado(e.currentTarget); }
+      if (R.p <= 0) { ASSIN.gas = [st.fl, q('p').value, q('tt').value, st.lin, q('gpm').value].join('|'); mandar('gas', `Pressão de sucção 0 PSI (${st.fl}) — SEM PRESSÃO / VAZAMENTO${extra}`, { srv: 'carga_fluido', causa: 'Sistema sem pressão: vazamento total de fluido refrigerante' }); return marcarMandado(e.currentTarget); }
       if (R.sh === null) { q('tt').focus(); return toast('Digite a temperatura do tubo de sucção'); }
       const [cls, tit] = estadoSh(R.sh);
+      ASSIN.gas = [st.fl, q('p').value, q('tt').value, st.lin, q('gpm').value].join('|');
       mandar('gas', `Pressão de sucção ${f1(R.p, 0)} PSI / SH ${f1(R.sh)} °C (${st.fl}, tubo ${f1(R.tt)} °C, alvo 7–11 °C) — ${tit}${extra}`, cls === 'def' ? { srv: 'carga_fluido', causa: R.sh > 11 ? CAUSA_PADRAO.carga_fluido : CAUSA_EXCESSO } : ex ? { srv: 'tubo_metro' } : {});
       marcarMandado(e.currentTarget);
     });
@@ -959,7 +989,7 @@ function afInv(corpo) {
   };
   $$('[data-passo]', corpo).forEach(el => {
     const id = el.dataset.passo, tr = TRAVA.find(x => x[0] === id), iv = INV7.find(x => x[0] === id), reg = tr ? S.trava : S.inv;
-    $$('[data-s]', el).forEach(b => b.addEventListener('click', () => { reg[id] = b.dataset.s; $$('[data-s]', el).forEach(z => z.setAttribute('aria-pressed', String(z === b))); veredito(); }));
+    $$('[data-s]', el).forEach(b => b.addEventListener('click', () => { reg[id] = b.dataset.s; salvarSessao(); $$('[data-s]', el).forEach(z => z.setAttribute('aria-pressed', String(z === b))); veredito(); }));
     $('[data-mandar]', el).addEventListener('click', (e) => {
       const s = reg[id], est = s === 'ok' ? 'Normal' : s === 'fo' ? 'FORA DA FAIXA' : 'conferido';
       if (tr) mandar('inv-' + id, `Trava 30s · ${tr[1]}: ${est}`, s === 'fo' ? { srv: tr[6], causa: tr[7] } : {});
@@ -1095,14 +1125,15 @@ function telaLaudo(op) {
     // Escolha por toque na gaveta (sem lista nativa que corta o texto): cada opção mostra o nome inteiro.
     const escolher = (titulo, itens, aoEscolher) => {
       const g = $('#gaveta-in');
-      g.innerHTML = `<h2>${esc(titulo)}</h2><div class="lista">${itens.map(([rot, sub, on], k) => `<button class="bt bt-sel opcao" data-op="${k}" aria-pressed="${on}"><b>${esc(rot)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</button>`).join('')}</div>`;
+      g.innerHTML = `<div class="cab-sec"><h2>${esc(titulo)}</h2><button class="bt bt-sel" data-fechar-gaveta aria-label="Fechar">✕ Fechar</button></div><div class="lista">${itens.map(([rot, sub, on], k) => `<button class="bt bt-sel opcao" data-op="${k}" aria-pressed="${on}"><b>${esc(rot)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</button>`).join('')}</div>`;
       $$('[data-op]', g).forEach(b => b.addEventListener('click', () => { fecharGaveta(); aoEscolher(+b.dataset.op); }));
+      $('[data-fechar-gaveta]', g).addEventListener('click', fecharGaveta);
       fundo.classList.add('on'); gaveta.classList.add('on'); gaveta.scrollTop = 0;
     };
     const pintarLeit = () => {
       q('leit').innerHTML = S.leituras.length ? S.leituras.map((a, k) => `<div class="it"><span>${esc(a.txt)}</span><button class="bt bt-sel" data-rm="${k}" aria-label="Tirar do laudo">${ico('fechar', '#B91C1C', 18)}</button></div>`).join('')
         : `<p class="sub">Nenhuma leitura ainda. Toque em <b>+ Mandar para o Laudo</b> nos Sintomas, no Aferir Vivo ou nos Códigos: a causa e o serviço já chegam aqui.</p><button class="bt bt-cobalto largo" data-ir-af>Aferir Vivo agora</button>`;
-      $$('[data-rm]', corpo).forEach(b => b.addEventListener('click', () => { S.leituras.splice(+b.dataset.rm, 1); pintarLeit(); }));
+      $$('[data-rm]', corpo).forEach(b => b.addEventListener('click', () => { S.leituras.splice(+b.dataset.rm, 1); pintarLeit(); pintarDock(); salvarSessao(); }));
       const af = $('[data-ir-af]', corpo); if (af) af.addEventListener('click', () => irTecla('aferir'));
     };
     const pintarPix = () => { const t = tDados(), pl = pixPayload(t, valor(), numeroLaudo(false)); q('qr').innerHTML = qrSvg(qrMatriz(pl)); q('pixtx').textContent = pl ? `Pix de ${brl(valor())} para ${t.nome || 'o titular'}. Copia e cola: ${pl}` : 'Digite sua chave Pix: o QR sai com o valor exato do laudo.'; };
@@ -1114,23 +1145,23 @@ function telaLaudo(op) {
       q('faixa').innerHTML = tk(esc(`Faixa Oficial 2026: ${brl(s.valor_min)} a ${brl(s.valor_max)} · Valor típico: ${brl(precoDe(s, porte))}`));
       q('prevtx').innerHTML = tk(esc(`Prevenção: ${s.economia_preventiva}`));
       q('ref').dataset.servico = s.servico_id;
-      q('custo').textContent = brl(custo); q('mala').textContent = `${L.mala ? '☑' : '☐'} Peça na Mala = R$ 0`; q('mala').setAttribute('aria-pressed', String(L.mala));
+      q('custo').textContent = brl(custo); q('mala').innerHTML = `${ico(L.mala ? 'sucesso' : 'neutro', L.mala ? '#FFFFFF' : '#091E42', 18)}<span>Peça na Mala = R$ 0</span>`; q('mala').setAttribute('aria-pressed', String(L.mala));
       q('limpo').textContent = sinal(valor() - (L.mala ? 0 : custo)); q('total').textContent = brl(valor());
-      q('visita').setAttribute('aria-pressed', String(L.sid === 'visita_diag'));
+      q('visita').setAttribute('aria-pressed', String(L.sid === 'visita_diag')); salvarSessao();
       pintarPix();
     };
     const msg = (t, c) => { const el = q('msg'); el.hidden = false; el.className = 'aviso ' + (c || ''); el.textContent = t; };
     modo.onclick = () => { L.tecnico = !L.tecnico; pintarModo(); };
     pintarModo(); pintarCausas(); pintarLeit(); pintarValor();
-    q('limpar').addEventListener('click', () => { S.leituras = []; S.srvSug = null; S.causaSug = null; S.trava = {}; S.inv = {}; pintarLeit(); toast('Leituras limpas'); });
+    q('limpar').addEventListener('click', () => { S.leituras = []; S.srvSug = null; S.causaSug = null; S.trava = {}; S.inv = {}; pintarLeit(); pintarDock(); salvarSessao(); toast('Leituras limpas'); });
     q('sid').addEventListener('click', () => escolher('Serviço da Tabela Oficial 2026', P.map(s => [s.servico, `Valor típico ${PORTE_TX[porte]}: ${brl(precoDe(s, porte))}`, s.servico_id === L.sid]), (k) => { L.sid = P[k].servico_id; L.v = null; L.causa = limpa((f && causaDe(f, L.sid)) || CAUSA_PADRAO[L.sid]); pintarCausas(); pintarValor(); }));
     q('causa').addEventListener('click', () => escolher('Causa confirmada', OPS.map(([c, s]) => [c, '→ ' + P.find(x => x.servico_id === s).servico, c === L.causa]), (k) => { const [c, s] = OPS[k]; L.causa = c; if (s !== L.sid) { L.sid = s; L.v = null; } pintarCausas(); pintarValor(); }));
     q('v').addEventListener('input', () => { L.v = num(q('v').value) ?? 0; pintarValor(); });
     $$('[data-aj]', corpo).forEach(b => b.addEventListener('click', () => { L.v = Math.max(0, valor() + Number(b.dataset.aj)); pintarValor(); }));
     q('mala').addEventListener('click', () => { L.mala = !L.mala; pintarValor(); });
     q('visita').addEventListener('click', () => { L.sid = 'visita_diag'; L.v = null; L.causa = CAUSA_PADRAO.visita_diag; pintarCausas(); pintarValor(); msg(`Visita Técnica & Diagnóstico preenchida: ${brl(precoDe(vis, porte))}. Dispare no WhatsApp ou baixe o PDF.`, 'ok'); });
-    ['cli', 'tel'].forEach(k => q(k).addEventListener('input', () => { L[k] = q(k).value; }));
-    q('pmocv').addEventListener('input', () => { L.pmoc = q('pmocv').value; });
+    ['cli', 'tel'].forEach(k => q(k).addEventListener('input', () => { L[k] = q(k).value; salvarSessao(); }));
+    q('pmocv').addEventListener('input', () => { L.pmoc = q('pmocv').value; salvarSessao(); });
     $$('[data-t]', corpo).forEach(el => el.addEventListener('input', () => { guardar('bancada.titular', JSON.stringify(tDados())); pintarPix(); }));
     const leituras = () => S.leituras.length ? S.leituras.map(a => `• ${a.txt}`) : [`• ${f ? `Diagnóstico ${f.id} guiado pelas 5 verificações da bancada` : 'Inspeção técnica com aferição elétrica e frigorífica'}`];
     const sintoma = () => f ? limpa(`Diagnóstico ${f.id} · ${f.titulo} (${f.sub})`) : 'Diagnóstico instrumentado na bancada';
