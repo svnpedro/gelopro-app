@@ -102,7 +102,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 
 /* Etiquetas .tag: 12 px bold (única exceção ao mínimo de 14 px) */
 .tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{display:inline-flex;align-items:center;gap:4px;font:700 12px/1.2 var(--f-txt);letter-spacing:.02em;padding:5px 8px;border-radius:999px;border:1.5px solid}
+.tag{display:inline-flex;align-items:center;gap:4px;font:700 12px/1.2 var(--f-txt);letter-spacing:.02em;padding:5px 8px;border-radius:999px;border:1.5px solid;white-space:nowrap;max-height:30px}
 .tag-verm{background:#DC2626;color:#FFFFFF;border-color:#991B1B}
 .tag-preta{background:#0F172A;color:#FFFFFF;border-color:#334155}
 .tag-escala{background:#1E293B;color:#FDE68A;border-color:#475569}
@@ -125,28 +125,43 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 
 /* Veredito colorido */
 .veredito{border-radius:12px;padding:12px;font:800 16px/1.3 var(--f-tit);border:1.5px solid}
-.veredito small{display:block;font:500 14px/1.45 var(--f-txt);margin-top:4px}
+.veredito small{display:block;font:500 14px/1.7 var(--f-txt);margin-top:4px}
 .veredito.ok{background:#DCFCE7;border-color:#16A34A;color:#14532D}
 .veredito.def{background:#FEE2E2;border-color:#DC2626;color:#7F1D1D}
 .veredito.alerta{background:#FEF3C7;border-color:#D97706;color:#78350F}
 .veredito.neutro{background:#FFFFFF;border-color:#CBD5E1;color:#091E42}
 .veredito.ok::before{content:'✓ '}.veredito.def::before{content:'✗ '}.veredito.alerta::before{content:'⚠ '}.veredito.neutro::before{content:'▸ '}
-.armadilha{background:#FFF7ED;border:1.5px solid #EA580C;border-radius:12px;padding:12px;font-size:14px;color:#7C2D12}
+/* 10 tokens semânticos de texto inline (tk): grandeza, temperatura, dinheiro, pontas, bornes, estado da energia e código. */
+.tk{display:inline-block;padding:1px 6px;border-radius:5px;font:800 12.5px/1.25 var(--f-txt);vertical-align:baseline;margin:1px 0}
+.tk-ponta-v{background:#DC2626;color:#FFFFFF;white-space:nowrap}
+.tk-ponta-v::before,.tk-ponta-p::before{content:'● '}
+.tk-ponta-p{background:#0F172A;color:#FFFFFF;border:1px solid #334155;white-space:nowrap}
+.tk-borne{background:#1E3A8A;color:#FFFFFF;padding:1px 5px;font-family:var(--f-mono);white-space:nowrap}
+.tk-medida{background:#E0F2FE;color:#0C4A6E;border:1px solid #38BDF8;padding:1px 5px;font:800 13px/1.25 var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tk-temp{background:#FFEDD5;color:#9A3412;border:1px solid #FB923C;padding:1px 5px;font:800 13px/1.25 var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tk-dinheiro{background:#DCFCE7;color:#14532D;border:1px solid #4ADE80;font:800 13.5px/1.25 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tk-off{background:#FEF3C7;color:#78350F;border:1px solid #F59E0B}
+.tk-on{background:#FEE2E2;color:#991B1B;border:1px solid #F87171}
+.tk-cod{background:#EBE3FF;color:#3F1D8F;border:1px solid #A78BFA;padding:1px 5px;font-family:var(--f-mono);white-space:nowrap}
+.ref-faixa{background:#F8FAFC;border:1px solid #CBD5E1;border-left:4px solid #0284C7;border-radius:8px;padding:8px 10px;font:500 14px/1.75 var(--f-txt);color:#0F172A}
+.ref-faixa b{color:#091E42}
+.armadilha{background:#FFF7ED;border:1.5px solid #EA580C;border-radius:12px;padding:12px;font-size:14px;line-height:1.75;color:#7C2D12}
 .armadilha b{color:#7C2D12}
 
 /* Tecla 1 · Sintomas */
 .placas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:stretch}
 .placa{min-height:112px;padding:12px 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633}
 .placa b{font:800 15px/1.2 var(--f-tit);color:#FFFFFF}
-.placa-badge{background:rgba(6,18,36,.55);border:1px solid rgba(103,198,255,.3);color:#9FD3FF;border-radius:999px;padding:2px 10px;font:700 12px/1.2 var(--f-mono)}
+.placa-badge{background:rgba(6,18,36,.55);border:1px solid rgba(103,198,255,.3);color:#9FD3FF;border-radius:999px;padding:2px 10px;font:700 12px/1.2 var(--f-mono);white-space:nowrap;max-height:30px}
 .placa[aria-pressed=true]{border-color:#67c6ff;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 0 0 2px #67c6ff,0 4px 0 #071633}
 .lista{display:flex;flex-direction:column;gap:8px}
 .opcao{width:100%;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:10px 12px}
 .opcao b{font:800 15px/1.25 var(--f-tit)}
 .opcao span{font:500 14px/1.3 var(--f-txt)}
-.bt.bt-sel.item-caso{display:grid;grid-template-columns:auto minmax(0,1fr) 52px;align-items:center;gap:10px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #1D4ED8;box-shadow:0 2px 0 #CBD5E1}
-.cod-badge{background:#1E3A8A;color:#FFFFFF;font:800 13px/1.2 var(--f-mono);padding:5px 8px;border-radius:8px;white-space:nowrap}
-.item-caso .meio{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+.bt.bt-sel.item-caso{display:grid;grid-template-columns:auto minmax(0,1fr) 52px;grid-template-areas:'cod meio img' 'tags tags tags';align-items:center;gap:8px 10px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #1D4ED8;box-shadow:0 2px 0 #CBD5E1}
+.cod-badge{background:#1E3A8A;color:#FFFFFF;font:800 13px/1.2 var(--f-mono);padding:5px 8px;border-radius:8px;white-space:nowrap;max-height:30px}
+.item-caso .meio{grid-area:meio;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
+.item-caso .cod-badge{grid-area:cod}.item-caso img{grid-area:img}.item-caso .tags{grid-area:tags}
 .item-caso .meio b{font:800 15px/1.25 var(--f-tit);color:#091E42}
 .item-caso .meio .s{font:500 14px/1.3 var(--f-txt);color:#334155}
 .item-caso img{width:52px;height:52px;border-radius:10px;border:1px solid #CBD5E1;object-fit:contain;background:#F8FAFC}
@@ -190,7 +205,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .bt.bt-sel.verif{background:#F0F7FF;border:1.5px solid #93C5FD;box-shadow:0 2px 0 #BFDBFE}
 .verif .num{background:#1D4ED8}
 .verif .tt{color:#091E42}
-.verif .ln{background:#DCFCE7;color:#14532D;border:1px solid #86EFAC;border-radius:8px;padding:4px 8px;font-weight:600}
+.verif .ln{background:#DCFCE7;color:#14532D;border:1px solid #86EFAC;border-radius:8px;padding:4px 8px;font-weight:600;line-height:1.6}
 .bt.bt-sel.verif.ok{border-color:#16A34A;background:#F0FDF4}
 .bt.bt-sel.verif.def{border-color:#DC2626;background:#FEF2F2}
 .bt.bt-sel.causa.conf{border-color:#DC2626;border-left-color:#DC2626;background:#FEF2F2}
@@ -205,7 +220,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .prox .entao{font:800 15px/1.3 var(--f-tit);color:#091E42}
 .prox .acao{background:#DCFCE7;color:#166534;border:1px solid #16A34A;border-radius:999px;padding:4px 10px;font:800 14px/1.25 var(--f-txt);text-decoration:none}
 .c7{display:flex;gap:10px;align-items:flex-start;background:linear-gradient(180deg,#C2410C 0%,#9A3412 100%);border:2px solid #7C2D12;border-radius:12px;padding:12px;color:#FFFFFF}
-.c7 p{font:600 15px/1.4 var(--f-txt)}
+.c7 p{font:600 15px/1.65 var(--f-txt)}
 .c7 b{font-weight:800}
 .navc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 
@@ -214,7 +229,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .mk-marca{display:inline-flex;align-items:center;gap:6px;font:700 14px/1.2 var(--f-txt);color:#091E42}
 .codigo .mk{font:500 14px/1.3 var(--f-txt);color:#475569}
 .selo-ok{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:#15803D;color:#FFFFFF;font:800 14px/1.25 var(--f-txt);border-radius:10px;padding:8px 10px}
-.faca{background:#ECFDF5;border-left:4px solid #16A34A;color:#14532D;font-weight:600;border-radius:8px;padding:8px 10px;font-size:14px}
+.faca{background:#ECFDF5;border-left:4px solid #16A34A;color:#14532D;font-weight:600;border-radius:8px;padding:8px 10px;font-size:14px;line-height:1.7}
 .marcas{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .marcas .bt{justify-content:flex-start;padding:6px 10px}
 
@@ -223,7 +238,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .bastidor .limpo{color:#86EFAC}
 .bastidor .bt-sel{font-size:14px}
 .ref-card{border:1.5px solid #19365C}
-.proc-box{background:#F8FAFC;border-left:4px solid #19365C;border-radius:8px;padding:8px 10px}
+.proc-box{background:#F8FAFC;border-left:4px solid #19365C;border-radius:8px;padding:8px 10px;line-height:1.7}
 .faixa-box{background:#EFF6FF;border:1px solid #93C5FD;color:#1E3A8A;border-radius:10px;padding:8px 10px;font:700 15px/1.4 var(--f-txt)}
 .selo-prev{display:flex;gap:8px;align-items:flex-start;background:#DCFCE7;border:1.5px solid #16A34A;color:#14532D;border-radius:10px;padding:10px;font:700 14px/1.4 var(--f-txt)}
 .total{display:flex;justify-content:space-between;align-items:center;gap:8px;font:800 18px/1.2 var(--f-tit);background:#064E3B;border:2px solid #16A34A;border-radius:12px;padding:12px 14px;color:#FFFFFF}
@@ -493,6 +508,45 @@ function logo(marca, t = 28) {
   if (!C || !C.MARCAS || !C.MARCAS[m]) return `<span class="wordmark" data-logo-texto="${esc(marca)}" aria-hidden="true">${esc(String(marca).toUpperCase())}</span>`;
   return preencher(TPL.LogoMarca, vals(C, { marca: m, tamanho: t }));
 }
+
+// ───────────── Tokens semânticos de texto inline (tk) ─────────────
+// 1 passe de regex sobre texto já escapado (esc): cada trecho vira 1 token e nunca é reprocessado. Sem lookbehind (Safari antigo).
+const FIM_PAL = '(?![0-9A-Za-zÀ-ÿ])';
+const NUM = '\\d+(?:[.,]\\d+)?';
+const TK_RE = new RegExp([
+  `(R\\$\\s?\\d+(?:\\.\\d{3})*(?:,\\d{2})?(?:\\s+a\\s+R\\$\\s?\\d+(?:\\.\\d{3})*(?:,\\d{2})?)?)`, // 1 dinheiro
+  `([+\\-−]?${NUM}(?:\\s*(?:a|–)\\s*${NUM})?\\s*°C)`, // 2 temperatura
+  `(±\\s?${NUM}\\s?%|\\b${NUM}(?:\\s*(?:a|–|-)\\s*${NUM})?\\s*(?:kΩ|MΩ|Ω|µF|μF|V\\s*CC|V\\s*CA|V~|V|PSI|BTU\\/h|g\\/m|g|m)${FIM_PAL}|\\b[kM]Ω\\s*×\\s*°C|\\b[kM]Ω${FIM_PAL}|[µμ]F${FIM_PAL})`, // 3 grandeza
+  `\\b(Desligado|desligado|Desenergizado|desenergizado|Desenergizada|desenergizada|desenergização|Desenergização|capacitores descarregados|descarga capacitiva|soltos? da placa|fora do circuito)${FIM_PAL}`, // 4 sem energia
+  `\\b(Energizado|energizado|sob carga)${FIM_PAL}`, // 5 com energia
+  `\\b(vermelha|vermelho|Vermelha|Vermelho)${FIM_PAL}`, // 6 ponta vermelha
+  `\\b(preta|preto|Preta|Preto)${FIM_PAL}`, // 7 ponta preta
+  `\\b(D-\\d{3})\\b`, // 8 código de diagnóstico
+  `\\b(U–V|V–W|W–U|S-C-R|S–N|S-N|P-N|T1 a T4|T1|T2|T3|T4|UVW|IPM|PFC|GND|OL)${FIM_PAL}`, // 9 borne / terminal
+  `\\b(no|nos|na|em|entre|bornes?)\\s+([PNUVWLS](?:,\\s?[PNUVWLS])*(?:\\s+e\\s+[PNUVWLS])?)${FIM_PAL}`, // 10–11 letra de borne
+].join('|'), 'g');
+const TK_CL = [null, 'dinheiro', 'temp', 'medida', 'off', 'on', 'ponta-v', 'ponta-p', 'cod', 'borne'];
+const tkSpan = (cl, t) => `<span class="tk tk-${cl}">${t}</span>`;
+const tk = (s) => String(s).replace(TK_RE, (m, ...g) => {
+  if (g[9] !== undefined) return `${g[9]} ${tkSpan('borne', g[10])}`;
+  for (let i = 0; i < 9; i++) if (g[i] !== undefined) return tkSpan(TK_CL[i + 1], g[i]);
+  return m;
+});
+// Mesmo motor sobre um trecho já montado: tokeniza só os nós de texto (o textContent continua igual; o ● das pontas vem do CSS).
+const tkEm = (el) => { if (!el) return; const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), nos = []; for (let n = w.nextNode(); n; n = w.nextNode()) if (!n.parentElement.closest('.tk')) nos.push(n);
+  nos.forEach(n => { const h = tk(esc(n.textContent)); if (h !== esc(n.textContent)) { const t = document.createElement('template'); t.innerHTML = h; n.replaceWith(t.content); } }); };
+const tkSmall = (el) => el && el.querySelectorAll('small').forEach(tkEm);
+// Etiqueta ALVO curta (<= 24 caracteres, 1 linha); a frase inteira vai para o bloco .ref-faixa.
+function alvoCurto(tt, ln) {
+  const L = limpa(ln).trim(), cheio = 'ALVO: ' + L;
+  if (cheio.length <= 24) return cheio.toUpperCase();
+  const m = L.match(new RegExp(`±\\s?${NUM}\\s?%|${NUM}(?:\\s*(?:a|–|-)\\s*${NUM})?\\s*(?:°C|kΩ|MΩ|Ω|µF|V\\s*CC|V~|V|PSI|g\\/m|g|m)${FIM_PAL}`));
+  if (m && ('ALVO: ' + m[0]).length <= 24) return ('ALVO: ' + m[0]).toUpperCase();
+  const cab = 'ALVO: ' + L.split(':')[0].trim();
+  if (cab.length <= 24) return cab.toUpperCase();
+  let r = 'ALVO:'; for (const w of L.replace(/[,:;].*$/, '').split(/\s+/)) { if ((r + ' ' + w + '…').length > 24) break; r += ' ' + w; }
+  return (r === 'ALVO:' ? 'ALVO: VER ABAIXO' : r + '…').toUpperCase();
+}
 // Família verde e amarela (AtalhoTecla.dc.html): o componente marca data-verde / data-amarelo; a bancada usa o mesmo par de atributos.
 const VERDE = 'data-verde="1"', AMARELO = 'data-amarelo="1"';
 // Campo (CampoTexto.dc.html): rótulo de 15 px, poço de 56 px e ícone de busca à esquerda.
@@ -667,10 +721,10 @@ function telaCaso(i) {
       <section class="cartao" aria-label="Causas mais prováveis"><div class="bloco-h bh-causas" role="heading" aria-level="3"><b>Causas mais prováveis (ordem de escada)</b><span aria-hidden="true">▲ ◆ •</span></div>
         ${f.causas.map(([nm], k) => `<button class="bt bt-sel causa${conf === k + 1 ? ' conf' : ''}" data-c="${k + 1}"><span class="num">${nn(k + 1)}</span><img src="${ICOc(f, k)}" alt=""><span class="t"><span class="nm">${tx(nm)}</span><span class="tag ${PIL[k][0]}">${PIL[k][1]}</span></span></button>`).join('')}</section>
       <section class="cartao" aria-label="Verificações na ordem"><div class="bloco-h bh-verif" role="heading" aria-level="3"><b>5 Verificações com instrumento</b><span aria-hidden="true">✓</span></div>
-        ${f.verifs.map(([tt, ln], k) => `<button class="bt bt-sel verif${st[k + 1] ? ' ' + st[k + 1] : ''}" data-v="${k + 1}"><span class="num">${nn(k + 1)}</span><span class="t"><span class="tt">${tx(tt)}</span><span class="ln">✓ ${tx(ln)}</span></span></button>`).join('')}</section>
+        ${f.verifs.map(([tt, ln], k) => `<button class="bt bt-sel verif${st[k + 1] ? ' ' + st[k + 1] : ''}" data-v="${k + 1}"><span class="num">${nn(k + 1)}</span><span class="t"><span class="tt">${tx(tt)}</span><span class="ln">✓ ${tk(tx(ln))}</span></span></button>`).join('')}</section>
     </div>
     <section class="cartao c6"><div class="bloco-h bh-prox" role="heading" aria-level="3"><b>Próximo passo (Decisão SE → ENTÃO)</b><span aria-hidden="true">➔</span></div>${f.proximo.map(([se, entao, srv, ir], k) => `<button class="bt bt-sel prox" data-p="${k}"><span class="se"><b class="se-b">SE</b> ${tx(se)}</span><span class="entao">➔ ENTÃO ${tx(entao)}</span><span class="acao">${ir ? 'Abrir o Diagnóstico ' + ir : 'Levar ao Laudo · ' + esc(servNome(srv || servicoDoCaso(f)))}</span></button>`).join('')}</section>
-    <div class="c7">${ico('alerta', '#FFFFFF', 28)}<p><b>Antes de condenar a peça cara:</b> ${tx(f.antes)}</p></div>
+    <div class="c7">${ico('alerta', '#FFFFFF', 28)}<p><b>Antes de condenar a peça cara:</b> ${tk(tx(f.antes))}</p></div>
   </article>`);
   $$('[data-nav]', tela).forEach(b => b.addEventListener('click', () => { const v = b.dataset.nav; if (v === 'indice') irTecla('sintomas'); else abrirCaso(+v); }));
   $$('[data-v]', tela).forEach(b => b.addEventListener('click', () => quadro(f, +b.dataset.v)));
@@ -690,7 +744,8 @@ function quadro(f, v, cLigada, semRolar) {
   const k = `${f.id}-v${v}`, box = $('[data-quadro]', tela);
   box.innerHTML = `<div class="cartao quadro" data-quadro-v="${v}">${lupa(IMG(f), fx, fy, 'Ponto ' + nn(v))}
     <div class="cab-sec"><h3>${nn(v)} · ${tx(tt)}</h3><span class="tag tag-bonus">BÔNUS 3 · PONTA SEM CURTO</span></div>
-    ${tagsPonta(escala, 'ALVO: ' + limpa(ln).toUpperCase(), pontas)}
+    ${tagsPonta(escala, alvoCurto(tt, ln), pontas)}
+    ${('ALVO: ' + limpa(ln)).length > 24 ? `<div class="ref-faixa" data-ref-faixa><b>Medida-alvo:</b> ${tk(tx(ln))}</div>` : ''}
     <p class="sub">Causa ligada: <b>${nn(c)} · ${tx(f.causas[c - 1][0])}</b> (${PIL[c - 1][1].replace(/^\S+ /, "").toLowerCase()}) → ${esc(servNome(f.causas[c - 1][1]))}</p>
     <div class="dupla"><button class="bt bt-sel" data-r="ok" aria-pressed="${st[v] === 'ok'}">Normal</button><button class="bt bt-sel" data-r="def" aria-pressed="${st[v] === 'def'}">Defeito</button></div>
     ${btMandar(k)}</div>`;
@@ -764,7 +819,7 @@ function afNtc(corpo) {
         ${curvas().length > 1 ? `<div class="opcoes" role="group" aria-label="Ponto do sensor">${curvas().map((c, k) => `<button class="bt bt-sel" data-ci="${k}" aria-pressed="${k === Math.min(st.ci, curvas().length - 1)}">${esc(c.sensor)}</button>`).join('')}</div>` : `<p class="sub">Ponto: ${esc(curva().sensor)}</p>`}
         <div class="grade4" role="group" aria-label="Temperatura ambiente real">${[25, 30, 35, 40].map(x => `<button class="bt bt-sel" data-t="${x}" aria-pressed="${num(st.t) === x}">${x} °C</button>`).join('')}</div>
         <div class="grade2">${campo('Temperatura (°C)', `type="number" inputmode="decimal" step="any" data-n="t" value="${esc(st.t)}"`)}${campo('kΩ medido', `type="number" inputmode="decimal" step="any" data-n="r" value="${esc(st.r)}" placeholder="Ex.: 6,3"`)}</div>
-        ${tagsPonta('ESCALA kΩ', 'ALVO: CURVA DA TEMPERATURA REAL')}
+        ${tagsPonta('ESCALA kΩ', 'ALVO: CURVA REAL °C')}
         <div class="pocos" data-n="pocos"></div>
         <div class="veredito neutro" data-n="v"></div>
         <div class="armadilha" data-n="cmp"></div>
@@ -779,10 +834,10 @@ function afNtc(corpo) {
       const esp = interp(c.pts, t), r25 = interp(c.pts, 25), dq = (r25 - esp) / r25 * 100;
       q('cmp').hidden = false;
       q('cmp').innerHTML = Math.abs(t - 25) < 0.05 ? `<b>Armadilha da tabela fixa de 25 °C:</b> ela só vale com o sensor a 25 °C (${f1(r25, 2)} kΩ). Em qualquer outra temperatura, compare com a curva real.`
-        : `<b>Armadilha da tabela fixa de 25 °C:</b> ${esc(c.marca)} ${st.nom}K a ${f1(t, Number.isInteger(t) ? 0 : 1)} °C = <b>${f1(esp, 2)} kΩ</b> reais contra <b>${f1(r25, 2)} kΩ</b> a 25 °C (${dq > 0 ? 'queda' : 'alta'} de ${f1(Math.abs(dq))}%). Quem compara com ${f1(r25, 2)} kΩ ${dq > 0 ? 'condena sensor bom' : 'aprova sensor alterado'}.`;
-      if (r === null) { v.className = 'veredito neutro'; v.innerHTML = `A ${f1(t, Number.isInteger(t) ? 0 : 1)} °C a curva real pede ${f1(esp, 2)} kΩ<small>Digite o kΩ medido para o veredito.</small>`; return; }
+        : `<b>Armadilha da tabela fixa de 25 °C:</b> ${esc(c.marca)} ${st.nom}K a ${f1(t, Number.isInteger(t) ? 0 : 1)} °C = <b>${f1(esp, 2)} kΩ</b> reais contra <b>${f1(r25, 2)} kΩ</b> a 25 °C (${dq > 0 ? 'queda' : 'alta'} de ${f1(Math.abs(dq))}%). Quem compara com ${f1(r25, 2)} kΩ ${dq > 0 ? 'condena sensor bom' : 'aprova sensor alterado'}.`; tkEm(q('cmp'));
+      if (r === null) { v.className = 'veredito neutro'; v.innerHTML = `A ${f1(t, Number.isInteger(t) ? 0 : 1)} °C a curva real pede ${f1(esp, 2)} kΩ<small>Digite o kΩ medido para o veredito.</small>`; tkSmall(v); return; }
       v.className = 'veredito ' + cls;
-      v.innerHTML = `${ESTADO_NTC[R.estado]}<small>${R.estado === 'curto' ? 'Resistência zero: sensor ou chicote em curto. Substitua o sensor e confira o conector da placa.' : `Medido ${f1(r, 2)} kΩ a ${f1(t)} °C (${R.d > 0 ? '+' : ''}${f1(R.d)}% da curva). Referência: ${esc(R.ref)}.`}</small>`;
+      v.innerHTML = `${ESTADO_NTC[R.estado]}<small>${R.estado === 'curto' ? 'Resistência zero: sensor ou chicote em curto. Substitua o sensor e confira o conector da placa.' : `Medido ${f1(r, 2)} kΩ a ${f1(t)} °C (${R.d > 0 ? '+' : ''}${f1(R.d)}% da curva). Referência: ${esc(R.ref)}.`}</small>`; tkSmall(v);
       const b = $('[data-mandar]', corpo); if (b) b.textContent = jaNoLaudo('ntc') ? '✓ Já está no Laudo' : '+ Mandar para o Laudo';
     };
     $$('[data-m]', corpo).forEach(b => b.addEventListener('click', () => { st.m = b.dataset.m; st.ci = 0; afNtc(corpo); }));
@@ -840,10 +895,10 @@ function afGas(corpo) {
       if (!R) { v.className = 'veredito neutro'; v.textContent = 'Digite a pressão de sucção lida no manifold.'; }
       else if (zero) { v.className = 'veredito def'; v.innerHTML = '0 PSI = SEM PRESSÃO / VAZAMENTO<small>Sistema vazio: ache e corrija o vazamento, faça vácuo e carga na balança antes de ligar o compressor.</small>'; }
       else if (R.sh === null) { v.className = 'veredito neutro'; v.innerHTML = `Evaporação ${f1(R.ts)} °C (${st.fl} a ${f1(R.p, 0)} PSI)<small>Agora meça o tubo de sucção a 20 cm da válvula, com o termopar preso e isolado.</small>`; }
-      else { const [cls, tit, txt] = estadoSh(R.sh); v.className = 'veredito ' + cls; v.innerHTML = `${tit} — SH ${f1(R.sh)} °C<small>${txt} Evaporação ${f1(R.ts)} °C (${st.fl} a ${f1(R.p, 0)} PSI); tubo ${f1(R.tt)} °C.</small>`; }
+      else { const [cls, tit, txt] = estadoSh(R.sh); v.className = 'veredito ' + cls; v.innerHTML = `${tit} — SH ${f1(R.sh)} °C<small>${txt} Evaporação ${f1(R.ts)} °C (${st.fl} a ${f1(R.p, 0)} PSI); tubo ${f1(R.tt)} °C.</small>`; } tkSmall(v);
       const g = num(q('gpm').value) || 0, ex = Math.max(0, st.lin - 3), ad = q('ad');
       ad.className = 'veredito ' + (ex ? 'alerta' : 'ok');
-      ad.innerHTML = ex ? `Adicional: ${f1(ex * g, 0)} g de ${st.fl} na balança<small>${ex} m acima de 3 m × ${f1(g, 0)} g/m. ${AVISO_GPM}.</small>` : 'Linha até 3 m: carga de fábrica<small>Sem fluido adicional. Toque no comprimento real se a linha passar de 3 m.</small>';
+      ad.innerHTML = ex ? `Adicional: ${f1(ex * g, 0)} g de ${st.fl} na balança<small>${ex} m acima de 3 m × ${f1(g, 0)} g/m. ${AVISO_GPM}.</small>` : 'Linha até 3 m: carga de fábrica<small>Sem fluido adicional. Toque no comprimento real se a linha passar de 3 m.</small>'; tkSmall(ad);
     };
     $$('[data-fl]', corpo).forEach(b => b.addEventListener('click', () => { st.fl = b.dataset.fl; $$('[data-fl]', corpo).forEach(x => x.setAttribute('aria-pressed', String(x === b))); if (!st.gpmManual) q('gpm').value = gpmPadrao(st.fl, S.equip.btu); q('gpmref').textContent = refGpm(); go(); }));
     $$('[data-lin]', corpo).forEach(b => b.addEventListener('click', () => { st.lin = +b.dataset.lin; $$('[data-lin]', corpo).forEach(x => x.setAttribute('aria-pressed', String(x === b))); go(); }));
@@ -875,26 +930,32 @@ const INV7 = [
   ['serial', 'Pulso de comunicação S/N', 'Energizado, escala V CC entre os bornes S e N da interligação.', 'Tensão oscilando sem parar (pulsos). Parada ou zero: confira o cabo de interligação antes da placa.', ['d087', 3], 'visita_diag', 'V CC · PULSANDO S–N'],
   ['pfc', 'Indutor PFC (reator)', 'Desligado, terminais do indutor PFC soltos da placa, escala Ω.', 'Continuidade de baixa resistência, sem aberto e sem marca de queimado.', ['d023', 4], 'reparo_placa', 'ESCALA Ω · BAIXA'],
 ];
+// Etiquetas curtas de 1 linha (escala e alvo) e frase de referência de cada passo, mostrada inteira no bloco .ref-faixa.
+const INV_TAGS = { ipm: ['ESCALA DIODO', 'ALVO: 0,45–0,65 V / OL'], uvw: ['ESCALA Ω', 'ALVO: U–V = V–W = W–U'], fuga: ['ESCALA MΩ', 'ALVO: OL (SEM FUGA)'], barramento: ['ESCALA V CC', 'ALVO: ≈ 310 V CC'],
+  fonte: ['ESCALA V CC', 'ALVO: 15 V E 5 V FIXOS'], serial: ['ESCALA V CC', 'ALVO: PULSANDO S–N'], pfc: ['ESCALA Ω', 'ALVO: CONTINUIDADE Ω'] };
+const TRAVA_FAIXA = { rede: 'Entre 198 V e 242 V nos bornes L e N.', cap: 'Capacitância medida dentro de ±5% do valor gravado na etiqueta.', ntc: 'Resistência dentro da curva real na temperatura medida (tecla Sensor NTC).' };
 const diagPorImg = (img) => F.find(f => f.id === IMGS[img].diag);
 // Recorte centrado na própria peça: ponta da linha ciano = 2 × foco − bolinha.
 const recorte = (img, p) => { const f = diagPorImg(img), [fx, fy] = f.foco[p - 1], [ax, ay] = f.alvos[p - 1]; return lupa(IMG(f), 2 * fx - ax, 2 * fy - ay, `${f.id} ponto ${nn(p)}`); };
 function afInv(corpo) {
-  const passo = (id, t, como, alvoTx, st, k) => `<div class="cartao" data-passo="${id}"><h3>${k ? k + '. ' : ''}${esc(t)}</h3><p class="sub">${esc(como)}</p>${alvoTx}
+  const passo = (id, t, como, alvoTx, st, k) => `<div class="cartao" data-passo="${id}"><h3>${k ? k + '. ' : ''}${esc(t)}</h3><p class="sub">${tk(esc(como))}</p>${alvoTx}
       <div class="dupla"><button class="bt bt-sel" data-s="ok" aria-pressed="${st === 'ok'}">Normal</button><button class="bt bt-sel" data-s="fo" aria-pressed="${st === 'fo'}">Fora da faixa</button></div>${btMandar('inv-' + id)}</div>`;
   corpo.innerHTML = `<div class="cartao" style="border:2px solid #D97706"><div class="cab-sec"><h2>Trava Eliminatória de 30 Segundos</h2><span class="tag tag-bonus">BÔNUS 5</span></div>
       <p class="sub">Antes de abrir a placa, elimine o que derruba qualquer Inverter: rede, capacitor e sensor.</p><div class="veredito neutro" data-iv="trava"></div></div>
-    ${TRAVA.map(([id, t, como, esc0, alvo]) => passo(id, t, como, tagsPonta(esc0, alvo), S.trava[id], '')).join('')}
+    ${TRAVA.map(([id, t, como, esc0, alvo]) => passo(id, t, como, `${tagsPonta(esc0, alvo)}<div class="ref-faixa" data-ref-faixa><b>Referência:</b> ${tk(esc(TRAVA_FAIXA[id]))}</div>`, S.trava[id], '')).join('')}
     <div class="cartao" style="border:2px solid #19365C"><div class="cab-sec"><h2>7 testes da Placa Inverter</h2><span class="tag tag-bonus">BÔNUS 1</span></div><p class="sub">A Lupa 260% mostra onde encostar as pontas, sem curto.</p><div class="veredito neutro" data-iv="v"></div></div>
-    ${INV7.map(([id, t, como, faixa, [im, pt], , medida], k) => passo(id, t, como, `${recorte(im, pt)}${tagsPonta(medida, 'ALVO: ' + faixa.split('.')[0].toUpperCase())}`, S.inv[id], k + 1)).join('')}`;
+    ${INV7.map(([id, t, como, faixa, [im, pt]], k) => passo(id, t, como, `${recorte(im, pt)}${tagsPonta(INV_TAGS[id][0], INV_TAGS[id][1])}<div class="ref-faixa" data-ref-faixa><b>Faixa:</b> ${tk(esc(faixa))}</div>`, S.inv[id], k + 1)).join('')}`;
   const veredito = () => {
     const ft = TRAVA.filter(x => S.trava[x[0]] === 'fo'), okT = TRAVA.filter(x => S.trava[x[0]] === 'ok'), vt = $('[data-iv=trava]', corpo);
     if (ft.length) { vt.className = 'veredito def'; vt.innerHTML = `PARE: ${esc(ft.map(x => x[1]).join(', '))} fora da faixa<small>Corrija antes de condenar a placa. Mande a leitura para o Laudo: o serviço já vem sugerido.</small>`; }
     else if (okT.length === TRAVA.length) { vt.className = 'veredito ok'; vt.innerHTML = 'LIBERADO: rede, capacitor e sensor normais<small>Siga para os 7 testes da placa logo abaixo.</small>'; }
     else { vt.className = 'veredito neutro'; vt.innerHTML = `${okT.length + ft.length} de 3 itens conferidos<small>Toque em Normal ou Fora da faixa em cada item.</small>`; }
+    tkSmall(vt);
     const fora = INV7.filter(x => S.inv[x[0]] === 'fo'), feitos = INV7.filter(x => S.inv[x[0]]), v = $('[data-iv=v]', corpo);
     if (fora.length) { v.className = 'veredito def'; v.innerHTML = `${fora.length} teste${fora.length > 1 ? 's' : ''} fora da faixa: ${esc(fora.map(x => x[1]).join(', '))}<small>Peça condenada com prova medida. Mande para o Laudo e feche na Tabela & Laudo.</small>`; }
     else if (feitos.length < INV7.length) { v.className = 'veredito neutro'; v.innerHTML = `${feitos.length} de ${INV7.length} testes feitos<small>Marque cada leitura e mande para o Laudo.</small>`; }
     else { v.className = 'veredito ok'; v.innerHTML = 'Placa aprovada nos 7 testes: não condene<small>Volte aos Sintomas e siga para a próxima causa, ou feche o laudo de visita.</small>'; }
+    tkSmall(v);
   };
   $$('[data-passo]', corpo).forEach(el => {
     const id = el.dataset.passo, tr = TRAVA.find(x => x[0] === id), iv = INV7.find(x => x[0] === id), reg = tr ? S.trava : S.inv;
@@ -944,9 +1005,9 @@ function telaCodigos() {
       R.sort((a, b) => (q && norm(b.c) === q) - (q && norm(a.c) === q));
       $('[data-cont]', corpo).textContent = `${R.length} resultado${R.length === 1 ? '' : 's'}${mk ? ' · ' + mk : ''}${st.pisc !== null ? ` · ${st.pisc === 10 ? '10 ou mais' : st.pisc} piscada${st.pisc === 1 ? '' : 's'}` : ''}`;
       const lista = $('[data-lista]', corpo);
-      lista.innerHTML = R.length ? R.slice(0, lim).map(r => `<div class="cartao codigo" data-cod="${r.i}"><div class="linha"><span class="cd">${esc(r.c)}</span><span class="mk-marca">${logo(r.m, 20)}<b>${esc(r.m)}</b></span></div><span class="mk">${esc(r.tp)} · ${esc(r.m)} · ${esc(r.l)}</span><p class="tx">${tx(r.d)}</p>
+      lista.innerHTML = R.length ? R.slice(0, lim).map(r => `<div class="cartao codigo" data-cod="${r.i}"><div class="linha"><span class="cd">${esc(r.c)}</span><span class="mk-marca">${logo(r.m, 20)}<b>${esc(r.m)}</b></span></div><span class="mk">${esc(r.tp)} · ${esc(r.m)} · ${esc(r.l)}</span><p class="tx">${tk(tx(r.d))}</p>
           ${r.ok ? `<span class="selo-ok" data-selo-ok>${SELO_OK}</span>` : r.naoConf ? '<p class="sub">O código aponta o circuito, não condena a peça: meça antes.</p>' : ''}
-          ${r.fa ? `<div class="faca"><b>FAÇA:</b> ${tx(r.fa)}</div>` : '<div class="faca"><b>FAÇA:</b> meça o componente apontado na tecla Aferir Vivo antes de orçar a troca.</div>'}<span class="mk">Fonte ${esc(r.f)}</span>${btMandar('cod-' + r.i)}</div>`).join('') + (R.length > lim ? '<button class="bt bt-sel largo" data-mais>Mostrar mais códigos</button>' : '')
+          ${r.fa ? `<div class="faca"><b>FAÇA:</b> ${tk(tx(r.fa))}</div>` : '<div class="faca"><b>FAÇA:</b> meça o componente apontado na tecla Aferir Vivo antes de orçar a troca.</div>'}<span class="mk">Fonte ${esc(r.f)}</span>${btMandar('cod-' + r.i)}</div>`).join('') + (R.length > lim ? '<button class="bt bt-sel largo" data-mais>Mostrar mais códigos</button>' : '')
         : `<div class="cartao"><p class="tx">Código fora da base desta marca: abra o Diagnóstico D-099, meça sensores e o cabo de interligação e feche o laudo de diagnóstico.</p><div class="dupla"><button class="bt bt-sel" data-ir-caso>Abrir D-099</button><button class="bt bt-cobalto" data-ir-laudo>Tabela & Laudo</button></div></div>`;
       $$('[data-mandar]', lista).forEach(b => b.addEventListener('click', () => { const r = U[+b.closest('[data-cod]').dataset.cod]; mandar('cod-' + r.i, `${r.tp} ${r.c} (${r.m}): ${r.d}${r.ok ? ' — NÃO É DEFEITO, OPERAÇÃO NORMAL' : ''}`, { srv: 'visita_diag', causa: r.ok ? `${r.c} (${r.m}): operação normal do equipamento, sem peça condenada` : `${r.c} (${r.m}): ${r.d}` }); marcarMandado(b); }));
       const mais = $('[data-mais]', lista); if (mais) mais.addEventListener('click', () => { lim += 30; filtro(); });
@@ -1010,7 +1071,7 @@ function telaLaudo(op) {
       </div>
       <div class="cartao ref-card" data-l="ref"><h3>Referência Oficial 2026 &amp; Economia Preventiva</h3><p class="tx proc-box" data-l="proc"></p><p class="faixa-box" data-l="faixa"></p><div class="selo-prev" data-l="prev">${ico('garantia', '#16A34A', 20)}<span data-l="prevtx"></span></div></div>
       <div class="cartao"><div class="total"><span>Valor final</span><b data-l="total"></b></div>
-        <div class="grade2">${campo('Cliente', `type="text" data-l="cli" value="${esc(L.cli)}" placeholder="Nome do cliente" autocomplete="off"`)}${campo('WhatsApp do cliente', `type="tel" data-l="tel" value="${esc(L.tel)}" placeholder="DDD e número" autocomplete="off"`)}</div>
+        <div class="grade2">${campo('Cliente', `type="text" data-l="cli" value="${esc(L.cli)}" placeholder="Nome" autocomplete="off"`)}${campo('WhatsApp do cliente', `type="tel" data-l="tel" value="${esc(L.tel)}" placeholder="DDD + nº" autocomplete="off"`)}</div>
         <details class="dados" data-l="tit" ${tit.pix ? '' : 'open'}><summary>Seus dados e chave Pix ▾</summary><div style="display:flex;flex-direction:column;gap:10px">
           <div class="grade2">${campo('Seu nome ou empresa', `type="text" data-t="nome" value="${esc(tit.nome)}" autocomplete="off"`)}${campo('CPF ou CNPJ', `type="text" data-t="doc" value="${esc(tit.doc)}" autocomplete="off"`)}</div>
           <div class="grade2">${campo('Cidade', `type="text" data-t="cidade" value="${esc(tit.cidade)}" autocomplete="off"`)}${campo('Chave Pix', `type="text" data-t="pix" value="${esc(tit.pix)}" autocomplete="off"`)}</div>
@@ -1049,9 +1110,9 @@ function telaLaudo(op) {
       const s = srv(); if (L.v === null) L.v = precoDe(s, porte);
       const inp = q('v'); if (document.activeElement !== inp) inp.value = String(Math.round(valor() * 100) / 100);
       const custo = custoPeca(s, porte);
-      q('proc').textContent = `Procedimento incluso: ${s.justificativa_tecnica}`;
-      q('faixa').textContent = `Faixa Oficial 2026: ${brl(s.valor_min)} a ${brl(s.valor_max)} · Valor típico: ${brl(precoDe(s, porte))}`;
-      q('prevtx').textContent = `Prevenção: ${s.economia_preventiva}`;
+      q('proc').innerHTML = tk(esc(`Procedimento incluso: ${s.justificativa_tecnica}`));
+      q('faixa').innerHTML = tk(esc(`Faixa Oficial 2026: ${brl(s.valor_min)} a ${brl(s.valor_max)} · Valor típico: ${brl(precoDe(s, porte))}`));
+      q('prevtx').innerHTML = tk(esc(`Prevenção: ${s.economia_preventiva}`));
       q('ref').dataset.servico = s.servico_id;
       q('custo').textContent = brl(custo); q('mala').textContent = `${L.mala ? '☑' : '☐'} Peça na Mala = R$ 0`; q('mala').setAttribute('aria-pressed', String(L.mala));
       q('limpo').textContent = sinal(valor() - (L.mala ? 0 : custo)); q('total').textContent = brl(valor());
