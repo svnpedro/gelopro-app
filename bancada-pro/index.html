@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" data-tema="sol">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -23,7 +23,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--f-tit:'Figtree','Roboto',system-ui,sans-serif;--f-txt:'Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--f-mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace;
   --navy:#091E42;--folha:#F4F6F9;--cartao:#FFFFFF;--linha:#CBD5E1;--linha2:#E2E8F0;--txt:#0F172A;--txt2:#334155;--txt3:#64748B;--sel:#E0F2FE;--cab-claro:#DCE3EC}
-html[data-tema="lua"]{--folha:#0F172A;--cartao:#111C2E;--linha:#24466F;--linha2:#1E2E48;--txt:#E2E8F0;--txt2:#CBD5E1;--txt3:#94A3B8;--sel:#173463;--cab-claro:#19365C}
 html,body{height:100%}
 body{overflow:hidden;font-family:var(--f-txt);color:var(--txt);background-color:#c1c0c1;background-image:url("../app/ref/acetinado-sedoso.svg");background-repeat:no-repeat;background-position:center;background-size:100% 100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
@@ -33,27 +32,20 @@ img{display:block;max-width:100%}
 .ic{display:block;flex-shrink:0}
 
 /* ── Moldura GeloPRO: topo 50px · visor no chassi acetinado · dock 3D 58px ── */
-#topo{position:fixed;top:0;left:0;right:0;height:50px;z-index:40;display:flex;align-items:center;gap:8px;padding:0 10px;background:#091E42;color:#FFFFFF;box-shadow:0 2px 0 #D4D4D4,0 3px 6px rgba(4,12,28,.35)}
+#topo{position:fixed;top:0;left:0;right:0;height:56px;z-index:40;display:flex;align-items:center;gap:8px;padding:0 10px;background:#091E42;color:#FFFFFF;box-shadow:0 2px 0 #D4D4D4,0 3px 6px rgba(4,12,28,.35)}
 .marca{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .marca .mascote{width:30px;height:30px;border-radius:8px;background:#0A182D;border:1.5px solid #D4D4D4;padding:1px}
 .marca .wordmark{height:15px;width:auto}
-.voltar{display:flex;flex-shrink:0;align-items:center;gap:2px;height:34px;padding:0 8px 0 4px;border-radius:9px;background:#19365C;border:1px solid #24466F;font-family:var(--f-tit);font-size:12.5px;font-weight:800}
+.voltar{display:flex;flex-shrink:0;align-items:center;gap:4px;height:48px;min-height:48px;padding:0 12px 0 9px;border-radius:10px;background:#19365C;border:1px solid #24466F;font-family:var(--f-tit);font-size:12.5px;font-weight:800}
 html[data-embed="1"] .marca .wordmark{display:none}
-.voltar.imprimir{gap:5px;padding:0 9px 0 7px;white-space:nowrap}
+.voltar.indice{gap:6px;padding:0 12px 0 10px;white-space:nowrap}
 #b-fechar[hidden]{display:none}
 @media (max-width:420px){.marca .wordmark{display:none}}
-#topo .voltar{height:48px;border:7px solid transparent;border-left-width:0;border-right-width:0;border-radius:9px/16px;background:#19365C padding-box;box-shadow:inset 0 0 0 1px #24466F}
-#topo .ficha-sel{height:48px;border:5px solid transparent;border-left-width:0;border-right-width:0;border-radius:9px/14px;background:linear-gradient(180deg,#0f1724 0%,#1a2333 100%) padding-box;box-shadow:inset 0 0 0 2px #071224,inset 0 3px 8px rgba(0,0,0,.6)}
-#topo .tema{height:48px;border:10px solid transparent;border-left-width:0;border-right-width:0;background:#0A182D padding-box;box-shadow:inset 0 0 0 2px #24466F;padding:0 7px}
-#topo .tema .bola{top:4px;left:4px}
-.ficha-sel{flex:1;min-width:0;height:38px;display:flex;align-items:center;gap:6px;padding:0 8px;border-radius:9px;background:linear-gradient(180deg,#0f1724 0%,#1a2333 100%) #1d2430;border:2px solid #071224;box-shadow:inset 0 3px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.35);text-align:left}
+.ficha-sel{flex:1;min-width:0;height:48px;min-height:48px;display:flex;align-items:center;gap:6px;padding:0 10px;border-radius:10px;background:linear-gradient(180deg,#0f1724 0%,#1a2333 100%) #1d2430;border:2px solid #071224;box-shadow:inset 0 3px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.35);text-align:left}
 .ficha-sel .txt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.1}
 .ficha-sel .cod{font-family:var(--f-mono);font-size:10px;font-weight:800;color:#67C6FF;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ficha-sel .nome{font-family:var(--f-tit);font-size:12.5px;font-weight:800;color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tema{flex-shrink:0;position:relative;width:52px;height:28px;border-radius:999px;background:#0A182D;border:2px solid #24466F;display:flex;align-items:center;justify-content:space-between;padding:0 5px}
-.tema .bola{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#F8FAFC,#D4D4D4);box-shadow:0 1px 2px rgba(0,0,0,.5);transition:transform .2s}
-html[data-tema="lua"] .tema .bola{transform:translateX(24px)}
-#visor{position:fixed;top:50px;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:10;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:8px 8px 16px}
+#visor{position:fixed;top:56px;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:10;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:8px 8px 16px}
 #dock{position:fixed;left:0;right:0;bottom:0;z-index:55;height:calc(66px + env(safe-area-inset-bottom));padding:6px 8px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#091E42;box-shadow:0 -2px 0 #D4D4D4}
 .tecla{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;border-radius:11px;color:#FFFFFF;font-family:var(--f-tit);font-size:11.5px;font-weight:800;line-height:1.1;text-align:left;padding:0 7px;
   background:linear-gradient(180deg,#28559e 0%,#1c3f7a 54%,#122a54 100%);border:2px solid #071633;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633,0 5.5px 0 rgba(255,255,255,.68),0 8px 14px rgba(4,12,28,.42);transition:transform .08s,box-shadow .08s}
@@ -72,7 +64,6 @@ html[data-tema="lua"] .tema .bola{transform:translateX(24px)}
 .c1 b{white-space:nowrap}
 .c2{padding:10px 10px 2px}
 .c2 h1{font-family:var(--f-tit);font-weight:800;text-transform:uppercase;color:var(--navy);font-size:clamp(28px,8.6vw,56px);line-height:.96;letter-spacing:-.02em}
-html[data-tema="lua"] .c2 h1{color:#FFFFFF}
 .c2 p{font-family:var(--f-txt);font-style:italic;font-weight:600;font-size:clamp(14px,3.9vw,20px);line-height:1.3;color:var(--txt2);margin-top:6px}
 .c3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 10px 10px}
 .chip{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;background:var(--cartao);border:1.5px solid var(--linha);border-radius:8px;padding:6px}
@@ -117,12 +108,9 @@ html[data-tema="lua"] .c2 h1{color:#FFFFFF}
 .pilula.p1{border-color:#D97706;color:#D97706}
 .pilula.p2{border-color:#334155;color:#334155}
 .pilula.p3{border-color:#64748B;color:#64748B}
-html[data-tema="lua"] .pilula.p2{border-color:#CBD5E1;color:#CBD5E1}
-html[data-tema="lua"] .pilula.p3{border-color:#94A3B8;color:#94A3B8}
 .causa.sel,.verif.sel{background:var(--sel)}
 .causa.conf{background:#FEE2E2}
 .causa.conf .num{background:#DC2626}
-html[data-tema="lua"] .causa.conf{background:#4C1D1D}
 .verif{position:relative;display:grid;grid-template-columns:22px 1fr;gap:6px;width:100%;text-align:left;padding:6px 3px;border-bottom:1px solid var(--linha2);border-radius:5px;transition:background .2s}
 .verif .bol{position:relative;z-index:1;width:22px;height:22px;border-radius:50%;background:#1D9BF0;color:#FFFFFF;font-family:var(--f-tit);font-weight:800;font-size:10.5px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--folha)}
 .verif.ok .bol{background:#16A34A}.verif.def .bol{background:#DC2626}
@@ -131,7 +119,6 @@ html[data-tema="lua"] .causa.conf{background:#4C1D1D}
 .verif .ln{display:flex;gap:4px;align-items:flex-start;font-size:10.5px;color:var(--txt2);margin-top:3px;line-height:1.3}
 .c6{margin:10px 10px 0;border:1.5px solid var(--linha);border-radius:8px;overflow:hidden;background:var(--cartao)}
 .c6 h3{background:var(--cab-claro);color:var(--navy);font-family:var(--f-tit);font-weight:800;font-size:16px;text-transform:uppercase;padding:6px 10px}
-html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 .prox{display:grid;grid-template-columns:1fr 20px 1.15fr;align-items:center;gap:7px;width:100%;text-align:left;padding:8px 10px;border-top:1px solid var(--linha2);font-size:12.5px;line-height:1.3}
 .prox .se{font-weight:700;color:var(--txt)}
 .prox .se b{font-weight:800}
@@ -166,16 +153,10 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 .navf .tecla:last-child{justify-content:flex-end;text-align:right}
 .navf .tecla span small{display:block;font-family:var(--f-mono);font-size:10.5px;color:#9FD3FF;letter-spacing:.02em}
 /* ── Índice: página de sumário técnico ── */
-#sumario{position:fixed;top:0;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:50;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:#E2E8F0;background-color:#c1c0c1;background-image:url("../app/ref/acetinado-sedoso.svg");background-repeat:no-repeat;background-position:center;background-size:100% 100%}
+#sumario{position:fixed;top:56px;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:50;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:#E2E8F0;background-color:#c1c0c1;background-image:url("../app/ref/acetinado-sedoso.svg");background-repeat:no-repeat;background-position:center;background-size:100% 100%}
 #sumario[hidden]{display:none}
 html.com-sumario #visor{visibility:hidden}
-.sm-cab{position:sticky;top:0;z-index:2;background:#091E42;color:#FFFFFF;padding:8px 12px 12px;box-shadow:0 2px 0 #D4D4D4,0 4px 10px rgba(4,12,28,.35)}
-.sm-top{display:flex;align-items:center;gap:10px;height:48px}
-.sm-top .voltar{height:48px;padding:0 12px 0 8px}
-.sm-top b{flex:1;font-family:var(--f-tit);font-size:18px;font-weight:800;letter-spacing:.01em}
-.sm-top .mascote{width:30px;height:30px;border-radius:8px;background:#0A182D;border:1.5px solid #D4D4D4;padding:1px}
-.sm-cont{font-family:var(--f-tit);font-size:12px;font-weight:800;letter-spacing:.12em;color:#F59E0B;margin:4px 0 8px}
-.sm-busca{display:flex;align-items:center;gap:10px;height:52px;padding:0 14px;border-radius:12px;background:#FFFFFF;border:2px solid #F59E0B;box-shadow:inset 0 2px 4px rgba(9,30,66,.12)}
+.sm-busca{display:flex;align-items:center;gap:10px;height:52px;margin:0 0 12px;padding:0 14px;border-radius:12px;background:#FFFFFF;border:2px solid #F59E0B;box-shadow:inset 0 2px 4px rgba(9,30,66,.12)}
 .sm-busca input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:16px;font-weight:600;color:#0F172A}
 .sm-busca input::placeholder{color:#64748B;font-weight:500}
 .sm-corpo{max-width:844px;margin:0 auto;padding:8px 8px calc(28px + env(safe-area-inset-bottom))}
@@ -216,7 +197,7 @@ html.com-sumario #visor{visibility:hidden}
 .sm-item.atual .cod{background:#1D9BF0}
 .sm-item:active{background:#19365C}
 #sumario .vazio{color:#CBD5E1;border-color:#24466F}
-@media (min-width:600px){.sm-cards{grid-template-columns:repeat(4,1fr)}.sm-card.todos{grid-column:1/-1}.sm-cab{padding-left:max(12px,calc(50% - 398px));padding-right:max(12px,calc(50% - 398px))}}
+@media (min-width:600px){.sm-cards{grid-template-columns:repeat(4,1fr)}.sm-card.todos{grid-column:1/-1}}
 .vazio{border:1px dashed #CBD5E1;border-radius:12px;padding:14px;text-align:center;font-size:14px;color:#334155}
 .vazio .pilha{margin-top:10px}
 .confirmada{border-radius:12px;background:#FEF2F2;border:2px solid #DC2626;padding:12px;margin-bottom:12px}
@@ -514,8 +495,7 @@ html.com-sumario #visor{visibility:hidden}
     <span class="txt"><span class="cod" id="sel-cod">D-001 · NÃO GELA</span><span class="nome" id="sel-nome">Liga, mas não gela</span></span>
     <span id="sel-seta"></span>
   </button>
-  <button class="voltar imprimir" id="b-imprimir" aria-label="Imprimir esta ficha em 1 folha A4"><span id="ic-imprimir"></span><span>Imprimir A4</span></button>
-  <button class="tema" id="b-tema" aria-label="Alternar tema claro ou escuro"><span id="ic-sol"></span><span id="ic-lua"></span><span class="bola"></span></button>
+  <button class="voltar indice" id="b-indice" aria-label="Abrir o índice das 120 fichas"><span id="ic-indice"></span><span>Índice 120</span></button>
 </header>
 
 <main id="visor"></main>
@@ -905,12 +885,9 @@ const BL_FAIXA = (id) => { const fs = F.filter(f => f.blocos[0] === id); return 
 function abrirIndice() {
   fechar();
   const cards = BLOCOS.map(([id, n, curto]) => { const [d1, d2, q] = BL_FAIXA(id); return `<button class="sm-card" data-b="${id}" aria-pressed="${bloco === id}" aria-label="Bloco ${n}, ${esc(curto)}: ${q} fichas, ${d1} a ${d2}"><span class="ico-gp">${icGP(BLOCO_ICO[id], 32)}</span><b>${esc(curto)}</b><span class="badge">${q} fichas</span></button>`; }).join('');
-  sumario.innerHTML = `<div class="sm-cab">
-      <div class="sm-top"><button class="voltar" data-sm="fechar">${ic('esquerda', '#FFFFFF', 18)}<span>${esc(fichaAtual().id)}</span></button><b>Sintomas</b><img class="mascote" src="../app/marca/gelopro-mascote.png" alt="" width="30" height="30"></div>
-      <div class="sm-cont">${F.length} DIAGNÓSTICOS · ${BLOCOS.length} BLOCOS TÉCNICOS</div>
-      <label class="sm-busca">${ic('busca', '#64748B', 20)}<input type="search" placeholder="Código D-001, sintoma ou peça" autocomplete="off" enterkeyhint="search" value="${esc(termo)}" aria-label="Buscar ficha"></label>
-    </div>
+  sumario.innerHTML = `
     <div class="sm-corpo"><div class="sm-moldura"><div class="sm-visor">${pilulaEquip()}
+      <label class="sm-busca">${ic('busca', '#64748B', 20)}<input type="search" placeholder="Código D-001, sintoma ou peça" autocomplete="off" enterkeyhint="search" value="${esc(termo)}" aria-label="Buscar ficha"></label>
       <div class="sm-cards">${cards}<button class="sm-card todos" data-b="todos" aria-pressed="${bloco === 'todos'}"><span class="medalhao">${icGP('prancheta', 24)}</span><span class="t"><b>Todas as ${F.length} Fichas</b><small>D-001 a D-${String(F.length).padStart(3, '0')} em ordem de bancada</small></span><span class="seta">${ic('direita', '#67C6FF', 22)}</span></button></div>
       <div class="sm-status" aria-live="polite"></div>
       <div class="sm-lista"></div>
@@ -935,9 +912,9 @@ function abrirIndice() {
   $$('.sm-card', sumario).forEach(c => c.addEventListener('click', () => {
     bloco = c.dataset.b; termo = ''; inp.value = ''; render();
     const alvo = bloco === 'todos' ? st : $('.sm-lista', sumario);
-    sumario.scrollTo({ top: Math.max(0, alvo.offsetTop - $('.sm-cab', sumario).offsetHeight - 8), behavior: 'smooth' });
+    const y = alvo.getBoundingClientRect().top - sumario.getBoundingClientRect().top + sumario.scrollTop - 8;
+    sumario.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
   }));
-  $('[data-sm=fechar]', sumario).addEventListener('click', fecharIndice);
   render();
 }
 function fecharIndice() { sumario.hidden = true; document.documentElement.classList.remove('com-sumario'); if (!visor.querySelector('.ficha')) montarFicha(S.idx); pintarDock(); }
@@ -992,21 +969,21 @@ const BLOCO_ICO = { b1: 'nao-gela', b2: 'nao-liga', b3: 'raio', b4: 'gelo', b5: 
 // Causa padrão de cada serviço da Tabela Oficial 2026: o laudo nunca cobra um serviço com a causa de outro.
 const CAUSA_PADRAO = {
   sensor_ntc: 'Sensor NTC fora da curva ôhmica a temperatura ambiente',
-  carga_fluido: 'Falta de fluido refrigerante (vazamento na linha ou na flange)',
-  cap_partida: 'Capacitor de partida fora da tolerância da etiqueta (µF)',
-  higienizacao: 'Serpentina, turbina ou filtro obstruídos (troca de calor baixa)',
-  limpeza_simples: 'Manutenção preventiva vencida (filtros, gabinete e dreno)',
-  dreno_isol: 'Dreno obstruído ou sem queda',
-  bomba_dreno: 'Bomba de condensado sem acionamento',
-  reparo_placa: 'Falha na placa eletrônica ou no módulo IPM',
-  placa_nova: 'Placa eletrônica sem reparo viável',
-  motor_vent: 'Motor ventilador ou turbina com falha',
-  fusivel_eletrica: 'Proteção elétrica, fusível ou bornes de força com falha',
-  compressor_troca: 'Compressor com enrolamento alterado ou em massa',
-  tubo_metro: 'Linha frigorífica acima de 3 m sem o complemento',
-  instalacao_split: 'Instalação fora do padrão (linha, vácuo ou fixação)',
-  desinstalacao: 'Desinstalação técnica com recolhimento do fluido',
-  visita_diag: 'Diagnóstico instrumentado concluído; conserto não aprovado na hora'
+  carga_fluido: 'Falta de fluido refrigerante confirmada pelo superaquecimento: vazamento na linha ou na flange',
+  cap_partida: 'Capacitor de partida abaixo da capacitância de etiqueta, medido em µF fora do circuito',
+  higienizacao: 'Serpentina, turbina e filtros obstruídos: troca de calor reduzida e consumo de energia elevado',
+  limpeza_simples: 'Manutenção preventiva vencida: filtros, gabinete e dreno sem a limpeza periódica',
+  dreno_isol: 'Dreno obstruído ou sem caimento, com risco de gotejamento no ambiente',
+  bomba_dreno: 'Bomba de condensado sem acionamento por nível, com risco de transbordo da bandeja',
+  reparo_placa: 'Falha na placa eletrônica ou no módulo IPM confirmada nos testes de bancada',
+  placa_nova: 'Placa eletrônica com dano sem reparo viável, confirmado nos testes de bancada',
+  motor_vent: 'Motor ventilador ou turbina com falha de rotação, ruído ou enrolamento aberto',
+  fusivel_eletrica: 'Proteção elétrica, fusível ou bornes de força com falha ou mau contato oxidado',
+  compressor_troca: 'Compressor com enrolamento alterado ou fuga para a carcaça, medido nos bornes C, S e R',
+  tubo_metro: 'Linha frigorífica acima de 3 m, que exige complemento de tubulação isolada',
+  instalacao_split: 'Instalação fora do padrão de fábrica: linha, vácuo ou fixação a refazer',
+  desinstalacao: 'Desinstalação técnica com recolhimento do fluido na condensadora (pump-down)',
+  visita_diag: 'Diagnóstico técnico presencial concluído com aferição elétrica e frigorífica na bancada (valor abatido caso o serviço seja autorizado em até 15 dias)'
 };
 const CAUSA_EXCESSO = 'Excesso de fluido refrigerante (retorno de líquido ao compressor)';
 const toastEl = document.body.appendChild(Object.assign(document.createElement('div'), { id: 'toast' }));
@@ -1033,7 +1010,7 @@ function irAba(a) {
   if (a === 'aferir') abrirAferir(); else if (a === 'codigos') abrirCodigos(); else abrirLaudo();
 }
 const painel = (cab, corpo, escuro = false) => { visor.innerHTML = `<div class="sm-moldura painel-moldura"><div class="sm-visor">${pilulaEquip()}<article class="painel${escuro ? ' escuro' : ''}" data-painel="${B.aba}"><header class="painel-cab">${cab}</header><div class="painel-corpo">${corpo}</div></article></div></div>`; visor.scrollTop = 0; ligarPilula(visor); return $('.painel', visor); };
-const erroBase = (el, e) => { el.innerHTML = `<div class="aviso def">Não consegui ler a base técnica (${esc(e.message)}). Abra com sinal uma vez e tente de novo.</div><div class="pilha"><button class="tecla verde" data-ir-laudo>${ic('prancheta', '#FFFFFF', 18)}<span>Ir para Tabela &amp; Laudo</span></button></div>`; const b = $('[data-ir-laudo]', el); if (b) b.addEventListener('click', () => irAba('laudo')); };
+const erroBase = (el, e) => { el.innerHTML = `<div class="aviso def">Não consegui carregar as curvas e os códigos oficiais (${esc(e.message)}). Abra com sinal uma vez e tente de novo.</div><div class="pilha"><button class="tecla verde" data-ir-laudo>${ic('prancheta', '#FFFFFF', 18)}<span>Ir para Tabela &amp; Laudo</span></button></div>`; const b = $('[data-ir-laudo]', el); if (b) b.addEventListener('click', () => irAba('laudo')); };
 const ENV_TXT = 'Enviar Aferição ao Laudo', FEITO_TXT = 'Aferição Registrada no Laudo';
 const envHtml = (feito, tm = 16, txt = ENV_TXT) => `${ic(feito ? 'check' : 'mais', '#111827', tm)}<span>${feito ? FEITO_TXT : txt}</span>`;
 const marcarEnv = (b, feito, tm = 16, txt = ENV_TXT) => { if (!b) return; b.classList.toggle('feito', feito); b.innerHTML = envHtml(feito, tm, txt); };
@@ -1074,12 +1051,11 @@ function raioX(f) {
   const ts = [0, 1, 2].map(k => testeRx(f, k)), feito = (k) => B.afericoes.some(a => a.k === `${f.id}-c${k + 1}`);
   return `<section class="rx" aria-label="Painel Raio-X de 1 Toque">
     <div class="rx-h"><span>${ic('raio', '#F59E0B', 16)}<span>Painel Raio-X de 1 Toque</span></span><small>${f.id}</small></div>
-    <div class="rx-sub">Probabilidade em campo</div>
+    <div class="rx-sub">Visão Raio-X de 1 Toque · Ordem de teste na escada</div>
     <div class="rx-barras">${ts.map((t, k) => `<div class="rx-b" data-rx-barra="${RX[k][0]}"><span>${nn(k + 1)} · ${esc(t.nm)}</span><span class="pc" style="color:${RX[k][1]}">${RX[k][0]}%</span><span class="tr"><i style="width:${RX[k][0]}%;background:${RX[k][1]}"></i></span></div>`).join('')}</div>
-    <div class="rx-ref">Peso de referência de campo GeloPRO sobre as 3 causas mais comuns desta ficha.</div>
     <div class="rx-testes">${ts.map((t, k) => `<div class="rx-t" data-rx-teste="${k + 1}"><div class="tt"><span class="num" style="background:${RX[k][1]}">${nn(k + 1)}</span><span>${esc(t.tt)}</span></div><p class="rx-txt"><b>Pontas:</b> ${esc(t.onde)} <b>Leitura:</b> ${esc(t.leitura)}</p>${tagsHtml(t)}
       <div class="acoes">${t.v ? `<button class="mini-bt" data-rx-ponto="${t.v}">${ic('busca', '#67C6FF', 16)}<span>Ver ponto ${nn(t.v)}</span></button>` : ''}<button class="mini-bt env${feito(k) ? ' feito' : ''}" data-rx-env="${k}">${envHtml(feito(k))}</button></div></div>`).join('')}</div>
-    <div class="trava" data-trava><b>${alerta(22)}<span>Antes de Condenar a Peça Cara · 30 segundos</span></b><ol>${TRAVA.map(x => `<li>${esc(x)}</li>`).join('')}</ol><button class="mini-bt" data-rx-inv>${ic('medidor', '#FCA5A5', 16)}<span>Abrir Bancada Anti-Queima (7 testes)</span></button></div>
+    <div class="trava" data-trava><b>${alerta(22)}<span>Pare antes de condenar a peça cara (trava de 30 segundos)</span></b><ol>${TRAVA.map(x => `<li>${esc(x)}</li>`).join('')}</ol><button class="mini-bt" data-rx-inv>${ic('medidor', '#FCA5A5', 16)}<span>Abrir Bancada Anti-Queima (7 testes)</span></button></div>
   </section>`;
 }
 function ligarRaioX(f) {
@@ -1128,7 +1104,7 @@ const ESTADO_NTC = { ok: 'SENSOR BOM — Dentro da curva real', def: 'SENSOR ALT
 
 // ───────────── Tecla 2 · Aferir Vivo ─────────────
 function abrirAferir() {
-  const p = painel(`${ic('medidor', '#F59E0B', 20)}<b>Aferir Vivo · Instrumentação Termo-Elétrica de Campo</b>`,
+  const p = painel(`${ic('medidor', '#F59E0B', 20)}<b>Aferir Vivo · Sensor NTC, Carga de Gás e Placa Inverter</b>`,
     `<div class="abas" role="group" aria-label="Aferições"><button data-sa="ntc">Curva Térmica NTC</button><button data-sa="gas">Carga de Gás &amp; SH</button><button data-sa="inv">Anti-Queima Inverter</button></div><div data-sa-corpo></div>`, true);
   const corpo = $('[data-sa-corpo]', p);
   const ir = (s) => { B.subAfer = s; $$('[data-sa]', p).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sa === s))); ({ ntc: afNtc, gas: afGas, inv: afInv })[s](corpo); };
@@ -1136,14 +1112,14 @@ function abrirAferir() {
   ir(B.subAfer || 'ntc');
 }
 function afNtc(corpo) {
-  corpo.innerHTML = '<div class="carregando">Carregando as curvas reais da base técnica…</div>';
+  corpo.innerHTML = '<div class="carregando">Carregando curvas oficiais de fábrica…</div>';
   carregarCurvas().then(C => {
     if (!corpo.isConnected) return;
     const marcas = [...new Set(C.map(c => c.marca))];
     const alvo = marcaCurva(B.equip.marca), temCurva = marcas.includes(alvo);
     const st = B.ntcSel || (B.ntcSel = { m: temCurva ? alvo : (marcas.includes('LG') ? 'LG' : marcas[0]), nom: 10, ci: 0, t: 35, r: '' });
     if (st.alvo) { if (marcas.includes(st.alvo)) { st.m = st.alvo; st.ci = 0; } st.alvo = null; }
-    corpo.innerHTML = `<div class="sub">${C.length} curvas reais de ${marcas.length} marcas da base técnica (${esc(marcas.join(', '))}), de 5K a 200K Ω. Meça o sensor solto da placa, com o termômetro encostado no mesmo ponto.${temCurva ? '' : ` Para ${esc(B.equip.marca)}, escolha a curva pelo nominal impresso no sensor (ex.: 10K) e meça na temperatura real.`}</div>
+    corpo.innerHTML = `<div class="sub">${C.length} curvas oficiais de fábrica de ${marcas.length} marcas (${esc(marcas.join(', '))}), de 5K a 200K Ω. Meça o sensor solto da placa, com o termômetro encostado no mesmo ponto.${temCurva ? '' : ` Para ${esc(B.equip.marca)}, escolha a curva pelo nominal impresso no sensor (ex.: 10K) e meça na temperatura real.`}</div>
       <div class="form" style="margin-top:0">
         <label>Marca<select data-n="m">${marcas.map(m => `<option ${m === st.m ? 'selected' : ''}>${esc(m)}</option>`).join('')}</select></label>
         <div><div class="rot">Sensor nominal</div><div class="prazos" data-n="noms">${NOMS.map(n => `<button type="button" data-nom="${n}">${n}K</button>`).join('')}</div></div>
@@ -1309,7 +1285,7 @@ const carregarCodigos = () => CODIGOS || (CODIGOS = Promise.all([csv('codigos_er
     .map((r, i) => ({ ...r, i, ok: NORMAL.test(r.d.trim()) && !NAO_NORMAL.test(r.d), naoConf: /n[aã]o confirma/i.test(r.d), txt: norm(`${r.c} ${r.d} ${r.l} ${r.fa} ${r.m}`) }));
 }));
 function abrirCodigos() {
-  const p = painel(`${ic('codigo', '#F59E0B', 20)}<b>Códigos &amp; LED · Decodificador Instantâneo</b>`, '<div data-corpo><div class="carregando">Carregando os códigos da base técnica…</div></div>', true);
+  const p = painel(`${ic('codigo', '#F59E0B', 20)}<b>Códigos de Erro &amp; Piscadas de LED (14 Marcas)</b>`, '<div data-corpo><div class="carregando">Carregando códigos e piscadas oficiais…</div></div>', true);
   const corpo = $('[data-corpo]', p);
   carregarCodigos().then(U => {
     if (!corpo.isConnected) return;
@@ -1535,18 +1511,14 @@ function abrirLaudo(op = {}) {
   pill.innerHTML = `${ic('doc', '#67C6FF', 15)}<span>Nº ${esc(numero)} · Modo: Laudo</span>`;
 }
 
-// ───────────── Moldura: ícones, tema e dock ─────────────
-$('#sel-seta').innerHTML = ic('baixo', '#67C6FF', 18); $('#ic-fechar').innerHTML = ic('esquerda', '#FFFFFF', 18); $('#ic-imprimir').innerHTML = ic('imprimir', '#FFFFFF', 18);
-$('#ic-sol').innerHTML = ic('sol', '#F5B800', 14); $('#ic-lua').innerHTML = ic('lua', '#CBD5E1', 14);
+// ───────────── Moldura: ícones, topo e dock ─────────────
+$('#sel-seta').innerHTML = ic('baixo', '#67C6FF', 18); $('#ic-fechar').innerHTML = ic('esquerda', '#FFFFFF', 18); $('#ic-indice').innerHTML = ic('lista', '#67C6FF', 18);
 $('#ic-d1').innerHTML = ic('lista', '#FFFFFF', 20); $('#ic-d2').innerHTML = ic('medidor', '#FFFFFF', 20); $('#ic-d3').innerHTML = ic('codigo', '#FFFFFF', 20); $('#ic-d4').innerHTML = ic('prancheta', '#FFFFFF', 20);
-const aplicarTema = (t) => { document.documentElement.dataset.tema = t; guardar('guiapro.tema', t); };
-aplicarTema(ler('guiapro.tema') === 'lua' ? 'lua' : 'sol');
-$('#b-tema').addEventListener('click', () => aplicarTema(document.documentElement.dataset.tema === 'lua' ? 'sol' : 'lua'));
 // Laudo 02/11/2026: o guia é uma página única (sem botão App no topo). Dentro do app (?embed=1) ele abre num iframe em tela cheia,
 // então ali fica o Fechar, para nunca prender o técnico. Imprimir A4: a ficha aberta em 1 folha (ver @media print).
 if (EMBED) { $('#b-fechar').hidden = false; $('#b-fechar').addEventListener('click', () => window.parent.postMessage({ gelopro: 'fechar' }, location.origin === 'null' ? '*' : location.origin)); }
-$('#b-imprimir').addEventListener('click', () => { fechar(); fecharIndice(); window.print(); });
-$('#b-ficha').addEventListener('click', abrirIndice);
+$('#b-indice').addEventListener('click', () => irAba('sintomas'));
+$('#b-ficha').addEventListener('click', () => { if (!sumario.hidden) fecharIndice(); else irAba('sintomas'); });
 $$('#dock [data-aba]').forEach(b => b.addEventListener('click', () => irAba(b.dataset.aba)));
 
 // Início: #D-001 (padrão) ou o código de qualquer uma das 120 fichas no endereço (#D-040, #D-120; os antigos #S-04, #S-06 e #S-07 também).
