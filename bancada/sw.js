@@ -1,25 +1,39 @@
-// GeloPro · Bancada de Diagnóstico 2026 em modo avião (05/11/2026). Service worker próprio da página /bancada-pro/ (escopo ./), moldado no
-// guia-pro/sw.js e separado dele e do app (app/sw.js): cada um tem o seu cache e nenhum apaga o do outro.
-// No 1º acesso com sinal, o install guarda tudo o que as 4 teclas usam: a página, os 4 scripts do motor (QR, Pix, PDF, licença), as 5 fontes,
-// a textura e a marca, os 17 CSVs da base técnica (preços, códigos, piscadas, NTC com as 9 curvas, PT e critérios) e as 126 artes .webp,
-// lidas de ../guia-pro/imagens/ (sem cópia na pasta da bancada). O escopo limita as páginas controladas, não os endereços que elas pedem.
-// Com sinal: página, .js e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes e fontes saem do cache e só vão à rede se faltarem.
+// GeloPro · Bancada GeloPRO em modo avião (05/11/2026). Service worker próprio da página /bancada/ (escopo ./), separado do app (app/sw.js) e
+// do guia (guia-pro/sw.js): cada um tem o seu cache e nenhum apaga o do outro.
+// No 1º acesso com sinal, o install guarda tudo o que as 4 teclas usam: a página, o motor (QR, Pix, marca, PDF, licença), os 4 componentes
+// visuais importados de ../app/ (.dc.html), as fontes, a textura e o mascote, os 18 CSVs da base técnica (com pmoc_atividades.csv) e as 126 artes
+// .webp lidas de ../guia-pro/imagens/. Com sinal: página, .js, .html e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e
+// imagens saem do cache e só vão à rede se faltarem.
 'use strict';
-const CACHE = 'bancadapro-offline-v1'; // nome novo derruba o anterior (o activate apaga todo bancadapro-offline-* diferente; guia e app ficam)
+const CACHE = 'bancada-offline-v1'; // nome novo derruba o anterior (o activate apaga todo bancada-offline-* diferente; guia e app ficam)
 const REDE_MS = 3000;
 const PAGINA = './';
 const MOTOR = [
-  '../app/vendor/qrcode-generator-1.4.4.js', '../app/gelopro-pix.js', '../app/pdf-gelopro.js', '../app/licenca-gelopro.js',
+  '../app/vendor/qrcode-generator-1.4.4.js', '../app/gelopro-pix.js', '../app/marca-gelopro.js', '../app/pdf-gelopro.js', '../app/licenca-gelopro.js',
+  '../app/IconeGP.dc.html', '../app/LogoMarca.dc.html', '../app/AtalhoTecla.dc.html', '../app/CampoTexto.dc.html',
   '../app/fontes/figtree-latin-wght-normal.woff2', '../app/fontes/figtree-latin-ext-wght-normal.woff2', '../app/fontes/roboto-latin-wght-normal.woff2',
   '../app/fontes/roboto-latin-ext-wght-normal.woff2', '../app/fontes/roboto-mono-latin-wght-normal.woff2',
-  '../app/ref/acetinado-sedoso.svg', '../app/marca/gelopro-mascote.png', '../app/marca/gelopro-wordmark.png',
+  '../app/ref/acetinado-sedoso.svg', '../app/marca/gelopro-mascote.png'
 ];
 const BASE = [
-  '../base-tecnica/precos_regionais_2026.csv', '../base-tecnica/codigos_erro_conferidos.csv', '../base-tecnica/codigos_erro.csv',
-  '../base-tecnica/piscadas.csv', '../base-tecnica/ntc_resumo.csv', '../base-tecnica/ntc_tolerancias.csv', '../base-tecnica/pt_r410a_r32_r22.csv',
-  '../base-tecnica/criterios_operacionais.csv', '../base-tecnica/ntc_gree.csv', '../base-tecnica/ntc_lg.csv', '../base-tecnica/ntc_lg_descarga.csv',
-  '../base-tecnica/ntc_midea_pontos.csv', '../base-tecnica/ntc_midea_tp.csv', '../base-tecnica/ntc_samsung.csv', '../base-tecnica/ntc_daikin.csv',
-  '../base-tecnica/ntc_tcl.csv', '../base-tecnica/ntc_agratto.csv'
+  '../base-tecnica/precos_regionais_2026.csv',
+  '../base-tecnica/pmoc_atividades.csv',
+  '../base-tecnica/codigos_erro_conferidos.csv',
+  '../base-tecnica/codigos_erro.csv',
+  '../base-tecnica/piscadas.csv',
+  '../base-tecnica/ntc_resumo.csv',
+  '../base-tecnica/ntc_tolerancias.csv',
+  '../base-tecnica/pt_r410a_r32_r22.csv',
+  '../base-tecnica/criterios_operacionais.csv',
+  '../base-tecnica/ntc_gree.csv',
+  '../base-tecnica/ntc_lg.csv',
+  '../base-tecnica/ntc_lg_descarga.csv',
+  '../base-tecnica/ntc_midea_pontos.csv',
+  '../base-tecnica/ntc_midea_tp.csv',
+  '../base-tecnica/ntc_samsung.csv',
+  '../base-tecnica/ntc_daikin.csv',
+  '../base-tecnica/ntc_tcl.csv',
+  '../base-tecnica/ntc_agratto.csv'
 ];
 const ARTES = [
   '../guia-pro/imagens/d001.webp', '../guia-pro/imagens/d002.webp', '../guia-pro/imagens/d003.webp', '../guia-pro/imagens/d004.webp',
@@ -80,15 +94,15 @@ self.addEventListener('install', (e) => {
   }).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('bancadapro-offline-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('bancada-offline-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
-// A página pergunta se o cache já está completo (a sonda de modo avião usa a mesma resposta).
+// A página (e a sonda de modo avião) pergunta se o cache já está completo.
 self.addEventListener('message', (e) => {
   const d = e.data || {};
   if (d.tipo !== 'status' || !e.source) return;
   e.waitUntil(caches.open(CACHE).then(async (c) => {
-    let n = 0; for (const u of TUDO) if (await c.match(abs(u))) n++;
-    e.source.postMessage({ tipo: 'status', cache: CACHE, guardados: n, total: TUDO.length });
+    let n = 0; const faltam = []; for (const u of TUDO) { if (await c.match(abs(u))) n++; else faltam.push(u); }
+    e.source.postMessage({ tipo: 'status', cache: CACHE, guardados: n, total: TUDO.length, faltam });
   }));
 });
 
@@ -105,7 +119,6 @@ self.addEventListener('fetch', (e) => {
   const fresco = req.mode === 'navigate' || /\.(js|csv|html)$/.test(url.pathname);
   if (fresco) {
     e.respondWith((async () => {
-      // Navegação vai pela URL (um Request 'navigate' não aceita init); a cópia fica guardada sob a chave única da página.
       const rede = fetch(req.mode === 'navigate' ? req.url : chave, { cache: 'no-store', credentials: 'omit' }).then((r) => { if (r && r.ok) e.waitUntil(guardar(chave, r)); return r; });
       rede.catch(() => {});
       let relogio;
