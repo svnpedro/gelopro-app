@@ -5,7 +5,7 @@
 // .webp lidas de ../guia-pro/imagens/. Com sinal: página, .js, .html e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e
 // imagens saem do cache e só vão à rede se faltarem.
 'use strict';
-const CACHE = 'bancada-offline-v1'; // nome novo derruba o anterior (o activate apaga todo bancada-offline-* diferente; guia e app ficam)
+const CACHE = 'bancada-offline-v2'; // v2 (05/11/2026): recortes de icones/ com fundo transparente // nome novo derruba o anterior (o activate apaga todo bancada-offline-* diferente; guia e app ficam)
 const REDE_MS = 3000;
 const PAGINA = './';
 const MOTOR = [

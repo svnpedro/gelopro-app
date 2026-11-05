@@ -167,13 +167,13 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .opcao{width:100%;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:10px 12px}
 .opcao b{font:800 15px/1.25 var(--f-tit)}
 .opcao span{font:500 14px/1.3 var(--f-txt)}
-.bt.bt-sel.item-caso{display:grid;grid-template-columns:auto minmax(0,1fr) 52px;grid-template-areas:'cod meio img' 'tags tags tags';align-items:center;gap:8px 10px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #1D4ED8;box-shadow:0 2px 0 #CBD5E1}
+.bt.bt-sel.item-caso{display:grid;grid-template-columns:auto minmax(0,1fr) 56px;grid-template-areas:'cod meio img' 'tags tags tags';align-items:center;gap:8px 10px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #1D4ED8;box-shadow:0 2px 0 #CBD5E1}
 .cod-badge{background:#1E3A8A;color:#FFFFFF;font:800 14px/1.2 var(--f-mono);padding:6px 9px;border-radius:8px;white-space:nowrap;max-height:30px}
 .item-caso .meio{grid-area:meio;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
 .item-caso .cod-badge{grid-area:cod}.item-caso img{grid-area:img}.item-caso .tags{grid-area:tags}
 .item-caso .meio b{font:800 17px/1.2 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
 .item-caso .meio .s{font:500 14px/1.3 var(--f-txt);color:#334155}
-.item-caso img{width:52px;height:52px;border-radius:10px;border:1px solid #CBD5E1;object-fit:contain;background:#F8FAFC}
+.item-caso img{width:56px;height:56px;border-radius:12px;border:1.5px solid #93C5FD;background:#F0F7FF;padding:3px;object-fit:contain}
 .tag-sis{background:#DBEAFE;color:#1E3A8A;border-color:#93C5FD}
 .tag-fer{background:#FEF3C7;color:#78350F;border-color:#FCD34D}
 
@@ -184,7 +184,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .c2 p{font:600 15px/1.35 var(--f-txt);color:#334155;margin-top:4px}
 .c3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;align-items:stretch}
 .chip{background:#FFFFFF;border:1px solid #CBD5E1;border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
-.chip img{width:44px;height:44px;object-fit:contain}
+.chip img{width:48px;height:48px;object-fit:contain;background:transparent;border:0;mix-blend-mode:multiply}
 .chip-k{font:800 12px/1.2 var(--f-txt);letter-spacing:.04em;text-transform:uppercase}
 .chip-sis{background:#EEF2FF;border:1.5px solid #6366F1}.chip-sis .chip-k{color:#312E81}
 .chip-apl{background:#F0FDFA;border:1.5px solid #0D9488}.chip-apl .chip-k{color:#115E59}
@@ -201,7 +201,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 @media (min-width:720px){.c5{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .causa,.verif{width:100%;justify-content:flex-start;text-align:left;gap:10px;padding:8px 10px}
 .causa .num,.verif .num{flex:none;width:30px;height:30px;border-radius:50%;background:#19365C;color:#FFFFFF;font:800 14px/30px var(--f-mono);text-align:center}
-.causa img{flex:none;width:38px;height:38px;object-fit:contain;border-radius:8px;background:#F4F6F9}
+.causa img{flex:none;width:42px;height:42px;object-fit:contain;background:transparent;border:0;mix-blend-mode:multiply}
 .causa .t,.verif .t{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 .causa .nm,.verif .tt{font:800 16px/1.22 var(--f-tit);color:#091E42}
 .verif .ln{font:500 14px/1.3 var(--f-txt)}
@@ -570,6 +570,33 @@ const tagsPonta = (escala, alvo, pontas = true) => `<div class="tags">${pontas ?
 F.forEach((f, i) => { Object.assign(f, IMGS[f.img]); f.n = i; f.txt = norm(limpa([f.id, f.id.replace('-', ''), f.titulo, f.sub, f.busca, f.bloco, ...f.chips, ...f.causas.map(c => c[0]), ...f.verifs.flat()].join(' '))); });
 const ARTES = '../guia-pro/imagens/';
 const IMG = (f) => `${ARTES}${f.img}.webp`;
+// Recorte em zoom da peça exata (../guia-pro/imagens/icones/), nunca a prancha inteira (_sistema) encolhida. 1ª passada pelas palavras do
+// texto, 2ª pelos códigos de erro (F1, P4, E3…): "Proteção do IPM (P0/P4/F1…)" cai no IPM, não no sensor. Cada recorte foi conferido
+// contra a verificação de origem do próprio ponto (ex.: d040_p1 = "Solte S-C-R", d001_p4 = ventilador externo, d057_p4 = nível).
+const PECAS = [
+  [/comunica|fio s\b|interliga|\bbornes?\b|\bterra\b|\bs[-–]n\b/, null, 'd087_p3'],
+  [/sensor|\bntc\b|termistor|degelo/, /\b(ch01|ch02|e1|e2|f1|f4)\b/, 'd087_p2'],
+  [/\bipm\b|diodo|placa|microcontrolador|eeprom/, /\b(p0|p4|e464)\b/, 'd087_p4'],
+  [/barramento|\b310\b|fonte|\bpfc\b|reator/, /\b(p1|ch21)\b/, 'd023_p4'],
+  [/disjuntor|\brede\b|alimenta|queda de tens/, null, 'd023_p1'],
+  [/fusivel|varistor/, null, 'd023_p3'],
+  [/capacitor|[µμ]f\b/, null, 'd001_p3'],
+  [/sobrecorrente|corrente/, /\b(ch22|f0)\b/, 'd002_p1'],
+  [/compressor|s-c-r|enrolamento|\bmassa\b|partida/, null, 'd040_p1'],
+  [/ventilador externo|helice|motor externo/, null, 'd001_p4'],
+  [/ventilador interno|turbina|bucha|mancal|rolamento/, /\b(e3|h6|ch10)\b/, 'd073_p1'],
+  [/gelo|congel/, null, 'd058_p2'],
+  [/mangueira|sifao/, null, 'd057_p3'],
+  [/\bnivel|desnivel|torta|caimento/, null, 'd057_p4'],
+  [/dreno|\bagua|pinga|calha|bandeja|bomba(?! de vacuo)/, null, 'd057_p1'],
+  [/vazamento|vacuo|manifold|pressao|\bgas\b|fluido|flange|reversora/, null, 'd058_p4'],
+  [/filtro|\bsuj|higien|serpentina/, null, 'd001_p1'],
+  [/ambiente|\bsala\b|\bsol\b|carga termica|fresta|subdimensionado/, null, 'd003_p1'],
+];
+const pecaDoTexto = (...textos) => { const T = textos.map(t => norm(limpa(t))); for (const t of T) { for (const [pal, , r] of PECAS) if (pal.test(t)) return r; for (const [, cod, r] of PECAS) if (cod && cod.test(t)) return r; } return null; };
+const iconePecaCaso = (f) => `${ARTES}icones/${pecaDoTexto(f.titulo, f.sub) || f.img + '_p1'}.webp`;
+const iconePecaCausa = (f, k) => { const r = pecaDoTexto(f.causas[k][0]); return r ? `${ARTES}icones/${r}.webp` : ICOc(f, k); };
+
 const ICO = (f, n) => `${ARTES}icones/${f.img}_${n}.webp`;
 const ICOc = (f, k) => { const v = f.vc.indexOf(k + 1) + 1; return ICO(f, v ? 'p' + v : 'aplicacao'); };
 const Z = 2.6;
@@ -718,7 +745,7 @@ function listar(rolar) {
   if (q && S.bloco) L = L.filter(f => f.blocos.includes(S.bloco));
   if (!L) { box.innerHTML = '<div class="cartao"><p class="tx">Toque numa placa de sintoma, em <b>Ver Todos os Sintomas</b> ou busque pelo que o cliente relatou. Cada caso abre a ilustração com as 5 verificações e leva direto ao Laudo.</p></div>'; return; }
   const titulo = q ? `${L.length} casos para “${esc(S.termo.trim())}”` : S.bloco ? `${esc(BLOCOS.find(b => b[0] === S.bloco)[3])} · ${L.length} casos` : `Todos os Sintomas · ${L.length} casos`;
-  box.innerHTML = `<div class="cartao"><h3>${titulo}</h3><div class="lista">${L.length ? L.map(f => `<button class="bt bt-sel item-caso" data-caso="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}"><span class="cod-badge">${f.id}</span><span class="meio"><b>${quebraBarra(tx(f.titulo))}</b><span class="s">${tx(f.sub)}</span><span class="tags"><span class="tag tag-sis">${tx(f.chips[0])}</span><span class="tag tag-fer">${tx(f.chips[2])}</span></span></span><img src="${ICO(f, 'sistema')}" alt="" width="52" height="52" loading="lazy"></button>`).join('')
+  box.innerHTML = `<div class="cartao"><h3>${titulo}</h3><div class="lista">${L.length ? L.map(f => `<button class="bt bt-sel item-caso" data-caso="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}"><span class="cod-badge">${f.id}</span><span class="meio"><b>${quebraBarra(tx(f.titulo))}</b><span class="s">${tx(f.sub)}</span><span class="tags"><span class="tag tag-sis">${tx(f.chips[0])}</span><span class="tag tag-fer">${tx(f.chips[2])}</span></span></span><img src="${iconePecaCaso(f)}" alt="" width="56" height="56" loading="lazy"></button>`).join('')
     : `<p class="tx">Nada com esse termo. Abra o Diagnóstico D-099 (códigos sem tabela) ou monte o laudo de visita.</p><div class="dupla"><button class="bt bt-sel" data-caso="${F.findIndex(f => f.id === 'D-099')}">Abrir D-099</button><button class="bt bt-cobalto" data-ir-laudo>Tabela & Laudo</button></div>`}</div></div>`;
   $$('[data-caso]', box).forEach(b => b.addEventListener('click', () => abrirCaso(+b.dataset.caso)));
   const il = $('[data-ir-laudo]', box); if (il) il.addEventListener('click', () => irTecla('laudo', { servico: 'visita_diag' }));
@@ -745,7 +772,7 @@ function abrirCaso(i) {
 }
 function telaCaso(i) {
   const f = F[i], st = S.estado[f.id] || (S.estado[f.id] = {}), conf = S.defeito[f.id];
-  const chipI = ['sistema', 'aplicacao', 'ferramenta'];
+  const chipI = ['p1', 'aplicacao', 'ferramenta']; // recortes em zoom (nunca a prancha _sistema encolhida)
   const ant = F[i - 1], prx = F[i + 1];
   montar(`<article class="cartao caso" data-diag="${f.id}" style="background:transparent;border:0;padding:0;gap:12px;box-shadow:none">
     <div class="c1"><span>Bancada GeloPRO · Split &amp; Inverter</span><b>Diagnóstico ${f.id} · ${tx(f.bloco)}</b></div>
@@ -756,7 +783,7 @@ function telaCaso(i) {
     <div data-quadro aria-live="polite"></div>
     <div class="c5">
       <section class="cartao" aria-label="Causas mais prováveis"><div class="bloco-h bh-causas" role="heading" aria-level="3"><b>Causas mais prováveis (ordem de escada)</b><span aria-hidden="true">▲ ◆ •</span></div>
-        ${f.causas.map(([nm], k) => `<button class="bt bt-sel causa${conf === k + 1 ? ' conf' : ''}" data-c="${k + 1}"><span class="num">${nn(k + 1)}</span><img src="${ICOc(f, k)}" alt=""><span class="t"><span class="nm">${tx(nm)}</span><span class="tag ${PIL[k][0]}">${PIL[k][1]}</span></span></button>`).join('')}</section>
+        ${f.causas.map(([nm], k) => `<button class="bt bt-sel causa${conf === k + 1 ? ' conf' : ''}" data-c="${k + 1}"><span class="num">${nn(k + 1)}</span><img src="${iconePecaCausa(f, k)}" alt=""><span class="t"><span class="nm">${tx(nm)}</span><span class="tag ${PIL[k][0]}">${PIL[k][1]}</span></span></button>`).join('')}</section>
       <section class="cartao" aria-label="Verificações na ordem"><div class="bloco-h bh-verif" role="heading" aria-level="3"><b>5 Verificações com instrumento</b><span aria-hidden="true">✓</span></div>
         ${f.verifs.map(([tt, ln], k) => `<button class="bt bt-sel verif${st[k + 1] ? ' ' + st[k + 1] : ''}" data-v="${k + 1}"><span class="num">${nn(k + 1)}</span><span class="t"><span class="tt">${tx(tt)}</span><span class="ln">✓ ${tk(tx(ln))}</span></span></button>`).join('')}</section>
     </div>
