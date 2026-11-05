@@ -42,6 +42,10 @@ html[data-embed="1"] .marca .wordmark{display:none}
 .voltar.imprimir{gap:5px;padding:0 9px 0 7px;white-space:nowrap}
 #b-fechar[hidden]{display:none}
 @media (max-width:420px){.marca .wordmark{display:none}}
+#topo .voltar{height:48px;border:7px solid transparent;border-left-width:0;border-right-width:0;border-radius:9px/16px;background:#19365C padding-box;box-shadow:inset 0 0 0 1px #24466F}
+#topo .ficha-sel{height:48px;border:5px solid transparent;border-left-width:0;border-right-width:0;border-radius:9px/14px;background:linear-gradient(180deg,#0f1724 0%,#1a2333 100%) padding-box;box-shadow:inset 0 0 0 2px #071224,inset 0 3px 8px rgba(0,0,0,.6)}
+#topo .tema{height:48px;border:10px solid transparent;border-left-width:0;border-right-width:0;background:#0A182D padding-box;box-shadow:inset 0 0 0 2px #24466F;padding:0 7px}
+#topo .tema .bola{top:4px;left:4px}
 .ficha-sel{flex:1;min-width:0;height:38px;display:flex;align-items:center;gap:6px;padding:0 8px;border-radius:9px;background:linear-gradient(180deg,#0f1724 0%,#1a2333 100%) #1d2430;border:2px solid #071224;box-shadow:inset 0 3px 8px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.35);text-align:left}
 .ficha-sel .txt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.1}
 .ficha-sel .cod{font-family:var(--f-mono);font-size:10px;font-weight:800;color:#67C6FF;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -49,8 +53,8 @@ html[data-embed="1"] .marca .wordmark{display:none}
 .tema{flex-shrink:0;position:relative;width:52px;height:28px;border-radius:999px;background:#0A182D;border:2px solid #24466F;display:flex;align-items:center;justify-content:space-between;padding:0 5px}
 .tema .bola{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#F8FAFC,#D4D4D4);box-shadow:0 1px 2px rgba(0,0,0,.5);transition:transform .2s}
 html[data-tema="lua"] .tema .bola{transform:translateX(24px)}
-#visor{position:fixed;top:50px;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:10;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:8px 8px 16px}
-#dock{position:fixed;left:0;right:0;bottom:0;z-index:55;height:calc(58px + env(safe-area-inset-bottom));padding:6px 8px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#091E42;box-shadow:0 -2px 0 #D4D4D4}
+#visor{position:fixed;top:50px;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:10;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:8px 8px 16px}
+#dock{position:fixed;left:0;right:0;bottom:0;z-index:55;height:calc(66px + env(safe-area-inset-bottom));padding:6px 8px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#091E42;box-shadow:0 -2px 0 #D4D4D4}
 .tecla{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;border-radius:11px;color:#FFFFFF;font-family:var(--f-tit);font-size:11.5px;font-weight:800;line-height:1.1;text-align:left;padding:0 7px;
   background:linear-gradient(180deg,#28559e 0%,#1c3f7a 54%,#122a54 100%);border:2px solid #071633;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633,0 5.5px 0 rgba(255,255,255,.68),0 8px 14px rgba(4,12,28,.42);transition:transform .08s,box-shadow .08s}
 .tecla:active{transform:translateY(3px);box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 1px 0 #071633,0 2px 0 rgba(255,255,255,.5)}
@@ -98,7 +102,7 @@ html[data-tema="lua"] .c2 h1{color:#FFFFFF}
 .det .liga{margin-top:8px;font-size:12.5px;color:#CBD5E1}
 .det .liga b{color:#FFFFFF}
 .det .teclas{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.det .teclas .tecla{height:46px;font-size:12.5px;justify-content:center;text-align:center}
+.det .teclas .tecla{height:48px;font-size:12.5px;justify-content:center;text-align:center}
 .num{display:inline-flex;align-items:center;justify-content:center;font-family:var(--f-tit);font-weight:800;color:#FFFFFF;background:#1D9BF0}
 .c5{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 10px 0;align-items:start}
 .c5 > section{min-width:0}
@@ -146,7 +150,7 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 .folha{position:fixed;left:0;right:0;bottom:0;z-index:61;max-height:92dvh;overflow-y:auto;background:#FFFFFF;color:#0F172A;border-radius:18px 18px 0 0;transform:translateY(102%);transition:transform .28s cubic-bezier(.2,.8,.2,1);max-width:720px;margin:0 auto;padding:8px 14px calc(22px + env(safe-area-inset-bottom))}
 .folha.aberto{transform:none}
 .folha .alca{width:44px;height:5px;border-radius:3px;background:#CBD5E1;margin:2px auto 10px}
-.folha .fechar{position:absolute;right:10px;top:8px;width:36px;height:36px;border-radius:50%;background:#F1F5F9;display:flex;align-items:center;justify-content:center}
+.folha .fechar{position:absolute;right:6px;top:4px;width:48px;height:48px;border-radius:50%;background:#F1F5F9;display:flex;align-items:center;justify-content:center}
 .folha h3{font-family:var(--f-tit);font-size:19px;font-weight:800;color:#091E42;line-height:1.25;margin:0 44px 8px 0}
 .folha h4{font-family:var(--f-tit);font-size:15px;font-weight:800;color:#091E42;margin:14px 0 6px}
 .folha .sub{font-size:13px;color:#475569;margin-bottom:12px;line-height:1.4}
@@ -162,29 +166,30 @@ html[data-tema="lua"] .c6 h3{color:#FFFFFF}
 .navf .tecla:last-child{justify-content:flex-end;text-align:right}
 .navf .tecla span small{display:block;font-family:var(--f-mono);font-size:10.5px;color:#9FD3FF;letter-spacing:.02em}
 /* ── Índice: página de sumário técnico ── */
-#sumario{position:fixed;top:0;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:50;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:#E2E8F0;background-color:#c1c0c1;background-image:url("../app/ref/acetinado-sedoso.svg");background-repeat:no-repeat;background-position:center;background-size:100% 100%}
+#sumario{position:fixed;top:0;left:0;right:0;bottom:calc(66px + env(safe-area-inset-bottom));z-index:50;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:#E2E8F0;background-color:#c1c0c1;background-image:url("../app/ref/acetinado-sedoso.svg");background-repeat:no-repeat;background-position:center;background-size:100% 100%}
 #sumario[hidden]{display:none}
 html.com-sumario #visor{visibility:hidden}
 .sm-cab{position:sticky;top:0;z-index:2;background:#091E42;color:#FFFFFF;padding:8px 12px 12px;box-shadow:0 2px 0 #D4D4D4,0 4px 10px rgba(4,12,28,.35)}
-.sm-top{display:flex;align-items:center;gap:10px;height:38px}
+.sm-top{display:flex;align-items:center;gap:10px;height:48px}
+.sm-top .voltar{height:48px;padding:0 12px 0 8px}
 .sm-top b{flex:1;font-family:var(--f-tit);font-size:18px;font-weight:800;letter-spacing:.01em}
 .sm-top .mascote{width:30px;height:30px;border-radius:8px;background:#0A182D;border:1.5px solid #D4D4D4;padding:1px}
 .sm-cont{font-family:var(--f-tit);font-size:12px;font-weight:800;letter-spacing:.12em;color:#F59E0B;margin:4px 0 8px}
 .sm-busca{display:flex;align-items:center;gap:10px;height:52px;padding:0 14px;border-radius:12px;background:#FFFFFF;border:2px solid #F59E0B;box-shadow:inset 0 2px 4px rgba(9,30,66,.12)}
 .sm-busca input{flex:1;min-width:0;border:0;outline:0;background:transparent;font-size:16px;font-weight:600;color:#0F172A}
 .sm-busca input::placeholder{color:#64748B;font-weight:500}
-.sm-corpo{max-width:844px;margin:0 auto;padding:12px 10px calc(28px + env(safe-area-inset-bottom))}
+.sm-corpo{max-width:844px;margin:0 auto;padding:8px 8px calc(28px + env(safe-area-inset-bottom))}
 /* Aro chanfrado --gp-bezel e visor Safira Escuro --gp-visor (TemaGeloPro.dc.html). */
 .sm-moldura{padding:5px;border-radius:26px;background:linear-gradient(180deg,#b8c0cc 0%,#687280 100%);box-shadow:0 0 0 1px #5b6470,0 2px 4px rgba(0,0,0,.25)}
 .sm-visor{border-radius:21px;background:linear-gradient(180deg,#061224 0%,#091930 100%);box-shadow:inset 0 3px 10px rgba(0,0,0,.65);padding:12px 10px 14px}
 .sm-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 /* Placa de sintoma cobalto 3D usinada (PlacaSintoma.dc.html) com ícone ciano 32px (IconeGP.dc.html). */
-.sm-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:122px;padding:14px 8px 12px;border-radius:20px;border:2px solid transparent;background:linear-gradient(180deg,#254f91 0%,#173463 100%);box-shadow:inset 0 1.5px 1px rgba(147,197,253,.45),inset 0 -3px 6px rgba(4,10,24,.6),0 6px 12px rgba(2,6,14,.55);color:#FFFFFF;text-align:center;transition:transform 120ms ease-out,box-shadow 180ms ease}
-.sm-card:active{transform:translateY(3px);box-shadow:inset 0 1.5px 1px rgba(147,197,253,.45),inset 0 -3px 6px rgba(4,10,24,.6),0 2px 4px rgba(2,6,14,.55)}
+.sm-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:122px;padding:14px 8px 12px;border-radius:20px;border:2px solid #071633;background:linear-gradient(180deg,#28559e 0%,#1c3f7a 54%,#122a54 100%);box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633,0 5.5px 0 rgba(255,255,255,.68);color:#FFFFFF;text-align:center;transition:transform 120ms ease-out,box-shadow 180ms ease}
+.sm-card:active{transform:translateY(3px);box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 1px 0 #071633,0 2px 0 rgba(255,255,255,.5)}
 .sm-card .ico-gp{display:flex;filter:drop-shadow(0 0 4px rgba(56,189,248,.35))}
 .sm-card b{font-family:var(--f-tit);font-size:15px;font-weight:800;line-height:1.15;color:#FFFFFF;text-shadow:0 1px 0 rgba(0,0,0,.45)}
 .sm-card .badge{font-family:var(--f-mono);font-size:11px;font-weight:700;color:#9FD3FF;background:rgba(6,18,36,.55);border:1px solid rgba(103,198,255,.25);border-radius:999px;padding:2px 9px;white-space:nowrap}
-.sm-card[aria-pressed="true"]{border-color:#67c6ff;box-shadow:0 0 12px #38bdf8,inset 0 1.5px 1px rgba(147,197,253,.45),inset 0 -3px 6px rgba(4,10,24,.6)}
+.sm-card[aria-pressed="true"]{border-color:#67c6ff;box-shadow:0 0 12px #38bdf8,inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633}
 /* Cápsula 3D com medalhão escuro (AtalhoTecla.dc.html). */
 .sm-card.todos{grid-column:1/-1;flex-direction:row;justify-content:flex-start;gap:12px;min-height:60px;padding:6px 14px 6px 7px;border-radius:999px;border-color:#67c6ff;text-align:left}
 .sm-card.todos .medalhao{flex-shrink:0;width:44px;height:44px;border-radius:50%;background:#0c1d36;box-shadow:inset 0 2px 4px rgba(0,0,0,.6),0 0 0 1px rgba(103,198,255,.35);display:flex;align-items:center;justify-content:center}
@@ -204,7 +209,7 @@ html.com-sumario #visor{visibility:hidden}
 .sm-item .tx{min-width:0;display:flex;flex-direction:column;gap:2px}
 .sm-item .tx b{font-family:var(--f-tit);font-size:15px;font-weight:800;color:#FFFFFF;line-height:1.2}
 .sm-item .tx small{font-size:12.5px;color:#9FB3C8;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.sm-item .tag{align-self:flex-start;margin-top:3px;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#FED7AA;background:rgba(240,122,18,.22);border-radius:5px;padding:2px 6px}
+.sm-item .tag{align-self:flex-start;white-space:normal;display:inline-block;min-height:0;margin-top:3px;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#FED7AA;background:rgba(240,122,18,.22);border-radius:5px;padding:2px 6px}
 .sm-item .mini{width:56px;height:56px;border-radius:9px;overflow:hidden;background:#FFFFFF;border:1.5px solid #7c8898}
 .sm-item .mini img{width:100%;height:100%;object-fit:cover}
 .sm-item.atual{background:#173463;box-shadow:inset 4px 0 0 #67c6ff}
@@ -222,7 +227,7 @@ html.com-sumario #visor{visibility:hidden}
 .servico .ref{font-size:11.5px;color:#64748B;margin-top:4px}
 .form{display:grid;gap:10px;margin:6px 0 12px}
 .form label{display:grid;gap:4px;font-size:13px;font-weight:700;color:#334155}
-.form input[type=number],.form input[type=text],.form input[type=tel],.form select,.form textarea{min-height:44px;border:1.5px solid #CBD5E1;border-radius:10px;padding:0 12px;font-size:16px;background:#FFFFFF;width:100%;min-width:0}
+.form input[type=number],.form input[type=text],.form input[type=tel],.form select,.form textarea{min-height:48px;border:1.5px solid #CBD5E1;border-radius:10px;padding:0 12px;font-size:16px;background:#FFFFFF;width:100%;min-width:0}
 .form textarea{padding:10px 12px;min-height:76px;resize:vertical;line-height:1.35}
 .form .duas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .prazos.portes{grid-template-columns:repeat(3,1fr)!important}.prazos.portes button{min-height:44px;font-size:15px}
@@ -335,12 +340,9 @@ html.com-sumario #visor{visibility:hidden}
 .rx-t p b{color:var(--txt)}
 .rx-t .acoes{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
 .mini-bt{display:inline-flex;align-items:center;gap:5px;min-height:36px;padding:0 10px;border-radius:9px;border:1.5px solid #CBD5E1;background:#FFFFFF;color:#091E42;font-family:var(--f-tit);font-size:12px;font-weight:800}
-.mini-bt.env{border-color:#16A34A;background:#ECFDF5;color:#14532D}
-.mini-bt.env.feito{background:#16A34A;border-color:#15803D;color:#FFFFFF}
 .trava{margin:0 10px 10px;border-radius:10px;background:#7F1D1D;border:2px solid #DC2626;color:#FFFFFF;padding:9px 10px}
 .trava b{display:flex;align-items:center;gap:7px;font-family:var(--f-tit);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
 .trava ol{margin:6px 0 8px 20px;font-size:12.5px;line-height:1.42;font-weight:600;color:#FEE2E2}
-.trava .mini-bt{border-color:#FCA5A5;background:#FFFFFF;color:#7F1D1D}
 /* ── Painéis das teclas 2, 3 e 4 (no mesmo visor do chassi) ── */
 .painel{max-width:820px;margin:0 auto;background:#FFFFFF;color:#0F172A;border-radius:14px;overflow:hidden;border:2px solid #071633;box-shadow:0 2px 0 rgba(255,255,255,.7),0 8px 22px rgba(4,12,28,.28)}
 .painel-cab{display:flex;align-items:center;gap:8px;background:#091E42;color:#FFFFFF;padding:9px 10px 9px 12px;border-bottom:3px solid #F07A12}
@@ -392,14 +394,15 @@ html.com-sumario #visor{visibility:hidden}
 .painel .duas-teclas .tecla{height:50px;font-size:12px;line-height:1.15}
 .zap-prev{white-space:pre-wrap;word-break:break-word;font-family:var(--f-txt);font-size:12px;line-height:1.4;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:10px;max-height:300px;overflow:auto;margin-top:10px}
 .zap-prev[hidden]{display:none}
-#toast{position:fixed;left:50%;bottom:calc(72px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:70;background:#14532D;color:#FFFFFF;font-family:var(--f-tit);font-weight:800;font-size:13px;border-radius:999px;padding:8px 16px;opacity:0;transition:opacity .18s;pointer-events:none;white-space:nowrap}
+#toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:70;background:#14532D;color:#FFFFFF;font-family:var(--f-tit);font-weight:800;font-size:13px;border-radius:999px;padding:8px 16px;opacity:0;transition:opacity .18s;pointer-events:none;white-space:nowrap}
 #toast.on{opacity:1}
 /* Pílula de Equipamento Ativo (GeloPro App v5.2): MARCA | BTU/h | FLUIDO, sincroniza NTC, gás, códigos e o laudo. */
 .eq-pilula{display:flex;align-items:stretch;max-width:820px;margin:0 auto 8px;background:#1d2430;border:1.5px solid #b0b8c4;border-radius:999px;box-shadow:inset 0 2px 5px rgba(0,0,0,.55);padding:3px 8px;min-width:0}
-.eq-seg{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:3px 8px;cursor:pointer}
+.eq-seg{position:relative;flex:1;min-width:0;min-height:48px;display:flex;flex-direction:column;justify-content:center;padding:3px 8px;cursor:pointer}
 .eq-seg:first-child{flex:1.35}
 .eq-rot{font-family:var(--f-tit);font-size:9.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:#FFFFFF;line-height:1.1}
-.eq-seg select{-webkit-appearance:none;appearance:none;width:100%;min-width:0;background:transparent;border:0;outline:0;padding:0;color:#67C6FF;font-family:var(--f-mono);font-size:13.5px;font-weight:800;line-height:1.25;cursor:pointer;text-overflow:ellipsis}
+.eq-val{font-family:var(--f-mono);font-size:13.5px;font-weight:800;line-height:1.25;color:#67C6FF;white-space:nowrap}
+.eq-seg select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:16px;border:0;-webkit-appearance:none;appearance:none}
 .eq-seg select option{color:#0F172A;background:#FFFFFF}
 .eq-seg:focus-within{border-radius:999px;box-shadow:0 0 0 2px #67c6ff}
 .eq-div{flex-shrink:0;width:1px;margin:6px 0;background:#4b5563}
@@ -417,6 +420,71 @@ html.com-sumario #visor{visibility:hidden}
 .leit-cab h4{margin:0!important}
 .limpar-leit{height:32px;padding:0 10px;border-radius:999px;border:1px solid #CBD5E1;background:#F8FAFC;color:#334155;font-size:12px;font-weight:800;white-space:nowrap}
 @media print{.eq-pilula{display:none!important}}
+/* Hierarquia de cor (TemaGeloPro / AtalhoTecla, Habilidade 44): verde #00b100 só para avançar o dinheiro; Amarelo CAT para anotar
+   leitura no laudo; Cobalto 3D para navegar; tecla de instrumento grafite/marinho para ajustes e seletores. Piso de toque 48 px (G-L7). */
+.causa,.verif{min-height:48px}
+.prox{min-height:48px}
+.tecla.cat,.mini-bt.env{background:linear-gradient(180deg,#fbbf24 0%,#f59e0b 55%,#d97706 100%);border:2px solid #b45309;box-shadow:inset 0 1.5px 1px rgba(254,243,199,.65),0 3px 0 #78350f;color:#111827;font-weight:800;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.tecla.cat:active,.mini-bt.env:active{transform:translateY(2px);box-shadow:inset 0 1.5px 1px rgba(254,243,199,.65),0 1px 0 #78350f}
+.mini-bt.env.feito,.tecla.cat.feito{background:linear-gradient(180deg,#fbbf24 0%,#f59e0b 55%,#d97706 100%);border-color:#b45309;color:#111827}
+.abas button,.prazos button,.mini-bt:not(.env),.aj,.atalho-visita,.limpar-leit,.graf-chave,.leit .it button,.tri3 button,.painel .tecla.clara,.folha .tecla.clara{min-height:48px;height:auto;border-radius:11px;border:2px solid #5b86c4;background:linear-gradient(180deg,#1e293b 0%,#13294a 100%);color:#E2E8F0;font-family:var(--f-tit);font-weight:800;box-shadow:inset 0 1.5px 1px rgba(148,163,184,.35),inset 0 -3px 5px rgba(2,8,23,.55),0 3px 0 #0b1426;text-shadow:0 1px 0 rgba(0,0,0,.4);transition:transform .08s,box-shadow .08s}
+.abas button,.prazos button{padding:0 14px;font-size:13.5px}
+.abas button:active,.prazos button:active,.mini-bt:not(.env):active,.aj:active,.atalho-visita:active,.limpar-leit:active,.graf-chave:active,.leit .it button:active,.tri3 button:active{transform:translateY(2px);box-shadow:inset 0 1.5px 1px rgba(148,163,184,.35),inset 0 -3px 5px rgba(2,8,23,.55),0 1px 0 #0b1426}
+.abas button[aria-pressed="true"],.prazos button[aria-pressed="true"],.graf-chave[aria-pressed="true"]{background:linear-gradient(180deg,#28559e 0%,#1c3f7a 54%,#122a54 100%);border-color:#67c6ff;color:#FFFFFF;box-shadow:0 0 10px rgba(56,189,248,.55),inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62)}
+.tri3 button[aria-pressed="true"].ok{background:linear-gradient(180deg,#166534 0%,#14532d 100%);border-color:#22c55e;color:#DCFCE7;box-shadow:0 0 10px rgba(34,197,94,.45)}
+.tri3 button[aria-pressed="true"].fo{background:linear-gradient(180deg,#991b1b 0%,#7f1d1d 100%);border-color:#f87171;color:#FEE2E2;box-shadow:0 0 10px rgba(248,113,113,.45)}
+.prazos button[disabled]{opacity:.35;cursor:not-allowed}
+.mini-bt{min-height:48px;padding:0 12px;font-size:12.5px}
+.trava .mini-bt:not(.env){border-color:#fca5a5}
+.atalho-visita{font-size:13.5px;padding:0 12px}
+.aj{padding:0 12px;font-family:var(--f-mono);font-size:13.5px}
+.limpar-leit,.graf-chave{padding:0 12px;border-radius:999px}
+.pilula-modo{min-height:48px;height:auto;padding:0 12px}
+.leit .it{grid-template-columns:1fr 48px}
+.leit .it button{width:48px;height:48px;padding:0;display:flex;align-items:center;justify-content:center}
+.bastidor label{min-height:48px}
+.painel .tecla.clara{height:auto;min-height:48px}
+/* Etiquetas semânticas de leitura escaneável (zero-leitura-e-tokens-semanticos.md, tokens 7, 8, 9 e 11). */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:7px 0 2px}
+.tag{display:inline-flex;align-items:center;min-height:24px;padding:2px 8px;border-radius:6px;font-family:var(--f-tit);font-size:12px;font-weight:800;letter-spacing:.02em;line-height:1.2;white-space:nowrap}
+.tag-ponta-vermelha{background:#dc2626;color:#ffffff}
+.tag-ponta-preta{background:#0b0f17;color:#ffffff;border:1.5px solid #e5e7eb}
+.tag-modo{background:#1e293b;color:#fde68a;border:1px solid #475569}
+.tag-medida{background:#0a182d;color:#67c6ff;border:1px solid rgba(103,198,255,.4);font-family:var(--f-mono);font-size:13px}
+/* Teclas 2, 3 e 4 no mesmo visor da Tecla 1: aro --gp-bezel + Visor Safira Escuro. Na 4, a folha do laudo fica em papel executivo. */
+.painel-moldura{max-width:844px;margin:0 auto}
+.painel-moldura > .sm-visor{padding:10px 8px 12px}
+.painel-cab{border-bottom:2px solid #67c6ff}
+.painel.escuro{background:transparent;color:#E2E8F0;border:0;box-shadow:none;border-radius:0;overflow:visible}
+.painel.escuro .painel-cab{border-radius:14px;border:1.5px solid #24466F;border-bottom:2px solid #67c6ff}
+.painel.escuro .painel-corpo{padding:12px 2px 4px}
+.painel.escuro .sub,.painel.escuro .form label,.painel.escuro .rot{color:#CBD5E1}
+.painel.escuro h4{color:#FFFFFF}
+.painel.escuro .form input[type=number],.painel.escuro .form input[type=text],.painel.escuro .form input[type=tel],.painel.escuro .form select,.painel.escuro select,.painel.escuro .busca{background:#0a182d;color:#FFFFFF;border:1.5px solid #5b7aa6;font-size:16px;min-height:48px}
+.painel.escuro .busca input{color:#FFFFFF}
+.painel.escuro .busca input::placeholder{color:#9FB3C8}
+.painel.escuro .veredito.neutro{background:#0f2340;color:#CBD5E1;border:1px solid #24466F}
+.painel.escuro .veredito.ok{background:rgba(22,163,74,.16);color:#86efac;border:1px solid #16A34A}
+.painel.escuro .veredito.def{background:rgba(220,38,38,.16);color:#fca5a5;border:1px solid #DC2626}
+.painel.escuro .veredito.alerta{background:rgba(251,191,36,.12);color:#fde68a;border:1px solid #b45309}
+.painel.escuro .cmp{background:rgba(240,122,18,.12);border-color:#b4500a;color:#fed7aa}
+.painel.escuro .tabela-box{border-color:#24466F}
+.painel.escuro .tabela th{background:#0f2340;color:#9FB3C8}
+.painel.escuro .tabela td{border-bottom-color:#1E2E48;color:#E2E8F0}
+.painel.escuro .tabela tr.marca td{background:rgba(251,191,36,.18);color:#FFFFFF}
+.painel.escuro .passo-inv{background:#0c1d36;border-color:#24466F}
+.painel.escuro .passo-inv .lupa{border-bottom-color:#24466F}
+.painel.escuro .passo-inv .tx{color:#CBD5E1}
+.painel.escuro .passo-inv .tx b.t{color:#FFFFFF}
+.painel.escuro .passo-inv .ref{background:rgba(22,163,74,.14);color:#bbf7d0}
+.painel.escuro .codigo{background:#0f2340;border-color:#24466F;color:#E2E8F0}
+.painel.escuro .codigo .cd{color:#FFFFFF}
+.painel.escuro .codigo .mk{color:#9FB3C8}
+.painel.escuro .codigo .fa{background:rgba(22,163,74,.14);color:#bbf7d0}
+.painel.escuro .vazio{color:#CBD5E1;border-color:#24466F}
+.painel.escuro .aviso{background:#0f2340;color:#CBD5E1}
+.painel.escuro .carregando{color:#9FB3C8}
+.painel.escuro [data-cont]{color:#CBD5E1}
 @page{size:A4 portrait;margin:8mm}
 @media print{
   html,body{background:#FFFFFF!important;height:auto!important;overflow:visible!important}
@@ -840,7 +908,7 @@ function abrirIndice() {
   sumario.innerHTML = `<div class="sm-cab">
       <div class="sm-top"><button class="voltar" data-sm="fechar">${ic('esquerda', '#FFFFFF', 18)}<span>${esc(fichaAtual().id)}</span></button><b>Sintomas</b><img class="mascote" src="../app/marca/gelopro-mascote.png" alt="" width="30" height="30"></div>
       <div class="sm-cont">${F.length} DIAGNÓSTICOS · ${BLOCOS.length} BLOCOS TÉCNICOS</div>
-      <label class="sm-busca">${ic('busca', '#64748B', 20)}<input type="search" placeholder="Buscar por código D-001 a D-120, sintoma, peça ou erro..." autocomplete="off" enterkeyhint="search" value="${esc(termo)}" aria-label="Buscar ficha"></label>
+      <label class="sm-busca">${ic('busca', '#64748B', 20)}<input type="search" placeholder="Código D-001, sintoma ou peça" autocomplete="off" enterkeyhint="search" value="${esc(termo)}" aria-label="Buscar ficha"></label>
     </div>
     <div class="sm-corpo"><div class="sm-moldura"><div class="sm-visor">${pilulaEquip()}
       <div class="sm-cards">${cards}<button class="sm-card todos" data-b="todos" aria-pressed="${bloco === 'todos'}"><span class="medalhao">${icGP('prancheta', 24)}</span><span class="t"><b>Todas as ${F.length} Fichas</b><small>D-001 a D-${String(F.length).padStart(3, '0')} em ordem de bancada</small></span><span class="seta">${ic('direita', '#67C6FF', 22)}</span></button></div>
@@ -888,7 +956,7 @@ const marcaCurva = (m) => ({ 'Midea/Springer': 'Midea', Carrier: 'Midea' })[m] |
 const FL_COL = { R32: 'r32_psig', R410A: 'r410a_psig', R22: 'r22_psig' };
 const porteDe = (btu) => /^(9|12)\./.test(btu) ? '12' : '18';
 function pilulaEquip() {
-  return `<div class="eq-pilula" role="group" aria-label="Equipamento ativo">${[['marca', 'Marca', MARCAS14], ['btu', 'BTU/h', BTUS], ['fluido', 'Fluido', FLS]].map(([k, r, ops]) => `<label class="eq-seg"><span class="eq-rot">${r}</span><select data-eq="${k}" aria-label="${r} do equipamento">${ops.map(o => `<option${o === B.equip[k] ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></label>`).join('<span class="eq-div" aria-hidden="true"></span>')}</div>`;
+  return `<div class="eq-pilula" role="group" aria-label="Equipamento ativo">${[['marca', 'Marca', MARCAS14], ['btu', 'BTU/h', BTUS], ['fluido', 'Fluido', FLS]].map(([k, r, ops]) => `<label class="eq-seg"><span class="eq-rot">${r}</span><span class="eq-val">${esc(B.equip[k])}</span><select data-eq="${k}" aria-label="${r} do equipamento">${ops.map(o => `<option${o === B.equip[k] ? ' selected' : ''}>${esc(o)}</option>`).join('')}</select></label>`).join('<span class="eq-div" aria-hidden="true"></span>')}</div>`;
 }
 // Mudou a pílula: NTC, gás e códigos já abrem na mesma marca/fluido e o Equipamento do laudo se preenche sozinho.
 function aplicarEquip() {
@@ -900,6 +968,8 @@ function aplicarEquip() {
 function ligarPilula(raiz) {
   $$('[data-eq]', raiz).forEach(s => s.addEventListener('change', () => {
     B.equip[s.dataset.eq] = s.value; guardar('bancadapro.equip', JSON.stringify(B.equip)); aplicarEquip(); toast(equipTexto());
+    $$(`[data-eq="${s.dataset.eq}"]`).forEach(o => { o.value = s.value; if (o.previousElementSibling) o.previousElementSibling.textContent = s.value; });
+    $$('[data-tag-ntc]').forEach(e => { e.textContent = medidaNtc(); });
     if (sumario.hidden && B.aba !== 'sintomas') irAba(B.aba);
   }));
 }
@@ -962,8 +1032,11 @@ function irAba(a) {
   esconderSumario(); B.aba = a; pintarDock();
   if (a === 'aferir') abrirAferir(); else if (a === 'codigos') abrirCodigos(); else abrirLaudo();
 }
-const painel = (cab, corpo) => { visor.innerHTML = `${pilulaEquip()}<article class="painel" data-painel="${B.aba}"><header class="painel-cab">${cab}</header><div class="painel-corpo">${corpo}</div></article>`; visor.scrollTop = 0; ligarPilula(visor); return $('.painel', visor); };
+const painel = (cab, corpo, escuro = false) => { visor.innerHTML = `<div class="sm-moldura painel-moldura"><div class="sm-visor">${pilulaEquip()}<article class="painel${escuro ? ' escuro' : ''}" data-painel="${B.aba}"><header class="painel-cab">${cab}</header><div class="painel-corpo">${corpo}</div></article></div></div>`; visor.scrollTop = 0; ligarPilula(visor); return $('.painel', visor); };
 const erroBase = (el, e) => { el.innerHTML = `<div class="aviso def">Não consegui ler a base técnica (${esc(e.message)}). Abra com sinal uma vez e tente de novo.</div><div class="pilha"><button class="tecla verde" data-ir-laudo>${ic('prancheta', '#FFFFFF', 18)}<span>Ir para Tabela &amp; Laudo</span></button></div>`; const b = $('[data-ir-laudo]', el); if (b) b.addEventListener('click', () => irAba('laudo')); };
+const ENV_TXT = 'Enviar Aferição ao Laudo', FEITO_TXT = 'Aferição Registrada no Laudo';
+const envHtml = (feito, tm = 16, txt = ENV_TXT) => `${ic(feito ? 'check' : 'mais', '#111827', tm)}<span>${feito ? FEITO_TXT : txt}</span>`;
+const marcarEnv = (b, feito, tm = 16, txt = ENV_TXT) => { if (!b) return; b.classList.toggle('feito', feito); b.innerHTML = envHtml(feito, tm, txt); };
 const palavras = (s) => String(s).replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
 
 // ───────────── Tecla 1 · Painel Raio-X de 1 Toque (topo da ficha) ─────────────
@@ -972,26 +1045,30 @@ const RX = [[70, '#16A34A'], [20, '#D97706'], [10, '#DC2626']];
 // Onde encostar as pontas e o que o instrumento tem de mostrar. O tipo de medição sai do título da verificação ligada à causa; sem
 // verificação ligada, do serviço da causa. Números só da base (F14, PED02, ±5% e Delta T das fichas).
 const SONDA = [
-  ['corrente', /corrente|amper/, 'alicate amperímetro em 1 fio do comum do compressor, aparelho rodando.', 'compare com a corrente nominal da etiqueta.'],
-  ['capacitor', /capacitor/, 'capacitor descarregado, fios soltos, capacímetro nos 2 terminais.', 'dentro de ±5% dos µF da etiqueta.'],
-  ['sensor', /sensor|ntc|termistor/, 'sensor solto da placa, multímetro em kΩ nos 2 pinos, termômetro no mesmo ponto.', 'a curva real da marca na temperatura medida.'],
-  ['pressao', /baixa|press[aã]o|manifold|g[aá]s|carga|superaquec|vazamento|flange|v[aá]cuo/, 'manifold na válvula de serviço da sucção e termopar preso no tubo a 20 cm dela.', 'superaquecimento de 7 a 11 °C.'],
-  ['enrolamento', /enrolamento|bobina|compressor|massa|carca[cç]a/, 'bornes C, S e R com o aparelho desligado; depois cada pino contra a carcaça.', 'S-R = C-S + C-R e zero continuidade na carcaça.'],
-  ['placa', /placa|ipm|barramento|310/, 'vermelha no P e preta no N do IPM, escala V CC, energizado.', 'cerca de 310 V CC com 220 V CA na entrada.'],
-  ['tensao', /tens[aã]o|disjuntor|rede|alimenta|fus[ií]vel|borne|aterramento/, 'L e N no borne de entrada, escala V CA, energizado.', '198 a 242 V em rede 220 V.'],
-  ['dreno', /dreno|bandeja|[aá]gua|mangueira|bomba/, 'água limpa na bandeja da evaporadora, olho na saída do dreno.', 'escoamento contínuo, sem voltar pela bandeja.'],
-  ['motor', /ventilador|motor|h[eé]lice|rota[cç]|turbina gira/, 'conector do motor solto da placa, pontas nos pares de fios.', 'pares iguais entre si; aberto condena o motor.'],
-  ['limpeza', /filtro|serpentina|turbina|aleta|sujeira|limp|higien/, 'lanterna no filtro, na serpentina e na turbina, aparelho desligado.', 'aletas abertas, sem crosta nem bolor.'],
-  ['deltaT', /delta|temperatura|sa[ií]da|termômetro|frio|gela/, 'termômetro no retorno de ar e na saída da evaporadora.', 'Delta T de 10 a 14 °C.']
+  ['corrente', /corrente|amper/, 'alicate amperímetro em 1 fio do comum do compressor, aparelho rodando.', 'compare com a corrente nominal da etiqueta.', 'ALICATE · A', 'Nominal da etiqueta', false],
+  ['capacitor', /capacitor/, 'capacitor descarregado, fios soltos, capacímetro nos 2 terminais.', 'dentro de ±5% dos µF da etiqueta.', 'µF', '±5% da etiqueta', true],
+  ['sensor', /sensor|ntc|termistor/, 'sensor solto da placa, multímetro em kΩ nos 2 pinos, termômetro no mesmo ponto.', 'a curva real da marca na temperatura medida.', 'ESCALA kΩ', 'NTC', true],
+  ['pressao', /baixa|press[aã]o|manifold|g[aá]s|carga|superaquec|vazamento|flange|v[aá]cuo/, 'manifold na válvula de serviço da sucção e termopar preso no tubo a 20 cm dela.', 'superaquecimento de 7 a 11 °C.', 'MANÔMETRO PSI / SH', 'Alvo 7–11 °C', false],
+  ['enrolamento', /enrolamento|bobina|compressor|massa|carca[cç]a/, 'bornes C, S e R com o aparelho desligado; depois cada pino contra a carcaça.', 'S-R = C-S + C-R e zero continuidade na carcaça.', 'ESCALA Ω', 'S-R = C-S + C-R', true],
+  ['placa', /placa|ipm|barramento|310/, 'vermelha no P e preta no N do IPM, escala V CC, energizado.', 'cerca de 310 V CC com 220 V CA na entrada.', 'V CC', '≈ 310 V CC', true],
+  ['tensao', /tens[aã]o|disjuntor|rede|alimenta|fus[ií]vel|borne|aterramento/, 'L e N no borne de entrada, escala V CA, energizado.', '198 a 242 V em rede 220 V.', 'V CA', '198–242 V', true],
+  ['dreno', /dreno|bandeja|[aá]gua|mangueira|bomba/, 'água limpa na bandeja da evaporadora, olho na saída do dreno.', 'escoamento contínuo, sem voltar pela bandeja.', 'VISUAL', 'Escoamento contínuo', false],
+  ['motor', /ventilador|motor|h[eé]lice|rota[cç]|turbina gira/, 'conector do motor solto da placa, pontas nos pares de fios.', 'pares iguais entre si; aberto condena o motor.', 'ESCALA Ω', 'Pares iguais', true],
+  ['limpeza', /filtro|serpentina|turbina|aleta|sujeira|limp|higien/, 'lanterna no filtro, na serpentina e na turbina, aparelho desligado.', 'aletas abertas, sem crosta nem bolor.', 'LANTERNA', 'Aletas limpas', false],
+  ['deltaT', /delta|temperatura|sa[ií]da|termômetro|frio|gela/, 'termômetro no retorno de ar e na saída da evaporadora.', 'Delta T de 10 a 14 °C.', 'TERMÔMETRO °C', 'Delta T 10–14 °C', false]
 ];
 const SONDA_SRV = { carga_fluido: 'pressao', cap_partida: 'capacitor', sensor_ntc: 'sensor', compressor_troca: 'enrolamento', reparo_placa: 'placa', placa_nova: 'placa', motor_vent: 'motor', higienizacao: 'limpeza', limpeza_simples: 'limpeza', fusivel_eletrica: 'tensao', dreno_isol: 'dreno', bomba_dreno: 'dreno', tubo_metro: 'pressao', instalacao_split: 'pressao' };
-const sondaDe = (tt, srv) => SONDA.find(s => s[1].test(norm(tt))) || SONDA.find(s => s[0] === SONDA_SRV[srv]) || ['', null, 'no ponto indicado na ilustração, com o instrumento da ficha.', ''];
+const sondaDe = (tt, srv) => SONDA.find(s => s[1].test(norm(tt))) || SONDA.find(s => s[0] === SONDA_SRV[srv]) || ['', null, 'no ponto indicado na ilustração, com o instrumento da ficha.', '', 'INSTRUMENTO DA FICHA', '', false];
+// Medida-alvo do sensor NTC: a curva real da marca da pílula (10K a 35 °C), assim que as curvas da base carregam.
+let CURVAS_OK = null;
+function medidaNtc() { const C = CURVAS_OK, c = C && (C.find(x => x.marca === marcaCurva(B.equip.marca) && x.nom === 10) || C.find(x => x.marca === 'LG' && x.nom === 10)); return c ? `${c.marca} 10K: ${f1(interp(c.pts, 35), 2)} kΩ @ 35 °C` : 'Curva real na temperatura medida'; }
+const tagsHtml = (s) => `<div class="tags">${s.pontas ? '<span class="tag tag-ponta-vermelha">● VERMELHA</span><span class="tag tag-ponta-preta">● PRETA</span>' : ''}${s.modo ? `<span class="tag tag-modo">${esc(s.modo)}</span>` : ''}${s.medida ? `<span class="tag tag-medida"${s.medida === 'NTC' ? ' data-tag-ntc' : ''}>${esc(s.medida === 'NTC' ? medidaNtc() : s.medida)}</span>` : ''}</div>`;
 const TRAVA = ['Tensão L-N no borne de entrada: 198 a 242 V em rede 220 V.', 'Capacitor dentro de ±5% da etiqueta e bornes de força firmes, sem escurecimento.', 'Sensores NTC na curva real da temperatura medida, nunca na tabela fixa de 25 °C.'];
 function testeRx(f, k) {
-  const [nm, srv] = f.causas[k], v = f.vc.indexOf(k + 1) + 1, [tt, ln] = v ? f.verifs[v - 1] : [nm, ''], [, , onde, esp] = sondaDe(tt, srv);
+  const [nm, srv] = f.causas[k], v = f.vc.indexOf(k + 1) + 1, [tt, ln] = v ? f.verifs[v - 1] : [nm, ''], [, , onde, esp, modo, medida, pontas] = sondaDe(tt, srv);
   let leitura = [ln, esp ? esp[0].toUpperCase() + esp.slice(1) : ''].filter(Boolean).join('. ');
   if (palavras(`${tt} Pontas: ${onde} Leitura: ${leitura}`) > 50) leitura = ln || esp;
-  return { v, nm, srv, tt, onde: onde[0].toUpperCase() + onde.slice(1), leitura };
+  return { v, nm, srv, tt, onde: onde[0].toUpperCase() + onde.slice(1), leitura, modo, medida, pontas };
 }
 function raioX(f) {
   const ts = [0, 1, 2].map(k => testeRx(f, k)), feito = (k) => B.afericoes.some(a => a.k === `${f.id}-c${k + 1}`);
@@ -1000,9 +1077,9 @@ function raioX(f) {
     <div class="rx-sub">Probabilidade em campo</div>
     <div class="rx-barras">${ts.map((t, k) => `<div class="rx-b" data-rx-barra="${RX[k][0]}"><span>${nn(k + 1)} · ${esc(t.nm)}</span><span class="pc" style="color:${RX[k][1]}">${RX[k][0]}%</span><span class="tr"><i style="width:${RX[k][0]}%;background:${RX[k][1]}"></i></span></div>`).join('')}</div>
     <div class="rx-ref">Peso de referência de campo GeloPRO sobre as 3 causas mais comuns desta ficha.</div>
-    <div class="rx-testes">${ts.map((t, k) => `<div class="rx-t" data-rx-teste="${k + 1}"><div class="tt"><span class="num" style="background:${RX[k][1]}">${nn(k + 1)}</span><span>${esc(t.tt)}</span></div><p class="rx-txt"><b>Pontas:</b> ${esc(t.onde)} <b>Leitura:</b> ${esc(t.leitura)}</p>
-      <div class="acoes">${t.v ? `<button class="mini-bt" data-rx-ponto="${t.v}">${ic('busca', '#091E42', 15)}<span>Ver ponto ${nn(t.v)}</span></button>` : ''}<button class="mini-bt env${feito(k) ? ' feito' : ''}" data-rx-env="${k}">${ic(feito(k) ? 'check' : 'mais', feito(k) ? '#FFFFFF' : '#14532D', 15)}<span>${feito(k) ? 'No Laudo' : 'Enviar Aferição ao Laudo'}</span></button></div></div>`).join('')}</div>
-    <div class="trava" data-trava><b>${alerta(22)}<span>Antes de Condenar a Peça Cara · 30 segundos</span></b><ol>${TRAVA.map(x => `<li>${esc(x)}</li>`).join('')}</ol><button class="mini-bt" data-rx-inv>${ic('medidor', '#7F1D1D', 15)}<span>Abrir Bancada Anti-Queima (7 testes)</span></button></div>
+    <div class="rx-testes">${ts.map((t, k) => `<div class="rx-t" data-rx-teste="${k + 1}"><div class="tt"><span class="num" style="background:${RX[k][1]}">${nn(k + 1)}</span><span>${esc(t.tt)}</span></div><p class="rx-txt"><b>Pontas:</b> ${esc(t.onde)} <b>Leitura:</b> ${esc(t.leitura)}</p>${tagsHtml(t)}
+      <div class="acoes">${t.v ? `<button class="mini-bt" data-rx-ponto="${t.v}">${ic('busca', '#67C6FF', 16)}<span>Ver ponto ${nn(t.v)}</span></button>` : ''}<button class="mini-bt env${feito(k) ? ' feito' : ''}" data-rx-env="${k}">${envHtml(feito(k))}</button></div></div>`).join('')}</div>
+    <div class="trava" data-trava><b>${alerta(22)}<span>Antes de Condenar a Peça Cara · 30 segundos</span></b><ol>${TRAVA.map(x => `<li>${esc(x)}</li>`).join('')}</ol><button class="mini-bt" data-rx-inv>${ic('medidor', '#FCA5A5', 16)}<span>Abrir Bancada Anti-Queima (7 testes)</span></button></div>
   </section>`;
 }
 function ligarRaioX(f) {
@@ -1010,7 +1087,7 @@ function ligarRaioX(f) {
   $$('[data-rx-env]', visor).forEach(b => b.addEventListener('click', () => {
     const k = +b.dataset.rxEnv, t = testeRx(f, k);
     addAfericao(`${f.id}-c${k + 1}`, `${f.id} · ${t.tt}: ${t.leitura}`, { causa: t.nm, srv: t.srv });
-    b.classList.add('feito'); b.innerHTML = `${ic('check', '#FFFFFF', 15)}<span>No Laudo</span>`;
+    marcarEnv(b, true);
   }));
   const inv = $('[data-rx-inv]', visor); if (inv) inv.addEventListener('click', () => { B.subAfer = 'inv'; irAba('aferir'); });
 }
@@ -1035,6 +1112,7 @@ const carregarCurvas = () => CURVAS || (CURVAS = Promise.all([csv('ntc_resumo.cs
     return { marca: r.marca.split(/[\/;]/)[0].trim(), sensor: r.sensor.replace(/\s+/g, ' ').trim(), rot: `${r.marca.split(/[\/;]/)[0]} · ${r.sensor}`, r25: r25 || r25c, nom: nominal(r25 || r25c), pts, faixa: faixa && faixa.length > 3 ? faixa : null, tol: tol ? num(tol.r25_tol_pct) : null, fonte: r.fonte_id || '', tolF: tol ? tol.fonte_id : '' };
   }).filter(c => c.pts.length > 3);
 }));
+carregarCurvas().then(C => { CURVAS_OK = C; $$('[data-tag-ntc]').forEach(e => { e.textContent = medidaNtc(); }); }).catch(() => null);
 // Veredito do sensor: faixa mín/máx da fonte → tolerância declarada → sem tolerância declarada (LG, Gree…): critério prático de campo
 // GeloPRO de ±5% sobre a curva, aprovado pelo Pedro em 05/11/2026 e mostrado com rótulo honesto no próprio veredito (regra 6).
 const TOL_CAMPO = 5;
@@ -1051,7 +1129,7 @@ const ESTADO_NTC = { ok: 'SENSOR BOM — Dentro da curva real', def: 'SENSOR ALT
 // ───────────── Tecla 2 · Aferir Vivo ─────────────
 function abrirAferir() {
   const p = painel(`${ic('medidor', '#F59E0B', 20)}<b>Aferir Vivo · Instrumentação Termo-Elétrica de Campo</b>`,
-    `<div class="abas" role="group" aria-label="Aferições"><button data-sa="ntc">Curva Térmica NTC</button><button data-sa="gas">Carga de Gás &amp; SH</button><button data-sa="inv">Anti-Queima Inverter</button></div><div data-sa-corpo></div>`);
+    `<div class="abas" role="group" aria-label="Aferições"><button data-sa="ntc">Curva Térmica NTC</button><button data-sa="gas">Carga de Gás &amp; SH</button><button data-sa="inv">Anti-Queima Inverter</button></div><div data-sa-corpo></div>`, true);
   const corpo = $('[data-sa-corpo]', p);
   const ir = (s) => { B.subAfer = s; $$('[data-sa]', p).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sa === s))); ({ ntc: afNtc, gas: afGas, inv: afInv })[s](corpo); };
   $$('[data-sa]', p).forEach(b => b.addEventListener('click', () => ir(b.dataset.sa)));
@@ -1076,7 +1154,7 @@ function afNtc(corpo) {
       <div class="pocos" data-n="pocos"></div>
       <div class="veredito neutro" data-n="v"></div>
       <div class="cmp" data-n="cmp"></div>
-      <div class="pilha"><button class="tecla verde" data-n="env">${ic('mais', '#FFFFFF', 18)}<span>Enviar Aferição ao Laudo</span></button></div>
+      <div class="pilha"><button class="tecla cat" data-n="env">${envHtml(false, 18)}</button></div>
       <div class="tabela-box" style="max-height:240px;overflow:auto"><table class="tabela" data-n="tb"></table></div>`;
     const q = (k) => $(`[data-n=${k}]`, corpo);
     const lista = () => C.filter(c => c.marca === st.m);
@@ -1088,6 +1166,7 @@ function afNtc(corpo) {
     };
     const go = () => {
       const c = curva(), t = num(q('t').value), r = num(q('r').value), v = q('v'); st.t = q('t').value; st.r = q('r').value;
+      if (q('env').classList.contains('feito')) marcarEnv(q('env'), false, 18);
       $$('[data-t]', corpo).forEach(b => b.setAttribute('aria-pressed', String(t !== null && +b.dataset.t === t)));
       q('tb').innerHTML = `<tr><th>°C</th><th>kΩ (curva real)</th>${c.faixa ? '<th>Mín – Máx</th>' : ''}</tr>` + c.pts.filter(p => p[0] >= -10 && p[0] <= 60).map(p => { const fx = c.faixa && c.faixa.find(z => z[0] === p[0]); return `<tr${t !== null && Math.round(t) === p[0] ? ' class="marca"' : ''}><td class="n">${p[0]}</td><td class="n">${f1(p[1], p[1] < 10 ? 2 : 1)}</td>${c.faixa ? `<td class="n">${fx ? f1(fx[1], 2) + ' – ' + f1(fx[2], 2) : ''}</td>` : ''}</tr>`; }).join('');
       const R0 = t !== null && r !== null ? veredictoNtc(c, t, r) : null;
@@ -1114,6 +1193,7 @@ function afNtc(corpo) {
       const R = veredictoNtc(c, t, r);
       B.ntc = { c, t, r, esp: R.esp, estado: R.estado };
       addAfericao('ntc', `NTC ${c.rot}: ${f1(r, 2)} kΩ @ ${f1(t)} °C (curva real ${f1(R.esp, 2)} kΩ) — ${ESTADO_NTC[R.estado]}`, R.estado === 'ok' ? {} : { srv: 'sensor_ntc', causa: CAUSA_PADRAO.sensor_ntc });
+      marcarEnv(q('env'), true, 18);
     });
   }).catch(e => erroBase(corpo, e));
 }
@@ -1148,11 +1228,12 @@ function afGas(corpo) {
         <div class="duas"><label>Porte da condensadora<select data-g="porte">${GPM.map(([k, r, g]) => `<option value="${k}" ${k === st.porte ? 'selected' : ''}>${r} BTU/h (${g} g/m)</option>`).join('')}</select></label><label>g/m da etiqueta<input type="number" inputmode="decimal" step="any" data-g="gpm" value="${esc(st.gpm)}"></label></div>
       </div>
       <div class="veredito neutro" data-g="ad"></div>
-      <div class="pilha"><button class="tecla verde" data-g="env">${ic('mais', '#FFFFFF', 18)}<span>Enviar Aferição ao Laudo</span></button></div>`;
+      <div class="pilha"><button class="tecla cat" data-g="env">${envHtml(false, 18)}</button></div>`;
     const q = (k) => $(`[data-g=${k}]`, corpo), rot = () => FLUIDOS.find(x => x[0] === st.fl)[1];
     const calc = () => { const p = num(q('p').value), tt = num(q('tt').value); if (p === null) return null; const ts = tSat(T, st.fl, p); return { p, ts, tt, sh: tt === null ? null : tt - ts }; };
     const go = () => {
       st.p = q('p').value; st.tt = q('tt').value; st.gpm = q('gpm').value; st.porte = q('porte').value;
+      if (q('env').classList.contains('feito')) marcarEnv(q('env'), false, 18);
       $$('[data-fl]', corpo).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.fl === st.fl)));
       $$('[data-lin]', corpo).forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.lin === st.lin)));
       const R = calc(), v = q('v');
@@ -1174,26 +1255,27 @@ function afGas(corpo) {
       B.gas = { fl: rot(), p: R.p, tt: R.tt, ts: R.ts, sh: R.sh, estado: cls };
       addAfericao('gas', `Pressão de sucção ${f1(R.p, 0)} PSI / SH ${f1(R.sh)} °C (${rot()}, tubo ${f1(R.tt)} °C, alvo 7–11 °C) — ${tit}${ex ? `; adicional de ${f1(ex * g, 0)} g para ${ex} m excedentes` : ''}`,
         cls === 'def' ? { srv: 'carga_fluido', causa: R.sh > 12 ? CAUSA_PADRAO.carga_fluido : CAUSA_EXCESSO } : {});
+      marcarEnv(q('env'), true, 18);
     });
     go();
   }).catch(e => erroBase(corpo, e));
 }
 // 7 testes guiados da placa Inverter. Procedimentos de PED02 / F20 (inverter_checklist.csv); faixas de diodo e fonte = referência de campo GeloPRO.
 const INV7 = [
-  ['ipm', 'Diodos do IPM a frio', 'Desligado e capacitores descarregados, escala de diodo: vermelha no N e preta em U, V e W; depois vermelha em U, V e W e preta no P.', '0,45 V a 0,65 V no sentido direto, igual nas 3 fases; OL no inverso. Zero nos dois sentidos = curto.', ['d087', 4], 'reparo_placa'],
-  ['uvw', 'Bobinas UVW do compressor', 'Conector do compressor solto da placa, escala de ohms: U–V, V–W e W–U.', 'Os 3 valores iguais entre si. Par diferente ou aberto condena o compressor, não a placa.', ['d040', 1], 'compressor_troca'],
-  ['fuga', 'Fuga para a carcaça', 'Cada fase U, V e W contra o tubo de cobre ou a carcaça, na maior escala de ohms.', 'Sem continuidade (OL). Qualquer leitura é compressor em massa.', ['d040', 1], 'compressor_troca'],
-  ['barramento', 'Barramento CC (P-N)', 'Energizado, escala V CC: vermelha no P e preta no N do IPM, ou + e − dos capacitores.', 'Cerca de 310 V CC com 220 V CA na entrada (220 × 1,41).', ['d040', 5], 'reparo_placa'],
-  ['fonte', 'Fonte 15 V / 5 V', 'Energizado, preta no GND da placa; vermelha nas saídas da fonte chaveada.', '15 V CC no driver do IPM e 5 V CC no microcontrolador, estáveis.', ['d087', 4], 'reparo_placa'],
-  ['serial', 'Pulso de comunicação S/N', 'Energizado, escala V CC entre os bornes S e N da interligação.', 'Tensão oscilando sem parar (pulsos). Parada ou zero: confira o cabo de interligação antes da placa.', ['d087', 3], 'visita_diag'],
-  ['pfc', 'Indutor PFC (reator)', 'Desligado, terminais do indutor PFC soltos da placa, escala de ohms.', 'Continuidade de baixa resistência, sem aberto e sem marca de queimado.', ['d023', 4], 'reparo_placa'],
+  ['ipm', 'Diodos do IPM a frio', 'Desligado e capacitores descarregados, escala de diodo: vermelha no N e preta em U, V e W; depois vermelha em U, V e W e preta no P.', '0,45 V a 0,65 V no sentido direto, igual nas 3 fases; OL no inverso. Zero nos dois sentidos = curto.', ['d087', 4], 'reparo_placa', [true, 'DIODO', '0,45–0,65 V']],
+  ['uvw', 'Bobinas UVW do compressor', 'Conector do compressor solto da placa, escala de ohms: U–V, V–W e W–U.', 'Os 3 valores iguais entre si. Par diferente ou aberto condena o compressor, não a placa.', ['d040', 1], 'compressor_troca', [true, 'ESCALA Ω', 'U–V = V–W = W–U']],
+  ['fuga', 'Fuga para a carcaça', 'Cada fase U, V e W contra o tubo de cobre ou a carcaça, na maior escala de ohms.', 'Sem continuidade (OL). Qualquer leitura é compressor em massa.', ['d040', 1], 'compressor_troca', [true, 'ESCALA Ω', 'OL · sem continuidade']],
+  ['barramento', 'Barramento CC (P-N)', 'Energizado, escala V CC: vermelha no P e preta no N do IPM, ou + e − dos capacitores.', 'Cerca de 310 V CC com 220 V CA na entrada (220 × 1,41).', ['d040', 5], 'reparo_placa', [true, 'V CC', '≈ 310 V CC']],
+  ['fonte', 'Fonte 15 V / 5 V', 'Energizado, preta no GND da placa; vermelha nas saídas da fonte chaveada.', '15 V CC no driver do IPM e 5 V CC no microcontrolador, estáveis.', ['d087', 4], 'reparo_placa', [true, 'V CC', '15 V · 5 V']],
+  ['serial', 'Pulso de comunicação S/N', 'Energizado, escala V CC entre os bornes S e N da interligação.', 'Tensão oscilando sem parar (pulsos). Parada ou zero: confira o cabo de interligação antes da placa.', ['d087', 3], 'visita_diag', [true, 'V CC', 'Pulsando S–N']],
+  ['pfc', 'Indutor PFC (reator)', 'Desligado, terminais do indutor PFC soltos da placa, escala de ohms.', 'Continuidade de baixa resistência, sem aberto e sem marca de queimado.', ['d023', 4], 'reparo_placa', [true, 'ESCALA Ω', 'Baixa resistência']],
 ];
 const fichaPorImg = (img) => F.find(f => f.id === IMGS[img].ficha);
 // Recorte centrado na própria peça: ponta da linha ciano = 2 × foco − bolinha.
 const recorte = (img, ponto) => { const f = fichaPorImg(img), [fx, fy] = f.foco[ponto - 1], [ax, ay] = f.alvos[ponto - 1], x = 2 * fx - ax, y = 2 * fy - ay; return `<div class="lupa" style="${lupaEstilo(IMG(f), x, y)}" role="img" aria-label="${f.id} ponto ${nn(ponto)}"><span>${f.id} · ponto ${nn(ponto)}</span></div>`; };
 function afInv(corpo) {
   corpo.innerHTML = `<div class="sub">Os 7 testes guiados antes de condenar a placa Inverter: a lupa mostra onde encostar as pontas, sem curto.</div><div class="veredito neutro" data-iv="v"></div>
-    ${INV7.map(([id, t, como, faixa, [im, pt]], k) => `<div class="passo-inv" data-inv="${id}">${recorte(im, pt)}<div class="tx"><b class="t">${k + 1}. ${esc(t)}</b>${esc(como)}<div class="ref">${esc(faixa)}</div>
+    ${INV7.map(([id, t, como, faixa, [im, pt], , [pontas, modo, medida]], k) => `<div class="passo-inv" data-inv="${id}">${recorte(im, pt)}<div class="tx"><b class="t">${k + 1}. ${esc(t)}</b>${tagsHtml({ pontas, modo, medida })}${esc(como)}<div class="ref">${esc(faixa)}</div>
       <div class="tri3" style="grid-template-columns:1fr 1fr"><button class="ok" data-s="ok" aria-pressed="${B.inv[id] === 'ok'}">Dentro da faixa</button><button class="fo" data-s="fo" aria-pressed="${B.inv[id] === 'fo'}">Fora da faixa</button></div></div></div>`).join('')}
     <div class="pilha"><button class="tecla verde" data-iv="laudo">${ic('prancheta', '#FFFFFF', 18)}<span>Levar resultado para Tabela &amp; Laudo</span></button></div>`;
   const veredito = () => {
@@ -1227,14 +1309,14 @@ const carregarCodigos = () => CODIGOS || (CODIGOS = Promise.all([csv('codigos_er
     .map((r, i) => ({ ...r, i, ok: NORMAL.test(r.d.trim()) && !NAO_NORMAL.test(r.d), naoConf: /n[aã]o confirma/i.test(r.d), txt: norm(`${r.c} ${r.d} ${r.l} ${r.fa} ${r.m}`) }));
 }));
 function abrirCodigos() {
-  const p = painel(`${ic('codigo', '#F59E0B', 20)}<b>Códigos &amp; LED · Decodificador Instantâneo</b>`, '<div data-corpo><div class="carregando">Carregando os códigos da base técnica…</div></div>');
+  const p = painel(`${ic('codigo', '#F59E0B', 20)}<b>Códigos &amp; LED · Decodificador Instantâneo</b>`, '<div data-corpo><div class="carregando">Carregando os códigos da base técnica…</div></div>', true);
   const corpo = $('[data-corpo]', p);
   carregarCodigos().then(U => {
     if (!corpo.isConnected) return;
     const marcas = [...new Set(U.map(r => r.m))].sort(), nC = U.filter(r => r.tp === 'Código').length, nP = U.length - nC;
     corpo.innerHTML = `<div class="sub"><b>${nC} códigos e ${nP} piscadas de LED</b> reais de ${marcas.length} marcas (${esc(marcas.join(', '))}). Selo verde = a fonte do fabricante descreve operação normal ou proteção: nenhuma peça condenada.</div>
       <div class="form" style="margin-top:0"><label class="busca">${ic('busca', '#64748B', 18)}<input type="search" data-q placeholder="Código ou nº de piscadas: CH05, E1, EC, F0, P4, H6, 5…" autocomplete="off" enterkeyhint="search"></label>
-      <select data-mk style="min-height:44px;border:1.5px solid #CBD5E1;border-radius:10px;padding:0 12px;font-size:16px"><option value="">Todas as ${marcas.length} marcas</option>${marcas.map(x => `<option${x === B.equip.marca ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></div>
+      <select data-mk style="min-height:48px;border:1.5px solid #CBD5E1;border-radius:10px;padding:0 12px;font-size:16px"><option value="">Todas as ${marcas.length} marcas</option>${marcas.map(x => `<option${x === B.equip.marca ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select></div>
       <div data-cont class="sub"></div><div data-lista></div><button class="tecla clara" data-mais style="height:44px;width:100%" hidden><span>Mostrar mais</span></button>`;
     let lim = 40;
     const filtro = () => {
@@ -1244,10 +1326,10 @@ function abrirCodigos() {
       $('[data-cont]', corpo).textContent = `${R.length} resultado${R.length === 1 ? '' : 's'}${pisc ? ` com ${q} piscada${q === '1' ? '' : 's'}` : ''}`;
       $('[data-lista]', corpo).innerHTML = R.length ? R.slice(0, lim).map(r => `<div class="codigo" data-cod="${r.i}"><span class="cd">${esc(r.c)}</span> <span class="mk">· ${esc(r.tp)} · ${esc(r.m)} · ${esc(r.l)}</span><div>${esc(r.d)}</div>
           ${r.ok ? `<span class="selo-verde" data-selo-ok>${ic('check', '#FFFFFF', 13)}${SELO_OK}</span>` : r.naoConf ? '<div class="nota-amb">Não condene a peça só pelo código: meça antes.</div>' : ''}
-          ${r.fa ? `<div class="fa"><b>FAÇA:</b> ${esc(r.fa)}</div>` : ''}<div class="mk">Fonte ${esc(r.f)}</div><button class="mini-bt env" data-env="${r.i}">${ic('mais', '#14532D', 15)}<span>Enviar para o Laudo</span></button></div>`).join('')
+          ${r.fa ? `<div class="fa"><b>FAÇA:</b> ${esc(r.fa)}</div>` : ''}<div class="mk">Fonte ${esc(r.f)}</div><button class="mini-bt env${B.afericoes.some(a => a.k === `cod-${r.i}`) ? ' feito' : ''}" data-env="${r.i}">${envHtml(B.afericoes.some(a => a.k === `cod-${r.i}`), 16, 'Enviar para o Laudo')}</button></div>`).join('')
         : `<div class="vazio">Código fora da base desta marca: abra a ficha D-099, meça sensores e o cabo de interligação e monte o laudo de diagnóstico.<div class="pilha"><button class="tecla" data-ir="D-099"><span>Abrir D-099</span></button><button class="tecla verde" data-ir-laudo>${ic('prancheta', '#FFFFFF', 18)}<span>Montar laudo de diagnóstico</span></button></div></div>`;
       $('[data-mais]', corpo).hidden = R.length <= lim;
-      $$('[data-env]', corpo).forEach(b => b.addEventListener('click', () => { const r = U[+b.dataset.env]; addAfericao(`cod-${r.i}`, `${r.tp} ${r.c} (${r.m}): ${r.d}${r.ok ? ' — ' + SELO_OK : ''}`, {}); b.classList.add('feito'); b.innerHTML = `${ic('check', '#FFFFFF', 15)}<span>No Laudo</span>`; }));
+      $$('[data-env]', corpo).forEach(b => b.addEventListener('click', () => { const r = U[+b.dataset.env]; addAfericao(`cod-${r.i}`, `${r.tp} ${r.c} (${r.m}): ${r.d}${r.ok ? ' — ' + SELO_OK : ''}`, {}); marcarEnv(b, true, 16, 'Enviar para o Laudo'); }));
       $$('[data-ir]', corpo).forEach(b => b.addEventListener('click', () => montarFicha(F.findIndex(x => x.id === b.dataset.ir))));
       $$('[data-ir-laudo]', corpo).forEach(b => b.addEventListener('click', () => abrirLaudo({ servico: 'visita_diag' })));
     };
