@@ -5,7 +5,7 @@
 // .webp lidas de ../guia-pro/imagens/. Com sinal: página, .js, .html e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e
 // imagens saem do cache e só vão à rede se faltarem.
 'use strict';
-const CACHE = 'bancada-offline-v2'; // v2 (05/11/2026): recortes de icones/ com fundo transparente // nome novo derruba o anterior (o activate apaga todo bancada-offline-* diferente; guia e app ficam)
+const CACHE = 'bancada-offline-v3'; // v3 (05/11/2026): 24 tiles Option C em ./tiles/ (v2: recortes de icones/ transparentes) // nome novo derruba o anterior (o activate apaga todo bancada-offline-* diferente; guia e app ficam)
 const REDE_MS = 3000;
 const PAGINA = './';
 const MOTOR = [
@@ -82,7 +82,16 @@ const ARTES = [
   '../guia-pro/imagens/icones/s07_p3.webp', '../guia-pro/imagens/icones/s07_p4.webp', '../guia-pro/imagens/icones/s07_p5.webp',
   '../guia-pro/imagens/icones/s07_sistema.webp'
 ];
-const TUDO = [PAGINA, ...MOTOR, ...BASE, ...ARTES];
+// 24 tiles oficiais Option C da lista, dos chips e das causas (pasta da própria bancada).
+const TILES = [
+  './tiles/t01_alicate.webp', './tiles/t02_multimetro.webp', './tiles/t03_manifold.webp', './tiles/t04_termometro_nivel.webp',
+  './tiles/t05_placa_pcb.webp', './tiles/t06_modulo_ipm.webp', './tiles/t07_barramento_pfc.webp', './tiles/t08_fusivel_varistor.webp',
+  './tiles/t09_capacitor_uf.webp', './tiles/t10_sensor_ntc.webp', './tiles/t11_bornes_fios.webp', './tiles/t12_disjuntor.webp',
+  './tiles/t13_compressor.webp', './tiles/t14_valvula_flange.webp', './tiles/t15_tubulacao_isolada.webp', './tiles/t16_vacuo_botija.webp',
+  './tiles/t17_turbina_interna.webp', './tiles/t18_helice_motor.webp', './tiles/t19_serpentina_gelo.webp', './tiles/t20_filtro_serpentina.webp',
+  './tiles/t21_bandeja_dreno.webp', './tiles/t22_mangueira_sifao.webp', './tiles/t23_evaporadora_split.webp', './tiles/t24_condensadora_split.webp'
+];
+const TUDO = [PAGINA, ...MOTOR, ...BASE, ...ARTES, ...TILES];
 const abs = (u) => new URL(u, self.location).href;
 const URL_PAGINA = abs(PAGINA);
 
