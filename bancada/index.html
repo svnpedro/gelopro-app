@@ -671,13 +671,68 @@ function pontoRealNaArte(f, vIdx) {
   return (PONTO_REAL[k] = r);
 }
 // Tile da verificação: a peça do próprio texto; sem peça no texto, a da causa ligada.
-const tileDaVerif = (f, vIdx) => { const r = pecaDoTexto(...f.verifs[vIdx]); return r ? tile(r) : iconePecaCausa(f, (f.vc[vIdx] || 1) - 1); };
+const tileDaVerif = (f, vIdx) => { const r = peca48(...f.verifs[vIdx]); return r ? tile(r) : iconePecaCausa(f, (f.vc[vIdx] || 1) - 1); };
 
 const valeRegra = (ctx, J) => !ctx || ctx.test(J);
 const pecaDaParte = (t, J) => { for (const [pal, , r, ctx] of PECAS) if (pal.test(t) && valeRegra(ctx, J)) return r; for (const [, cod, r] of PECAS) if (cod && cod.test(t)) return r; return null; };
 const pecaDoTexto = (...textos) => { const T = textos.map(t => norm(limpa(t))), J = T.join(' '); for (const t of T) { const r = pecaDaParte(t, J); if (r) return r; } return null; };
-const iconePecaCaso = (f) => tile(pecaDoTexto(f.titulo, f.sub) || TILE_BLOCO[f.blocos[0]]);
-const iconePecaCausa = (f, k) => tile(pecaDoTexto(f.causas[k][0]) || TILE_BLOCO[f.blocos[0]]);
+const iconePecaCaso = (f) => tile(tileDoCaso(f.n));
+const iconePecaCausa = (f, k) => tile(peca48(f.causas[k][0]) || TILE_BLOCO[f.blocos[0]]);
+// ───────────── Camada visual dos 48 tiles (06/11/2026) ─────────────
+// PECAS (24 famílias) segue intacta para ligar verificação e bolinha (pontoRealNaArte). A exibição do tile usa: 1º os 24 tiles
+// especializados t25..t48; 2º a cópia visual de PECAS, sem o exagero de t04 (ambiente, sala, saída e sucção soltos não são termômetro).
+const ESPEC = [
+  [/\beev\b|expansao eletronica|bobina da eev|passos da eev/, 't25_eev_bobina'],
+  [/reversora|4 vias|quente e frio|modo quente|nao aquece/, 't26_reversora_4vias'],
+  [/capilar|filtro secador|obstrucao|entupido no ciclo|vacuo \(obstru/, 't27_filtro_capilar'],
+  [/linha fina congel|valvula externa|gelo na valvula|congelando logo/, 't28_tubo_congelado'],
+  [/dobrad|amassad|estrangul|esponjoso|isolamento rasgado/, 't29_tubo_amassado'],
+  // nível de bolha antes da espuma de vazamento ("bolha")
+  [/\bnivel|desnivel|torta|caimento|inclinad/, 't48_nivel_bolha'],
+  [/espuma|bolha|microvazamento|\bporcas?\b|flange|sabao/, 't30_detector_espuma'],
+  [/contatora|contator\b/, 't31_contatora'],
+  [/protetor termico|termico abrindo|no termico|klixon|bimet/, 't32_protetor_termico'],
+  [/\bs-c-r\b|\bs-c\b|\br-c\b|\bs-r\b|pino do compressor|bornes do compressor/, 't33_bornes_scr'],
+  [/\brele\b|triac|contatos colados|nao atraca|manda 220v/, 't34_rele_placa'],
+  [/transformador|primario|secundario|fonte morta|sem 5v/, 't35_transformador'],
+  [/interligacao|fio partido|numeracao trocada|cabo rompido|fio s\b/, 't36_cabo_interligacao'],
+  [/ponte retificadora|eletrolitico|capacitor da placa|estufado na placa/, 't37_ponte_capacitor'],
+  [/controle remoto|no controle|pilha|infravermelho|aponte o controle|\btimer\b|\bsleep\b/, 't38_controle_remoto'],
+  [/display|visor|piscada|\bled\b|receptor|apita/, 't39_display_led'],
+  // "aleta" solta fica com o filtro (aletas sujas da serpentina); o swing é a aleta de direção do ar
+  [/aletas? (horizontal|vertical|de direcao)|swing|\bflap\b|motor de passo|tec-tec/, 't40_motor_swing'],
+  [/dissipador|pasta termica|pasta seca|superaquecimento do ipm/, 't41_pasta_dissipador'],
+  [/eeprom|memoria|microcontrolador|\bloop\b|\breset\b|cristal/, 't42_eeprom_micro'],
+  [/bomba de dreno|bomba de condensado|\bboia\b|recalque/, 't43_bomba_dreno'],
+  [/\bcoxi[mn]s?\b|mao francesa|suporte|vibrando na parede/, 't44_coxim_suporte'],
+  [/rolamento|bucha|mancal|\beixo\b/, 't45_rolamento_bucha'],
+  [/ao sol|bate sol|condensadora quente|abafada|calor externo/, 't46_condensadora_sol'],
+  [/balanca|excesso de gas|recarga|recolh|botija/, 't47_balanca_carga'],
+];
+const VIS_EXTRA = { t13_compressor: 'comprim', t06_modulo_ipm: 'nao sobe (a )?rotacao', t03_manifold: 'succao (alta|baixa)|baixa alta|alta baixa' };
+const PECAS_VISUAL = PECAS.map(([pal, cod, r, ctx]) => [
+  r === 't04_termometro_nivel' ? /termometro|delta t|retorno e saida|temperatura de saida|fresta|carga termica|subdimensionado|superdimensionado|infiltracao|lotacao/ : VIS_EXTRA[r] ? new RegExp(pal.source + '|' + VIS_EXTRA[r]) : pal, cod, r, ctx]);
+const pecaVisualDaParte = (t, J) => { for (const [re, r] of ESPEC) if (re.test(t)) return r; for (const [pal, , r, ctx] of PECAS_VISUAL) if (pal.test(t) && valeRegra(ctx, J)) return r; for (const [, cod, r] of PECAS_VISUAL) if (cod && cod.test(t)) return r; return null; };
+// Tile visual (48 tiles): o título manda, depois o critério.
+const peca48 = (...textos) => { const T = textos.map(t => norm(limpa(t))), J = T.join(' '); for (const t of T) { const r = pecaVisualDaParte(t, J); if (r) return r; } return null; };
+// Lista dos 120 casos sem dois vizinhos com o mesmo tile: o 1º candidato do próprio caso diferente do vizinho anterior (e do seguinte,
+// quando o seguinte é fixo). D-100 a D-106 ficam fixos (verificação antiga da sonda).
+const TILE_FIXO = { 'D-100': 't11_bornes_fios', 'D-101': 't10_sensor_ntc', 'D-102': 't10_sensor_ntc', 'D-103': 't06_modulo_ipm', 'D-104': 't07_barramento_pfc', 'D-105': 't01_alicate', 'D-106': 't17_turbina_interna' };
+let TILE_CASO = null;
+const tileDoCaso = (n) => {
+  if (!TILE_CASO) {
+    TILE_CASO = [];
+    F.forEach((f, i) => {
+      if (TILE_FIXO[f.id]) { TILE_CASO[i] = TILE_FIXO[f.id]; return; }
+      const ant = TILE_CASO[i - 1], prox = F[i + 1] && TILE_FIXO[F[i + 1].id];
+      const cand = [peca48(f.titulo, f.sub), peca48(f.causas[0][0]), peca48(...f.verifs[0]), peca48(f.causas[1][0]), peca48(f.chips[2]), TILE_BLOCO[f.blocos[0]],
+        ...f.causas.slice(2).map(c => peca48(c[0])), ...f.verifs.slice(1).map(v => peca48(...v)), 't23_evaporadora_split', 't24_condensadora_split'].filter(Boolean);
+      TILE_CASO[i] = cand.find(t => t !== ant && t !== prox);
+    });
+  }
+  return TILE_CASO[n];
+};
+
 // Os 3 chips da camada 3: sistema, área de aplicação e instrumento.
 const tileSistema = (v) => (/inverter/i.test(v) && !/convencional/i.test(v) ? 't05_placa_pcb' : /quente/i.test(v) ? 't14_valvula_flange' : 't23_evaporadora_split');
 const tileAplicacao = (v) => { const t = norm(v); return /refrigera/.test(t) ? 't24_condensadora_split' : /eletric/.test(t) && !/eletronic/.test(t) ? 't12_disjuntor' : /eletronic|inverter|codigo/.test(t) ? 't05_placa_pcb' : /dreno|drenagem/.test(t) ? 't21_bandeja_dreno' : /ventila/.test(t) ? 't17_turbina_interna' : /instala/.test(t) ? 't15_tubulacao_isolada' : /comando/.test(t) ? 't10_sensor_ntc' : 't20_filtro_serpentina'; };
@@ -900,7 +955,7 @@ function quadro(f, v, cLigada, semRolar) {
   zoomNoPonto(f, j, true);
   const k = `${f.id}-v${v}`, box = $('[data-quadro]', tela);
   box.innerHTML = `<div class="cartao quadro" data-quadro-v="${v}">
-    <div class="passo-cab" data-lupa="${Math.round(Z * 100)}"><img class="passo-tile" src="${pecaDoTexto(tt, ln) ? tile(pecaDoTexto(tt, ln)) : iconePecaCausa(f, c - 1)}" alt="" width="76" height="76" data-tile><div class="passo-tx"><h3>Ponto ${nn(v)} · ${tx(tt)}</h3><span class="sub">Na imagem: bolinha ${nn(j + 1)}</span><span class="tag tag-bonus" style="align-self:flex-start">GUIA DE PONTA SEM CURTO</span></div></div>
+    <div class="passo-cab" data-lupa="${Math.round(Z * 100)}"><img class="passo-tile" src="${peca48(tt, ln) ? tile(peca48(tt, ln)) : iconePecaCausa(f, c - 1)}" alt="" width="76" height="76" data-tile><div class="passo-tx"><h3>Ponto ${nn(v)} · ${tx(tt)}</h3><span class="sub">Na imagem: bolinha ${nn(j + 1)}</span><span class="tag tag-bonus" style="align-self:flex-start">GUIA DE PONTA SEM CURTO</span></div></div>
     ${tagsPonta(escala, alvoCurto(tt, ln), pontas)}
     ${('ALVO: ' + limpa(ln)).length > 24 ? `<div class="ref-faixa" data-ref-faixa><b>Medida-alvo:</b> ${tk(tx(ln))}</div>` : ''}
     <p class="sub">Causa ligada: <b>${nn(c)} · ${tx(f.causas[c - 1][0])}</b> (${PIL[c - 1][1].replace(/^\d+º · /, "").toLowerCase()}) → ${esc(servNome(f.causas[c - 1][1]))}</p>
@@ -1193,6 +1248,10 @@ function telaCodigos() {
 
 // ───────────── Tecla 4 · Tabela & Laudo (Bônus 6 + Order Bump PMOC) ─────────────
 const carregarPrecos = () => PRECOS ? Promise.resolve(PRECOS) : csv('precos_regionais_2026.csv').then(L => (PRECOS = L.filter(r => r.regiao === 'GELOPRO')));
+// Mínimo e máximo do CSV são do porte 12K: nos portes com preço próprio, a faixa escala na razão referência do porte / típico 12K,
+// arredondada à dezena, e sempre vale mínimo <= referência <= máximo.
+const faixaDe = (s, porte) => { const ref = precoDe(s, porte), tip = num(s.valor_tipico), mn = num(s.valor_min) || 0, mx = num(s.valor_max) || 0, escala = !!tip && Math.abs(ref - tip) > 0.005, r = escala ? ref / tip : 1;
+  const min = escala ? Math.round(mn * r / 10) * 10 : mn, max = escala ? Math.round(mx * r / 10) * 10 : mx; return { min: Math.min(min, ref), ref, max: Math.max(max, ref), escala }; };
 const precoDe = (s, porte) => { const t = { '12': num(s.valor_tipico), '18': num(s.valor_tipico_18000btu), '36': num(s.valor_tipico_36000btu) }[porte]; return t ?? num(s.valor_tipico) ?? 0; };
 const pecaDe = (s, porte) => { const suf = porte === '18' ? '_18000btu' : porte === '36' ? '_36000btu' : ''; return [num(s['custo_peca_min' + suf]) ?? num(s.custo_peca_min), num(s['custo_peca_max' + suf]) ?? num(s.custo_peca_max)]; };
 // Custo da peça no bastidor: R$ 19,81 no sensor NTC (valor do Pedro, 05/11/2026); nos outros, o meio da faixa de peça do CSV no porte.
@@ -1285,15 +1344,16 @@ function telaLaudo(op) {
       const inp = q('v'); if (document.activeElement !== inp) inp.value = String(Math.round(valor() * 100) / 100);
       const custo = custoPeca(s, porte);
       q('proc').innerHTML = tk(esc(`Procedimento incluso: ${s.justificativa_tecnica}`));
-      q('faixa').innerHTML = tk(esc(`Faixa Oficial 2026: ${brl(s.valor_min)} a ${brl(s.valor_max)} · Valor típico: ${brl(precoDe(s, porte))}`));
+      const fxp = faixaDe(s, porte);
+      q('faixa').innerHTML = tk(esc(`Faixa Oficial 2026: ${brl(s.valor_min)} a ${brl(s.valor_max)} · Valor típico: ${brl(precoDe(s, porte))}${fxp.escala ? ` · Porte ${PORTE_TX[porte]} (faixa da tabela em escala proporcional): ${brl(fxp.min)} a ${brl(fxp.max)}` : ''}`));
       q('prevtx').innerHTML = tk(esc(`Prevenção: ${s.economia_preventiva}`));
       q('ref').dataset.servico = s.servico_id;
       q('custo').textContent = brl(custo); q('mala').innerHTML = `${ico(L.mala ? 'sucesso' : 'neutro', L.mala ? '#FFFFFF' : '#091E42', 18)}<span>Peça na Mala = R$ 0</span>`; q('mala').setAttribute('aria-pressed', String(L.mala));
       q('limpo').textContent = sinal(valor() - (L.mala ? 0 : custo)); q('total').textContent = brl(valor());
       // Faixa da Tabela 2026 em 1 toque (mínimo, referência do porte, máximo) e o tile da peça do serviço.
-      const fx = { min: num(s.valor_min) || 0, ref: precoDe(s, porte), max: num(s.valor_max) || 0 };
+      const fx = faixaDe(s, porte);
       $$('[data-faixa]', tela).forEach(b => { const k = b.dataset.faixa; $(`[data-fx=${k}]`, b).textContent = brl(fx[k]); b.setAttribute('aria-pressed', String(Math.abs(valor() - fx[k]) < 0.005)); b.onclick = () => { L.v = fx[k]; pintarValor(); }; });
-      const tl = q('tile-srv'), np = pecaDoTexto(L.causa, s.servico) || (f ? TILE_BLOCO[f.blocos[0]] : 't23_evaporadora_split');
+      const tl = q('tile-srv'), np = peca48(L.causa, s.servico) || (f ? TILE_BLOCO[f.blocos[0]] : 't23_evaporadora_split');
       if (tl.getAttribute('src') !== tile(np)) tl.setAttribute('src', tile(np));
       q('srv-nome').textContent = s.servico; q('srv-causa').textContent = `Causa: ${L.causa}`;
       q('visita').setAttribute('aria-pressed', String(L.sid === 'visita_diag')); salvarSessao();

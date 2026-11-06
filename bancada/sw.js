@@ -82,14 +82,20 @@ const ARTES = [
   '../guia-pro/imagens/icones/s07_p3.webp', '../guia-pro/imagens/icones/s07_p4.webp', '../guia-pro/imagens/icones/s07_p5.webp',
   '../guia-pro/imagens/icones/s07_sistema.webp'
 ];
-// 24 tiles oficiais Option C da lista, dos chips e das causas (pasta da própria bancada).
+// 48 tiles oficiais Option C (t01–t24 e t25–t48) da lista, dos chips, das causas e dos passos (pasta da própria bancada).
 const TILES = [
   './tiles/t01_alicate.webp', './tiles/t02_multimetro.webp', './tiles/t03_manifold.webp', './tiles/t04_termometro_nivel.webp',
   './tiles/t05_placa_pcb.webp', './tiles/t06_modulo_ipm.webp', './tiles/t07_barramento_pfc.webp', './tiles/t08_fusivel_varistor.webp',
   './tiles/t09_capacitor_uf.webp', './tiles/t10_sensor_ntc.webp', './tiles/t11_bornes_fios.webp', './tiles/t12_disjuntor.webp',
   './tiles/t13_compressor.webp', './tiles/t14_valvula_flange.webp', './tiles/t15_tubulacao_isolada.webp', './tiles/t16_vacuo_botija.webp',
   './tiles/t17_turbina_interna.webp', './tiles/t18_helice_motor.webp', './tiles/t19_serpentina_gelo.webp', './tiles/t20_filtro_serpentina.webp',
-  './tiles/t21_bandeja_dreno.webp', './tiles/t22_mangueira_sifao.webp', './tiles/t23_evaporadora_split.webp', './tiles/t24_condensadora_split.webp'
+  './tiles/t21_bandeja_dreno.webp', './tiles/t22_mangueira_sifao.webp', './tiles/t23_evaporadora_split.webp', './tiles/t24_condensadora_split.webp',
+  './tiles/t25_eev_bobina.webp', './tiles/t26_reversora_4vias.webp', './tiles/t27_filtro_capilar.webp', './tiles/t28_tubo_congelado.webp',
+  './tiles/t29_tubo_amassado.webp', './tiles/t30_detector_espuma.webp', './tiles/t31_contatora.webp', './tiles/t32_protetor_termico.webp',
+  './tiles/t33_bornes_scr.webp', './tiles/t34_rele_placa.webp', './tiles/t35_transformador.webp', './tiles/t36_cabo_interligacao.webp',
+  './tiles/t37_ponte_capacitor.webp', './tiles/t38_controle_remoto.webp', './tiles/t39_display_led.webp', './tiles/t40_motor_swing.webp',
+  './tiles/t41_pasta_dissipador.webp', './tiles/t42_eeprom_micro.webp', './tiles/t43_bomba_dreno.webp', './tiles/t44_coxim_suporte.webp',
+  './tiles/t45_rolamento_bucha.webp', './tiles/t46_condensadora_sol.webp', './tiles/t47_balanca_carga.webp', './tiles/t48_nivel_bolha.webp'
 ];
 const TUDO = [PAGINA, ...MOTOR, ...BASE, ...ARTES, ...TILES];
 const abs = (u) => new URL(u, self.location).href;
