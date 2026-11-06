@@ -83,6 +83,23 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .bt-sel:not([aria-pressed="true"]){background:linear-gradient(180deg,#FFFFFF 0%,#E8EEF5 100%);border:1.5px solid #475569;color:#091E42;box-shadow:inset 0 1px 0 #FFFFFF,0 2px 0 #64748B}
 .bt-sel[aria-pressed="true"]{background:linear-gradient(180deg,#2563EB 0%,#1D4ED8 100%);border:2px solid #091E42;color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 2px #67C6FF}
 .bt-sel:disabled{opacity:.45;cursor:not-allowed}
+/* Controles por função (auditoria externa 06/11/2026): escolha em ciano, ação secundária em azul gelo, destrutivo em vermelho claro.
+   Todos com texto escuro >= 4,5:1 em qualquer ponto do degradê; o .bt-sel fica para a sonda e o estado pressionado segue cobalto. */
+.bt-sel.escolha:not([aria-pressed="true"]){background:#E0F2FE linear-gradient(180deg,#F0F9FF 0%,#E0F2FE 100%);border:2px solid #0284C7;color:#0C4A6E;box-shadow:0 2px 0 #0369A1;display:flex;justify-content:space-between;align-items:center}
+.bt-sel.escolha .eq-seta{color:#0369A1}
+.bt-sel.bt-perigo:not([aria-pressed="true"]){background:#FEF2F2 linear-gradient(180deg,#FFF5F5 0%,#FEE2E2 100%);border:1.5px solid #DC2626;color:#991B1B;box-shadow:0 2px 0 #FCA5A5}
+.bt-sel.bt-acao-sec:not([aria-pressed="true"]){background:#DBEAFE linear-gradient(180deg,#EFF6FF 0%,#DBEAFE 100%);border:1.5px solid #2563EB;color:#1E3A8A;box-shadow:0 2px 0 #93C5FD}
+.bt-sel[data-faixa="min"]:not([aria-pressed="true"]){background:#F1F5F9 linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%);border:1.5px solid #64748B;color:#0F172A;box-shadow:0 2px 0 #94A3B8}
+.bt-sel[data-faixa="ref"]:not([aria-pressed="true"]){background:#DBEAFE linear-gradient(180deg,#EFF6FF 0%,#DBEAFE 100%);border:1.5px solid #2563EB;color:#1E3A8A;box-shadow:0 2px 0 #93C5FD}
+.bt-sel[data-faixa="max"]:not([aria-pressed="true"]){background:#E0F2FE linear-gradient(180deg,#F0F9FF 0%,#E0F2FE 100%);border:1.5px solid #0284C7;color:#0C4A6E;box-shadow:0 2px 0 #7DD3FC}
+.bt-sel[data-faixa][aria-pressed="true"]{background:#1D4ED8 linear-gradient(180deg,#2563EB 0%,#1D4ED8 100%);color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 2px #67C6FF}
+.bt-sel[data-l="visita"]{display:block;padding-top:12px;padding-bottom:12px}
+.nw{white-space:nowrap}
+.bt-sel[data-aj="-20"]{background:#F1F5F9 linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%);border:1.5px solid #475569;color:#091E42;box-shadow:0 2px 0 #94A3B8}
+.bt-sel[data-aj="50"]{background:#DCFCE7 linear-gradient(180deg,#F0FDF4 0%,#DCFCE7 100%);border:1.5px solid #16A34A;color:#14532D;box-shadow:0 2px 0 #86EFAC}
+/* Normal e Defeito com cor própria quando marcados (verde escuro × vermelho escuro, texto branco >= 4,5:1 nos 2 pontos do degradê). */
+.bt-sel[data-r="ok"][aria-pressed="true"],.bt-sel[data-s="ok"][aria-pressed="true"]{background:#15803D linear-gradient(180deg,#15803D 0%,#166534 100%);border:2px solid #052E16;color:#FFFFFF}
+.bt-sel[data-r="def"][aria-pressed="true"],.bt-sel[data-s="fo"][aria-pressed="true"]{background:#B91C1C linear-gradient(180deg,#DC2626 0%,#B91C1C 100%);border:2px solid #450A0A;color:#FFFFFF}
 .bt-grande{min-height:60px;font-size:16px;border-radius:14px}
 .capsula{border-radius:999px;width:100%;min-height:58px;padding:6px 14px 6px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;font:800 16.5px/1.2 var(--f-tit)}
 .cap-medalhao{width:38px;height:38px;border-radius:50%;background:#091930;border:1.5px solid #67C6FF;display:flex;align-items:center;justify-content:center;flex:none}
@@ -193,7 +210,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .chip-sis{background:#EEF2FF;border:1.5px solid #6366F1}.chip-sis .chip-k{color:#312E81}
 .chip-apl{background:#F0FDFA;border:1.5px solid #0D9488}.chip-apl .chip-k{color:#115E59}
 .chip-fer{background:#FFFBEB;border:1.5px solid #D97706}.chip-fer .chip-k{color:#78350F}
-.chip .v{font:700 14px/1.2 var(--f-txt);color:#0F172A;overflow-wrap:anywhere}
+.chip .v{font:700 14px/1.2 var(--f-txt);color:#0F172A;overflow-wrap:break-word}
 .ilustra{position:relative;overflow:hidden;border-radius:12px;border:2px solid #19365C;background:#FFFFFF}
 .ilustra-in{position:relative;transform-origin:var(--zx,50%) var(--zy,50%);transition:transform .22s ease-out}
 .ilustra.zoom .ilustra-in{transform:scale(1.85)}
@@ -333,7 +350,7 @@ details.dados>summary::-webkit-details-marker{display:none}
   <button class="tecla bt-verde" data-tecla="laudo" data-verde="1"><span data-ico="documento"></span><span>Tabela &amp; Laudo</span></button>
 </div></nav>
 <div id="fundo"></div>
-<section id="gaveta" role="dialog" aria-modal="true" aria-label="Equipamento"><div class="trilho" id="gaveta-in"></div></section>
+<section id="gaveta" role="dialog" aria-modal="true" aria-label="Equipamento" hidden aria-hidden="true"><div class="trilho" id="gaveta-in"></div></section>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="../app/vendor/qrcode-generator-1.4.4.js"></script>
@@ -760,7 +777,7 @@ const PORTE_TX = { '12': '12K', '18': '18K', '36': '36K' };
 const S = {
   tecla: 'sintomas', caso: -1, sel: 0, estado: {}, defeito: {}, bloco: null, todos: false, termo: '',
   sub: 'ntc', ntc: null, gas: null, trava: {}, inv: {}, cod: { marca: null, pisc: null, q: '' },
-  leituras: [], srvSug: null, causaSug: null, laudo: null, numero: null, numeroGravado: false, hist: [], cofreAberto: false,
+  leituras: [], srvSug: null, causaSug: null, laudo: null, numero: null, numeroGravado: false, hist: [], cofreAberto: false, casoLaudo: -1,
   // Cofre simples de laudos salvos no aparelho (bancada.cofre): número, data, equipamento, serviço, valor e cliente.
   cofre: (() => { const a = lerJSON('bancada.cofre'); return Array.isArray(a) ? a.filter(x => x && typeof x.id === 'string') : []; })(),
   equip: (() => { const e = lerJSON('bancada.equip'); return e && MARCAS.includes(e.marca) && BTUS.includes(e.btu) && FLS.includes(e.fluido) ? e : { marca: 'LG', btu: '12.000', fluido: 'R32' }; })(),
@@ -768,7 +785,7 @@ const S = {
 // Sessão de bancada no aparelho: leituras enviadas, sugestão de serviço, laudo em montagem, Trava 30s e Inverter sobrevivem a recarregar a
 // página. Fora na passada de estresse da sonda (?largura=360).
 const SESSAO_OFF = /[?&]largura=360\b/.test(location.search);
-const salvarSessao = () => { if (!SESSAO_OFF) guardar('bancada.sessao', JSON.stringify({ leituras: S.leituras, srvSug: S.srvSug, causaSug: S.causaSug, laudo: S.laudo, trava: S.trava, inv: S.inv })); };
+const salvarSessao = () => { if (!SESSAO_OFF) guardar('bancada.sessao', JSON.stringify({ leituras: S.leituras, srvSug: S.srvSug, causaSug: S.causaSug, laudo: S.laudo, trava: S.trava, inv: S.inv, casoLaudo: S.casoLaudo })); };
 (() => {
   if (SESSAO_OFF) return; const z = lerJSON('bancada.sessao'); if (!z || typeof z !== 'object') return;
   const obj = (o) => (o && typeof o === 'object' && !Array.isArray(o) ? o : null), txt = (v) => (typeof v === 'string' ? v : null);
@@ -776,6 +793,7 @@ const salvarSessao = () => { if (!SESSAO_OFF) guardar('bancada.sessao', JSON.str
   S.srvSug = txt(z.srvSug); S.causaSug = txt(z.causaSug);
   if (obj(z.laudo)) S.laudo = { sid: null, v: null, causa: '', cli: '', tel: '', mala: false, tecnico: false, pmoc: '', ...z.laudo, tecnico: false };
   if (obj(z.trava)) S.trava = z.trava; if (obj(z.inv)) S.inv = z.inv;
+  if (Number.isInteger(z.casoLaudo) && z.casoLaudo >= -1 && z.casoLaudo < F.length) S.casoLaudo = z.casoLaudo;
 })();
 const equipTx = () => `${S.equip.marca} · ${S.equip.btu} BTU/h · ${S.equip.fluido}`;
 const marcaCurva = (m) => (['Midea', 'Springer', 'Carrier'].includes(m) ? 'Midea' : m);
@@ -802,6 +820,7 @@ const CAUSA_EXCESSO = 'Excesso de fluido refrigerante (superaquecimento abaixo d
 // Leituras enviadas ao laudo (+ Mandar para o Laudo): cada uma pode sugerir o serviço e a causa correspondente.
 function mandar(k, texto, x = {}) {
   S.leituras = S.leituras.filter(a => a.k !== k); S.leituras.push({ k, txt: limpa(texto), ...x });
+  if (S.tecla === 'sintomas' && S.caso >= 0) S.casoLaudo = S.caso; // leitura de um caso fixa o caso do laudo
   if (x.srv) { S.srvSug = x.srv; S.causaSug = limpa(x.causa || CAUSA_PADRAO[x.srv] || ''); if (S.laudo) { S.laudo.sid = x.srv; S.laudo.v = null; S.laudo.causa = S.causaSug; } }
   toast('✓ Enviado ao Laudo'); pintarDock(); salvarSessao();
 }
@@ -824,7 +843,11 @@ const pilula = () => `<div class="eq-pilula" role="group" aria-label="Equipament
   <button class="eq-bt" data-eq-abrir="btu" aria-label="Capacidade ${esc(S.equip.btu)} BTU/h. Trocar"><span class="tag eq-rot">CAPACIDADE ▾</span><span class="eq-val"><span>${esc(S.equip.btu)} BTU/h</span></span></button>
   <button class="eq-bt" data-eq-abrir="fluido" aria-label="Fluido ${esc(S.equip.fluido)}. Trocar"><span class="tag eq-rot">FLUIDO ▾</span><span class="eq-val"><span>${esc(S.equip.fluido)}</span></span></button></div>`;
 const fundo = $('#fundo'), gaveta = $('#gaveta');
-const fecharGaveta = () => { fundo.classList.remove('on'); gaveta.classList.remove('on'); };
+let gavetaOrigem = null;
+const abrirGaveta = (titulo) => { gavetaOrigem = document.activeElement; gaveta.hidden = false; gaveta.removeAttribute('aria-hidden'); gaveta.setAttribute('aria-label', titulo);
+  fundo.classList.add('on'); gaveta.classList.add('on'); const fc = $('[data-fechar-gaveta]', gaveta); if (fc) fc.focus({ preventScroll: true }); };
+const fecharGaveta = () => { fundo.classList.remove('on'); gaveta.classList.remove('on'); gaveta.hidden = true; gaveta.setAttribute('aria-hidden', 'true');
+  const o = gavetaOrigem; gavetaOrigem = null; if (o && o.isConnected && o.focus) o.focus({ preventScroll: true }); };
 fundo.addEventListener('click', fecharGaveta);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharGaveta(); });
 function abrirEquip(sec) {
@@ -846,7 +869,7 @@ function abrirEquip(sec) {
     $('[data-eq-ok]', g).addEventListener('click', () => { fecharGaveta(); render(); toast(equipTx()); });
     $('[data-fechar-gaveta]', g).addEventListener('click', fecharGaveta);
   };
-  pinta(); fundo.classList.add('on'); gaveta.classList.add('on');
+  pinta(); abrirGaveta('Equipamento na bancada');
   const alvo = sec && $(`[data-sec="${sec}"]`, gaveta); const cab = $('.cab-sec', gaveta); gaveta.scrollTop = alvo ? Math.max(0, alvo.offsetTop - 12 - (cab ? cab.offsetHeight : 0)) : 0;
 }
 function pintarDock() {
@@ -860,13 +883,13 @@ const empilhar = () => { const e = { tecla: S.tecla, caso: S.caso, bloco: S.bloc
   if (u && u.tecla === e.tecla && u.caso === e.caso && u.bloco === e.bloco && u.sub === e.sub) return; S.hist.push(e); if (S.hist.length > 15) S.hist.shift(); };
 function voltarPasso() {
   const e = S.hist.pop(); if (!e) return irInicio();
-  fecharGaveta(); Object.assign(S, { tecla: e.tecla, caso: e.caso, bloco: e.bloco, sub: e.sub, sel: 0 }); if (S.tecla === 'laudo' && S.laudo) S.laudo.tecnico = false;
+  fecharGaveta(); Object.assign(S, { tecla: e.tecla, caso: e.caso, bloco: e.bloco, sub: e.sub, sel: 0 });
   render(); window.scrollTo(0, 0); try { history.replaceState(null, '', location.pathname + location.search + (S.caso >= 0 ? '#' + F[S.caso].id : '')); } catch (x) {}
 }
 function irTecla(t, op) {
   if (t !== S.tecla || S.caso >= 0) empilhar();
+  if (t === 'laudo' && op && op.servico && S.tecla === 'sintomas' && S.caso >= 0) S.casoLaudo = S.caso; // fechar no laudo a partir do caso
   fecharGaveta(); S.tecla = t; if (t === 'sintomas' && !op) S.caso = -1;
-  if (t === 'laudo' && S.laudo) S.laudo.tecnico = false; // Tabela & Laudo sempre abre em Modo: Laudo
   render(op); window.scrollTo(0, 0);
 }
 function render(op) {
@@ -904,6 +927,9 @@ function listar(rolar) {
   const q = norm(limpa(S.termo.trim()));
   let L = q ? F.filter(f => q.split(/\s+/).every(w => f.txt.includes(w))) : S.bloco ? casosDoBloco(S.bloco) : S.todos ? F : null;
   if (q && S.bloco) L = L.filter(f => f.blocos.includes(S.bloco));
+  // Código digitado (D-033, d033, 33): o próprio diagnóstico em 1º lugar, depois os casos que citam o termo.
+  const mc = S.termo.trim().match(/^d?\s*-?\s*(\d{1,3})$/i), exato = mc ? F.find(f => f.id === 'D-' + mc[1].padStart(3, '0')) : null;
+  if (exato) L = [exato, ...L.filter(f => f !== exato)];
   if (!L) { box.innerHTML = '<div class="cartao"><p class="tx">Toque numa placa de sintoma, em <b>Ver Todos os Sintomas</b> ou busque pelo que o cliente relatou. Cada caso abre a ilustração com as 5 verificações e leva direto ao Laudo.</p></div>'; return; }
   const titulo = q ? `${L.length} casos para “${esc(S.termo.trim())}”` : S.bloco ? `${esc(BLOCOS.find(b => b[0] === S.bloco)[3])} · ${L.length} casos` : `Todos os Sintomas · ${L.length} casos`;
   box.innerHTML = `<div class="cartao"><h3>${titulo}</h3><div class="lista">${L.length ? L.map(f => `<button class="bt bt-sel item-caso" data-caso="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}"><img src="${iconePecaCaso(f)}" alt="" width="60" height="60" loading="lazy"><span class="meio"><span class="linha-cod"><span class="cod-badge">${f.id}</span><b>${quebraBarra(tx(f.titulo))}</b></span><span class="s">${tx(f.sub)}</span></span><span class="tags"><span class="tag tag-sis">${tx(f.chips[0])}</span><span class="tag tag-fer">${tx(f.chips[2])}</span></span></button>`).join('')
@@ -933,7 +959,11 @@ function abrirCaso(i) {
   try { history.replaceState(null, '', location.pathname + location.search + '#' + F[i].id); } catch (e) {}
 }
 // Bolinha j da arte → 1ª verificação do caso cujo ponto real é j (data-ponto = bolinha desenhada; data-v = verificação).
-const alvosDoCaso = (f) => f.alvos.map(([x, y], j) => { const v = f.verifs.findIndex((_, k) => pontoRealNaArte(f, k) === j); return v < 0 ? '' : `<button class="alvo" data-v="${v + 1}" data-ponto="${j + 1}" style="left:${x}%;top:${y}%" aria-label="Ponto ${nn(j + 1)} da imagem: ${tx(f.verifs[v][0])}"></button>`; }).join('');
+// As 5 bolinhas ficam sempre na arte: a que não é ponto real de nenhuma verificação abre a verificação j (o quadro mostra a bolinha real).
+// As bolinhas principais vêm primeiro no DOM, para .alvo[data-v] achar a bolinha real da verificação.
+const alvosDoCaso = (f) => { const A = f.alvos.map(([x, y], j) => { const m = f.verifs.findIndex((_, k) => pontoRealNaArte(f, k) === j), v = m >= 0 ? m : Math.min(j, f.verifs.length - 1);
+  return [m < 0, `<button class="alvo" data-v="${v + 1}" data-ponto="${j + 1}"${m < 0 ? ' data-ponto-apoio' : ''} style="left:${x}%;top:${y}%" aria-label="Ponto ${nn(j + 1)} da imagem: ${m < 0 ? `abre a verificação ${nn(v + 1)} · ` : ''}${tx(f.verifs[v][0])}"></button>`]; });
+  return [...A.filter(a => !a[0]), ...A.filter(a => a[0])].map(a => a[1]).join(''); };
 function telaCaso(i) {
   const f = F[i], st = S.estado[f.id] || (S.estado[f.id] = {}), conf = S.defeito[f.id];
   const ant = F[i - 1], prx = F[i + 1];
@@ -959,6 +989,7 @@ function telaCaso(i) {
   $$('.prox', tela).forEach(b => b.addEventListener('click', () => { const [, , srv, ir] = f.proximo[+b.dataset.p]; if (ir) abrirCaso(F.findIndex(x => x.id === ir)); else irTecla('laudo', { servico: srv || servicoDoCaso(f), causa: causaDe(f, srv) }); }));
   if (S.sel) quadro(f, S.sel, null, true);
 }
+const rotNF = (r, on) => (on ? (r === 'ok' ? '✓ ' : '✗ ') : '') + ({ ok: 'Normal', def: 'Defeito', fo: 'Fora da faixa' })[r];
 const servicoDoCaso = (f) => { const c = S.defeito[f.id]; return f.causas[(c || 1) - 1][1]; };
 const causaDe = (f, srv) => { const c = S.defeito[f.id]; if (c && f.causas[c - 1][1] === srv) return f.causas[c - 1][0]; const x = f.causas.find(z => z[1] === srv); return x ? x[0] : ''; };
 let PRECOS = null;
@@ -976,11 +1007,11 @@ function quadro(f, v, cLigada, semRolar) {
     ${tagsPonta(escala, alvoCurto(tt, ln), pontas)}
     ${('ALVO: ' + limpa(ln)).length > 24 ? `<div class="ref-faixa" data-ref-faixa><b>Medida-alvo:</b> ${tk(tx(ln))}</div>` : ''}
     <p class="sub">Causa ligada: <b>${nn(c)} · ${tx(f.causas[c - 1][0])}</b> (${PIL[c - 1][1].replace(/^\d+º · /, "").toLowerCase()}) → ${esc(servNome(f.causas[c - 1][1]))}</p>
-    <div class="dupla"><button class="bt bt-sel" data-r="ok" aria-pressed="${st[v] === 'ok'}">Normal</button><button class="bt bt-sel" data-r="def" aria-pressed="${st[v] === 'def'}">Defeito</button></div>
+    <div class="dupla">${['ok', 'def'].map(r => `<button class="bt bt-sel" data-r="${r}" aria-pressed="${st[v] === r}">${rotNF(r, st[v] === r)}</button>`).join('')}</div>
     ${btMandar(k)}</div>`;
   $$('[data-r]', box).forEach(b => b.addEventListener('click', () => {
     st[v] = b.dataset.r; if (b.dataset.r === 'def') S.defeito[f.id] = c;
-    $$('[data-r]', box).forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    $$('[data-r]', box).forEach(x => { x.setAttribute('aria-pressed', String(x === b)); x.textContent = rotNF(x.dataset.r, x === b); });
     const el = $(`.verif[data-v="${v}"]`, tela); if (el) { el.classList.remove('ok', 'def'); el.classList.add(b.dataset.r); }
     $$('.causa', tela).forEach(e => e.classList.toggle('conf', +e.dataset.c === S.defeito[f.id]));
   }));
@@ -1182,7 +1213,7 @@ const diagPorImg = (img) => F.find(f => f.id === IMGS[img].diag);
 const recorte = (img, p) => { const f = diagPorImg(img), [fx, fy] = f.foco[p - 1], [ax, ay] = f.alvos[p - 1]; return lupa(IMG(f), 2 * fx - ax, 2 * fy - ay, `${f.id} ponto ${nn(p)}`); };
 function afInv(corpo) {
   const passo = (id, t, como, alvoTx, st, k) => `<div class="cartao" data-passo="${id}"><div class="passo-cab"><img class="passo-tile" src="${tile(PASSO_TILE[id])}" alt="" width="64" height="64" data-tile><div class="passo-tx"><h3>${k ? k + '. ' : ''}${esc(t)}</h3><p class="sub">${tk(esc(como))}</p></div></div>${alvoTx}
-      <div class="dupla"><button class="bt bt-sel" data-s="ok" aria-pressed="${st === 'ok'}">Normal</button><button class="bt bt-sel" data-s="fo" aria-pressed="${st === 'fo'}">Fora da faixa</button></div>${btMandar('inv-' + id)}</div>`;
+      <div class="dupla">${['ok', 'fo'].map(r => `<button class="bt bt-sel" data-s="${r}" aria-pressed="${st === r}">${rotNF(r, st === r)}</button>`).join('')}</div>${btMandar('inv-' + id)}</div>`;
   corpo.innerHTML = `<div class="cartao" style="border:2px solid #D97706"><div class="cab-sec"><h2>Trava Eliminatória de 30 Segundos</h2><span class="tag tag-bonus">TRAVA DE 30 SEGUNDOS</span></div>
       <p class="sub">Antes de abrir a placa, elimine o que derruba qualquer Inverter: rede, capacitor e sensor.</p><div class="veredito neutro" data-iv="trava"></div></div>
     ${TRAVA.map(([id, t, como, esc0, alvo]) => passo(id, t, como, `${tagsPonta(esc0, alvo)}<div class="ref-faixa" data-ref-faixa><b>Referência:</b> ${tk(esc(TRAVA_FAIXA[id]))}</div>`, S.trava[id], '')).join('')}
@@ -1202,7 +1233,9 @@ function afInv(corpo) {
   };
   $$('[data-passo]', corpo).forEach(el => {
     const id = el.dataset.passo, tr = TRAVA.find(x => x[0] === id), iv = INV7.find(x => x[0] === id), reg = tr ? S.trava : S.inv;
-    $$('[data-s]', el).forEach(b => b.addEventListener('click', () => { reg[id] = b.dataset.s; salvarSessao(); $$('[data-s]', el).forEach(z => z.setAttribute('aria-pressed', String(z === b))); veredito(); }));
+    // 2º toque no botão já marcado limpa o passo (volta a não aferido).
+    $$('[data-s]', el).forEach(b => b.addEventListener('click', () => { if (reg[id] === b.dataset.s) delete reg[id]; else reg[id] = b.dataset.s; salvarSessao();
+      $$('[data-s]', el).forEach(z => { const on = reg[id] === z.dataset.s; z.setAttribute('aria-pressed', String(on)); z.textContent = rotNF(z.dataset.s, on); }); veredito(); }));
     $('[data-mandar]', el).addEventListener('click', (e) => {
       const s = reg[id], est = s === 'ok' ? 'Normal' : s === 'fo' ? 'FORA DA FAIXA' : 'conferido';
       if (tr) mandar('inv-' + id, `Trava 30s · ${tr[1]}: ${est}`, s === 'fo' ? { srv: tr[6], causa: tr[7] } : {});
@@ -1216,7 +1249,11 @@ function afInv(corpo) {
 // ───────────── Tecla 3 · Códigos & LED (Bônus 2) ─────────────
 const NORMAL = /n[aã]o [eé] defeito|estado normal|estado de opera[cç][aã]o|n[aã]o falha|lembrete|aviso de troca dos filtros|limpeza autom[aá]tica|degelo em opera|^degelo|descongelamento da unidade|condi[cç][aã]o de opera|temperatura externa (muito )?baixa|temperatura externa baixa ou elevada|prote[cç][aã]o contra congelamento|congelamento da unidade interna|sobretens[aã]o (e|ou) (subtens|baixa tens|tens[aã]o muito baixa)|tens[aã]o (ac )?de entrada anormal|prote[cç][aã]o de tens[aã]o\.?$/i;
 const NAO_NORMAL = /sensor|motor|m[oó]dulo|ipm|liga[cç][aã]o cc|link dc|compressor/i;
-const SELO_OK = '✓ NÃO É DEFEITO — OPERAÇÃO NORMAL';
+const SELO_OK = '✓ NÃO É DEFEITO — OPERAÇÃO NORMAL', SELO_PROT = '✓ PROTEÇÃO ATIVA — NÃO É DEFEITO DA PLACA';
+// Código "normal" que descreve proteção (tensão, temperatura, corrente, desarme) leva o selo de proteção; ciclo normal (degelo) segue operação normal.
+const PROTECAO = /protec|tensao anormal|tensao (ac |cc |dc )?(de entrada )?anormal|anormal.{0,20}tensao|subtensao|sobretensao|baixa tensao|alta temperatura|corrente alta|sobrecorrente|desarme/;
+const ehProtecao = (r) => !/degelo/.test(norm(r.d)) && PROTECAO.test(norm(`${r.d} ${r.fa || ''}`));
+const seloDe = (r) => (ehProtecao(r) ? SELO_PROT : SELO_OK);
 let CODIGOS = null;
 const carregarCodigos = () => CODIGOS || (CODIGOS = Promise.all([csv('codigos_erro_conferidos.csv'), csv('codigos_erro.csv'), csv('piscadas.csv')]).then(([A, Bc, C]) => {
   const T = [...A.map(r => ({ m: r.marca, l: r.linha, c: r.codigo, d: r.descricao, fa: '', f: `${r.fonte_id}${r.pagina ? ' p.' + r.pagina : ''}`, tp: 'Código' })),
@@ -1249,10 +1286,10 @@ function telaCodigos() {
       $('[data-cont]', corpo).textContent = `${R.length} resultado${R.length === 1 ? '' : 's'}${mk ? ' · ' + mk : ''}${st.pisc !== null ? ` · ${st.pisc === 10 ? '10 ou mais' : st.pisc} piscada${st.pisc === 1 ? '' : 's'}` : ''}`;
       const lista = $('[data-lista]', corpo);
       lista.innerHTML = R.length ? R.slice(0, lim).map(r => `<div class="cartao codigo" data-cod="${r.i}"><div class="linha"><span class="cd">${esc(r.c)}</span><span class="mk-marca">${logo(r.m, 20)}<b>${esc(r.m)}</b></span></div><span class="mk">${esc(r.tp)} · ${esc(r.m)} · ${esc(r.l)}</span><p class="tx">${tk(tx(r.d))}</p>
-          ${r.ok ? `<span class="selo-ok" data-selo-ok>${SELO_OK}</span>` : r.naoConf ? '<p class="sub">O código aponta o circuito, não condena a peça: meça antes.</p>' : ''}
+          ${r.ok ? `<span class="selo-ok" data-selo-ok data-selo-tipo="${ehProtecao(r) ? 'protecao' : 'normal'}">${seloDe(r)}</span>` : r.naoConf ? '<p class="sub">O código aponta o circuito, não condena a peça: meça antes.</p>' : ''}
           ${r.fa ? `<div class="faca"><b>FAÇA:</b> ${tk(tx(r.fa))}</div>` : '<div class="faca"><b>FAÇA:</b> meça o componente apontado na tecla Aferir Vivo antes de orçar a troca.</div>'}<span class="mk">Fonte ${esc(r.f)}</span>${btMandar('cod-' + r.i)}</div>`).join('') + (R.length > lim ? '<button class="bt bt-sel largo" data-mais>Mostrar mais códigos</button>' : '')
         : `<div class="cartao"><p class="tx">Código fora da base desta marca: abra o Diagnóstico D-099, meça sensores e o cabo de interligação e feche o laudo de diagnóstico.</p><div class="dupla"><button class="bt bt-sel" data-ir-caso>Abrir D-099</button><button class="bt bt-cobalto" data-ir-laudo>Tabela & Laudo</button></div></div>`;
-      $$('[data-mandar]', lista).forEach(b => b.addEventListener('click', () => { const r = U[+b.closest('[data-cod]').dataset.cod]; mandar('cod-' + r.i, `${r.tp} ${r.c} (${r.m}): ${r.d}${r.ok ? ' — NÃO É DEFEITO, OPERAÇÃO NORMAL' : ''}`, { srv: 'visita_diag', causa: r.ok ? `${r.c} (${r.m}): operação normal do equipamento, sem peça condenada` : `${r.c} (${r.m}): ${r.d}` }); marcarMandado(b); }));
+      $$('[data-mandar]', lista).forEach(b => b.addEventListener('click', () => { const r = U[+b.closest('[data-cod]').dataset.cod]; mandar('cod-' + r.i, `${r.tp} ${r.c} (${r.m}): ${r.d}${r.ok ? (ehProtecao(r) ? ' — PROTEÇÃO ATIVA, NÃO É DEFEITO DA PLACA' : ' — NÃO É DEFEITO, OPERAÇÃO NORMAL') : ''}`, { srv: 'visita_diag', causa: r.ok ? `${r.c} (${r.m}): ${ehProtecao(r) ? 'proteção ativa do equipamento, sem peça condenada' : 'operação normal do equipamento, sem peça condenada'}` : `${r.c} (${r.m}): ${r.d}` }); marcarMandado(b); }));
       const mais = $('[data-mais]', lista); if (mais) mais.addEventListener('click', () => { lim += 30; filtro(); });
       const ic0 = $('[data-ir-caso]', lista); if (ic0) ic0.addEventListener('click', () => abrirCaso(F.findIndex(f => f.id === 'D-099')));
       const il = $('[data-ir-laudo]', lista); if (il) il.addEventListener('click', () => irTecla('laudo', { servico: 'visita_diag' }));
@@ -1296,7 +1333,7 @@ const sinal = (v) => (v < 0 ? '−' : '+') + brl(Math.abs(v));
 function telaLaudo(op) {
   montar('<div data-l="corpo"><div class="carregando">Carregando a Tabela Oficial 2026…</div></div>');
   const L = S.laudo || (S.laudo = { sid: null, v: null, causa: '', cli: '', tel: '', mala: false, tecnico: false, pmoc: '' });
-  const f = S.caso >= 0 ? F[S.caso] : null;
+  const f = S.casoLaudo >= 0 ? F[S.casoLaudo] : (S.caso >= 0 ? F[S.caso] : null);
   if (op.servico) { L.sid = op.servico; L.v = null; L.causa = limpa(op.causa || (f && causaDe(f, op.servico)) || CAUSA_PADRAO[op.servico] || ''); }
   const modo = $('#modo');
   carregarPrecos().then(P => { return csv('pmoc_atividades.csv').catch(() => []).then(PM => [P, PM]); }).then(([P, PM]) => {
@@ -1309,8 +1346,8 @@ function telaLaudo(op) {
         <p class="sub">${esc(equipTx())} · porte ${PORTE_TX[porte]} · Tabela Oficial 2026${f ? ` · Sintoma: Diagnóstico ${f.id}` : ''}</p>
         <div class="total"><span>Valor final</span><b data-l="total"></b></div>
         <div class="grade3-faixa" role="group" aria-label="Valor pela faixa da Tabela 2026"><button class="bt bt-sel" data-faixa="min"><span>Mínimo</span><b data-fx="min"></b></button><button class="bt bt-sel" data-faixa="ref"><span>Referência</span><b data-fx="ref"></b></button><button class="bt bt-sel" data-faixa="max"><span>Máximo</span><b data-fx="max"></b></button></div></div>
-      <div class="cofre-box" data-l="cofre"><div class="cab-sec"><button type="button" class="bt bt-sel" data-cofre-toggle aria-expanded="${!!S.cofreAberto}">${ico('prancheta', '#091E42', 18)}<span>Cofre de Laudos (<b data-l="cofre-n">${S.cofre.length}</b>) ▾</span></button>
-        <div class="linha"><button type="button" class="bt bt-sel" data-l="salvar-cofre">Salvar no Cofre</button><button type="button" class="bt bt-sel" data-l="excluir-atual" aria-label="Excluir e limpar laudo atual">${ico('lixeira', '#B91C1C', 18)}<span>Excluir atual</span></button></div></div>
+      <div class="cofre-box" data-l="cofre"><div class="cab-sec"><button type="button" class="bt bt-sel escolha" data-cofre-toggle aria-expanded="${!!S.cofreAberto}"><span style="display:inline-flex;align-items:center;gap:8px">${ico('prancheta', '#0C4A6E', 18)}<span>Cofre de Laudos (<b data-l="cofre-n">${S.cofre.length}</b>)</span></span><span class="eq-seta" aria-hidden="true">▾</span></button>
+        <div class="linha"><button type="button" class="bt bt-sel bt-acao-sec" data-l="salvar-cofre">Salvar no Cofre</button><button type="button" class="bt bt-sel bt-perigo" data-l="excluir-atual" aria-label="Excluir e limpar laudo atual">${ico('lixeira', '#991B1B', 18)}<span>Excluir atual</span></button></div></div>
         <div class="cofre-lista lista" data-l="cofre-lista" ${S.cofreAberto ? '' : 'hidden'}></div></div>
       <div class="bastidor-card" data-l="bast" hidden>
         <div class="cab-sec"><span class="tag" style="background:#064E3B;color:#A7F3D0;border-color:#10B981">SEU LUCRO NO BOLSO</span><span class="tag" style="background:#0C1D36;color:#67C6FF;border-color:#0284C7" data-l="margem-pct"></span></div>
@@ -1322,12 +1359,12 @@ function telaLaudo(op) {
         <div class="passo-cab"><img class="passo-tile" data-l="tile-srv" src="" alt="" width="64" height="64" data-tile><div class="srv-resumo"><span class="tag tag-info" style="align-self:flex-start">DIAGNÓSTICO, PEÇA &amp; SERVIÇO</span><b data-l="srv-nome"></b><span class="sub" data-l="srv-causa"></span></div></div>
         <div class="campo"><span class="rot">Causa confirmada</span><button class="bt bt-sel escolha" data-l="causa"></button></div>
         <div class="campo"><span class="rot">Serviço da Tabela Oficial 2026 · porte ${PORTE_TX[porte]}</span><button class="bt bt-sel escolha" data-l="sid"></button></div>
-        <button class="bt bt-sel largo" data-l="visita">Visita Técnica &amp; Diagnóstico — ${brl(precoDe(vis, porte))}</button>
+        <button class="bt bt-sel bt-acao-sec largo" data-l="visita">Visita Técnica &amp; Diagnóstico — <span class="nw">${brl(precoDe(vis, porte))}</span></button>
         ${campo('Valor do serviço (R$)', 'type="number" inputmode="decimal" step="any" data-l="v"')}
         <div class="dupla"><button class="bt bt-sel" data-aj="-20">- R$ 20</button><button class="bt bt-sel" data-aj="50">+ R$ 50</button></div>
       </div>
       <div class="cartao ref-card" data-l="ref"><h3>Referência Oficial 2026 &amp; Economia Preventiva</h3><p class="tx proc-box" data-l="proc"></p><p class="faixa-box" data-l="faixa"></p><div class="selo-prev" data-l="prev">${ico('garantia', '#16A34A', 20)}<span data-l="prevtx"></span></div></div>
-      <div class="cartao"><div class="cab-sec"><h3>Leituras enviadas</h3><button class="bt bt-sel" data-l="limpar">Limpar</button></div><div class="leit lista" data-l="leit"></div></div>
+      <div class="cartao"><div class="cab-sec"><h3>Leituras enviadas</h3><button class="bt bt-sel bt-perigo" data-l="limpar">Limpar</button></div><div class="leit lista" data-l="leit"></div></div>
       <div class="cartao"><h3>Fechamento: WhatsApp, PDF e Pix</h3>
         <div class="grade2">${campo('Cliente', `type="text" data-l="cli" value="${esc(L.cli)}" placeholder="Nome" autocomplete="off"`)}${campo('WhatsApp do cliente', `type="tel" data-l="tel" value="${esc(L.tel)}" placeholder="DDD + nº" autocomplete="off"`)}</div>
         <details class="dados" data-l="tit" ${tit.pix ? '' : 'open'}><summary>Seus dados e chave Pix ▾</summary><div style="display:flex;flex-direction:column;gap:10px">
@@ -1358,13 +1395,15 @@ function telaLaudo(op) {
     // Escolha por toque na gaveta (sem lista nativa que corta o texto): cada opção mostra o nome inteiro.
     const escolher = (titulo, itens, aoEscolher) => {
       const g = $('#gaveta-in');
-      g.innerHTML = `<div class="cab-sec"><h2>${esc(titulo)}</h2><button class="bt bt-sel" data-fechar-gaveta aria-label="Fechar">✕ Fechar</button></div><div class="lista">${itens.map(([rot, sub, on], k) => `<button class="bt bt-sel opcao" data-op="${k}" aria-pressed="${on}"><b>${esc(rot)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</button>`).join('')}</div>`;
+      g.innerHTML = `<div class="cab-sec"><h2>${esc(titulo)}</h2><button class="bt bt-sel" data-fechar-gaveta aria-label="Fechar">✕ Fechar</button></div>${itens.length > 6 ? campo('', `type="search" data-filtro-op placeholder="Filtrar as ${itens.length} opções" autocomplete="off" enterkeyhint="search" aria-label="Filtrar: ${esc(titulo)}"`, true) + '<p class="sub" data-filtro-vazio hidden>Nada com esse termo: apague o filtro e escolha na lista.</p>' : ''}<div class="lista">${itens.map(([rot, sub, on], k) => `<button class="bt bt-sel opcao" data-op="${k}" aria-pressed="${on}"><b>${esc(rot)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</button>`).join('')}</div>`;
       $$('[data-op]', g).forEach(b => b.addEventListener('click', () => { fecharGaveta(); aoEscolher(+b.dataset.op); }));
       $('[data-fechar-gaveta]', g).addEventListener('click', fecharGaveta);
-      fundo.classList.add('on'); gaveta.classList.add('on'); gaveta.scrollTop = 0;
+      const fo = $('[data-filtro-op]', g);
+      if (fo) fo.addEventListener('input', () => { const t = norm(limpa(fo.value.trim())); let n = 0; $$('[data-op]', g).forEach(b => { const v = !t || t.split(/\s+/).every(w => norm(b.textContent).includes(w)); b.hidden = !v; n += v; }); $('[data-filtro-vazio]', g).hidden = n > 0; });
+      abrirGaveta(titulo); gaveta.scrollTop = 0;
     };
     const pintarLeit = () => {
-      q('leit').innerHTML = S.leituras.length ? S.leituras.map((a, k) => `<div class="it"><span>${esc(a.txt)}</span><button class="bt bt-sel" data-rm="${k}" aria-label="Tirar do laudo">${ico('fechar', '#B91C1C', 18)}</button></div>`).join('')
+      q('leit').innerHTML = S.leituras.length ? S.leituras.map((a, k) => `<div class="it"><span>${esc(a.txt)}</span><button class="bt bt-sel bt-perigo" data-rm="${k}" aria-label="Tirar do laudo">${ico('fechar', '#991B1B', 18)}</button></div>`).join('')
         : `<p class="sub">Nenhuma leitura ainda. Toque em <b>+ Mandar para o Laudo</b> nos Sintomas, no Aferir Vivo ou nos Códigos: a causa e o serviço já chegam aqui.</p><button class="bt bt-cobalto largo" data-ir-af>Aferir Vivo agora</button>`;
       $$('[data-rm]', corpo).forEach(b => b.addEventListener('click', () => { S.leituras.splice(+b.dataset.rm, 1); pintarLeit(); pintarDock(); salvarSessao(); }));
       const af = $('[data-ir-af]', corpo); if (af) af.addEventListener('click', () => irTecla('aferir'));
@@ -1387,7 +1426,7 @@ function telaLaudo(op) {
       $$('[data-faixa]', tela).forEach(b => { const k = b.dataset.faixa; $(`[data-fx=${k}]`, b).textContent = brl(fx[k]); b.setAttribute('aria-pressed', String(Math.abs(valor() - fx[k]) < 0.005)); b.onclick = () => { L.v = fx[k]; pintarValor(); }; });
       const tl = q('tile-srv'), np = peca48(L.causa, s.servico) || (f ? TILE_BLOCO[f.blocos[0]] : 't23_evaporadora_split');
       if (tl.getAttribute('src') !== tile(np)) tl.setAttribute('src', tile(np));
-      q('srv-nome').textContent = s.servico; q('srv-causa').textContent = `Causa: ${L.causa}`;
+      q('srv-nome').textContent = s.servico; q('srv-causa').textContent = `Causa: ${L.causa}${c0 ? ` · + Adicional: ${c0.servico.split('(')[0].trim()} (${brl(precoDe(c0, porte))})` : ''}`;
       // Card de lucro: margem, barra peça × lucro e a curva do que sobra limpo no Mínimo, na Referência e no Máximo.
       const tot = totalFinal(), pct = tot > 0 ? Math.round(lucro / tot * 100) : 0; q('margem-pct').textContent = `MARGEM LIMPA ${pct}%`;
       const custoEf = (L.mala ? 0 : custoBase) + custoCombo, comboP = c0 ? precoDe(c0, porte) : 0, lk = ['min', 'ref', 'max'].map(k => fx[k] + comboP - custoEf);
@@ -1395,7 +1434,8 @@ function telaLaudo(op) {
       const pts = [[28, 74], [170, 55], [312, 38]];
       q('grafico-lucro').innerHTML = `<svg viewBox="0 0 340 88" width="100%" height="88" role="img" aria-label="Curva de lucro limpo na faixa oficial 2026"><rect x="8" y="6" width="324" height="22" rx="11" fill="#10B981"></rect><rect x="8" y="6" width="${(324 * wc).toFixed(1)}" height="22" rx="11" fill="#F59E0B"></rect><text x="170" y="21.5" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF" font-family="Figtree,Roboto,sans-serif">Margem Limpa: ${pct}%</text><path d="M 28 74 Q 170 54 312 38" stroke="#38BDF8" stroke-width="3" fill="none"></path>${pts.map(([x, y], k) => { const on = ['min', 'ref', 'max'][k] === perto; return `<circle cx="${x}" cy="${y}" r="${on ? 6 : 4}" fill="${on ? '#4ADE80' : '#38BDF8'}" stroke="#091E42" stroke-width="1.5"></circle><text x="${x}" y="${y + (k === 2 ? -9 : 14)}" text-anchor="${k === 0 ? 'start' : k === 2 ? 'end' : 'middle'}" font-size="10.5" font-weight="700" fill="#CBD5E1" font-family="Figtree,Roboto,sans-serif">${['Mín', 'Ref', 'Máx'][k]} ${sinal(lk[k])}</text>`; }).join('')}</svg>`;
       const cs = String(s.combo_sugerido || '').split(';').map(x => P.find(y => y.servico_id === x.trim())).filter(Boolean);
-      q('combos').innerHTML = cs.map(sc => `<button type="button" class="bt bt-cat largo" data-combo="${sc.servico_id}" aria-pressed="${L.comboId === sc.servico_id}">+ Somar ${esc(sc.servico.split('(')[0].trim())} (+${brl(precoDe(sc, porte)).replace(' ', '\u00a0')})</button>`).join('');
+      q('combos').innerHTML = cs.map(sc => { const on = L.comboId === sc.servico_id, nome = esc(sc.servico.split('(')[0].trim()), pr = `(+${brl(precoDe(sc, porte)).replace(' ', '\u00a0')})`;
+        return `<button type="button" class="bt bt-cat largo" data-combo="${sc.servico_id}" aria-pressed="${on}">${on ? `✓ Somado: ${nome} ${pr} — Toque p/ remover` : `+ Somar ${nome} ${pr}`}</button>`; }).join('');
       $$('[data-combo]', corpo).forEach(b => b.addEventListener('click', () => { L.comboId = L.comboId === b.dataset.combo ? null : b.dataset.combo; pintarValor(); toast(L.comboId ? 'Serviço complementar somado' : 'Serviço complementar retirado'); }));
       q('visita').setAttribute('aria-pressed', String(L.sid === 'visita_diag')); salvarSessao();
       pintarPix();
@@ -1405,8 +1445,8 @@ function telaLaudo(op) {
     pintarModo(); pintarCausas(); pintarLeit(); pintarValor();
     $('[data-cofre-toggle]', corpo).addEventListener('click', () => { S.cofreAberto = !S.cofreAberto; pintarCofre(); });
     q('salvar-cofre').addEventListener('click', () => { const n = fixarNumero(); arquivar(n); toast(`Laudo Nº ${n} salvo no Cofre`); });
-    q('excluir-atual').addEventListener('click', () => { Object.assign(L, { v: null, causa: '', cli: '', tel: '', comboId: null }); S.leituras = []; S.numero = null; S.numeroGravado = false; salvarSessao(); pintarDock(); render(); toast('Laudo atual limpo'); });
-    q('limpar').addEventListener('click', () => { S.leituras = []; S.srvSug = null; S.causaSug = null; S.trava = {}; S.inv = {}; pintarLeit(); pintarDock(); salvarSessao(); toast('Leituras limpas'); });
+    q('excluir-atual').addEventListener('click', () => { Object.assign(L, { v: null, causa: '', cli: '', tel: '', comboId: null }); S.leituras = []; S.casoLaudo = -1; S.numero = null; S.numeroGravado = false; salvarSessao(); pintarDock(); render(); toast('Laudo atual limpo'); });
+    q('limpar').addEventListener('click', () => { S.leituras = []; S.casoLaudo = -1; S.srvSug = null; S.causaSug = null; S.trava = {}; S.inv = {}; pintarLeit(); pintarDock(); salvarSessao(); toast('Leituras limpas'); });
     q('sid').addEventListener('click', () => escolher('Serviço da Tabela Oficial 2026', P.map(s => [s.servico, `Valor típico ${PORTE_TX[porte]}: ${brl(precoDe(s, porte))}`, s.servico_id === L.sid]), (k) => { L.sid = P[k].servico_id; L.v = null; L.comboId = null; L.causa = limpa((f && causaDe(f, L.sid)) || CAUSA_PADRAO[L.sid]); pintarCausas(); pintarValor(); }));
     q('causa').addEventListener('click', () => escolher('Causa confirmada', OPS.map(([c, s]) => [c, '→ ' + P.find(x => x.servico_id === s).servico, c === L.causa]), (k) => { const [c, s] = OPS[k]; L.causa = c; if (s !== L.sid) { L.sid = s; L.v = null; } pintarCausas(); pintarValor(); }));
     q('v').addEventListener('input', () => { L.v = num(q('v').value) ?? 0; pintarValor(); });
@@ -1428,16 +1468,16 @@ function telaLaudo(op) {
     const semPix = () => { if (tDados().pix) return false; q('tit').open = true; $('[data-t=pix]', corpo).focus(); msg('Digite sua chave Pix em Seus dados: o laudo sai com o Pix copia e cola e o QR com o valor exato.', 'def'); return true; };
     const fixarNumero = () => { const n = numeroLaudo(true); q('num1').textContent = n; q('num2').textContent = n; return n; };
     const guardarCofre = () => guardar('bancada.cofre', JSON.stringify(S.cofre));
-    const arquivar = (numero) => { const it = { id: String(numero), num: String(numero), data: dataBR(Date.now()), equip: equipTx(), servico: srv().servico, sid: L.sid, causa: L.causa, valor: totalFinal(), vBase: valor(), cli: L.cli, tel: L.tel, comboId: L.comboId || null, leituras: S.leituras.slice() };
+    const arquivar = (numero) => { const it = { id: String(numero), num: String(numero), data: dataBR(Date.now()), equip: equipTx(), servico: srv().servico, sid: L.sid, causa: L.causa, valor: totalFinal(), vBase: valor(), cli: L.cli, tel: L.tel, comboId: L.comboId || null, leituras: S.leituras.slice(), caso: f ? f.n : -1 };
       const k = S.cofre.findIndex(x => x.id === it.id); if (k >= 0) S.cofre[k] = it; else S.cofre.unshift(it); guardarCofre(); pintarCofre(); };
     const pintarCofre = () => {
       q('cofre-n').textContent = S.cofre.length; const lst = q('cofre-lista'); lst.hidden = !S.cofreAberto; $('[data-cofre-toggle]', corpo).setAttribute('aria-expanded', String(!!S.cofreAberto));
       lst.innerHTML = S.cofre.length ? S.cofre.map(it => `<div class="cofre-item" data-cofre-item="${esc(it.id)}"><b>Nº ${esc(it.num)} · ${esc(it.data)}</b><span class="tx">${esc(it.servico)} — ${brl(it.valor)}</span><span class="sub">${esc(it.equip)}${it.cli ? ' · ' + esc(it.cli) : ''}</span>
-        <div class="dupla"><button type="button" class="bt bt-sel" data-cofre-abrir="${esc(it.id)}">Abrir</button><button type="button" class="bt bt-sel" data-cofre-del="${esc(it.id)}" aria-label="Excluir laudo Nº ${esc(it.num)}">${ico('lixeira', '#B91C1C', 18)}<span>Excluir</span></button></div></div>`).join('')
+        <div class="dupla"><button type="button" class="bt bt-sel bt-acao-sec" data-cofre-abrir="${esc(it.id)}">Abrir</button><button type="button" class="bt bt-sel bt-perigo" data-cofre-del="${esc(it.id)}" aria-label="Excluir laudo Nº ${esc(it.num)}">${ico('lixeira', '#991B1B', 18)}<span>Excluir</span></button></div></div>`).join('')
         : '<p class="sub">Nenhum laudo salvo ainda. Toque em "Salvar no Cofre" ou dispare no WhatsApp/PDF para arquivar com a data do dia.</p>';
       $$('[data-cofre-del]', lst).forEach(b => b.addEventListener('click', () => { const it = S.cofre.find(x => x.id === b.dataset.cofreDel); S.cofre = S.cofre.filter(x => x.id !== b.dataset.cofreDel); guardarCofre(); pintarCofre(); toast(`Laudo Nº ${it ? it.num : ''} excluído do Cofre`); }));
       $$('[data-cofre-abrir]', lst).forEach(b => b.addEventListener('click', () => { const it = S.cofre.find(x => x.id === b.dataset.cofreAbrir); if (!it) return;
-        Object.assign(L, { sid: it.sid, v: it.vBase ?? it.valor, causa: it.causa, cli: it.cli || '', tel: it.tel || '', comboId: it.comboId || null }); S.leituras = Array.isArray(it.leituras) ? it.leituras : []; S.numero = it.num; S.numeroGravado = true;
+        Object.assign(L, { sid: it.sid, v: it.vBase ?? it.valor, causa: it.causa, cli: it.cli || '', tel: it.tel || '', comboId: it.comboId || null }); S.leituras = Array.isArray(it.leituras) ? it.leituras : []; S.casoLaudo = Number.isInteger(it.caso) && it.caso < F.length ? it.caso : -1; S.numero = it.num; S.numeroGravado = true;
         salvarSessao(); pintarDock(); render(); toast(`Laudo Nº ${it.num} aberto`); }));
     };
     pintarCofre();
