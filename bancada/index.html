@@ -23,6 +23,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 [hidden]{display:none!important}
 :focus-visible{outline:3px solid #2563EB;outline-offset:2px}
+:root{--gp-navy:#091E42;--gp-navy-2:#19365C;--gp-data-bg:#0C1D36;--gp-cyan:#38BDF8;--gp-ok:#15803D;--gp-warn:#D97706;--gp-err:#B91C1C;--gp-folha:#E2E8F0;--gp-cartao:#FFFFFF}
 :root{--f-tit:'Figtree','Roboto',system-ui,sans-serif;--f-txt:'Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--f-mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace}
 html{overflow-y:scroll;-webkit-text-size-adjust:100%;scroll-padding-top:68px}
 body{min-height:100vh;background:#c1c0c1 url(../app/ref/acetinado-sedoso.svg) center/100% 100% no-repeat fixed;font:400 15px/1.45 var(--f-txt);color:#0F172A;padding-bottom:calc(66px + env(safe-area-inset-bottom) + 16px)}
@@ -94,6 +95,20 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .bt-sel[data-faixa="max"]:not([aria-pressed="true"]){background:#E0F2FE linear-gradient(180deg,#F0F9FF 0%,#E0F2FE 100%);border:1.5px solid #0284C7;color:#0C4A6E;box-shadow:0 2px 0 #7DD3FC}
 .bt-sel[data-faixa][aria-pressed="true"]{background:#1D4ED8 linear-gradient(180deg,#2563EB 0%,#1D4ED8 100%);color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 2px #67C6FF}
 .bt-sel[data-l="visita"]{display:block;padding-top:12px;padding-bottom:12px}
+/* Atalhos do Arsenal PRO na Home: 1 linha rolável; faixas roláveis ganham um esmaecido na borda direita enquanto há mais conteúdo. */
+.atalhos-pro{display:flex;overflow-x:auto;gap:6px;padding:2px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.atalhos-pro::-webkit-scrollbar{display:none}
+.atalhos-pro .bt{flex:none;min-height:48px;white-space:nowrap;font-size:14px;padding:8px 12px}
+.marcas-faixa.rola:not(.fim),.atalhos-pro.rola:not(.fim){-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 32px),transparent 100%)}
+/* Comparador 25 °C cego × curva real (Sensor NTC). */
+.cmp25{display:flex;flex-direction:column;gap:4px;border-radius:12px;padding:10px 12px;border:1.5px solid;font:700 14px/1.3 var(--f-txt);min-width:0}
+.cmp25 b{font:800 15px/1.25 var(--f-tit)}
+.cmp25.cego{background:#FEF2F2;border-color:#DC2626;color:#7F1D1D}
+.cmp25.real{background:#DCFCE7;border-color:#16A34A;color:#14532D}
+.graf-svg{display:block;border-radius:12px;overflow:hidden}
+/* Odômetro do Cofre no card de lucro e chancela do Fechamento. */
+.odometro{display:inline-flex;align-items:center;background:#064E3B;color:#A7F3D0;border:1px solid #10B981;border-radius:999px;padding:4px 10px;font:800 13.5px/1.2 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap}
+.selo-laudo-ok{background:#DCFCE7;border:1.5px solid #16A34A;color:#14532D;border-radius:10px;padding:8px 12px;font:800 14px/1.3 var(--f-tit);display:flex;align-items:center;gap:8px}
 .nw{white-space:nowrap}
 .bt-sel[data-aj="-20"]{background:#F1F5F9 linear-gradient(180deg,#F8FAFC 0%,#F1F5F9 100%);border:1.5px solid #475569;color:#091E42;box-shadow:0 2px 0 #94A3B8}
 .bt-sel[data-aj="50"]{background:#DCFCE7 linear-gradient(180deg,#F0FDF4 0%,#DCFCE7 100%);border:1.5px solid #16A34A;color:#14532D;box-shadow:0 2px 0 #86EFAC}
@@ -843,6 +858,10 @@ const pilula = () => `<div class="eq-pilula" role="group" aria-label="Equipament
   <button class="eq-bt" data-eq-abrir="btu" aria-label="Capacidade ${esc(S.equip.btu)} BTU/h. Trocar"><span class="tag eq-rot">CAPACIDADE ▾</span><span class="eq-val"><span>${esc(S.equip.btu)} BTU/h</span></span></button>
   <button class="eq-bt" data-eq-abrir="fluido" aria-label="Fluido ${esc(S.equip.fluido)}. Trocar"><span class="tag eq-rot">FLUIDO ▾</span><span class="eq-val"><span>${esc(S.equip.fluido)}</span></span></button></div>`;
 const fundo = $('#fundo'), gaveta = $('#gaveta');
+const marcarRolagem = () => $$('.marcas-faixa, .atalhos-pro').forEach(el => { el.classList.toggle('rola', el.scrollWidth > el.clientWidth + 2); el.classList.toggle('fim', el.scrollLeft + el.clientWidth >= el.scrollWidth - 2); });
+new MutationObserver(() => requestAnimationFrame(marcarRolagem)).observe($('#tela'), { childList: true, subtree: true });
+document.addEventListener('scroll', (e) => { const el = e.target; if (el && el.classList && (el.classList.contains('marcas-faixa') || el.classList.contains('atalhos-pro'))) marcarRolagem(); }, true);
+window.addEventListener('resize', marcarRolagem);
 let gavetaOrigem = null;
 const abrirGaveta = (titulo) => { gavetaOrigem = document.activeElement; gaveta.hidden = false; gaveta.removeAttribute('aria-hidden'); gaveta.setAttribute('aria-label', titulo);
   fundo.classList.add('on'); gaveta.classList.add('on'); const fc = $('[data-fechar-gaveta]', gaveta); if (fc) fc.focus({ preventScroll: true }); };
@@ -913,11 +932,14 @@ function convite(motivo) {
 const casosDoBloco = (id) => F.filter(f => f.blocos.includes(id));
 function telaSintomas() {
   montar(`${campo('', `type="search" data-busca placeholder="Buscar sintoma, peça ou D-001" autocomplete="off" enterkeyhint="search" aria-label="Buscar sintoma" value="${esc(S.termo)}"`, true)}
+    <div class="atalhos-pro" role="group" aria-label="Atalhos do Arsenal PRO">${[['ntc', `Curva NTC 35 °C${marcaCurva(S.equip.marca) === 'LG' ? ' (6,49 kΩ)' : ''}`], ['gas', 'Carga Gás & SH (7–11 °C)'], ['inv', 'Placa Inverter & 30s'], ['codigos', '250 Códigos & LED']].map(([k, r]) => `<button class="bt bt-sel bt-acao-sec" data-atalho="${k}">${r}</button>`).join('')}</div>
     <div class="placas">${BLOCOS.map(([id, , curto, longo]) => `<button class="bt bt-cobalto placa" data-bloco="${id}" aria-pressed="${S.bloco === id}" aria-label="${esc(longo)}: ${casosDoBloco(id).length} casos"><span class="placa-poco">${ico(BLOCO_ICO[id], '#67C6FF', 32)}</span><b>${esc(curto)}</b><span class="placa-badge">${casosDoBloco(id).length} casos</span></button>`).join('')}</div>
     <button class="bt bt-cat capsula" data-todos aria-pressed="${S.todos}"><span class="cap-medalhao">${ico('prancheta', '#67C6FF', 22)}</span><span class="cap-tx">Ver Todos os Sintomas</span>${ico('avancar', '#111827', 20)}</button>
     <div data-resultado></div>`);
   const busca = $('[data-busca]', tela);
   busca.addEventListener('input', () => { S.termo = busca.value; listar(); });
+  // Atalho de 1 toque para os instrumentos do Arsenal PRO (Sensor NTC a 35 °C, Gás & SH, Inverter & 30s, Códigos & LED).
+  $$('[data-atalho]', tela).forEach(b => b.addEventListener('click', () => { const k = b.dataset.atalho; if (k === 'codigos') return irTecla('codigos'); S.sub = k; if (k === 'ntc' && S.ntc) S.ntc.t = 35; irTecla('aferir'); }));
   $$('[data-bloco]', tela).forEach(b => b.addEventListener('click', () => { empilhar(); S.bloco = S.bloco === b.dataset.bloco ? null : b.dataset.bloco; S.todos = false; $$('[data-bloco]', tela).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.bloco === S.bloco))); $('[data-todos]', tela).setAttribute('aria-pressed', 'false'); listar(false); }));
   $('[data-todos]', tela).addEventListener('click', (e) => { S.todos = !S.todos; S.bloco = null; e.currentTarget.setAttribute('aria-pressed', String(S.todos)); $$('[data-bloco]', tela).forEach(x => x.setAttribute('aria-pressed', 'false')); listar(false); });
   listar();
@@ -969,7 +991,7 @@ function telaCaso(i) {
   const ant = F[i - 1], prx = F[i + 1];
   montar(`<article class="cartao caso" data-diag="${f.id}" style="background:transparent;border:0;padding:0;gap:12px;box-shadow:none">
     <div class="c1"><span>Bancada GeloPRO · Split &amp; Inverter</span><b>Diagnóstico ${f.id} · ${tx(f.bloco)}</b></div>
-    <div class="navc"><button class="bt bt-sel" data-nav="indice">Sintomas</button><button class="bt bt-sel" data-nav="${ant ? i - 1 : 'indice'}">${ant ? '‹ ' + ant.id : 'Início'}</button><button class="bt bt-sel" data-nav="${prx ? i + 1 : 'indice'}">${prx ? prx.id + ' ›' : 'Fim'}</button></div>
+    <div class="navc"><button class="bt bt-sel" data-nav="indice">Sintomas</button><button class="bt bt-sel" data-nav="${ant ? i - 1 : F.length - 1}">‹ ${ant ? ant.id : F[F.length - 1].id}</button><button class="bt bt-sel" data-nav="${prx ? i + 1 : 0}">${prx ? prx.id : F[0].id} ›</button></div>
     <div class="c2 cartao"><h1>${quebraBarra(tx(f.titulo))}</h1><p>${tx(f.sub)}</p></div>
     <div class="c3">${f.chips.map((v, k) => `<div class="chip chip-${['sis', 'apl', 'fer'][k]}"><img src="${tileChip(f, k)}" alt=""><span class="chip-k">${['SISTEMA', 'APLICAÇÃO', 'INSTRUMENTO'][k]}</span><span class="v">${tx(v)}</span></div>`).join('')}</div>
     <div class="c4"><div class="ilustra" data-ilustra><div class="ilustra-in"><img src="${IMG(f)}" alt="Ilustração de fábrica do Diagnóstico ${f.id} com os pontos de verificação" width="1672" height="941">${alvosDoCaso(f)}</div><button class="bt bt-sel ilustra-z" data-zoom-toggle aria-pressed="false" hidden></button></div></div>
@@ -1071,6 +1093,35 @@ function veredictoNtc(c, t, r) {
   if (c.tol !== null) return { esp, d, estado: Math.abs(d) <= c.tol ? 'ok' : 'def', ref: `curva ${f1(esp, 2)} kΩ ±${f1(c.tol, 0)}% (${c.tolF})` };
   return { esp, d, estado: Math.abs(d) <= TOL_CAMPO ? 'ok' : Math.abs(d) <= 2 * TOL_CAMPO ? 'alerta' : 'def', ref: `curva ${f1(esp, 2)} kΩ a ${f1(t)} °C ±${TOL_CAMPO}% (critério de campo GeloPRO sobre a curva da fonte ${c.fonte})` };
 }
+// Faixa aceita na temperatura t: faixa mín/máx da fonte → tolerância declarada → critério de campo ±5% (mesma ordem do veredito).
+const bandaNtc = (c, T) => { const e = interp(c.pts, T); if (c.faixa) return [interp(c.faixa.map(p => [p[0], p[1]]), T), interp(c.faixa.map(p => [p[0], p[2]]), T), 'faixa da fonte'];
+  const k = (c.tol !== null ? c.tol : TOL_CAMPO) / 100; return [e * (1 - k), e * (1 + k), `±${f1(c.tol !== null ? c.tol : TOL_CAMPO, 0)}%`]; };
+// Plano cartesiano kΩ × °C de 15 a 45 °C: curva real, faixa aceita, linha cega da tabela de 25 °C, alvo e ponto medido.
+function graficoNtc(c, t, r, R) {
+  const X0 = 46, X1 = 326, Y0 = 16, Y1 = 108, A = [];
+  for (let T = 15; T <= 45; T++) A.push([T, interp(c.pts, T), ...bandaNtc(c, T)]);
+  const r25 = interp(c.pts, 25), vals = [...A.map(a => a[3]), r25, ...(r !== null && r > 0 ? [r] : [])], lows = [...A.map(a => a[2]), ...(r !== null && r > 0 ? [r] : [])];
+  const yMax = Math.max(...vals) * 1.06, yMin = Math.max(0, Math.min(...lows) * 0.9);
+  const X = (T) => X0 + (Math.max(15, Math.min(45, T)) - 15) / 30 * (X1 - X0), Y = (k) => Y1 - (Math.max(yMin, Math.min(yMax, k)) - yMin) / (yMax - yMin) * (Y1 - Y0), n = (v) => v.toFixed(1);
+  const curva = A.map(a => `${n(X(a[0]))},${n(Y(a[1]))}`).join(' '), banda = [...A.map(a => `${n(X(a[0]))},${n(Y(a[3]))}`), ...A.slice().reverse().map(a => `${n(X(a[0]))},${n(Y(a[2]))}`)].join(' ');
+  const ticks = [0, 0.5, 1].map(u => yMin + u * (yMax - yMin)), F = 'font-family="Figtree,Roboto,sans-serif"';
+  const tc = t === null ? null : Math.max(15, Math.min(45, t)), esp = t === null ? null : interp(c.pts, t);
+  const corMed = R ? (R.estado === 'ok' ? '#4ADE80' : R.estado === 'alerta' ? '#FBBF24' : '#F87171') : '#4ADE80';
+  return `<svg class="graf-svg" viewBox="0 0 340 144" width="100%" height="144" role="img" aria-label="Plano cartesiano da curva real do sensor NTC kΩ por °C">
+    <rect x="0" y="0" width="340" height="144" rx="12" fill="#0C1D36"></rect>
+    ${ticks.map(k => `<line x1="${X0}" y1="${n(Y(k))}" x2="${X1}" y2="${n(Y(k))}" stroke="#1E3A8A" stroke-dasharray="3,3"></line><text x="${X0 - 5}" y="${n(Y(k) + 3.5)}" text-anchor="end" font-size="9.5" font-weight="700" fill="#94A3B8" ${F}>${f1(k, 1)}</text>`).join('')}
+    ${[15, 25, 35, 45].map(T => `<line x1="${n(X(T))}" y1="${Y0}" x2="${n(X(T))}" y2="${Y1}" stroke="#1E3A8A" stroke-dasharray="3,3"></line><text x="${n(X(T))}" y="124" text-anchor="middle" font-size="10" font-weight="700" fill="#CBD5E1" ${F}>${T} °C</text>`).join('')}
+    <line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="#334155" stroke-width="1.5"></line><line x1="${X0}" y1="${Y1}" x2="${X1}" y2="${Y1}" stroke="#334155" stroke-width="1.5"></line>
+    <text x="8" y="12" font-size="10" font-weight="800" fill="#94A3B8" ${F}>kΩ</text><text x="${X1}" y="139" text-anchor="end" font-size="9.5" font-weight="700" fill="#94A3B8" ${F}>Curva real ${esc(bandaNtc(c, 25)[2])} · temperatura °C</text>
+    <polygon points="${banda}" fill="#16A34A" opacity="0.3" data-banda></polygon>
+    <line x1="${X0}" y1="${n(Y(r25))}" x2="${X1}" y2="${n(Y(r25))}" stroke="#F87171" stroke-width="2" stroke-dasharray="5,4" data-cego></line>
+    <text x="${X1 - 2}" y="${n(Y(r25) - 4)}" text-anchor="end" font-size="10" font-weight="800" fill="#FCA5A5" ${F}>Tabela fixa 25 °C: ${f1(r25, 2)} kΩ</text>
+    <polyline points="${curva}" fill="none" stroke="#22D3EE" stroke-width="2.5" data-curva></polyline>
+    ${tc === null ? '' : `<line x1="${n(X(tc))}" y1="${Y0}" x2="${n(X(tc))}" y2="${Y1}" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="2,3"></line><circle cx="${n(X(tc))}" cy="${n(Y(esp))}" r="5" fill="#FFFFFF" stroke="#22D3EE" stroke-width="2" data-alvo-ntc></circle>
+      <text x="${n(Math.min(X1 - 4, Math.max(X0 + 4, X(tc) + (tc > 38 ? -8 : 8))))}" y="${n(Math.max(Y0 + 10, Y(esp) - 8))}" text-anchor="${tc > 38 ? 'end' : 'start'}" font-size="10.5" font-weight="800" fill="#FFFFFF" ${F}>Alvo ${f1(esp, 2)} kΩ</text>`}
+    ${tc === null || r === null ? '' : `<circle cx="${n(X(tc))}" cy="${n(Y(r))}" r="6" fill="${corMed}" stroke="#091E42" stroke-width="1.5" data-medido="${R && R.estado === 'ok' ? 'dentro' : 'fora'}"></circle>`}
+  </svg>`;
+}
 const ESTADO_NTC = { ok: 'SENSOR BOM', alerta: 'ATENÇÃO — Desvio moderado (5% a 10%): confira conexão e poço térmico', def: 'SENSOR ALTERADO — Substituir', curto: '0 kΩ = SENSOR EM CURTO' };
 function afNtc(corpo) {
   carregarCurvas().then(C => {
@@ -1092,6 +1143,8 @@ function afNtc(corpo) {
         ${tagsPonta('ESCALA kΩ', 'ALVO: CURVA REAL °C')}
         <div class="pocos" data-n="pocos"></div>
         <div class="veredito neutro" data-n="v"></div>
+        <div class="grade2" data-n="comparador-25"></div>
+        <div data-n="grafico-ntc"></div>
         <div class="armadilha" data-n="cmp"></div>
         ${btMandar('ntc')}</div>`;
     const q = (k) => $(`[data-n=${k}]`, corpo);
@@ -1100,9 +1153,13 @@ function afNtc(corpo) {
       $$('[data-t]', corpo).forEach(b => b.setAttribute('aria-pressed', String(t !== null && +b.dataset.t === t)));
       const R = t !== null && r !== null ? veredictoNtc(c, t, r) : null, cls = R ? (R.estado === 'ok' ? 'ok' : R.estado === 'alerta' ? 'alerta' : 'def') : '';
       q('pocos').innerHTML = mostrador(t !== null ? `Esperada a ${f1(t, Number.isInteger(t) ? 0 : 1)} °C` : 'Resistência esperada', t !== null ? f1(interp(c.pts, t), 2) : '—', 'kΩ') + mostrador('Desvio', R ? `${R.d > 0 ? '+' : ''}${f1(R.d)}` : '—', '%', cls);
-      if (t === null) { v.className = 'veredito neutro'; v.textContent = 'Toque na temperatura ambiente real ou digite a do termômetro.'; q('cmp').hidden = true; return; }
+      if (t === null) { v.className = 'veredito neutro'; v.textContent = 'Toque na temperatura ambiente real ou digite a do termômetro.'; q('cmp').hidden = true; q('comparador-25').hidden = true; q('grafico-ntc').hidden = true; return; }
       const esp = interp(c.pts, t), r25 = interp(c.pts, 25), dq = (r25 - esp) / r25 * 100;
-      q('cmp').hidden = false;
+      q('cmp').hidden = false; q('comparador-25').hidden = false; q('grafico-ntc').hidden = false;
+      const [blo, bhi, brot] = bandaNtc(c, t), a25 = Math.abs(t - 25) < 0.05;
+      q('comparador-25').innerHTML = `<div class="cmp25 cego"><b>✗ TABELA FIXA 25 °C</b><span>Espera ${f1(r25, 2)} kΩ</span><span>${a25 ? 'Só vale com o sensor a 25 °C' : `Erro de ${f1(Math.abs(dq))}% (${dq > 0 ? 'condena no chute' : 'aprova no chute'})`}</span></div>
+        <div class="cmp25 real"><b>✓ CURVA REAL ${f1(t, Number.isInteger(t) ? 0 : 1)} °C</b><span>Alvo exato: ${f1(esp, 2)} kΩ</span><span>Faixa ${brot === 'faixa da fonte' ? 'da fonte' : brot}: ${f1(blo, 2)} a ${f1(bhi, 2)} kΩ</span></div>`;
+      q('grafico-ntc').innerHTML = graficoNtc(c, t, r, R);
       q('cmp').innerHTML = Math.abs(t - 25) < 0.05 ? `<b>Armadilha da tabela fixa de 25 °C:</b> ela só vale com o sensor a 25 °C (${f1(r25, 2)} kΩ). Em qualquer outra temperatura, compare com a curva real.`
         : `<b>Armadilha da tabela fixa de 25 °C:</b> ${esc(c.marca)} ${st.nom}K a ${f1(t, Number.isInteger(t) ? 0 : 1)} °C = <b>${f1(esp, 2)} kΩ</b> reais contra <b>${f1(r25, 2)} kΩ</b> a 25 °C (${dq > 0 ? 'queda' : 'alta'} de ${f1(Math.abs(dq))}%). Quem compara com ${f1(r25, 2)} kΩ ${dq > 0 ? 'condena sensor bom' : 'aprova sensor alterado'}.`; tkEm(q('cmp'));
       if (r === null) { v.className = 'veredito neutro'; v.innerHTML = `A ${f1(t, Number.isInteger(t) ? 0 : 1)} °C a curva real pede ${f1(esp, 2)} kΩ<small>Digite o kΩ medido para o veredito.</small>`; tkSmall(v); return; }
@@ -1134,6 +1191,21 @@ const gpmAlto = (btu) => Number(String(btu).replace(/\D/g, '')) >= 24000;
 const gpmPadrao = (fl, btu) => (fl === 'R32' ? (gpmAlto(btu) ? 24 : 12) : (gpmAlto(btu) ? 30 : 15));
 const AVISO_GPM = 'Referência prática de campo (confira o g/m gravado na etiqueta da condensadora)';
 const estadoSh = (sh) => sh < 7 ? ['def', 'EXCESSO DE FLUIDO', 'Abaixo de 7 °C: recolha fluido com a recolhedora e confira o fluxo de ar da evaporadora.'] : sh <= 11 ? ['ok', 'CARGA PERFEITA', 'Superaquecimento dentro da faixa alvo de 7 a 11 °C.'] : ['def', 'FALTA DE FLUIDO', 'Acima de 11 °C: ache o vazamento e complete a carga na fase líquida.'];
+// Escala linear de SH 0–20 °C em chassi escuro: < 7 °C (risco de golpe de líquido), 7–11 °C (zona alvo), > 11 °C (falta de fluido).
+const gaugeSh = (sh) => {
+  const X = (v) => 20 + Math.max(0, Math.min(20, v)) / 20 * 300, F = 'font-family="Figtree,Roboto,sans-serif"', x = sh === null ? 0 : X(sh), xt = Math.max(46, Math.min(294, x));
+  return `<svg class="graf-svg" viewBox="0 0 340 68" width="100%" height="68" role="img" aria-label="Escala de superaquecimento de 0 a 20 °C com a zona alvo de 7 a 11 °C">
+    <rect x="0" y="0" width="340" height="68" rx="12" fill="#0C1D36"></rect>
+    <text x="${(X(0) + X(7)) / 2}" y="13" text-anchor="middle" font-size="10" font-weight="800" fill="#7DD3FC" ${F}>&lt; 7 °C · GOLPE</text>
+    <text x="${(X(7) + X(11)) / 2}" y="13" text-anchor="middle" font-size="10" font-weight="800" fill="#86EFAC" ${F}>ALVO 7–11 °C</text>
+    <text x="${(X(11) + X(20)) / 2}" y="13" text-anchor="middle" font-size="10" font-weight="800" fill="#FCD34D" ${F}>&gt; 11 °C · FALTA</text>
+    <rect x="${X(0)}" y="18" width="${X(7) - X(0)}" height="12" fill="#0284C7" data-zona="golpe"></rect><rect x="${X(7)}" y="18" width="${X(11) - X(7)}" height="12" fill="#16A34A" data-zona="alvo"></rect><rect x="${X(11)}" y="18" width="${X(20) - X(11)}" height="12" fill="#D97706" data-zona="falta"></rect>
+    ${Array.from({ length: 21 }, (_, v) => `<line x1="${X(v)}" y1="30" x2="${X(v)}" y2="${v % 5 ? 33 : 36}" stroke="#94A3B8" stroke-width="1"></line>`).join('')}
+    <text x="20" y="46" font-size="9.5" font-weight="700" fill="#94A3B8" ${F}>0 °C</text><text x="320" y="46" text-anchor="end" font-size="9.5" font-weight="700" fill="#94A3B8" ${F}>20 °C</text>
+    ${sh === null ? `<text x="170" y="58" text-anchor="middle" font-size="10.5" font-weight="700" fill="#CBD5E1" ${F}>Digite pressão e tubo: a agulha marca o SH</text>`
+      : `<g data-agulha data-sh="${f1(sh)}"><line x1="${x}" y1="15" x2="${x}" y2="33" stroke="#FFFFFF" stroke-width="2.5"></line><polygon points="${x - 6},45 ${x + 6},45 ${x},36" fill="#FFFFFF"></polygon><text x="${xt}" y="60" text-anchor="middle" font-size="11.5" font-weight="800" fill="#FFFFFF" ${F}>SH ${f1(sh)} °C</text></g>`}
+  </svg>`;
+};
 let PT = null;
 const carregarPT = () => PT || (PT = Promise.all([csv('pt_r410a_r32_r22.csv'), csv('criterios_operacionais.csv')]));
 const tSat = (T, k, p) => { const P = T.map(r => [num(r[k]), num(r.temp_c)]).filter(x => x[0] !== null && x[1] !== null).sort((a, b) => a[0] - b[0]); if (p <= P[0][0]) return P[0][1]; for (let j = 1; j < P.length; j++) if (p <= P[j][0]) { const [p0, t0] = P[j - 1], [p1, t1] = P[j]; return t0 + (p - p0) / (p1 - p0) * (t1 - t0); } return P[P.length - 1][1]; };
@@ -1149,6 +1221,7 @@ function afGas(corpo) {
         <div class="grade2">${campo('Pressão de sucção (PSI)', `type="number" inputmode="decimal" step="any" data-g="p" value="${esc(st.p)}" placeholder="Ex.: 140"`)}${campo('Tubo de sucção (°C)', `type="number" inputmode="decimal" step="any" data-g="tt" value="${esc(st.tt)}" placeholder="Ex.: 18"`)}</div>
         ${tagsPonta('MANIFOLD PSI', 'ALVO: SH 7–11 °C', false)}
         <div class="pocos" data-g="pocos"></div>
+        <div data-g="gauge-sh"></div>
         <div class="veredito neutro" data-g="v"></div>
         <h3>Tubulação acima de 3 m</h3>
         <div class="opcoes" role="group" aria-label="Comprimento da linha">${LINHAS.map(l => `<button class="bt bt-sel" data-lin="${l}" aria-pressed="${l === st.lin}">${l === 3 ? 'Até 3 m' : l + ' m'}</button>`).join('')}</div>
@@ -1162,6 +1235,7 @@ function afGas(corpo) {
       st.p = q('p').value; st.tt = q('tt').value; st.gpm = q('gpm').value;
       const R = calc(), v = q('v'), zero = R && R.p <= 0;
       q('pocos').innerHTML = mostrador('Evaporação', R && !zero ? f1(R.ts) : '—', '°C') + mostrador('Superaquecimento SH', R && !zero && R.sh !== null ? f1(R.sh) : '—', '°C', zero ? 'def' : R && R.sh !== null ? estadoSh(R.sh)[0] : '');
+      q('gauge-sh').innerHTML = gaugeSh(R && !zero && R.sh !== null ? R.sh : null);
       if (!R) { v.className = 'veredito neutro'; v.textContent = 'Digite a pressão de sucção lida no manifold.'; }
       else if (zero) { v.className = 'veredito def'; v.innerHTML = '0 PSI = SEM PRESSÃO / VAZAMENTO<small>Sistema vazio: ache e corrija o vazamento, faça vácuo e carga na balança antes de ligar o compressor.</small>'; }
       else if (R.sh === null) { v.className = 'veredito neutro'; v.innerHTML = `Evaporação ${f1(R.ts)} °C (${st.fl} a ${f1(R.p, 0)} PSI)<small>Agora meça o tubo de sucção a 20 cm da válvula, com o termopar preso e isolado.</small>`; }
@@ -1346,15 +1420,15 @@ function telaLaudo(op) {
         <p class="sub">${esc(equipTx())} · porte ${PORTE_TX[porte]} · Tabela Oficial 2026${f ? ` · Sintoma: Diagnóstico ${f.id}` : ''}</p>
         <div class="total"><span>Valor final</span><b data-l="total"></b></div>
         <div class="grade3-faixa" role="group" aria-label="Valor pela faixa da Tabela 2026"><button class="bt bt-sel" data-faixa="min"><span>Mínimo</span><b data-fx="min"></b></button><button class="bt bt-sel" data-faixa="ref"><span>Referência</span><b data-fx="ref"></b></button><button class="bt bt-sel" data-faixa="max"><span>Máximo</span><b data-fx="max"></b></button></div></div>
-      <div class="cofre-box" data-l="cofre"><div class="cab-sec"><button type="button" class="bt bt-sel escolha" data-cofre-toggle aria-expanded="${!!S.cofreAberto}"><span style="display:inline-flex;align-items:center;gap:8px">${ico('prancheta', '#0C4A6E', 18)}<span>Cofre de Laudos (<b data-l="cofre-n">${S.cofre.length}</b>)</span></span><span class="eq-seta" aria-hidden="true">▾</span></button>
-        <div class="linha"><button type="button" class="bt bt-sel bt-acao-sec" data-l="salvar-cofre">Salvar no Cofre</button><button type="button" class="bt bt-sel bt-perigo" data-l="excluir-atual" aria-label="Excluir e limpar laudo atual">${ico('lixeira', '#991B1B', 18)}<span>Excluir atual</span></button></div></div>
-        <div class="cofre-lista lista" data-l="cofre-lista" ${S.cofreAberto ? '' : 'hidden'}></div></div>
       <div class="bastidor-card" data-l="bast" hidden>
-        <div class="cab-sec"><span class="tag" style="background:#064E3B;color:#A7F3D0;border-color:#10B981">SEU LUCRO NO BOLSO</span><span class="tag" style="background:#0C1D36;color:#67C6FF;border-color:#0284C7" data-l="margem-pct"></span></div>
+        <div class="cab-sec"><span class="tag" style="background:#064E3B;color:#A7F3D0;border-color:#10B981">SEU LUCRO NO BOLSO</span><span class="tag" style="background:#0C1D36;color:#67C6FF;border-color:#0284C7" data-l="margem-pct"></span><span class="odometro" data-l="lucro-cofre" hidden></span></div>
         <div class="grade2"><div class="poco"><span class="pr">VOCÊ LUCRA LIMPO (SOBROU LIMPO)</span><b class="val limpo" data-l="limpo" style="font-size:24px;color:#4ADE80;font-family:var(--f-tit)"></b></div><div class="poco"><span class="pr">CUSTO MÉDIO DA PEÇA</span><b class="val" data-l="custo" style="font-size:24px;color:#FDE68A;font-family:var(--f-tit)"></b></div></div>
         <button class="bt bt-sel largo" data-l="mala" aria-pressed="${L.mala}"></button>
         <div data-l="grafico-lucro"></div>
         <div class="lista" data-l="combos"></div></div>
+      <div class="cofre-box" data-l="cofre"><div class="cab-sec"><button type="button" class="bt bt-sel escolha" data-cofre-toggle aria-expanded="${!!S.cofreAberto}"><span style="display:inline-flex;align-items:center;gap:8px">${ico('prancheta', '#0C4A6E', 18)}<span>Cofre de Laudos (<b data-l="cofre-n">${S.cofre.length}</b>)</span></span><span class="eq-seta" aria-hidden="true">▾</span></button>
+        <div class="linha"><button type="button" class="bt bt-sel bt-acao-sec" data-l="salvar-cofre">Salvar no Cofre</button><button type="button" class="bt bt-sel bt-perigo" data-l="excluir-atual" aria-label="Excluir e limpar laudo atual">${ico('lixeira', '#991B1B', 18)}<span>Excluir atual</span></button></div></div>
+        <div class="cofre-lista lista" data-l="cofre-lista" ${S.cofreAberto ? '' : 'hidden'}></div></div>
       <div class="cartao">
         <div class="passo-cab"><img class="passo-tile" data-l="tile-srv" src="" alt="" width="64" height="64" data-tile><div class="srv-resumo"><span class="tag tag-info" style="align-self:flex-start">DIAGNÓSTICO, PEÇA &amp; SERVIÇO</span><b data-l="srv-nome"></b><span class="sub" data-l="srv-causa"></span></div></div>
         <div class="campo"><span class="rot">Causa confirmada</span><button class="bt bt-sel escolha" data-l="causa"></button></div>
@@ -1365,7 +1439,7 @@ function telaLaudo(op) {
       </div>
       <div class="cartao ref-card" data-l="ref"><h3>Referência Oficial 2026 &amp; Economia Preventiva</h3><p class="tx proc-box" data-l="proc"></p><p class="faixa-box" data-l="faixa"></p><div class="selo-prev" data-l="prev">${ico('garantia', '#16A34A', 20)}<span data-l="prevtx"></span></div></div>
       <div class="cartao"><div class="cab-sec"><h3>Leituras enviadas</h3><button class="bt bt-sel bt-perigo" data-l="limpar">Limpar</button></div><div class="leit lista" data-l="leit"></div></div>
-      <div class="cartao"><h3>Fechamento: WhatsApp, PDF e Pix</h3>
+      <div class="cartao"><div class="selo-laudo-ok" data-l="carimbo">${ico('sucesso', '#15803D', 20)}<span>LAUDO TÉCNICO AFERIDO · PRONTO PARA APROVAÇÃO PIX</span></div><h3>Fechamento: WhatsApp, PDF e Pix</h3>
         <div class="grade2">${campo('Cliente', `type="text" data-l="cli" value="${esc(L.cli)}" placeholder="Nome" autocomplete="off"`)}${campo('WhatsApp do cliente', `type="tel" data-l="tel" value="${esc(L.tel)}" placeholder="DDD + nº" autocomplete="off"`)}</div>
         <details class="dados" data-l="tit" ${tit.pix ? '' : 'open'}><summary>Seus dados e chave Pix ▾</summary><div style="display:flex;flex-direction:column;gap:10px">
           <div class="grade2">${campo('Seu nome ou empresa', `type="text" data-t="nome" value="${esc(tit.nome)}" autocomplete="off"`)}${campo('CPF ou CNPJ', `type="text" data-t="doc" value="${esc(tit.doc)}" autocomplete="off"`)}</div>
@@ -1432,7 +1506,18 @@ function telaLaudo(op) {
       const custoEf = (L.mala ? 0 : custoBase) + custoCombo, comboP = c0 ? precoDe(c0, porte) : 0, lk = ['min', 'ref', 'max'].map(k => fx[k] + comboP - custoEf);
       const perto = ['min', 'ref', 'max'].reduce((a, k) => (Math.abs(fx[k] - valor()) < Math.abs(fx[a] - valor()) ? k : a), 'ref'), wc = tot > 0 ? Math.max(0, Math.min(1, custoEf / tot)) : 1;
       const pts = [[28, 74], [170, 55], [312, 38]];
-      q('grafico-lucro').innerHTML = `<svg viewBox="0 0 340 88" width="100%" height="88" role="img" aria-label="Curva de lucro limpo na faixa oficial 2026"><rect x="8" y="6" width="324" height="22" rx="11" fill="#10B981"></rect><rect x="8" y="6" width="${(324 * wc).toFixed(1)}" height="22" rx="11" fill="#F59E0B"></rect><text x="170" y="21.5" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF" font-family="Figtree,Roboto,sans-serif">Margem Limpa: ${pct}%</text><path d="M 28 74 Q 170 54 312 38" stroke="#38BDF8" stroke-width="3" fill="none"></path>${pts.map(([x, y], k) => { const on = ['min', 'ref', 'max'][k] === perto; return `<circle cx="${x}" cy="${y}" r="${on ? 6 : 4}" fill="${on ? '#4ADE80' : '#38BDF8'}" stroke="#091E42" stroke-width="1.5"></circle><text x="${x}" y="${y + (k === 2 ? -9 : 14)}" text-anchor="${k === 0 ? 'start' : k === 2 ? 'end' : 'middle'}" font-size="10.5" font-weight="700" fill="#CBD5E1" font-family="Figtree,Roboto,sans-serif">${['Mín', 'Ref', 'Máx'][k]} ${sinal(lk[k])}</text>`; }).join('')}</svg>`;
+      // Plano cartesiano: barra de margem no topo (y 4–24), plano com grade, eixos em R$, área sob a curva e cotas (y 30–116), e o eixo X
+      // em 3 caixas Mín / Ref / Máx (y 118–142). Só os 3 pontos são <circle>.
+      const FT = 'font-family="Figtree,Roboto,sans-serif"', rot3 = ['Mín', 'Ref', 'Máx'].map((r, k) => `${r} ${sinal(lk[k])}`);
+      q('grafico-lucro').innerHTML = `<svg viewBox="0 0 340 148" width="100%" height="148" role="img" aria-label="Plano cartesiano do lucro limpo na faixa oficial 2026"><defs><linearGradient id="gradLucro" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38BDF8"></stop><stop offset="100%" stop-color="#38BDF8" stop-opacity="0"></stop></linearGradient></defs>`
+        + `<rect x="8" y="4" width="324" height="20" rx="10" fill="#047857" data-margem></rect>${wc > 0 ? `<rect x="8" y="4" width="${Math.max(10, 324 * wc).toFixed(1)}" height="20" rx="10" fill="#B45309" data-custo-barra></rect>` : ''}<text x="170" y="18" text-anchor="middle" font-size="12" font-weight="800" fill="#FFFFFF" ${FT}>Margem Limpa: ${pct}%</text>`
+        + `<rect x="12" y="30" width="316" height="86" rx="8" fill="#07162C" stroke="#1E3A8A" stroke-width="1"></rect>${[42, 62, 82].map(y => `<line x1="20" y1="${y}" x2="320" y2="${y}" stroke="#1E293B" stroke-dasharray="3,3" data-grade></line>`).join('')}`
+        + `<line x1="20" y1="34" x2="20" y2="104" stroke="#334155" stroke-width="1.5" data-eixo="y"></line><line x1="20" y1="104" x2="320" y2="104" stroke="#334155" stroke-width="1.5" data-eixo="x"></line><text x="24" y="42" font-size="9.5" font-weight="800" fill="#94A3B8" ${FT}>R$</text>`
+        + `<path d="M 28 74 Q 170 54 312 38 L 312 104 L 28 104 Z" fill="url(#gradLucro)" opacity="0.28" data-area></path><path d="M 28 74 Q 170 54 312 38" stroke="#38BDF8" stroke-width="3" fill="none"></path>`
+        + pts.map(([x, y]) => `<line x1="${x}" y1="${y + 6}" x2="${x}" y2="104" stroke="#64748B" stroke-width="1" stroke-dasharray="3,3" data-cota></line>`).join('')
+        + pts.map(([x, y], k) => { const on = ['min', 'ref', 'max'][k] === perto; return `<circle cx="${x}" cy="${y}" r="${on ? 6 : 4}" fill="${on ? '#4ADE80' : '#38BDF8'}" stroke="#091E42" stroke-width="1.5"></circle>`; }).join('')
+        + rot3.map((t, k) => { const on = ['min', 'ref', 'max'][k] === perto, x = 12 + k * 108; return `<rect x="${x}" y="118" width="100" height="24" rx="6" fill="#0C1D36" stroke="${on ? '#4ADE80' : '#1E3A8A'}" stroke-width="1.5" data-rotulo-caixa></rect><text x="${x + 50}" y="134" text-anchor="middle" font-size="10.5" font-weight="800" fill="${on ? '#4ADE80' : '#CBD5E1'}" ${FT}${t.length > 15 ? ' textLength="92" lengthAdjust="spacingAndGlyphs"' : ''} data-rotulo>${t}</text>`; }).join('')
+        + `</svg>`;
       const cs = String(s.combo_sugerido || '').split(';').map(x => P.find(y => y.servico_id === x.trim())).filter(Boolean);
       q('combos').innerHTML = cs.map(sc => { const on = L.comboId === sc.servico_id, nome = esc(sc.servico.split('(')[0].trim()), pr = `(+${brl(precoDe(sc, porte)).replace(' ', '\u00a0')})`;
         return `<button type="button" class="bt bt-cat largo" data-combo="${sc.servico_id}" aria-pressed="${on}">${on ? `✓ Somado: ${nome} ${pr} — Toque p/ remover` : `+ Somar ${nome} ${pr}`}</button>`; }).join('');
@@ -1471,7 +1556,7 @@ function telaLaudo(op) {
     const arquivar = (numero) => { const it = { id: String(numero), num: String(numero), data: dataBR(Date.now()), equip: equipTx(), servico: srv().servico, sid: L.sid, causa: L.causa, valor: totalFinal(), vBase: valor(), cli: L.cli, tel: L.tel, comboId: L.comboId || null, leituras: S.leituras.slice(), caso: f ? f.n : -1 };
       const k = S.cofre.findIndex(x => x.id === it.id); if (k >= 0) S.cofre[k] = it; else S.cofre.unshift(it); guardarCofre(); pintarCofre(); };
     const pintarCofre = () => {
-      q('cofre-n').textContent = S.cofre.length; const lst = q('cofre-lista'); lst.hidden = !S.cofreAberto; $('[data-cofre-toggle]', corpo).setAttribute('aria-expanded', String(!!S.cofreAberto));
+      q('cofre-n').textContent = S.cofre.length; const lc = q('lucro-cofre'); lc.hidden = !S.cofre.length; lc.textContent = `Acumulado no Cofre: ${brl(S.cofre.reduce((a, x) => a + (Number(x.valor) || 0), 0))}`; const lst = q('cofre-lista'); lst.hidden = !S.cofreAberto; $('[data-cofre-toggle]', corpo).setAttribute('aria-expanded', String(!!S.cofreAberto));
       lst.innerHTML = S.cofre.length ? S.cofre.map(it => `<div class="cofre-item" data-cofre-item="${esc(it.id)}"><b>Nº ${esc(it.num)} · ${esc(it.data)}</b><span class="tx">${esc(it.servico)} — ${brl(it.valor)}</span><span class="sub">${esc(it.equip)}${it.cli ? ' · ' + esc(it.cli) : ''}</span>
         <div class="dupla"><button type="button" class="bt bt-sel bt-acao-sec" data-cofre-abrir="${esc(it.id)}">Abrir</button><button type="button" class="bt bt-sel bt-perigo" data-cofre-del="${esc(it.id)}" aria-label="Excluir laudo Nº ${esc(it.num)}">${ico('lixeira', '#991B1B', 18)}<span>Excluir</span></button></div></div>`).join('')
         : '<p class="sub">Nenhum laudo salvo ainda. Toque em "Salvar no Cofre" ou dispare no WhatsApp/PDF para arquivar com a data do dia.</p>';
