@@ -167,13 +167,14 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .opcao{width:100%;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:10px 12px}
 .opcao b{font:800 15px/1.25 var(--f-tit)}
 .opcao span{font:500 14px/1.3 var(--f-txt)}
-.bt.bt-sel.item-caso{display:grid;grid-template-columns:auto minmax(0,1fr) 56px;grid-template-areas:'cod meio img' 'tags tags tags';align-items:center;gap:8px 10px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #1D4ED8;box-shadow:0 2px 0 #CBD5E1}
+.bt.bt-sel.item-caso{display:grid;grid-template-columns:60px minmax(0,1fr);grid-template-areas:'img meio' 'img tags';align-items:center;gap:6px 12px;padding:12px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #1D4ED8;box-shadow:0 2px 0 #CBD5E1}
 .cod-badge{background:#1E3A8A;color:#FFFFFF;font:800 14px/1.2 var(--f-mono);padding:6px 9px;border-radius:8px;white-space:nowrap;max-height:30px}
 .item-caso .meio{grid-area:meio;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
-.item-caso .cod-badge{grid-area:cod}.item-caso img{grid-area:img}.item-caso .tags{grid-area:tags}
+.item-caso img{grid-area:img;align-self:center}.item-caso .tags{grid-area:tags}
+.item-caso .linha-cod{display:flex;align-items:flex-start;gap:8px;min-width:0;width:100%}.item-caso .linha-cod b{flex:1;min-width:0}.item-caso .linha-cod .cod-badge{flex:none;margin-top:-2px}
 .item-caso .meio b{font:800 17px/1.2 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
 .item-caso .meio .s{font:500 14px/1.3 var(--f-txt);color:#334155}
-.item-caso img{width:56px;height:56px;border:0;background:transparent;padding:0;border-radius:12px;object-fit:contain}
+.item-caso img{width:60px;height:60px;border:0;background:transparent;padding:0;border-radius:12px;object-fit:contain}
 .tag-sis{background:#DBEAFE;color:#1E3A8A;border-color:#93C5FD}
 .tag-fer{background:#FEF3C7;color:#78350F;border-color:#FCD34D}
 
@@ -201,7 +202,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 @media (min-width:720px){.c5{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .causa,.verif{width:100%;justify-content:flex-start;text-align:left;gap:10px;padding:8px 10px}
 .causa .num,.verif .num{flex:none;width:30px;height:30px;border-radius:50%;background:#19365C;color:#FFFFFF;font:800 14px/30px var(--f-mono);text-align:center}
-.causa img{flex:none;width:46px;height:46px;border:0;background:transparent;mix-blend-mode:normal;object-fit:contain}
+.causa img{flex:none;width:52px;height:52px;border:0;background:transparent;mix-blend-mode:normal;object-fit:contain}
 .causa .t,.verif .t{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 .causa .nm,.verif .tt{font:800 16px/1.22 var(--f-tit);color:#091E42}
 .verif .ln{font:500 14px/1.3 var(--f-txt)}
@@ -210,7 +211,10 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .bh-causas{border-bottom:3px solid #F59E0B}.bh-verif{border-bottom:3px solid #0284C7}.bh-prox{border-bottom:3px solid #16A34A}
 .bt.bt-sel.causa{background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #0284C7;box-shadow:0 2px 0 #CBD5E1}
 .bt.bt-sel.causa[data-c="1"]{border-left-color:#DC2626}.bt.bt-sel.causa[data-c="2"]{border-left-color:#D97706}
-.causa .num{border-radius:8px;background:#0369A1}.causa[data-c="1"] .num{background:#B91C1C}.causa[data-c="2"] .num{background:#B45309}
+.causa .num{border-radius:8px;background:#0369A1}
+.causa-tile{position:relative;width:52px;height:52px;flex:none}
+.causa-tile img{display:block}
+.causa-tile .num{position:absolute;top:-4px;left:-4px;width:22px;height:22px;font:800 12px/18px var(--f-mono);border:2px solid #FFFFFF;border-radius:6px}.causa[data-c="1"] .num{background:#B91C1C}.causa[data-c="2"] .num{background:#B45309}
 .bt.bt-sel.verif{background:#F0F7FF;border:1.5px solid #93C5FD;box-shadow:0 2px 0 #BFDBFE}
 .verif .num{background:#1D4ED8}
 .verif .tt{color:#091E42}
@@ -219,7 +223,13 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .bt.bt-sel.verif.def{border-color:#DC2626;background:#FEF2F2}
 .bt.bt-sel.causa.conf{border-color:#DC2626;border-left-color:#DC2626;background:#FEF2F2}
 .bt.bt-sel.causa.sel,.bt.bt-sel.verif.sel{box-shadow:0 0 0 3px #F59E0B}
-.lupa{position:relative;width:100%;aspect-ratio:16/9;background-size:260% auto;background-repeat:no-repeat;border-radius:12px;border:2px solid #19365C;background-color:#FFFFFF}
+.lupa{position:relative;width:100%;aspect-ratio:16/10;background-size:175% auto;background-repeat:no-repeat;border-radius:12px;border:2px solid #19365C;background-color:#FFFFFF}
+.cab-tile{display:flex;align-items:center;gap:10px;min-width:0}
+.cab-tile img{width:52px;height:52px;flex:none;object-fit:contain}
+.cab-tile h2,.cab-tile h3{min-width:0}
+.passo-cab{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;align-items:center}
+.passo-tile{width:64px;height:64px;object-fit:contain}
+.passo-tx{display:flex;flex-direction:column;gap:4px;min-width:0}
 .lupa span{position:absolute;left:8px;top:8px;font:800 14px/1 var(--f-txt);background:#FFFFFF;color:#091E42;border:1.5px solid #19365C;border-radius:999px;padding:6px 10px}
 .quadro{border:2px solid #F59E0B;background:#FFFBEB}
 .prox{width:100%;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:10px 12px}
@@ -613,9 +623,11 @@ const tileChip = (f, k) => tile([tileSistema, tileAplicacao, tileInstrumento][k]
 
 const ICO = (f, n) => `${ARTES}icones/${f.img}_${n}.webp`;
 const ICOc = (f, k) => { const v = f.vc.indexOf(k + 1) + 1; return ICO(f, v ? 'p' + v : 'aplicacao'); };
-const Z = 2.6;
-const lupaPos = (x, y) => { const p = (v) => Math.min(100, Math.max(0, (v / 100 * Z - .5) / (Z - 1) * 100)).toFixed(2); return `${p(x)}% ${p(y)}%`; };
-const lupa = (img, x, y, rot) => `<div class="lupa" data-lupa="260" style="background-image:url('${img}');background-position:${lupaPos(x, y)}" role="img" aria-label="Lupa 260% · ${esc(rot)}"><span>Lupa 260% · ${esc(rot)}</span></div>`;
+const Z = 1.75; // zoom da Lupa: a peça inteira no quadro, sem estourar (era 2,6)
+// Prancha 1672 × 941 num quadro 16:10: a razão vertical difere da horizontal, então cada eixo centra com a sua.
+const ZY = Z * (941 / 1672) / (10 / 16);
+const lupaPos = (x, y) => { const p = (v, z) => Math.min(100, Math.max(0, (v / 100 * z - .5) / (z - 1) * 100)).toFixed(2); return `${p(x, Z)}% ${p(y, ZY)}%`; };
+const lupa = (img, x, y, rot) => `<div class="lupa" data-lupa="${Math.round(Z * 100)}" style="background-image:url('${img}');background-position:${lupaPos(x, y)}" role="img" aria-label="Lupa ${Math.round(Z * 100)}% · ${esc(rot)}"><span>Lupa ${Math.round(Z * 100)}% · ${esc(rot)}</span></div>`;
 // Dupla codificação (daltonismo): cor + símbolo de forma distinta em cada degrau da escada.
 const PIL = [['p1', '▲ 70% MUITO COMUM'], ['p2', '◆ 20% COMUM'], ['p3', '• 10% MENOS COMUM'], ['p3', '• MENOS COMUM'], ['p3', '• MENOS COMUM']];
 const BLOCO_ICO = { b1: 'nao-gela', b2: 'nao-liga', b3: 'raio', b4: 'gelo', b5: 'barulho', b6: 'sensor-ntc', b7: 'codigo', b8: 'inverter' };
@@ -759,7 +771,7 @@ function listar(rolar) {
   if (q && S.bloco) L = L.filter(f => f.blocos.includes(S.bloco));
   if (!L) { box.innerHTML = '<div class="cartao"><p class="tx">Toque numa placa de sintoma, em <b>Ver Todos os Sintomas</b> ou busque pelo que o cliente relatou. Cada caso abre a ilustração com as 5 verificações e leva direto ao Laudo.</p></div>'; return; }
   const titulo = q ? `${L.length} casos para “${esc(S.termo.trim())}”` : S.bloco ? `${esc(BLOCOS.find(b => b[0] === S.bloco)[3])} · ${L.length} casos` : `Todos os Sintomas · ${L.length} casos`;
-  box.innerHTML = `<div class="cartao"><h3>${titulo}</h3><div class="lista">${L.length ? L.map(f => `<button class="bt bt-sel item-caso" data-caso="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}"><span class="cod-badge">${f.id}</span><span class="meio"><b>${quebraBarra(tx(f.titulo))}</b><span class="s">${tx(f.sub)}</span><span class="tags"><span class="tag tag-sis">${tx(f.chips[0])}</span><span class="tag tag-fer">${tx(f.chips[2])}</span></span></span><img src="${iconePecaCaso(f)}" alt="" width="56" height="56" loading="lazy"></button>`).join('')
+  box.innerHTML = `<div class="cartao"><h3>${titulo}</h3><div class="lista">${L.length ? L.map(f => `<button class="bt bt-sel item-caso" data-caso="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}"><img src="${iconePecaCaso(f)}" alt="" width="60" height="60" loading="lazy"><span class="meio"><span class="linha-cod"><span class="cod-badge">${f.id}</span><b>${quebraBarra(tx(f.titulo))}</b></span><span class="s">${tx(f.sub)}</span></span><span class="tags"><span class="tag tag-sis">${tx(f.chips[0])}</span><span class="tag tag-fer">${tx(f.chips[2])}</span></span></button>`).join('')
     : `<p class="tx">Nada com esse termo. Abra o Diagnóstico D-099 (códigos sem tabela) ou monte o laudo de visita.</p><div class="dupla"><button class="bt bt-sel" data-caso="${F.findIndex(f => f.id === 'D-099')}">Abrir D-099</button><button class="bt bt-cobalto" data-ir-laudo>Tabela & Laudo</button></div>`}</div></div>`;
   $$('[data-caso]', box).forEach(b => b.addEventListener('click', () => abrirCaso(+b.dataset.caso)));
   const il = $('[data-ir-laudo]', box); if (il) il.addEventListener('click', () => irTecla('laudo', { servico: 'visita_diag' }));
@@ -796,7 +808,7 @@ function telaCaso(i) {
     <div data-quadro aria-live="polite"></div>
     <div class="c5">
       <section class="cartao" aria-label="Causas mais prováveis"><div class="bloco-h bh-causas" role="heading" aria-level="3"><b>Causas mais prováveis (ordem de escada)</b><span aria-hidden="true">▲ ◆ •</span></div>
-        ${f.causas.map(([nm], k) => `<button class="bt bt-sel causa${conf === k + 1 ? ' conf' : ''}" data-c="${k + 1}"><span class="num">${nn(k + 1)}</span><img src="${iconePecaCausa(f, k)}" alt=""><span class="t"><span class="nm">${tx(nm)}</span><span class="tag ${PIL[k][0]}">${PIL[k][1]}</span></span></button>`).join('')}</section>
+        ${f.causas.map(([nm], k) => `<button class="bt bt-sel causa${conf === k + 1 ? ' conf' : ''}" data-c="${k + 1}"><span class="causa-tile"><img src="${iconePecaCausa(f, k)}" alt=""><span class="num">${nn(k + 1)}</span></span><span class="t"><span class="nm">${tx(nm)}</span><span class="tag ${PIL[k][0]}">${PIL[k][1]}</span></span></button>`).join('')}</section>
       <section class="cartao" aria-label="Verificações na ordem"><div class="bloco-h bh-verif" role="heading" aria-level="3"><b>5 Verificações com instrumento</b><span aria-hidden="true">✓</span></div>
         ${f.verifs.map(([tt, ln], k) => `<button class="bt bt-sel verif${st[k + 1] ? ' ' + st[k + 1] : ''}" data-v="${k + 1}"><span class="num">${nn(k + 1)}</span><span class="t"><span class="tt">${tx(tt)}</span><span class="ln">✓ ${tk(tx(ln))}</span></span></button>`).join('')}</section>
     </div>
@@ -820,7 +832,7 @@ function quadro(f, v, cLigada, semRolar) {
   $$('.causa', tela).forEach(e => e.classList.toggle('sel', +e.dataset.c === c));
   const k = `${f.id}-v${v}`, box = $('[data-quadro]', tela);
   box.innerHTML = `<div class="cartao quadro" data-quadro-v="${v}">${lupa(IMG(f), fx, fy, 'Ponto ' + nn(v))}
-    <div class="cab-sec"><h3>${nn(v)} · ${tx(tt)}</h3><span class="tag tag-bonus">BÔNUS 3 · PONTA SEM CURTO</span></div>
+    <div class="cab-tile"><img src="${pecaDoTexto(tt, ln) ? tile(pecaDoTexto(tt, ln)) : iconePecaCausa(f, c - 1)}" alt="" width="52" height="52" data-tile><h3>${nn(v)} · ${tx(tt)}</h3></div><span class="tag tag-bonus" style="align-self:flex-start">GUIA DE PONTA SEM CURTO</span>
     ${tagsPonta(escala, alvoCurto(tt, ln), pontas)}
     ${('ALVO: ' + limpa(ln)).length > 24 ? `<div class="ref-faixa" data-ref-faixa><b>Medida-alvo:</b> ${tk(tx(ln))}</div>` : ''}
     <p class="sub">Causa ligada: <b>${nn(c)} · ${tx(f.causas[c - 1][0])}</b> (${PIL[c - 1][1].replace(/^\S+ /, "").toLowerCase()}) → ${esc(servNome(f.causas[c - 1][1]))}</p>
@@ -890,7 +902,7 @@ function afNtc(corpo) {
     const disp = () => new Set(lista().map(c => c.nom));
     if (!disp().has(st.nom)) { st.nom = [...disp()][0]; st.ci = 0; }
     const curvas = () => lista().filter(c => c.nom === st.nom), curva = () => curvas()[Math.min(st.ci, curvas().length - 1)];
-    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><h2>Sensor NTC na curva real</h2><span class="tag tag-info">${C.length} CURVAS · ${marcas.length} MARCAS</span></div>
+    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><div class="cab-tile"><img src="${tile('t10_sensor_ntc')}" alt="" width="52" height="52" data-tile><h2>Sensor NTC na curva real</h2></div><span class="tag tag-info">${C.length} CURVAS · ${marcas.length} MARCAS</span></div>
         <p class="sub">Solte o sensor da placa e meça com o termômetro encostado no mesmo ponto. ${marcas.includes(marcaCurva(S.equip.marca)) ? '' : `Para ${esc(S.equip.marca)}, escolha a curva pelo nominal impresso no sensor.`}</p>
         <div class="marcas">${marcas.map(m => `<button class="bt bt-sel" data-m="${esc(m)}" aria-pressed="${m === st.m}">${logo(m, 26)}<span>${esc(m)}</span></button>`).join('')}</div>
         <div class="opcoes" role="group" aria-label="Sensor nominal">${NOMS.map(n => `<button class="bt bt-sel" data-nom="${n}" aria-pressed="${n === st.nom}" ${disp().has(n) ? '' : 'disabled'}>${n}K</button>`).join('')}</div>
@@ -951,7 +963,7 @@ function afGas(corpo) {
     const st = S.gas || (S.gas = { fl: S.equip.fluido, p: '', tt: '', lin: 3, gpm: gpmPadrao(S.equip.fluido, S.equip.btu), gpmManual: false });
     const refGpm = () => `Padrão ${st.fl} ${gpmAlto(S.equip.btu) ? '24.000+' : '9.000 a 18.000'} BTU/h: ${gpmPadrao(st.fl, S.equip.btu)} g/m. ${AVISO_GPM}.`;
     const crit = CRI.find(c => /Superaquecimento correto/i.test(c.criterio));
-    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><h2>Gás &amp; Superaquecimento</h2><span class="tag tag-bonus">BÔNUS 4</span></div>
+    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><div class="cab-tile"><img src="${tile('t03_manifold')}" alt="" width="52" height="52" data-tile><h2>Gás &amp; Superaquecimento</h2></div><span class="tag tag-bonus">CARGA PELO SH</span></div>
         <p class="sub">SH = tubo de sucção menos a evaporação pela pressão. Faixa alvo <b>7 a 11 °C</b>${crit ? ` (${esc(crit.marca)}, fonte ${esc(crit.fonte_id)})` : ''}.</p>
         <div class="grade4" style="grid-template-columns:repeat(3,minmax(0,1fr))" role="group" aria-label="Fluido">${Object.keys(FLUIDOS).map(k => `<button class="bt bt-sel" data-fl="${k}" aria-pressed="${k === st.fl}">${k}</button>`).join('')}</div>
         <div class="grade2">${campo('Pressão de sucção (PSI)', `type="number" inputmode="decimal" step="any" data-g="p" value="${esc(st.p)}" placeholder="Ex.: 140"`)}${campo('Tubo de sucção (°C)', `type="number" inputmode="decimal" step="any" data-g="tt" value="${esc(st.tt)}" placeholder="Ex.: 18"`)}</div>
@@ -1013,18 +1025,20 @@ const INV7 = [
 // Etiquetas curtas de 1 linha (escala e alvo) e frase de referência de cada passo, mostrada inteira no bloco .ref-faixa.
 const INV_TAGS = { ipm: ['ESCALA DIODO', 'ALVO: 0,45–0,65 V / OL'], uvw: ['ESCALA Ω', 'ALVO: U–V = V–W = W–U'], fuga: ['ESCALA MΩ', 'ALVO: OL (SEM FUGA)'], barramento: ['ESCALA V CC', 'ALVO: ≈ 310 V CC'],
   fonte: ['ESCALA V CC', 'ALVO: 15 V E 5 V FIXOS'], serial: ['ESCALA V CC', 'ALVO: PULSANDO S–N'], pfc: ['ESCALA Ω', 'ALVO: CONTINUIDADE Ω'] };
+// Tile Option C de cada passo da Trava 30s e dos 7 testes (a peça que o técnico mede).
+const PASSO_TILE = { rede: 't12_disjuntor', cap: 't09_capacitor_uf', ntc: 't10_sensor_ntc', ipm: 't06_modulo_ipm', uvw: 't13_compressor', fuga: 't13_compressor', barramento: 't07_barramento_pfc', fonte: 't05_placa_pcb', serial: 't11_bornes_fios', pfc: 't07_barramento_pfc' };
 const TRAVA_FAIXA = { rede: 'Entre 198 V e 242 V nos bornes L e N.', cap: 'Capacitância medida dentro de ±5% do valor gravado na etiqueta.', ntc: 'Resistência dentro da curva real na temperatura medida (tecla Sensor NTC).' };
 const diagPorImg = (img) => F.find(f => f.id === IMGS[img].diag);
 // Recorte centrado na própria peça: ponta da linha ciano = 2 × foco − bolinha.
 const recorte = (img, p) => { const f = diagPorImg(img), [fx, fy] = f.foco[p - 1], [ax, ay] = f.alvos[p - 1]; return lupa(IMG(f), 2 * fx - ax, 2 * fy - ay, `${f.id} ponto ${nn(p)}`); };
 function afInv(corpo) {
-  const passo = (id, t, como, alvoTx, st, k) => `<div class="cartao" data-passo="${id}"><h3>${k ? k + '. ' : ''}${esc(t)}</h3><p class="sub">${tk(esc(como))}</p>${alvoTx}
+  const passo = (id, t, como, alvoTx, st, k) => `<div class="cartao" data-passo="${id}"><div class="passo-cab"><img class="passo-tile" src="${tile(PASSO_TILE[id])}" alt="" width="64" height="64" data-tile><div class="passo-tx"><h3>${k ? k + '. ' : ''}${esc(t)}</h3><p class="sub">${tk(esc(como))}</p></div></div>${alvoTx}
       <div class="dupla"><button class="bt bt-sel" data-s="ok" aria-pressed="${st === 'ok'}">Normal</button><button class="bt bt-sel" data-s="fo" aria-pressed="${st === 'fo'}">Fora da faixa</button></div>${btMandar('inv-' + id)}</div>`;
-  corpo.innerHTML = `<div class="cartao" style="border:2px solid #D97706"><div class="cab-sec"><h2>Trava Eliminatória de 30 Segundos</h2><span class="tag tag-bonus">BÔNUS 5</span></div>
+  corpo.innerHTML = `<div class="cartao" style="border:2px solid #D97706"><div class="cab-sec"><h2>Trava Eliminatória de 30 Segundos</h2><span class="tag tag-bonus">TRAVA DE 30 SEGUNDOS</span></div>
       <p class="sub">Antes de abrir a placa, elimine o que derruba qualquer Inverter: rede, capacitor e sensor.</p><div class="veredito neutro" data-iv="trava"></div></div>
     ${TRAVA.map(([id, t, como, esc0, alvo]) => passo(id, t, como, `${tagsPonta(esc0, alvo)}<div class="ref-faixa" data-ref-faixa><b>Referência:</b> ${tk(esc(TRAVA_FAIXA[id]))}</div>`, S.trava[id], '')).join('')}
-    <div class="cartao" style="border:2px solid #19365C"><div class="cab-sec"><h2>7 testes da Placa Inverter</h2><span class="tag tag-bonus">BÔNUS 1</span></div><p class="sub">A Lupa 260% mostra onde encostar as pontas, sem curto.</p><div class="veredito neutro" data-iv="v"></div></div>
-    ${INV7.map(([id, t, como, faixa, [im, pt]], k) => passo(id, t, como, `${recorte(im, pt)}${tagsPonta(INV_TAGS[id][0], INV_TAGS[id][1])}<div class="ref-faixa" data-ref-faixa><b>Faixa:</b> ${tk(esc(faixa))}</div>`, S.inv[id], k + 1)).join('')}`;
+    <div class="cartao" style="border:2px solid #19365C"><div class="cab-sec"><h2>7 testes da Placa Inverter</h2><span class="tag tag-bonus">7 TESTES DE BANCADA</span></div><p class="sub">Cada teste mostra a peça, a escala e onde encostar as pontas, sem curto.</p><div class="veredito neutro" data-iv="v"></div></div>
+    ${INV7.map(([id, t, como, faixa, [im, pt]], k) => passo(id, t, como, `${tagsPonta(INV_TAGS[id][0], INV_TAGS[id][1])}<div class="ref-faixa" data-ref-faixa><b>Faixa:</b> ${tk(esc(faixa))}</div>`, S.inv[id], k + 1)).join('')}`;
   const veredito = () => {
     const ft = TRAVA.filter(x => S.trava[x[0]] === 'fo'), okT = TRAVA.filter(x => S.trava[x[0]] === 'ok'), vt = $('[data-iv=trava]', corpo);
     if (ft.length) { vt.className = 'veredito def'; vt.innerHTML = `PARE: ${esc(ft.map(x => x[1]).join(', '))} fora da faixa<small>Corrija antes de condenar a placa. Mande a leitura para o Laudo: o serviço já vem sugerido.</small>`; }
@@ -1071,7 +1085,7 @@ function telaCodigos() {
     if (!corpo.isConnected) return;
     const marcas = [...new Set(U.map(r => r.m))].sort(), nC = U.filter(r => r.tp === 'Código').length, nP = U.length - nC, st = S.cod;
     if (st.marca === null) st.marca = marcas.includes(marcaCodigo(S.equip.marca)) ? marcaCodigo(S.equip.marca) : '';
-    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><h2>Códigos &amp; LED</h2><span class="tag tag-bonus">BÔNUS 2</span></div>
+    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><h2>Códigos &amp; LED</h2><span class="tag tag-bonus">CÓDIGOS OFICIAIS</span></div>
         <p class="sub"><b>${nC} códigos e ${nP} piscadas reais de ${marcas.length} marcas.</b> Selo verde = o próprio fabricante descreve operação normal ou proteção.</p>
         <div class="marcas" role="group" aria-label="Marca"><button class="bt bt-sel" data-mk="" aria-pressed="${!st.marca}">Todas as ${marcas.length}</button>${marcas.map(m => `<button class="bt bt-sel" data-mk="${esc(m)}" aria-pressed="${m === st.marca}">${logo(m, 26)}<span>${esc(m)}</span></button>`).join('')}</div>
         <h3>Piscadas do LED</h3>
@@ -1138,7 +1152,7 @@ function telaLaudo(op) {
     if (!L.causa) L.causa = (S.srvSug === L.sid && S.causaSug) || (f && limpa(causaDe(f, L.sid))) || CAUSA_PADRAO[L.sid];
     const srv = () => P.find(s => s.servico_id === L.sid), porte = porteDe(S.equip.btu), vis = P.find(s => s.servico_id === 'visita_diag');
     const tit = titular(), numero = numeroLaudo(false);
-    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><h2>Laudo de Aprovação Nº <span data-l="num1">${esc(numero)}</span></h2><span class="tag tag-bonus">BÔNUS 6</span></div>
+    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><h2>Laudo de Aprovação Nº <span data-l="num1">${esc(numero)}</span></h2><span class="tag tag-bonus">TABELA OFICIAL 2026</span></div>
         <p class="sub">${esc(equipTx())} · porte ${PORTE_TX[porte]} · Tabela Oficial 2026${f ? ` · Sintoma: Diagnóstico ${f.id}` : ''}</p></div>
       <div class="cartao"><div class="cab-sec"><h3>Leituras enviadas</h3><button class="bt bt-sel" data-l="limpar">Limpar</button></div><div class="leit lista" data-l="leit"></div></div>
       <div class="cartao">
