@@ -36,7 +36,11 @@ button{border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:trans
 /* Topo 56 px */
 #topo{position:sticky;top:0;z-index:30;height:56px;background:#091E42;border-bottom:1px solid #D4D4D4;box-shadow:0 1px 4px rgba(9,30,66,.25)}
 .topo-in{height:56px;display:flex;align-items:center;gap:10px}
-.topo-in>img{width:36px;height:36px;flex:none}
+.topo-home{min-height:48px;display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-align:left;color:inherit;background:none;border:0;cursor:pointer;padding:0;border-radius:10px}
+.topo-home>img{width:36px;height:36px;flex:none}
+#topo-voltar{flex:none;min-height:48px;padding:6px 12px;border-radius:999px;font-size:14px;background:#19365C;color:#FFFFFF;border:1.5px solid #67C6FF;box-shadow:none}
+/* Topo com ‹ Início e Modo juntos no celular estreito: o subtítulo sai e o título pode quebrar em 2 linhas. */
+@media (max-width:420px){#topo.duplo .marca-tx span{display:none}}
 .marca-tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
 .marca-tx b{font:800 16px/1.15 var(--f-tit);color:#FFFFFF}
 .marca-tx span{font:600 14px/1.2 var(--f-txt);color:#9FD3FF}
@@ -68,6 +72,9 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 
 /* 4 famílias de botões (AtalhoTecla.dc.html): todos com 48 px ou mais */
 .bt{min-height:48px;border-radius:12px;padding:10px 14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 15px/1.25 var(--f-txt);text-align:center;transition:transform .1s ease-out}
+/* Palavra longa num botão estreito ("Superaquecimento" a 360 px) quebra com hífen, nunca vaza da borda. */
+.bt{overflow-wrap:anywhere}
+[data-sub="gas"]{hyphens:auto;-webkit-hyphens:auto}
 .bt:active{transform:translateY(2px)}
 .largo{width:100%}
 .bt-verde{background:linear-gradient(180deg,#00b100 0%,#008800 100%);border:2px solid #005500;color:#FFFFFF;text-shadow:0 1px 2px rgba(0,40,0,.65);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #005500}
@@ -257,16 +264,28 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .faca{background:#ECFDF5;border-left:4px solid #16A34A;color:#14532D;font-weight:600;border-radius:8px;padding:8px 10px;font-size:14px;line-height:1.7}
 .marcas{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .marcas .bt{justify-content:flex-start;padding:6px 10px}
+.marcas.marcas-faixa{display:flex;overflow-x:auto;gap:6px;padding:2px 2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.marcas.marcas-faixa::-webkit-scrollbar{display:none}
+.marcas.marcas-faixa .bt{flex:0 0 auto;min-height:48px;min-width:48px;padding:6px 12px;white-space:nowrap}
 
 /* Tecla 4 · Laudo */
 .bastidor{background:#091E42;color:#FFFFFF;border-radius:12px;padding:10px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font:700 15px/1.3 var(--f-txt)}
 .bastidor .limpo{color:#86EFAC}
 .bastidor .bt-sel{font-size:14px}
 .ref-card{border:1.5px solid #19365C}
-.proc-box{background:#F8FAFC;border-left:4px solid #19365C;border-radius:8px;padding:8px 10px;line-height:1.7}
-.faixa-box{background:#EFF6FF;border:1px solid #93C5FD;color:#1E3A8A;border-radius:10px;padding:8px 10px;font:700 15px/1.4 var(--f-txt)}
-.selo-prev{display:flex;gap:8px;align-items:flex-start;background:#DCFCE7;border:1.5px solid #16A34A;color:#14532D;border-radius:10px;padding:10px;font:700 14px/1.4 var(--f-txt)}
-.total{display:flex;justify-content:space-between;align-items:center;gap:8px;font:800 18px/1.2 var(--f-tit);background:#064E3B;border:2px solid #16A34A;border-radius:12px;padding:12px 14px;color:#FFFFFF}
+.proc-box{background:#F0F7FF;border-left:4px solid #0284C7;border-radius:8px;padding:8px 10px;line-height:1.7;color:#091E42;font-weight:600}
+.faixa-box{background:#FEF3C7;border:1.5px solid #D97706;color:#78350F;border-radius:10px;padding:8px 10px;font:800 15px/1.5 var(--f-txt)}
+.selo-prev{display:flex;gap:8px;align-items:flex-start;background:#DCFCE7;border:2px solid #16A34A;color:#14532D;border-radius:10px;padding:10px;font:700 14px/1.4 var(--f-txt)}
+.total{display:flex;justify-content:space-between;align-items:center;gap:8px;font:800 18px/1.2 var(--f-tit);background:#064E3B;border:2px solid #16A34A;border-radius:12px;padding:14px 16px;color:#FFFFFF}
+/* Painel de impacto do Laudo: chassi navy com filete esmeralda (bloco próprio; os cartões claros seguem brancos). */
+.laudo-hero{background:linear-gradient(180deg,#091E42 0%,#0C1D36 100%);border:2px solid #16A34A;color:#FFFFFF;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 10px rgba(9,30,66,.25)}
+.laudo-hero h2{color:#FFFFFF}
+.laudo-hero .sub{color:#CBD5E1}
+.grade3-faixa{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.grade3-faixa .bt{flex-direction:column;gap:2px;padding:6px 4px;font-size:14px;line-height:1.2}
+.grade3-faixa .bt b{font:800 15px/1.2 var(--f-tit);font-variant-numeric:tabular-nums}
+.srv-resumo{display:flex;flex-direction:column;gap:4px;min-width:0}
+.srv-resumo b{font:800 16px/1.25 var(--f-tit);color:#091E42}
 .total b{font:800 24px/1.1 var(--f-tit);font-variant-numeric:tabular-nums;color:#4ADE80}
 .leit .it{display:flex;align-items:center;gap:8px;border:1px solid #CBD5E1;border-radius:10px;padding:4px 4px 4px 10px;font-size:14px;background:#F8FAFC}
 .leit .it span{flex:1;min-width:0;overflow-wrap:anywhere}
@@ -297,8 +316,9 @@ details.dados>summary::-webkit-details-marker{display:none}
 </head>
 <body>
 <header id="topo"><div class="trilho topo-in">
-  <img src="../app/marca/gelopro-mascote.png" alt="" width="36" height="36">
-  <div class="marca-tx"><b>Bancada GeloPRO</b><span>Split &amp; Inverter</span></div>
+  <button type="button" class="topo-home" data-topo-inicio aria-label="Voltar ao início da Bancada GeloPRO"><img src="../app/marca/gelopro-mascote.png" alt="" width="36" height="36">
+  <span class="marca-tx"><b>Bancada GeloPRO</b><span>Split &amp; Inverter</span></span></button>
+  <button id="topo-voltar" class="bt" data-topo-voltar hidden aria-label="Voltar ao início">‹ Início</button>
   <button id="modo" class="bt bt-sel" aria-pressed="false" hidden>Modo: Laudo</button>
 </div></header>
 <main id="visor"><div class="trilho" id="tela"><div class="carregando">Abrindo a bancada…</div></div></main>
@@ -671,8 +691,8 @@ const Z = 1.75; // zoom da Lupa: a peça inteira no quadro, sem estourar (era 2,
 const ZY = Z * (941 / 1672) / (10 / 16);
 const lupaPos = (x, y) => { const p = (v, z) => Math.min(100, Math.max(0, (v / 100 * z - .5) / (z - 1) * 100)).toFixed(2); return `${p(x, Z)}% ${p(y, ZY)}%`; };
 const lupa = (img, x, y, rot) => `<div class="lupa" data-lupa="${Math.round(Z * 100)}" style="background-image:url('${img}');background-position:${lupaPos(x, y)}" role="img" aria-label="Lupa ${Math.round(Z * 100)}% · ${esc(rot)}"><span>Lupa ${Math.round(Z * 100)}% · ${esc(rot)}</span></div>`;
-// Dupla codificação (daltonismo): cor + símbolo de forma distinta em cada degrau da escada.
-const PIL = [['p1', '▲ 70% MUITO COMUM'], ['p2', '◆ 20% COMUM'], ['p3', '• 10% MENOS COMUM'], ['p3', '• MENOS COMUM'], ['p3', '• MENOS COMUM']];
+// Dupla codificação (daltonismo): cor + número de ordem distinto em cada degrau da escada (1º, 2º, 3º…).
+const PIL = [['p1', '1º · 70% MUITO COMUM'], ['p2', '2º · 20% COMUM'], ['p3', '3º · 10% MENOS COMUM'], ['p3', '4º · MENOS COMUM'], ['p3', '5º · MENOS COMUM']];
 const BLOCO_ICO = { b1: 'nao-gela', b2: 'nao-liga', b3: 'raio', b4: 'gelo', b5: 'barulho', b6: 'sensor-ntc', b7: 'codigo', b8: 'inverter' };
 const MARCAS = ['LG', 'Samsung', 'Midea', 'Springer', 'Carrier', 'Gree', 'Daikin', 'Elgin', 'Fujitsu', 'Consul', 'Electrolux', 'Philco', 'TCL', 'Agratto'];
 const BTUS = ['9.000', '12.000', '18.000', '24.000', '30.000', '36.000', '48.000', '60.000'], FLS = ['R32', 'R410A', 'R22'];
@@ -771,6 +791,7 @@ function abrirEquip(sec) {
 function pintarDock() {
   $$('#dock [data-tecla]').forEach(b => { if (b.dataset.tecla === S.tecla) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   $('#modo').hidden = S.tecla !== 'laudo';
+  const fora = S.caso >= 0 || S.tecla !== 'sintomas'; $('#topo-voltar').hidden = !fora; $('#topo').classList.toggle('duplo', fora && S.tecla === 'laudo');
   const rot = $('#dock [data-tecla="laudo"] span:last-child'); if (rot) rot.textContent = S.leituras.length ? `Laudo (${S.leituras.length})` : 'Tabela & Laudo';
 }
 function irTecla(t, op) {
@@ -852,7 +873,7 @@ function telaCaso(i) {
     <div class="c4"><div class="ilustra" data-ilustra><div class="ilustra-in"><img src="${IMG(f)}" alt="Ilustração de fábrica do Diagnóstico ${f.id} com os pontos de verificação" width="1672" height="941">${alvosDoCaso(f)}</div><button class="bt bt-sel ilustra-z" data-zoom-toggle aria-pressed="false" hidden></button></div></div>
     <div data-quadro aria-live="polite"></div>
     <div class="c5">
-      <section class="cartao" aria-label="Causas mais prováveis"><div class="bloco-h bh-causas" role="heading" aria-level="3"><b>Causas mais prováveis (ordem de escada)</b><span aria-hidden="true">▲ ◆ •</span></div>
+      <section class="cartao" aria-label="Causas mais prováveis"><div class="bloco-h bh-causas" role="heading" aria-level="3"><b>Causas mais prováveis (ordem de escada)</b><span aria-hidden="true">1º → 5º</span></div>
         ${f.causas.map(([nm], k) => `<button class="bt bt-sel causa${conf === k + 1 ? ' conf' : ''}" data-c="${k + 1}"><span class="causa-tile"><img src="${iconePecaCausa(f, k)}" alt=""><span class="num">${nn(k + 1)}</span></span><span class="t"><span class="nm">${tx(nm)}</span><span class="tag ${PIL[k][0]}">${PIL[k][1]}</span></span></button>`).join('')}</section>
       <section class="cartao" aria-label="Verificações na ordem"><div class="bloco-h bh-verif" role="heading" aria-level="3"><b>5 Verificações com instrumento</b><span aria-hidden="true">✓</span></div>
         ${f.verifs.map(([tt, ln], k) => `<button class="bt bt-sel verif${st[k + 1] ? ' ' + st[k + 1] : ''}" data-v="${k + 1}"><span class="num">${nn(k + 1)}</span><span class="t"><span class="tt">${tx(tt)}</span><span class="ln">✓ ${tk(tx(ln))}</span></span></button>`).join('')}</section>
@@ -882,7 +903,7 @@ function quadro(f, v, cLigada, semRolar) {
     <div class="passo-cab" data-lupa="${Math.round(Z * 100)}"><img class="passo-tile" src="${pecaDoTexto(tt, ln) ? tile(pecaDoTexto(tt, ln)) : iconePecaCausa(f, c - 1)}" alt="" width="76" height="76" data-tile><div class="passo-tx"><h3>Ponto ${nn(v)} · ${tx(tt)}</h3><span class="sub">Na imagem: bolinha ${nn(j + 1)}</span><span class="tag tag-bonus" style="align-self:flex-start">GUIA DE PONTA SEM CURTO</span></div></div>
     ${tagsPonta(escala, alvoCurto(tt, ln), pontas)}
     ${('ALVO: ' + limpa(ln)).length > 24 ? `<div class="ref-faixa" data-ref-faixa><b>Medida-alvo:</b> ${tk(tx(ln))}</div>` : ''}
-    <p class="sub">Causa ligada: <b>${nn(c)} · ${tx(f.causas[c - 1][0])}</b> (${PIL[c - 1][1].replace(/^\S+ /, "").toLowerCase()}) → ${esc(servNome(f.causas[c - 1][1]))}</p>
+    <p class="sub">Causa ligada: <b>${nn(c)} · ${tx(f.causas[c - 1][0])}</b> (${PIL[c - 1][1].replace(/^\d+º · /, "").toLowerCase()}) → ${esc(servNome(f.causas[c - 1][1]))}</p>
     <div class="dupla"><button class="bt bt-sel" data-r="ok" aria-pressed="${st[v] === 'ok'}">Normal</button><button class="bt bt-sel" data-r="def" aria-pressed="${st[v] === 'def'}">Defeito</button></div>
     ${btMandar(k)}</div>`;
   $$('[data-r]', box).forEach(b => b.addEventListener('click', () => {
@@ -959,7 +980,7 @@ function afNtc(corpo) {
     const curvas = () => lista().filter(c => c.nom === st.nom), curva = () => curvas()[Math.min(st.ci, curvas().length - 1)];
     corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><div class="cab-tile"><img src="${tile('t10_sensor_ntc')}" alt="" width="52" height="52" data-tile><h2>Sensor NTC na curva real</h2></div><span class="tag tag-info">${C.length} CURVAS · ${marcas.length} MARCAS</span></div>
         <p class="sub">Solte o sensor da placa e meça com o termômetro encostado no mesmo ponto. ${marcas.includes(marcaCurva(S.equip.marca)) ? '' : `Para ${esc(S.equip.marca)}, escolha a curva pelo nominal impresso no sensor.`}</p>
-        <div class="marcas">${marcas.map(m => `<button class="bt bt-sel" data-m="${esc(m)}" aria-pressed="${m === st.m}">${logo(m, 26)}<span>${esc(m)}</span></button>`).join('')}</div>
+        <div class="marcas marcas-faixa" role="group" aria-label="Marca da curva">${[st.m, ...marcas.filter(m => m !== st.m)].map(m => `<button class="bt bt-sel" data-m="${esc(m)}" aria-pressed="${m === st.m}">${logo(m, 26)}<span>${esc(m)}</span></button>`).join('')}</div>
         <div class="opcoes" role="group" aria-label="Sensor nominal">${NOMS.map(n => `<button class="bt bt-sel" data-nom="${n}" aria-pressed="${n === st.nom}" ${disp().has(n) ? '' : 'disabled'}>${n}K</button>`).join('')}</div>
         ${curvas().length > 1 ? `<div class="opcoes" role="group" aria-label="Ponto do sensor">${curvas().map((c, k) => `<button class="bt bt-sel" data-ci="${k}" aria-pressed="${k === Math.min(st.ci, curvas().length - 1)}">${esc(c.sensor)}</button>`).join('')}</div>` : `<p class="sub">Ponto: ${esc(curva().sensor)}</p>`}
         <div class="grade4" role="group" aria-label="Temperatura ambiente real">${[25, 30, 35, 40].map(x => `<button class="bt bt-sel" data-t="${x}" aria-pressed="${num(st.t) === x}">${x} °C</button>`).join('')}</div>
@@ -1142,7 +1163,7 @@ function telaCodigos() {
     if (st.marca === null) st.marca = marcas.includes(marcaCodigo(S.equip.marca)) ? marcaCodigo(S.equip.marca) : '';
     corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><h2>Códigos &amp; LED</h2><span class="tag tag-bonus">CÓDIGOS OFICIAIS</span></div>
         <p class="sub"><b>${nC} códigos e ${nP} piscadas reais de ${marcas.length} marcas.</b> Selo verde = o próprio fabricante descreve operação normal ou proteção.</p>
-        <div class="marcas" role="group" aria-label="Marca"><button class="bt bt-sel" data-mk="" aria-pressed="${!st.marca}">Todas as ${marcas.length}</button>${marcas.map(m => `<button class="bt bt-sel" data-mk="${esc(m)}" aria-pressed="${m === st.marca}">${logo(m, 26)}<span>${esc(m)}</span></button>`).join('')}</div>
+        <div class="marcas marcas-faixa" role="group" aria-label="Marca">${(st.marca ? [st.marca, '', ...marcas.filter(m => m !== st.marca)] : ['', ...marcas]).map(m => m ? `<button class="bt bt-sel" data-mk="${esc(m)}" aria-pressed="${m === st.marca}">${logo(m, 26)}<span>${esc(m)}</span></button>` : `<button class="bt bt-sel" data-mk="" aria-pressed="${!st.marca}">Todas as ${marcas.length}</button>`).join('')}</div>
         <h3>Piscadas do LED</h3>
         <div class="grade4" style="grid-template-columns:repeat(5,minmax(0,1fr))" role="group" aria-label="Número de piscadas">${PISC.map(n => `<button class="bt bt-sel" data-pisc="${n}" aria-pressed="${st.pisc === n}">${n === 10 ? '10+' : n}</button>`).join('')}</div>
         ${campo('Código do visor', `type="search" data-q placeholder="CH05, E1, P4, F0, H6…" autocomplete="off" enterkeyhint="search" value="${esc(st.q)}"`, true)}
@@ -1207,10 +1228,12 @@ function telaLaudo(op) {
     if (!L.causa) L.causa = (S.srvSug === L.sid && S.causaSug) || (f && limpa(causaDe(f, L.sid))) || CAUSA_PADRAO[L.sid];
     const srv = () => P.find(s => s.servico_id === L.sid), porte = porteDe(S.equip.btu), vis = P.find(s => s.servico_id === 'visita_diag');
     const tit = titular(), numero = numeroLaudo(false);
-    corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><h2>Laudo de Aprovação Nº <span data-l="num1">${esc(numero)}</span></h2><span class="tag tag-bonus">TABELA OFICIAL 2026</span></div>
-        <p class="sub">${esc(equipTx())} · porte ${PORTE_TX[porte]} · Tabela Oficial 2026${f ? ` · Sintoma: Diagnóstico ${f.id}` : ''}</p></div>
-      <div class="cartao"><div class="cab-sec"><h3>Leituras enviadas</h3><button class="bt bt-sel" data-l="limpar">Limpar</button></div><div class="leit lista" data-l="leit"></div></div>
+    corpo.innerHTML = `<div class="laudo-hero" data-l="hero"><div class="cab-sec"><h2>Laudo de Aprovação Nº <span data-l="num1">${esc(numero)}</span></h2><span class="tag tag-bonus">TABELA OFICIAL 2026</span></div>
+        <p class="sub">${esc(equipTx())} · porte ${PORTE_TX[porte]} · Tabela Oficial 2026${f ? ` · Sintoma: Diagnóstico ${f.id}` : ''}</p>
+        <div class="total"><span>Valor final</span><b data-l="total"></b></div>
+        <div class="grade3-faixa" role="group" aria-label="Valor pela faixa da Tabela 2026"><button class="bt bt-sel" data-faixa="min"><span>Mínimo</span><b data-fx="min"></b></button><button class="bt bt-sel" data-faixa="ref"><span>Referência</span><b data-fx="ref"></b></button><button class="bt bt-sel" data-faixa="max"><span>Máximo</span><b data-fx="max"></b></button></div></div>
       <div class="cartao">
+        <div class="passo-cab"><img class="passo-tile" data-l="tile-srv" src="" alt="" width="64" height="64" data-tile><div class="srv-resumo"><span class="tag tag-info" style="align-self:flex-start">DIAGNÓSTICO, PEÇA &amp; SERVIÇO</span><b data-l="srv-nome"></b><span class="sub" data-l="srv-causa"></span></div></div>
         <div class="campo"><span class="rot">Causa confirmada</span><button class="bt bt-sel escolha" data-l="causa"></button></div>
         <div class="campo"><span class="rot">Serviço da Tabela Oficial 2026 · porte ${PORTE_TX[porte]}</span><button class="bt bt-sel escolha" data-l="sid"></button></div>
         <button class="bt bt-sel largo" data-l="visita">Visita Técnica &amp; Diagnóstico — ${brl(precoDe(vis, porte))}</button>
@@ -1219,7 +1242,8 @@ function telaLaudo(op) {
         <div class="bastidor" data-l="bast" hidden><span>Peça: <b data-l="custo"></b></span><span aria-hidden="true">·</span><button class="bt bt-sel" data-l="mala" aria-pressed="${L.mala}"></button><span aria-hidden="true">·</span><span>Sobrou Limpo: <b class="limpo" data-l="limpo"></b></span></div>
       </div>
       <div class="cartao ref-card" data-l="ref"><h3>Referência Oficial 2026 &amp; Economia Preventiva</h3><p class="tx proc-box" data-l="proc"></p><p class="faixa-box" data-l="faixa"></p><div class="selo-prev" data-l="prev">${ico('garantia', '#16A34A', 20)}<span data-l="prevtx"></span></div></div>
-      <div class="cartao"><div class="total"><span>Valor final</span><b data-l="total"></b></div>
+      <div class="cartao"><div class="cab-sec"><h3>Leituras enviadas</h3><button class="bt bt-sel" data-l="limpar">Limpar</button></div><div class="leit lista" data-l="leit"></div></div>
+      <div class="cartao"><h3>Fechamento: WhatsApp, PDF e Pix</h3>
         <div class="grade2">${campo('Cliente', `type="text" data-l="cli" value="${esc(L.cli)}" placeholder="Nome" autocomplete="off"`)}${campo('WhatsApp do cliente', `type="tel" data-l="tel" value="${esc(L.tel)}" placeholder="DDD + nº" autocomplete="off"`)}</div>
         <details class="dados" data-l="tit" ${tit.pix ? '' : 'open'}><summary>Seus dados e chave Pix ▾</summary><div style="display:flex;flex-direction:column;gap:10px">
           <div class="grade2">${campo('Seu nome ou empresa', `type="text" data-t="nome" value="${esc(tit.nome)}" autocomplete="off"`)}${campo('CPF ou CNPJ', `type="text" data-t="doc" value="${esc(tit.doc)}" autocomplete="off"`)}</div>
@@ -1266,6 +1290,12 @@ function telaLaudo(op) {
       q('ref').dataset.servico = s.servico_id;
       q('custo').textContent = brl(custo); q('mala').innerHTML = `${ico(L.mala ? 'sucesso' : 'neutro', L.mala ? '#FFFFFF' : '#091E42', 18)}<span>Peça na Mala = R$ 0</span>`; q('mala').setAttribute('aria-pressed', String(L.mala));
       q('limpo').textContent = sinal(valor() - (L.mala ? 0 : custo)); q('total').textContent = brl(valor());
+      // Faixa da Tabela 2026 em 1 toque (mínimo, referência do porte, máximo) e o tile da peça do serviço.
+      const fx = { min: num(s.valor_min) || 0, ref: precoDe(s, porte), max: num(s.valor_max) || 0 };
+      $$('[data-faixa]', tela).forEach(b => { const k = b.dataset.faixa; $(`[data-fx=${k}]`, b).textContent = brl(fx[k]); b.setAttribute('aria-pressed', String(Math.abs(valor() - fx[k]) < 0.005)); b.onclick = () => { L.v = fx[k]; pintarValor(); }; });
+      const tl = q('tile-srv'), np = pecaDoTexto(L.causa, s.servico) || (f ? TILE_BLOCO[f.blocos[0]] : 't23_evaporadora_split');
+      if (tl.getAttribute('src') !== tile(np)) tl.setAttribute('src', tile(np));
+      q('srv-nome').textContent = s.servico; q('srv-causa').textContent = `Causa: ${L.causa}`;
       q('visita').setAttribute('aria-pressed', String(L.sid === 'visita_diag')); salvarSessao();
       pintarPix();
     };
@@ -1344,6 +1374,9 @@ const limparDoc = (o) => (typeof o === 'string' ? limpa(o) : Array.isArray(o) ? 
 
 // ───────────── Início ─────────────
 $$('#dock [data-tecla]').forEach(b => b.addEventListener('click', () => irTecla(b.dataset.tecla)));
+// Mascote + nome e ‹ Início: de qualquer tela, 1 toque volta à grade de Sintomas (sem bloco, busca ou caso aberto).
+const irInicio = () => { fecharGaveta(); S.tecla = 'sintomas'; S.caso = -1; S.sel = 0; S.bloco = null; S.termo = ''; S.todos = false; render(); window.scrollTo(0, 0); try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} };
+$('[data-topo-inicio]').addEventListener('click', irInicio); $('[data-topo-voltar]').addEventListener('click', irInicio);
 function iniciar() {
   $$('[data-ico]').forEach(s => { s.outerHTML = ico(s.dataset.ico, '#FFFFFF', 20); });
   carregarPrecos().catch(() => {});
