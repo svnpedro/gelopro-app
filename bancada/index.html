@@ -106,11 +106,15 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .nw{white-space:nowrap}
 .bt-sel[data-l="visita"]{display:block;padding-top:12px;padding-bottom:12px}
 /* Orçamento e laudo (faxina 06/11/2026): 1 superfície por seção, linhas com separador, conteúdo secundário recolhido. */
-.laudo-hero{background:linear-gradient(180deg,#091E42 0%,#0C1D36 100%);border:2px solid #16A34A;color:#FFFFFF;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 2px 10px rgba(9,30,66,.25)}
+.laudo-hero{background:linear-gradient(180deg,#091E42 0%,#0C1D36 100%);border:2px solid #16A34A;color:#FFFFFF;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 10px rgba(9,30,66,.25)}
 .laudo-hero h2{color:#FFFFFF}.laudo-hero .sub,.laudo-hero .orc-estado{color:#CBD5E1}.laudo-hero .orc-estado b{color:#67C6FF}
 .bt-sel.escolha:not([aria-pressed="true"]){background:#E0F2FE linear-gradient(180deg,#F0F9FF 0%,#E0F2FE 100%);border:2px solid #0284C7;color:#0C4A6E;box-shadow:0 2px 0 #0369A1}
 .bt-sel[data-aj="50"]{background:#DCFCE7 linear-gradient(180deg,#F0FDF4 0%,#DCFCE7 100%);border:1.5px solid #16A34A;color:#14532D}
-.orc-topo{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.orc-topo{display:flex;align-items:center;justify-content:space-between;gap:8px}
+/* Contrato 08 (Dente 7): “Orçamento e laudo” em 1 linha ao lado do #modo a 360 e 390 px, nos 2 modos. */
+.orc-topo h2{white-space:nowrap;font-size:clamp(17px,4.6vw,20px);min-width:0}
+/* Contrato 01 (Dente 7, Lei Universal Anti-Grude): a Tecla 4 empilha hero, lucro, serviço, envio e dobras com 12 px, como a .folha. */
+[data-l=corpo]{display:flex;flex-direction:column;gap:12px}
 .orc-estado{font:600 14px/1.35 var(--f-txt);color:#334155}
 .orc-estado b{color:#091E42}
 .composicao{display:flex;flex-direction:column}
