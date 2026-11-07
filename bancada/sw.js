@@ -1,7 +1,7 @@
 // GeloPro · Bancada GeloPRO em modo avião (05/11/2026). Service worker próprio da página /bancada/ (escopo ./), separado do app (app/sw.js) e
 // do guia (guia-pro/sw.js): cada um tem o seu cache e nenhum apaga o do outro.
 // No 1º acesso com sinal, o install guarda tudo o que as 4 teclas usam: a página, o motor (QR, Pix, marca, PDF, licença), os 4 componentes
-// visuais importados de ../app/ (.dc.html), as fontes, a textura e o mascote, os 18 CSVs da base técnica (com pmoc_atividades.csv) e as 126 artes
+// visuais importados de ../app/ (.dc.html), as fontes, a textura e o mascote, os 19 CSVs da base técnica (com pmoc_atividades.csv e codigos_erro_novos.csv) e as 126 artes
 // .webp lidas de ../guia-pro/imagens/. Com sinal: página, .js, .html e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e
 // imagens saem do cache e só vão à rede se faltarem.
 'use strict';
@@ -20,6 +20,7 @@ const BASE = [
   '../base-tecnica/pmoc_atividades.csv',
   '../base-tecnica/codigos_erro_conferidos.csv',
   '../base-tecnica/codigos_erro.csv',
+  '../base-tecnica/codigos_erro_novos.csv',
   '../base-tecnica/piscadas.csv',
   '../base-tecnica/ntc_resumo.csv',
   '../base-tecnica/ntc_tolerancias.csv',
