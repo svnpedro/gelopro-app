@@ -65,7 +65,8 @@ return { tipo: '\x66\x61\x6c\x68\x61', status: r.status };
 } catch (e) { return { tipo: '\x73\x65\x6d\x2d\x73\x65\x72\x76\x69\x64\x6f\x72', status: 0 }; } finally { if (relogio) clearTimeout(relogio); }
 }
 const titularLimpo = (t) => t ? { nome: limpar(t.nome), doc: limpar(t.doc), cidade: limpar(t.cidade), pix: limpar(t.pix) } : undefined;
-const montar = (id, d, antes) => assinar({ fonte: '\x73\x65\x72\x76\x69\x64\x6f\x72', identificador: id, plano: d.plano, bumps: Array.isArray(d.bumps) ? d.bumps.map(limpar) : [], titular: titularLimpo(d.titular) || null,
+const planoOficial = (p) => (p === '\x42\x41\x53\x45\x5f\x39\x30' ? '\x45\x53\x53\x45\x4e\x43\x49\x41\x4c' : p);
+const montar = (id, d, antes) => assinar({ fonte: '\x73\x65\x72\x76\x69\x64\x6f\x72', identificador: id, plano: planoOficial(d.plano), bumps: Array.isArray(d.bumps) ? d.bumps.map(limpar) : [], titular: titularLimpo(d.titular) || null,
 exigeCadastroTitular: !!d.exigeCadastroTitular, aparelhoNumero: d.aparelhoNumero || null, maxAparelhos: d.maxAparelhos || 2, ativadoEm: (antes && antes.ativadoEm) || Date.now(), ultimaChecagem: Date.now(), bloqueado: false });
 if (!BLINDADO && !cracha()) {
 try {

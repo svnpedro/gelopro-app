@@ -3587,7 +3587,8 @@ class Component extends DCLogic {
     const fim90 = lic && plano === 'BASE_90' ? lic.ativadoEm + 90 * DIA : null;
     // PR #58: o servidor também pode dizer que os 90 dias acabaram (PLANO_EXPIRADO_90D na checagem com sinal).
     const vencido = (fim90 !== null && Date.now() > fim90) || (!!st.licExp && !st.amostra && sim === 'real' && plano === 'BASE_90');
-    const lock = plano === 'BASE_90';
+    // 07/11/2026: o Plano Essencial (pagamento único, sem expiração) tem os bônus com cadeado como o plano de 90 dias, mas nunca vence.
+    const lock = plano === 'BASE_90' || plano === 'ESSENCIAL';
     const cad = st.cad, setCad = (k) => (e) => { const v = limparTxt(e.target.value); this.setState(x => ({ cad: { ...x.cad, [k]: v } })); };
     const dDoc = dig(cad.doc), pT = pixTipo(cad.pix);
     const erros = {
@@ -3680,7 +3681,8 @@ class Component extends DCLogic {
       leit: { k: 'Leitura', t: 'Lançar medição', vt: 'A leitura entra na etapa de medição', vx: 'O valor em PSI, kΩ ou °C é comparado com a faixa da etapa, com unidade e origem.', i: 'medidor' },
       orc: { k: 'Fechamento', t: 'Orçamento e garantia', vt: 'Tela de preço ainda não montada', vx: 'Abre com o diagnóstico e as ações já preenchidos.', i: 'documento' },
       tit: { k: 'Cadastro', t: 'Titular', vt: tit ? tit.nome : 'Titular não cadastrado', vx: tit ? `${tit.docTipo} ${tit.docFmt}. Pix: ${tit.pix}. ${tit.cidade}. ${tit.amostra ? 'Dados de amostra da simulação.' : 'Travado em ' + dataBR(tit.travadoEm) + '. Sai em todo PDF.'}` : 'Cadastre no primeiro acesso.', i: 'usuario' },
-      upg: { k: 'Plano de 90 dias', t: mod ? mod.n : '', vt: 'Disponível no plano vitalício', vx: `Esta função bônus fica com cadeado no plano de 90 dias${fim90 ? ' (até ' + dataBR(fim90) + ')' : ''}. O upgrade libera os seis bônus; laudos antigos continuam legíveis.${st.pMsg ? ' ' + st.pMsg : ''}`, i: 'cadeado' },
+      upg: plano === 'ESSENCIAL' ? { k: 'Plano Essencial', t: mod ? mod.n : '', vt: 'Disponível no Plano Completo PRO', vx: `Esta função bônus fica no Plano Completo PRO. O upgrade libera os seis bônus; laudos antigos continuam legíveis.${st.pMsg ? ' ' + st.pMsg : ''}`, i: 'cadeado' }
+        : { k: 'Plano de 90 dias', t: mod ? mod.n : '', vt: 'Disponível no plano vitalício', vx: `Esta função bônus fica com cadeado no plano de 90 dias${fim90 ? ' (até ' + dataBR(fim90) + ')' : ''}. O upgrade libera os seis bônus; laudos antigos continuam legíveis.${st.pMsg ? ' ' + st.pMsg : ''}`, i: 'cadeado' },
       mod: { k: 'Módulo', t: mod ? mod.n : '', vt: `Módulo ${mod ? mod.n : ''} ainda não montado`, vx: mod ? mod.d : '', i: mod ? mod.i : 'inicio' },
     };
     const m = st.tela === 'vazio' ? MSG[st.modo] || MSG.sem : null;
