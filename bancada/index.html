@@ -371,6 +371,10 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 #toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50;background:#19365C;color:#FFFFFF;font:700 14px/1.3 var(--f-txt);padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 24px);text-align:center}
 #toast.on{opacity:1}
 .carregando{font-size:15px;color:#334155;padding:12px}
+/* Contrato 11 (07/11/2026): trava Essencial × Completo PRO. Só age com [data-pro-travado]; no modo padrão nenhum seletor abaixo casa. */
+[data-pro-travado] > :not([data-pro-ok]){display:none}
+.upgrade-pro{border:2px solid #16A34A;gap:10px}
+.upgrade-pro h2{margin:0}
 </style>
 </head>
 <body>
@@ -817,21 +821,29 @@ const S = {
   leituras: [], srvSug: null, causaSug: null, laudo: null, numero: null, numeroGravado: false, hist: [], cofreAberto: false, casoLaudo: -1, origemCofre: null, rolagemLista: null,
   // Cofre simples de laudos salvos no aparelho (bancada.cofre): número, data, equipamento, serviço, valor e cliente.
   cofre: (() => { const a = lerJSON('bancada.cofre'); return Array.isArray(a) ? a.filter(x => x && typeof x.id === 'string') : []; })(),
-  equip: (() => { const e = lerJSON('bancada.equip'); return e && MARCAS.includes(e.marca) && BTUS.includes(e.btu) && FLS.includes(e.fluido) ? e : { marca: 'LG', btu: '12.000', fluido: 'R32' }; })(),
+  equip: (() => { const e = (lerJSON('gelopro.sessao.v1') || {}).equip || lerJSON('bancada.equip'); return e && MARCAS.includes(e.marca) && BTUS.includes(e.btu) && FLS.includes(e.fluido) ? e : { marca: 'LG', btu: '12.000', fluido: 'R32' }; })(),
 };
-// Sessão de bancada no aparelho: leituras enviadas, sugestão de serviço, laudo em montagem, Trava 30s e Inverter sobrevivem a recarregar a
-// página. Fora na passada de estresse da sonda (?largura=360).
+// Sessão de bancada no aparelho (Contrato 11, gelopro.sessao.v1): pílula (marca, BTU/h, fluido), tecla ativa, leituras enviadas,
+// sugestão de serviço, laudo em montagem, Trava 30s e Inverter sobrevivem a recarregar a página. Na passada de estresse da sonda
+// (?largura=360) só a pílula é guardada. Migra uma única vez as chaves antigas (bancada.sessao e bancada.equip).
 const SESSAO_OFF = /[?&]largura=360\b/.test(location.search);
-const salvarSessao = () => { if (!SESSAO_OFF) guardar('bancada.sessao', JSON.stringify({ leituras: S.leituras, srvSug: S.srvSug, causaSug: S.causaSug, laudo: S.laudo, trava: S.trava, inv: S.inv, casoLaudo: S.casoLaudo })); };
+const K_SESSAO = 'gelopro.sessao.v1';
+const salvarSessao = () => guardar(K_SESSAO, JSON.stringify(SESSAO_OFF ? { v: 1, equip: S.equip }
+  : { v: 1, equip: S.equip, tecla: S.tecla, leituras: S.leituras, srvSug: S.srvSug, causaSug: S.causaSug, laudo: S.laudo, trava: S.trava, inv: S.inv, casoLaudo: S.casoLaudo }));
 (() => {
-  if (SESSAO_OFF) return; const z = lerJSON('bancada.sessao'); if (!z || typeof z !== 'object') return;
+  const z = lerJSON(K_SESSAO) || lerJSON('bancada.sessao');
+  try { if (ler('bancada.sessao') !== null || ler('bancada.equip') !== null) { localStorage.removeItem('bancada.sessao'); localStorage.removeItem('bancada.equip'); guardar(K_SESSAO, JSON.stringify({ ...(z && typeof z === 'object' ? z : {}), v: 1, equip: S.equip })); } } catch (e) {}
+  if (SESSAO_OFF || !z || typeof z !== 'object') return;
   const obj = (o) => (o && typeof o === 'object' && !Array.isArray(o) ? o : null), txt = (v) => (typeof v === 'string' ? v : null);
   if (Array.isArray(z.leituras)) S.leituras = z.leituras.filter(a => a && typeof a.k === 'string' && typeof a.txt === 'string');
   S.srvSug = txt(z.srvSug); S.causaSug = txt(z.causaSug);
   if (obj(z.laudo)) S.laudo = { sid: null, v: null, causa: '', cli: '', tel: '', mala: false, tecnico: false, pmoc: '', ...z.laudo, tecnico: false };
   if (obj(z.trava)) S.trava = z.trava; if (obj(z.inv)) S.inv = z.inv;
   if (Number.isInteger(z.casoLaudo) && z.casoLaudo >= -1 && z.casoLaudo < F.length) S.casoLaudo = z.casoLaudo;
+  if (['aferir', 'codigos', 'laudo'].includes(z.tecla)) S.teclaSalva = z.tecla;
 })();
+// Pulso tátil curto (Contrato 11): ao mandar aferição para o Laudo, salvar no Cofre e copiar o Pix.
+const pulso = () => { try { if (navigator.vibrate) navigator.vibrate(15); } catch (e) {} };
 const equipTx = () => `${S.equip.marca} · ${S.equip.btu} BTU/h · ${S.equip.fluido}`;
 const marcaCurva = (m) => (['Midea', 'Springer', 'Carrier'].includes(m) ? 'Midea' : m);
 const marcaCodigo = (m) => (['Midea', 'Springer'].includes(m) ? 'Midea/Springer' : m);
@@ -840,6 +852,72 @@ const LIVRE = (() => { if (!LICENCA || !LICENCA.blindado) return true; try { con
 const AMOSTRA = 'D-001';
 const APP_URL = '../app/GeloPro%20App%20v5.2.dc.html' + (LICENCA && LICENCA.blindado ? '?testarSeguranca=1' : '');
 const tela = $('#tela');
+// ───────────── Contrato 11 · Paywall tangível: ESSENCIAL (R$ 19,90) × COMPLETO_PRO (R$ 29,90) × Bump 1 PMOC (R$ 14,90) ─────────────
+// Sem licença comercial conhecida (modo padrão / demonstração) ou com o Completo PRO, tudo fica aberto e idêntico. A licença só restringe
+// quando é Essencial: ?plano=essencial na URL (só rebaixa, nunca libera), gelopro.licenca com plano ESSENCIAL ou, com a blindagem ligada,
+// o crachá assinado do servidor. O alias legado de 90 dias vale como Essencial.
+const PARAMS = (() => { try { return new URLSearchParams(location.search); } catch (e) { return new Map(); } })();
+const licencaComercial = () => {
+  if ((PARAMS.get('plano') || '').toLowerCase() === 'essencial') return { plano: 'ESSENCIAL', bumps: (PARAMS.get('bumps') || '').split(',').filter(Boolean) };
+  try { if (LICENCA && LICENCA.blindado) { const c = LICENCA.cracha(); if (c && LICENCA.confere(c) && !c.bloqueado && c.plano) return { plano: c.plano, bumps: Array.isArray(c.bumps) ? c.bumps : [] }; } } catch (e) {}
+  const l = lerJSON('gelopro.licenca'); return l && typeof l.plano === 'string' ? { plano: l.plano, bumps: Array.isArray(l.bumps) ? l.bumps : [] } : null;
+};
+const ehEssencial = () => { const l = licencaComercial(); return !!l && (l.plano === 'ESSENCIAL' || l.plano === 'BASE_90'); };
+const temBumpPmoc = () => { const l = licencaComercial(); return !l || l.bumps.includes('pmoc'); };
+// Link do checkout de cada upgrade (Kirvano/Kiwify): o Pedro cola aqui. Vazio, o botão avisa e o técnico segue no plano atual.
+const CHECKOUT_PRO = '', CHECKOUT_PMOC = '';
+const PRO_TX = 'O Plano Completo PRO destrava Inverter & 30s, o fluido R32, sensores de 15K a 200K, Códigos & LED com 411 códigos e 152 piscadas nas 14 marcas, o Painel de Lucro e o Cofre de Laudos.';
+const cartaoUpgrade = (motivo) => `<div class="cartao upgrade-pro" data-upgrade-pro role="region" aria-label="Exclusivo do Plano Completo PRO" data-pro-ok>
+  <span class="tag tag-bonus" style="align-self:flex-start">PLANO COMPLETO PRO</span><h2>Exclusivo do Plano Completo PRO</h2>
+  <p class="tx">${esc(motivo)}</p><p class="tx">${esc(PRO_TX)}</p>
+  <button type="button" class="bt bt-verde bt-grande largo" data-upgrade-ir>Destravar Arsenal Completo PRO (+&nbsp;R$&nbsp;10,00)</button>
+  <button type="button" class="bt bt-sel largo" data-upgrade-ficar>Continuar no Essencial</button></div>`;
+const cartaoPmoc = () => `<div class="cartao upgrade-pro" data-upgrade-pmoc role="region" aria-label="Contrato PMOC">
+  <span class="tag tag-bonus" style="align-self:flex-start">CONTRATOS MENSAIS PMOC</span><h2>Contrato PMOC é o Bump 1</h2>
+  <p class="tx">Gere o Contrato PMOC em PDF com as atividades da base técnica e transforme o atendimento em mensalidade.</p>
+  <button type="button" class="bt bt-verde bt-grande largo" data-upgrade-ir>Destravar Contrato PMOC (+&nbsp;R$&nbsp;14,90)</button>
+  <button type="button" class="bt bt-sel largo" data-upgrade-ficar>Continuar sem o PMOC</button></div>`;
+const ligarUpgrade = (raiz, url, ficar) => {
+  $('[data-upgrade-ir]', raiz).addEventListener('click', () => { if (url) location.href = url; else toast('O link do upgrade ainda não foi configurado'); });
+  $('[data-upgrade-ficar]', raiz).addEventListener('click', ficar);
+};
+function abrirUpgrade(motivo, pmoc) {
+  if (!tela.firstElementChild) render(); // aberto por link direto: a tela de fundo existe antes da gaveta
+  const g = $('#gaveta-in'), titulo = pmoc ? 'Contrato PMOC' : 'Exclusivo do Plano Completo PRO';
+  g.innerHTML = `<div class="cab-sec"><h2>${pmoc ? 'Bump 1 · PMOC' : 'Plano Completo PRO'}</h2><button class="bt bt-sel" data-fechar-gaveta aria-label="Fechar">✕ Fechar</button></div>${pmoc ? cartaoPmoc() : cartaoUpgrade(motivo)}`;
+  ligarUpgrade(g, pmoc ? CHECKOUT_PMOC : CHECKOUT_PRO, fecharGaveta); $('[data-fechar-gaveta]', g).addEventListener('click', fecharGaveta);
+  abrirGaveta(titulo);
+}
+// Uma trava só, em captura: o toque no recurso do Completo PRO abre o cartão de desejo no lugar da tela; o técnico fica onde estava.
+const TRAVAS_PRO = [
+  ['#dock [data-tecla="codigos"]', 'A Tecla Códigos & LED (decodificador das 14 marcas) faz parte do Plano Completo PRO.'],
+  ['[data-bloco="b8"]', 'A Placa 8 (Split Inverter e Placas Eletrônicas) faz parte do Plano Completo PRO.'],
+  ['[data-sub="inv"]', 'A aferição Inverter & 30s (7 testes da placa e Trava Eliminatória) faz parte do Plano Completo PRO.'],
+  ['[data-eq-fl="R32"], [data-fl="R32"]', 'O fluido R32 faz parte do Plano Completo PRO. No Essencial você afere R22 e R410A.'],
+  ['[data-nom]', 'Sensores acima de 10K fazem parte do Plano Completo PRO. No Essencial você afere 5K e 10K.', (b) => Number(b.dataset.nom) > 10],
+  ['[data-cofre-toggle], [data-l="salvar-cofre"]', 'O Cofre de Laudos faz parte do Plano Completo PRO.'],
+  ['[data-pro-teaser]', 'O Painel de Lucro (custo da peça, lucro limpo e combos) faz parte do Plano Completo PRO.'],
+];
+document.addEventListener('click', (e) => {
+  const alvo = e.target && e.target.closest ? e.target : null; if (!alvo) return;
+  if (alvo.closest('[data-pmoc-teaser]')) { e.preventDefault(); e.stopImmediatePropagation(); return abrirUpgrade('', true); }
+  if (!ehEssencial()) return;
+  for (const [sel, motivo, se] of TRAVAS_PRO) { const b = alvo.closest(sel); if (b && !b.disabled && (!se || se(b))) { e.preventDefault(); e.stopImmediatePropagation(); fecharGaveta(); return abrirUpgrade(motivo); } }
+}, true);
+// Laudo e NTC no Essencial: o conteúdo do Completo PRO some atrás de uma chamada, sem remover nós (o código do laudo segue achando tudo).
+const trancar = (el, html) => { el.dataset.proTravado = '1'; el.insertAdjacentHTML('afterbegin', html); };
+new MutationObserver(() => {
+  const bast = $('[data-l=bast]:not([data-pro-travado])', tela);
+  if (bast && ehEssencial()) trancar(bast, '<button type="button" class="bt bt-cat largo" data-pro-teaser data-pro-ok>Painel de Lucro · Completo PRO</button>');
+  const pm = $('[data-l=pmoc-sec] .dobra-in:not([data-pro-travado])', tela);
+  if (pm && !temBumpPmoc()) trancar(pm, '<p class="tx" data-pro-ok>O Contrato PMOC é o Bump 1: contratos mensais de manutenção prontos em PDF.</p><button type="button" class="bt bt-cat largo" data-pmoc-teaser data-pro-ok>Destravar Contrato PMOC (+&nbsp;R$&nbsp;14,90)</button>');
+  const ntc = $('[data-sub-corpo] > .cartao:not([data-pro-travado]):not([data-upgrade-pro])', tela), nom = ntc && $('[data-nom][aria-pressed="true"]', ntc);
+  if (nom && Number(nom.dataset.nom) > 10 && ehEssencial()) {
+    ntc.dataset.proTravado = '1'; [...ntc.children].forEach(c => { if (c.matches('.cab-sec, .marcas, [aria-label="Sensor nominal"]')) c.dataset.proOk = ''; });
+    ntc.insertAdjacentHTML('beforeend', cartaoUpgrade('Esta marca só tem curva de sensor acima de 10K na base. No Essencial você afere 5K e 10K: escolha LG, Samsung, Midea, Daikin, TCL ou Agratto.'));
+    ligarUpgrade(ntc, CHECKOUT_PRO, () => { const lg = $('[data-m="LG"]', ntc); if (lg) lg.click(); });
+  }
+}).observe(tela, { childList: true, subtree: true });
 
 // Causa padrão de cada serviço da Tabela Oficial 2026: causa e serviço andam 1:1 no laudo.
 const CAUSA_PADRAO = {
@@ -859,7 +937,7 @@ function mandar(k, texto, x = {}) {
   S.leituras = S.leituras.filter(a => a.k !== k); S.leituras.push({ k, txt: limpa(texto), ...x });
   if (S.tecla === 'sintomas' && S.caso >= 0) S.casoLaudo = S.caso; // leitura de um caso fixa o caso do laudo
   if (x.srv) { S.srvSug = x.srv; S.causaSug = limpa(x.causa || CAUSA_PADRAO[x.srv] || ''); if (S.laudo) { S.laudo.sid = x.srv; S.laudo.v = null; S.laudo.causa = S.causaSug; } }
-  toast('✓ Enviado ao Laudo'); pintarDock(); salvarSessao();
+  toast('✓ Enviado ao Laudo'); pulso(); pintarDock(); salvarSessao();
 }
 // 2º toque em “✓ Já está no Laudo”: vai direto para a Tabela & Laudo (fase de captura, antes do envio de cada tela).
 document.addEventListener('click', (e) => {
@@ -903,7 +981,7 @@ function abrirEquip(sec) {
       <h3 data-sec="btu">Capacidade (BTU/h)</h3><div class="grade4">${BTUS.map(b => `<button class="bt bt-sel" data-eq-btu="${b}" aria-pressed="${b === S.equip.btu}">${b}</button>`).join('')}</div>
       <h3 data-sec="fluido">Fluido</h3><div class="grade4" style="grid-template-columns:repeat(3,minmax(0,1fr))">${FLS.map(x => `<button class="bt bt-sel" data-eq-fl="${x}" aria-pressed="${x === S.equip.fluido}">${x}</button>`).join('')}</div>
       <button class="bt bt-cobalto bt-grande largo" data-eq-ok>Pronto · ${esc(equipTx())}</button>`;
-    const muda = (k, v) => { S.equip[k] = v; guardar('bancada.equip', JSON.stringify(S.equip)); S.cod.marca = null; if (S.laudo) S.laudo.v = null;
+    const muda = (k, v) => { S.equip[k] = v; salvarSessao(); S.cod.marca = null; if (S.laudo) S.laudo.v = null;
       if (S.ntc && k === 'marca') { S.ntc.alvo = marcaCurva(v); S.ntc.ci = 0; }
       if (S.gas) { S.gas.fl = S.equip.fluido; if (!S.gas.gpmManual) S.gas.gpm = gpmPadrao(S.equip.fluido, S.equip.btu); }
       fecharGaveta(); render(); toast(equipTx()); };
@@ -937,6 +1015,8 @@ function irTecla(t, op) {
 function render(op) {
   pintarDock();
   if (S.tecla !== 'sintomas' && !LIVRE) return convite('As teclas Aferir Vivo, Códigos & LED e Tabela & Laudo fazem parte do Plano Completo.');
+  salvarSessao();
+  if (S.tecla === 'codigos' && ehEssencial()) { montar(cartaoUpgrade('A Tecla Códigos & LED (decodificador das 14 marcas) faz parte do Plano Completo PRO.')); return ligarUpgrade(tela, CHECKOUT_PRO, () => irInicio()); }
   if (S.tecla === 'sintomas') return S.caso >= 0 ? telaCaso(S.caso) : telaSintomas();
   if (S.tecla === 'aferir') return telaAferir();
   if (S.tecla === 'codigos') return telaCodigos();
@@ -1037,6 +1117,7 @@ function escalaDe(tt, ln) {
 function abrirCaso(i) {
   if (i < 0 || i >= F.length) i = 0;
   if (!LIVRE && F[i].id !== AMOSTRA) return convite(`O Diagnóstico ${F[i].id} (${limpa(F[i].titulo)}) faz parte do Plano Completo.`);
+  if (ehEssencial() && F[i].blocos.includes('b8')) return abrirUpgrade(`O Diagnóstico ${F[i].id} (${limpa(F[i].titulo)}) é da Placa 8 (Split Inverter e Placas Eletrônicas), do Plano Completo PRO.`);
   if (S.tecla === 'sintomas' && S.caso < 0) S.rolagemLista = listaAtiva() ? window.scrollY : null;
   if (S.caso !== i || S.tecla !== 'sintomas') empilhar();
   S.tecla = 'sintomas'; S.caso = i; S.sel = 0; render(); window.scrollTo(0, 0);
@@ -1123,7 +1204,9 @@ function telaAferir() {
   $$('[data-sub]', tela).forEach(b => b.addEventListener('click', () => { S.sub = b.dataset.sub; $$('[data-sub]', tela).forEach(x => x.setAttribute('aria-pressed', String(x === b))); pintarSub(); }));
   pintarSub();
 }
-function pintarSub() { const c = $('[data-sub-corpo]', tela); c.innerHTML = '<div class="carregando">Carregando a base técnica…</div>'; ({ ntc: afNtc, gas: afGas, inv: afInv })[S.sub](c); }
+function pintarSub() { const c = $('[data-sub-corpo]', tela);
+  if (S.sub === 'inv' && ehEssencial()) { c.innerHTML = cartaoUpgrade('A aferição Inverter & 30s (7 testes da placa e Trava Eliminatória) faz parte do Plano Completo PRO.'); return ligarUpgrade(c, CHECKOUT_PRO, () => { S.sub = 'ntc'; telaAferir(); }); }
+  salvarSessao(); c.innerHTML = '<div class="carregando">Carregando a base técnica…</div>'; ({ ntc: afNtc, gas: afGas, inv: afInv })[S.sub](c); }
 const erroBase = (el, e) => { el.innerHTML = `<div class="aviso def">Não consegui ler a base técnica (${esc(e.message)}). Abra a bancada com sinal uma vez para guardar tudo no aparelho.</div><button class="bt bt-cobalto largo" data-ir-laudo>Seguir para Tabela & Laudo</button>`; $('[data-ir-laudo]', el).addEventListener('click', () => irTecla('laudo')); };
 
 // Curvas NTC reais (ntc_resumo + arquivos de curva + tolerâncias).
@@ -1194,6 +1277,7 @@ function afNtc(corpo) {
     const lista = () => C.filter(c => c.marca === st.m);
     const disp = () => new Set(lista().map(c => c.nom));
     if (!disp().has(st.nom)) { st.nom = [...disp()][0]; st.ci = 0; }
+    if (ehEssencial() && st.nom > 10) { const b = [...disp()].filter(n => n <= 10).sort((x, y) => y - x)[0]; if (b) { st.nom = b; st.ci = 0; } } // Contrato 11: Essencial afere 5K e 10K
     const curvas = () => lista().filter(c => c.nom === st.nom), curva = () => curvas()[Math.min(st.ci, curvas().length - 1)];
     corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><div class="cab-tile"><img src="${tile('t10_sensor_ntc')}" alt="" width="52" height="52" data-tile><h2>Sensor NTC na curva real</h2></div><span class="tag tag-info">${C.length} CURVAS · ${marcas.length} MARCAS</span></div>
         <p class="sub">Solte o sensor da placa e meça com o termômetro encostado no mesmo ponto. ${marcas.includes(marcaCurva(S.equip.marca)) ? '' : `Para ${esc(S.equip.marca)}, escolha a curva pelo nominal impresso no sensor.`}</p>
@@ -1544,7 +1628,7 @@ function telaLaudo(op) {
       </section>
       <section class="cartao" data-l="envio" aria-label="Cliente e envio">
         <h3>Cliente e envio</h3>
-        <div class="selo-laudo-ok" data-l="carimbo" hidden>${ico('sucesso', '#15803D', 20)}<span>LAUDO TÉCNICO AFERIDO · PRONTO PARA APROVAÇÃO PIX</span></div>
+        <div class="selo-laudo-ok" data-l="carimbo" data-chancela hidden>${ico('sucesso', '#15803D', 20)}<span>LAUDO TÉCNICO AFERIDO · PRONTO PARA APROVAÇÃO PIX</span></div>
         ${campo('Cliente', `type="text" data-l="cli" value="${esc(L.cli)}" placeholder="Nome" autocomplete="off"`)}
         ${campo('WhatsApp do cliente', `type="tel" data-l="tel" value="${esc(L.tel)}" placeholder="DDD + nº" autocomplete="off"`)}
         <details class="dobra" data-l="tit" ${tit.pix ? '' : 'open'}><summary>Seus dados e chave Pix</summary><div class="dobra-in">
@@ -1660,7 +1744,7 @@ function telaLaudo(op) {
     modo.onclick = () => { L.tecnico = !L.tecnico; pintarModo(); };
     pintarModo(); pintarCausas(); pintarLeit(); pintarValor();
     $('[data-cofre-toggle]', corpo).addEventListener('click', () => { S.cofreAberto = !S.cofreAberto; pintarCofre(); });
-    q('salvar-cofre').addEventListener('click', () => { const n = fixarNumero(); arquivar(n); pintarEstado(); toast(`Laudo Nº ${n} salvo no Cofre`); });
+    q('salvar-cofre').addEventListener('click', () => { const n = fixarNumero(); arquivar(n); pintarEstado(); pulso(); toast(`Laudo Nº ${n} salvo no Cofre`); });
     q('excluir-atual').addEventListener('click', (e) => confirmar2(e.currentTarget, `Toque de novo para limpar o laudo Nº ${numeroLaudo(false)}`, () => { S.origemCofre = null; Object.assign(L, { v: null, causa: '', cli: '', tel: '', comboId: null }); S.leituras = []; S.casoLaudo = -1; S.numero = null; S.numeroGravado = false; salvarSessao(); pintarDock(); render(); toast('Laudo atual limpo'); }));
     q('limpar').addEventListener('click', (e) => confirmar2(e.currentTarget, `Toque de novo para limpar ${S.leituras.length} leitura${S.leituras.length === 1 ? '' : 's'}`, () => { S.leituras = []; S.casoLaudo = -1; S.srvSug = null; S.causaSug = null; S.trava = {}; S.inv = {}; pintarLeit(); pintarDock(); salvarSessao(); toast('Leituras limpas'); }));
     q('sid').addEventListener('click', () => escolher('Serviço da Tabela Oficial 2026', P.map(s => [s.servico, `Valor típico ${PORTE_TX[porte]}: ${brl(precoDe(s, porte))}`, s.servico_id === L.sid]), (k) => { L.sid = P[k].servico_id; L.v = null; L.comboId = null; L.causa = limpa((f && causaDe(f, L.sid)) || CAUSA_PADRAO[L.sid]); pintarCausas(); pintarValor(); }));
@@ -1704,7 +1788,7 @@ function telaLaudo(op) {
       window.__ultimoLaudoZap = txt; q('prevzap').textContent = txt; q('prevzap').hidden = false;
       const fone = String(L.tel || '').replace(/\D/g, ''), url = `https://wa.me/${fone.length >= 10 ? '55' + fone.replace(/^55/, '') : ''}?text=${encodeURIComponent(txt)}`;
       window.__ultimoZapUrl = url; window.open(url, '_blank', 'noopener');
-      let copiou = false; try { await navigator.clipboard.writeText(txt); copiou = true; } catch (e) { /* o link do WhatsApp já leva o texto */ }
+      let copiou = false; try { await navigator.clipboard.writeText(txt); copiou = true; pulso(); } catch (e) { /* o link do WhatsApp já leva o texto */ }
       msg(`Laudo Nº ${numero} disparado para o WhatsApp${copiou ? ' e copiado' : ''}. O cliente aprova respondendo APROVADO.`, 'ok');
     });
     const gerarPDF = async (b, montarDoc, rot) => {
@@ -1757,6 +1841,8 @@ function iniciar() {
   $$('[data-ico]').forEach(s => { s.outerHTML = ico(s.dataset.ico, '#FFFFFF', 20); });
   carregarPrecos().catch(() => {});
   const m = location.hash.match(/D-\d{3}/), i = m ? F.findIndex(f => f.id === m[0]) : -1;
+  if (ehEssencial() && S.equip.fluido === 'R32') S.equip.fluido = 'R410A'; // Contrato 11: o Essencial afere R22 e R410A
+  if (i < 0 && S.teclaSalva) S.tecla = S.teclaSalva; // Contrato 11: reabre na mesma tecla depois de recarregar
   if (i >= 0) abrirCaso(i); else render();
 }
 // Link #D-xxx com a página já aberta também abre o caso.
