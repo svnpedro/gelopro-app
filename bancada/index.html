@@ -90,10 +90,7 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .bt-sel.bt-destr:not([aria-pressed="true"]){background:#FEF2F2 linear-gradient(180deg,#FFF5F5 0%,#FEE2E2 100%);border:1.5px solid #DC2626;color:#991B1B}
 .bt-sel.bt-destr[data-armado]{background:#FEF2F2;border-color:#B91C1C;color:#991B1B}
 /* Atalhos do Arsenal PRO na Home: 1 linha rolável; faixas roláveis ganham um esmaecido na borda direita enquanto há mais conteúdo. */
-.atalhos-pro{display:flex;overflow-x:auto;gap:6px;padding:2px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.atalhos-pro::-webkit-scrollbar{display:none}
-.atalhos-pro .bt{flex:none;min-height:48px;white-space:nowrap;font-size:14px;padding:8px 12px}
-.marcas-faixa.rola:not(.fim),.atalhos-pro.rola:not(.fim){-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 32px),transparent 100%)}
+.marcas-faixa.rola:not(.fim){-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 32px),transparent 100%)}
 /* Comparador 25 °C cego × curva real (Sensor NTC). */
 .cmp25{display:flex;flex-direction:column;gap:4px;border-radius:12px;padding:10px 12px;border:1.5px solid;font:700 14px/1.3 var(--f-txt);min-width:0}
 .cmp25 b{font:800 15px/1.25 var(--f-tit)}
@@ -875,9 +872,9 @@ const pilula = () => `<div class="eq-pilula" role="group" aria-label="Equipament
   <button class="eq-bt" data-eq-abrir="btu" aria-label="Capacidade ${esc(S.equip.btu)} BTU/h. Trocar"><span class="tag eq-rot">CAPACIDADE ▾</span><span class="eq-val"><span>${esc(S.equip.btu)} BTU/h</span></span></button>
   <button class="eq-bt" data-eq-abrir="fluido" aria-label="Fluido ${esc(S.equip.fluido)}. Trocar"><span class="tag eq-rot">FLUIDO ▾</span><span class="eq-val"><span>${esc(S.equip.fluido)}</span></span></button></div>`;
 const fundo = $('#fundo'), gaveta = $('#gaveta');
-const marcarRolagem = () => $$('.marcas-faixa, .atalhos-pro').forEach(el => { el.classList.toggle('rola', el.scrollWidth > el.clientWidth + 2); el.classList.toggle('fim', el.scrollLeft + el.clientWidth >= el.scrollWidth - 2); });
+const marcarRolagem = () => $$('.marcas-faixa').forEach(el => { el.classList.toggle('rola', el.scrollWidth > el.clientWidth + 2); el.classList.toggle('fim', el.scrollLeft + el.clientWidth >= el.scrollWidth - 2); });
 new MutationObserver(() => requestAnimationFrame(marcarRolagem)).observe($('#tela'), { childList: true, subtree: true });
-document.addEventListener('scroll', (e) => { const el = e.target; if (el && el.classList && (el.classList.contains('marcas-faixa') || el.classList.contains('atalhos-pro'))) marcarRolagem(); }, true);
+document.addEventListener('scroll', (e) => { const el = e.target; if (el && el.classList && el.classList.contains('marcas-faixa')) marcarRolagem(); }, true);
 window.addEventListener('resize', marcarRolagem);
 let gavetaOrigem = null;
 const abrirGaveta = (titulo) => { gavetaOrigem = document.activeElement; gaveta.hidden = false; gaveta.removeAttribute('aria-hidden'); gaveta.setAttribute('aria-label', titulo);
@@ -984,21 +981,18 @@ const confirmar2 = (b, rotulo, acao) => {
 const casosDoBloco = (id) => F.filter(f => f.blocos.includes(id));
 function telaSintomas() {
   montar(`${campo('', `type="search" data-busca placeholder="Buscar sintoma, peça ou D-001" autocomplete="off" enterkeyhint="search" aria-label="Buscar sintoma" value="${esc(S.termo)}"`, true)}
-    <div class="atalhos-pro" role="group" aria-label="Atalhos do Arsenal PRO">${[['ntc', `Curva NTC 35 °C${marcaCurva(S.equip.marca) === 'LG' ? ' (6,49 kΩ)' : ''}`], ['gas', 'Carga Gás & SH (7–11 °C)'], ['inv', 'Placa Inverter & 30s'], ['codigos', '250 Códigos & LED']].map(([k, r]) => `<button class="bt bt-sel" data-atalho="${k}">${r}</button>`).join('')}</div>
     <div class="placas">${BLOCOS.map(([id, , curto, longo]) => `<button class="bt bt-cobalto placa" data-bloco="${id}" aria-pressed="${S.bloco === id}" aria-label="${esc(longo)}: ${casosDoBloco(id).length} casos"><span class="placa-poco">${ico(BLOCO_ICO[id], '#67C6FF', 32)}</span><b>${esc(curto)}</b><span class="placa-badge">${casosDoBloco(id).length} casos</span></button>`).join('')}</div>
     <button class="bt bt-cat capsula" data-todos aria-pressed="${S.todos}"><span class="cap-medalhao">${ico('prancheta', '#67C6FF', 22)}</span><span class="cap-tx">Ver Todos os Sintomas</span>${ico('avancar', '#111827', 20)}</button>
     <div data-resultado></div>`);
   const busca = $('[data-busca]', tela);
   busca.addEventListener('input', () => { S.termo = busca.value; listar(); });
-  // Atalho de 1 toque para os instrumentos do Arsenal PRO (Sensor NTC a 35 °C, Gás & SH, Inverter & 30s, Códigos & LED).
-  $$('[data-atalho]', tela).forEach(b => b.addEventListener('click', () => { const k = b.dataset.atalho; if (k === 'codigos') return irTecla('codigos'); S.sub = k; if (k === 'ntc' && S.ntc) S.ntc.t = 35; irTecla('aferir'); }));
   $$('[data-bloco]', tela).forEach(b => b.addEventListener('click', () => { empilhar(); S.bloco = S.bloco === b.dataset.bloco ? null : b.dataset.bloco; S.todos = false; $$('[data-bloco]', tela).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.bloco === S.bloco))); $('[data-todos]', tela).setAttribute('aria-pressed', 'false'); listar(false); }));
   $('[data-todos]', tela).addEventListener('click', (e) => { S.todos = !S.todos; S.bloco = null; e.currentTarget.setAttribute('aria-pressed', String(S.todos)); $$('[data-bloco]', tela).forEach(x => x.setAttribute('aria-pressed', 'false')); listar(false); });
   listar();
 }
 function listar(rolar) {
   const box = $('[data-resultado]', tela); if (!box) return;
-  const la = listaAtiva(); ['.placas', '.atalhos-pro'].forEach(k => { const e = $(k, tela); if (e) e.hidden = la; }); pintarNavCtx();
+  const la = listaAtiva(); { const e = $('.placas', tela); if (e) e.hidden = la; } pintarNavCtx();
   const q = norm(limpa(S.termo.trim()));
   let L = q ? F.filter(f => q.split(/\s+/).every(w => f.txt.includes(w))) : S.bloco ? casosDoBloco(S.bloco) : S.todos ? F : null;
   if (q && S.bloco) L = L.filter(f => f.blocos.includes(S.bloco));
