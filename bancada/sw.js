@@ -1,11 +1,11 @@
-// GeloPro · Bancada GeloPRO em modo avião (05/11/2026). Service worker próprio da página /bancada/ (escopo ./), separado do app (app/sw.js) e
+// GeloPro · Bancada GeloPRO em modo avião — 07/11/2026 — v4.0 Consolidada: 48 tiles Option C, 19 CSVs, 126 artes e Contratos 00 a 12. Service worker próprio da página /bancada/ (escopo ./), separado do app (app/sw.js) e
 // do guia (guia-pro/sw.js): cada um tem o seu cache e nenhum apaga o do outro.
 // No 1º acesso com sinal, o install guarda tudo o que as 4 teclas usam: a página, o motor (QR, Pix, marca, PDF, licença), os 4 componentes
 // visuais importados de ../app/ (.dc.html), as fontes, a textura e o mascote, os 19 CSVs da base técnica (com pmoc_atividades.csv e codigos_erro_novos.csv) e as 126 artes
 // .webp lidas de ../guia-pro/imagens/. Com sinal: página, .js, .html e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e
 // imagens saem do cache e só vão à rede se faltarem.
 'use strict';
-const CACHE = 'bancada-offline-v3'; // v3 (05/11/2026): 24 tiles Option C em ./tiles/ (v2: recortes de icones/ transparentes) // nome novo derruba o anterior (o activate apaga todo bancada-offline-* diferente; guia e app ficam)
+const CACHE = 'bancada-offline-v4'; // v4 (07/11/2026, Versão Final Consolidada): nome novo derruba o anterior (o activate apaga todo bancada-offline-* diferente; guia e app têm caches próprios)
 const REDE_MS = 3000;
 const PAGINA = './';
 const MOTOR = [

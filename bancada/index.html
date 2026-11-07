@@ -668,7 +668,7 @@ const tagsPonta = (escala, alvo, pontas = true) => `<div class="tags">${pontas ?
 F.forEach((f, i) => { Object.assign(f, IMGS[f.img]); f.n = i; f.txt = norm(limpa([f.id, f.id.replace('-', ''), f.titulo, f.sub, f.busca, f.bloco, ...f.chips, ...f.causas.map(c => c[0]), ...f.verifs.flat()].join(' '))); });
 const ARTES = '../guia-pro/imagens/';
 const IMG = (f) => `${ARTES}${f.img}.webp`;
-// 24 tiles oficiais Option C (bancada/tiles/, squircle 3D com cantos transparentes): cada caso, causa e chip mostra a peça do problema.
+// 48 tiles oficiais Option C (bancada/tiles/: t01..t24 de peça e t25..t48 especializados; squircle 3D com cantos transparentes): cada caso, causa e chip mostra a peça do problema.
 // 1ª passada pelas palavras do texto, 2ª pelos códigos de erro (F1, P4, E3…): "Proteção do IPM (P0/P4/F1…)" cai no IPM, não no sensor.
 const TILES = './tiles/';
 const PECAS = [
@@ -703,7 +703,7 @@ const PECAS = [
   [/ruido|barulho|vibra|coxi[mn]s?|suporte|condensadora|mao francesa|tranco|externa danificada/, null, 't24_condensadora_split'],
   [/evaporadora|estalo|gabinete/, null, 't23_evaporadora_split'],
 ];
-// Sem palavra-chave no texto: o tile da família do sintoma (bloco), nunca uma imagem fora dos 24 tiles.
+// Sem palavra-chave no texto: o tile da família do sintoma (bloco), nunca uma imagem fora dos 48 tiles.
 const TILE_BLOCO = { b1: 't24_condensadora_split', b2: 't12_disjuntor', b3: 't12_disjuntor', b4: 't21_bandeja_dreno', b5: 't24_condensadora_split', b6: 't05_placa_pcb', b7: 't05_placa_pcb', b8: 't06_modulo_ipm' };
 const tile = (n) => `${TILES}${n}.webp`;
 // Todas as peças que um texto cita, na ordem (palavras e depois códigos; título antes do critério). Base do mapa das bolinhas.
