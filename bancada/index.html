@@ -1394,10 +1394,29 @@ let CODIGOS = null;
 // Contagem de piscadas lida do padrão: "2 piscadas", "pisca 1 vez" (Midea/Springer) e "piscar 2 vezes" (Philco).
 const PISC_RE = /(\d+)\s*piscadas?|piscar?\s*(\d+)\s*vez(?:es)?|(\d+)\s*vez(?:es)?/g;
 const piscadasDe = (pd) => [...norm(pd).matchAll(PISC_RE)].map(x => +(x[1] || x[2] || x[3]));
-// Identificador curto da pastilha (<= 24 caracteres, 1 linha): código do fabricante + contagem do LED.
-const idLed = (d, np) => { const m = String(d).match(/^([A-Z0-9]{1,5}):/), led = np.length ? `LED ${np.map(n => n + '×').join('/')}` : 'LED', t = m ? `${m[1]} · ${led}` : led; return t.length <= 24 ? t : led.slice(0, 24); };
-// Marca da pílula × marca da base: Carrier inclui a base Midea/Springer (mesmo grupo); Midea/Springer aceita Midea e Springer.
-const marcaCasa = (m, mk) => !mk || m === mk || (mk === 'Carrier' && m === 'Midea/Springer') || (mk === 'Midea/Springer' && ['Midea', 'Springer', 'Midea/Springer'].includes(m));
+// Identificador curto da pastilha (<= 24 caracteres, 1 linha), sem repetir o mesmo rótulo para padrões diferentes:
+// (a) código do fabricante + contagem ("CH05 · LED 5×"); (b) sem código, com contagem: o estado do 2º LED (Midea/Springer:
+// "OP 1× · TIMER OFF/ON/PISC") ou o intervalo ("LED 1× · 3 s"); (c) sem contagem: os LEDs que piscam e os acesos ("L1+L2 PISC · L3 ON").
+const LED_AB = (n) => { const t = norm(n).trim(), d = t.match(/^led\s*0?(\d)/); return d ? 'L' + d[1] : /^(operacao|operation|ligado|run)\b/.test(t) ? 'OP' : /^timer/.test(t) ? 'TM' : /^smart/.test(t) ? 'SS' : /^turbo/.test(t) ? 'TB' : /^eco/.test(t) ? 'ECO' : /^running/.test(t) ? 'RUN' : /^cooling/.test(t) ? 'COOL' : /^heating/.test(t) ? 'HEAT' : ''; };
+const estadosLed = (pd) => { const on = [], pi = []; for (const parte of String(pd).split(';')) { const t = norm(parte).trim(); let m = t.match(/^(.+?):\s*(piscando|piscante|aceso|apagado)/), nomes, est;
+    if (m) { nomes = [m[1]]; est = m[2]; } else if ((m = t.match(/^(.+?)\s+(piscando|piscante|acesos?|apagados?)\b/))) { nomes = m[1].split(/,|\se\s/); est = m[2]; } else continue;
+    const ab = nomes.map(LED_AB); if (ab.some(x => !x)) return null; if (/^pisca/.test(est)) pi.push(...ab); else if (/^aces/.test(est)) on.push(...ab); }
+  return pi.length || on.length ? [pi.length ? pi.join('+') + ' PISC' : '', on.length ? on.join('+') + ' ON' : ''].filter(Boolean).join(' · ') : null; };
+const idLed = (d, np, pd = '', ledNome = '') => {
+  const m = String(d).match(/^([A-Z0-9]{1,5}):/), cod = m ? m[1] + ' · ' : '', P = norm(pd), cabe = (t) => (t.length <= 24 ? t : null);
+  if (np.length) {
+    const led = `LED ${np.map(n => n + '×').join('/')}`; if (m) return cabe(cod + led) || led.slice(0, 24);
+    const tm = P.match(/timer\s*:?\s*(apagado|aceso|piscante|piscando)/), seg = P.match(/a cada (\d+) segundos?/);
+    if (tm) return cabe(`OP ${np[0]}× · TIMER ${{ apagado: 'OFF', aceso: 'ON' }[tm[1]] || 'PISC'}`) || led;
+    return (seg && cabe(`${led} · ${seg[1]} s`)) || led.slice(0, 24);
+  }
+  const e = estadosLed(pd); if (e && cabe(cod + e)) return cod + e; if (e && cabe(e)) return e;
+  const l = LED_AB(ledNome), st = /^pisca/.test(P) ? 'PISC' : /^aceso/.test(P) ? 'ON' : '';
+  return (l && st && cabe(`${cod}${l} ${st}`)) || (cod ? cabe(cod + 'LED') : null) || 'LED · PADRÃO';
+};
+// Marca da pílula × marca da base: cada marca só com a própria base (Carrier = X-Power D16, sem misturar com a base D10 da
+// Midea/Springer); a marca Midea/Springer aceita Midea, Springer e Midea/Springer.
+const marcaCasa = (m, mk) => !mk || m === mk || (mk === 'Midea/Springer' && ['Midea', 'Springer'].includes(m));
 const carregarCodigos = () => CODIGOS || (CODIGOS = Promise.all([csv('codigos_erro_conferidos.csv'), csv('codigos_erro.csv'), csv('codigos_erro_novos.csv'), csv('piscadas.csv')]).then(([A, Bc, N, C]) => {
   const T = [...A.map(r => ({ m: r.marca, l: r.linha, c: r.codigo, d: r.descricao, fa: '', f: `${r.fonte_id}${r.pagina ? ' p.' + r.pagina : ''}`, tp: 'Código' })),
     ...Bc.map(r => ({ m: r.marca, l: r.linha, c: r.codigo, d: r.descricao, fa: r.faca || '', f: r.fonte_id, tp: 'Código' })),
@@ -1406,7 +1425,7 @@ const carregarCodigos = () => CODIGOS || (CODIGOS = Promise.all([csv('codigos_er
   const vistos = new Set();
   return T.filter(r => { const k = norm(`${r.m}|${r.c}|${r.d}`); if (vistos.has(k)) return false; vistos.add(k); return true; })
     .map((r, i) => ({ ...r, i, ok: NORMAL.test(r.d.trim()) && !NAO_NORMAL.test(r.d), naoConf: /n[aã]o confirma/i.test(r.d), txt: norm(`${r.c} ${r.d} ${r.l} ${r.fa} ${r.m}`), np: r.pd ? piscadasDe(r.pd) : [] }))
-    .map(r => (r.pd ? { ...r, cd: idLed(r.d, r.np) } : r));
+    .map(r => (r.pd ? { ...r, cd: idLed(r.d, r.np, r.pd, r.led) } : r));
 }));
 const PISC = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 function telaCodigos() {
@@ -1420,6 +1439,7 @@ function telaCodigos() {
         <p class="sub"><b>${nC} códigos e ${nP} piscadas reais de ${marcas.length} marcas.</b> Selo verde = o próprio fabricante descreve operação normal ou proteção.</p>
         <div class="marcas marcas-faixa" role="group" aria-label="Marca">${(st.marca ? [st.marca, '', ...marcas.filter(m => m !== st.marca)] : ['', ...marcas]).map(m => m ? `<button class="bt bt-sel" data-mk="${esc(m)}" aria-pressed="${m === st.marca}">${logo(m, 26)}<span>${esc(m)}</span></button>` : `<button class="bt bt-sel" data-mk="" aria-pressed="${!st.marca}">Todas as ${marcas.length}</button>`).join('')}</div>
         <h3>Piscadas do LED</h3>
+        <button class="bt bt-sel largo" data-pisc-todos aria-pressed="${st.pisc === 'led'}">Ver todos os padrões de LED desta marca</button>
         <div class="grade4" style="grid-template-columns:repeat(5,minmax(0,1fr))" role="group" aria-label="Número de piscadas">${PISC.map(n => `<button class="bt bt-sel" data-pisc="${n}" aria-pressed="${st.pisc === n}">${n === 10 ? '10+' : n}</button>`).join('')}</div>
         ${campo('Código do visor', `type="search" data-q placeholder="CH05, E1, P4, F0, H6…" autocomplete="off" enterkeyhint="search" value="${esc(st.q)}"`, true)}
         <p class="sub" data-cont aria-live="polite"></p></div><div class="lista" data-lista></div>`;
@@ -1428,11 +1448,14 @@ function telaCodigos() {
       const q = norm(st.q.trim()), mk = st.marca;
       // Zero botão habilitado que leve a tela vazia: piscada sem ocorrência na marca fica disabled.
       const dispPisc = new Set(U.filter(r => marcaCasa(r.m, mk)).flatMap(r => r.np.map(n => Math.min(n, 10))));
-      if (st.pisc !== null && !dispPisc.has(st.pisc)) st.pisc = null;
+      // Padrões de LED da marca (inclusive os combinados sem contagem: aceso/piscando/apagado): 1 botão para ver todos.
+      const nLedMarca = U.filter(r => marcaCasa(r.m, mk) && r.tp === 'Piscada de LED').length, temLedMarca = nLedMarca > 0;
+      if (st.pisc === 'led' ? !temLedMarca : st.pisc !== null && !dispPisc.has(st.pisc)) st.pisc = null;
       $$('[data-pisc]', corpo).forEach(b => { b.disabled = !dispPisc.has(+b.dataset.pisc); b.setAttribute('aria-pressed', String(+b.dataset.pisc === st.pisc)); });
-      const R = U.filter(r => marcaCasa(r.m, mk) && (st.pisc === null || (st.pisc === 10 ? r.np.some(n => n >= 10) : r.np.includes(st.pisc))) && (!q || q.split(/\s+/).every(w => r.txt.includes(w))));
+      const bt = $('[data-pisc-todos]', corpo); bt.disabled = !temLedMarca; bt.setAttribute('aria-pressed', String(st.pisc === 'led')); bt.textContent = `Ver todos os padrões de LED desta marca (${nLedMarca})`;
+      const R = U.filter(r => marcaCasa(r.m, mk) && (st.pisc === null || (st.pisc === 'led' ? r.tp === 'Piscada de LED' : st.pisc === 10 ? r.np.some(n => n >= 10) : r.np.includes(st.pisc))) && (!q || q.split(/\s+/).every(w => r.txt.includes(w))));
       R.sort((a, b) => (q && norm(b.c) === q) - (q && norm(a.c) === q));
-      $('[data-cont]', corpo).textContent = `${R.length} resultado${R.length === 1 ? '' : 's'}${mk ? ' · ' + mk : ''}${st.pisc !== null ? ` · ${st.pisc === 10 ? '10 ou mais' : st.pisc} piscada${st.pisc === 1 ? '' : 's'}` : ''}`;
+      $('[data-cont]', corpo).textContent = `${R.length} resultado${R.length === 1 ? '' : 's'}${mk ? ' · ' + mk : ''}${st.pisc === 'led' ? ' · todos os padrões de LED' : st.pisc !== null ? ` · ${st.pisc === 10 ? '10 ou mais' : st.pisc} piscada${st.pisc === 1 ? '' : 's'}` : ''}`;
       const lista = $('[data-lista]', corpo);
       lista.innerHTML = R.length ? R.slice(0, lim).map(r => `<div class="cartao codigo" data-cod="${r.i}"><div class="linha"><span class="cd">${esc(r.cd || r.c)}</span><span class="mk-marca">${logo(r.m, 20)}<b>${esc(r.m)}</b></span></div>${r.pd ? `<p class="sub"><b>${esc(r.led)}:</b> ${esc(r.padrao)}</p>` : ''}<span class="mk">${esc(r.tp)} · ${esc(r.m)} · ${esc(r.l)}</span><p class="tx">${tk(tx(r.d))}</p>
           ${r.ok ? `<span class="selo-ok" data-selo-ok data-selo-tipo="${ehProtecao(r) ? 'protecao' : 'normal'}">${seloDe(r)}</span>` : r.naoConf ? '<p class="sub">O código aponta o circuito, não condena a peça: meça antes.</p>' : ''}
@@ -1445,6 +1468,7 @@ function telaCodigos() {
     };
     $$('[data-mk]', corpo).forEach(b => b.addEventListener('click', () => { st.marca = b.dataset.mk; $$('[data-mk]', corpo).forEach(x => x.setAttribute('aria-pressed', String(x === b))); lim = 30; filtro(); }));
     $$('[data-pisc]', corpo).forEach(b => b.addEventListener('click', () => { const n = +b.dataset.pisc; st.pisc = st.pisc === n ? null : n; $$('[data-pisc]', corpo).forEach(x => x.setAttribute('aria-pressed', String(+x.dataset.pisc === st.pisc))); lim = 30; filtro(); }));
+    $('[data-pisc-todos]', corpo).addEventListener('click', () => { st.pisc = st.pisc === 'led' ? null : 'led'; lim = 30; filtro(); });
     $('[data-q]', corpo).addEventListener('input', (e) => { st.q = e.target.value; lim = 30; filtro(); });
     filtro();
   }).catch(e => erroBase(corpo, e));
