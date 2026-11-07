@@ -1462,7 +1462,7 @@ function telaLaudo(op) {
     if (!L.causa) L.causa = (S.srvSug === L.sid && S.causaSug) || (f && limpa(causaDe(f, L.sid))) || CAUSA_PADRAO[L.sid];
     const srv = () => P.find(s => s.servico_id === L.sid), porte = porteDe(S.equip.btu), vis = P.find(s => s.servico_id === 'visita_diag');
     const tit = titular(), numero = numeroLaudo(false);
-    corpo.innerHTML = `<header class="cartao laudo-hero" data-l="hero">
+    corpo.innerHTML = `<header class="laudo-hero" data-l="hero">
         <div class="orc-topo"><h2>Orçamento e laudo</h2><button id="modo" class="bt" data-l="modo" aria-pressed="false">Modo: Laudo</button></div>
         <p class="orc-estado">Nº <b data-l="num1">${esc(numero)}</b> · <span data-l="estado"></span></p>
         <p class="sub">${esc(equipTx())} · porte ${PORTE_TX[porte]}${f ? ` · Sintoma: Diagnóstico ${f.id}` : ''}</p>
@@ -1486,8 +1486,6 @@ function telaLaudo(op) {
         <div class="campo"><span class="rot">Causa confirmada</span><button class="bt bt-sel escolha" data-l="causa"></button></div>
         <button class="bt bt-sel largo" data-l="visita">Visita Técnica &amp; Diagnóstico — <span class="nw">${brl(precoDe(vis, porte))}</span></button>
         <div class="composicao" data-l="composicao" hidden></div>
-      </section>
-      <section class="cartao" data-l="valor-sec" aria-label="Valor">
         ${campo('Valor do serviço (R$)', 'type="number" inputmode="decimal" step="any" data-l="v"')}
         <div class="dupla"><button class="bt bt-sel" data-aj="-20">- R$ 20</button><button class="bt bt-sel" data-aj="50">+ R$ 50</button></div>
       </section>
@@ -1572,7 +1570,7 @@ function telaLaudo(op) {
       // Card de lucro: margem, barra peça × lucro e a curva do que sobra limpo no Mínimo, na Referência e no Máximo.
       const tot = totalFinal(), pct = tot > 0 ? Math.round(lucro / tot * 100) : 0; q('margem-pct').textContent = `MARGEM LIMPA ${pct}%`;
       const custoEf = (L.mala ? 0 : custoBase) + custoCombo, comboP = c0 ? precoDe(c0, porte) : 0, lk = ['min', 'ref', 'max'].map(k => fx[k] + comboP - custoEf);
-      q('conta').textContent = `Lucro direto no bolso: valor cobrado menos custo médio da peça na Tabela 2026${L.mala ? ' (Peça na Mala = R$ 0)' : ''}.`;
+      q('conta').textContent = `Conta direta de bancada: valor total menos custo médio da peça na Tabela 2026${c0 ? ' (serviço + adicional)' : ''}${L.mala ? ', com Peça na Mala = R$ 0' : ''}.`;
       const perto = exato || null, wc = tot > 0 ? Math.max(0, Math.min(1, custoEf / tot)) : 1;
       const pts = [[28, 74], [170, 55], [312, 38]];
       // Barra peça × lucro no topo e o plano com grade, eixos, área sob a curva e cotas; os valores ficam em HTML legível logo abaixo.
