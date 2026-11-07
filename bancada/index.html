@@ -154,6 +154,7 @@ details.dobra[open]>summary::after,.dobra-cab[aria-expanded="true"]::after{trans
 .leit .it .bt{flex:none;width:48px;padding:0}
 .selo-laudo-ok{background:#DCFCE7;border:1.5px solid #16A34A;color:#14532D;border-radius:10px;padding:8px 12px;font:800 14px/1.3 var(--f-tit);display:flex;align-items:center;gap:8px}
 .envio-sec{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.envio-sec:has(> [hidden]){grid-template-columns:minmax(0,1fr)}
 /* Normal e Defeito com cor própria quando marcados (verde escuro × vermelho escuro, texto branco >= 4,5:1 nos 2 pontos do degradê). */
 .bt-sel[data-r="ok"][aria-pressed="true"],.bt-sel[data-s="ok"][aria-pressed="true"]{background:#15803D linear-gradient(180deg,#15803D 0%,#166534 100%);border:2px solid #052E16;color:#FFFFFF}
 .bt-sel[data-r="def"][aria-pressed="true"],.bt-sel[data-s="fo"][aria-pressed="true"]{background:#B91C1C linear-gradient(180deg,#DC2626 0%,#B91C1C 100%);border:2px solid #450A0A;color:#FFFFFF}
@@ -1467,8 +1468,8 @@ function telaLaudo(op) {
         <p class="orc-estado">Nº <b data-l="num1">${esc(numero)}</b> · <span data-l="estado"></span></p>
         <p class="sub">${esc(equipTx())} · porte ${PORTE_TX[porte]}${f ? ` · Sintoma: Diagnóstico ${f.id}` : ''}</p>
         <div class="total"><span>Valor total</span><b data-l="total"></b></div>
-        <div class="grade3-faixa" role="group" aria-label="Faixa da Tabela Oficial 2026"><button class="bt bt-sel" data-faixa="min"><span>Mínimo</span><b data-fx="min"></b></button><button class="bt bt-sel" data-faixa="ref"><span>Referência</span><b data-fx="ref"></b></button><button class="bt bt-sel" data-faixa="max"><span>Máximo</span><b data-fx="max"></b></button></div>
-        <p class="sub" data-l="fx-estado"></p>
+        <div class="grade3-faixa" data-so-tecnico role="group" aria-label="Faixa da Tabela Oficial 2026"><button class="bt bt-sel" data-faixa="min"><span>Mínimo</span><b data-fx="min"></b></button><button class="bt bt-sel" data-faixa="ref"><span>Referência</span><b data-fx="ref"></b></button><button class="bt bt-sel" data-faixa="max"><span>Máximo</span><b data-fx="max"></b></button></div>
+        <p class="sub" data-l="fx-estado" data-so-tecnico></p>
       </header>
       <section class="bastidor-card" data-l="bast" hidden aria-label="Seu lucro no bolso (só no Modo Técnico)">
         <div class="cab-sec"><h3>Seu lucro no bolso</h3><span class="tag" style="background:#0C1D36;color:#67C6FF;border-color:#0284C7" data-l="margem-pct"></span></div>
@@ -1484,10 +1485,10 @@ function telaLaudo(op) {
       <section class="cartao" data-l="srv-sec" aria-label="Serviço e composição">
         <div class="campo"><span class="rot">Serviço da Tabela Oficial 2026 · porte ${PORTE_TX[porte]}</span><button class="bt bt-sel escolha" data-l="sid"></button></div>
         <div class="campo"><span class="rot">Causa confirmada</span><button class="bt bt-sel escolha" data-l="causa"></button></div>
-        <button class="bt bt-sel largo" data-l="visita">Visita Técnica &amp; Diagnóstico — <span class="nw">${brl(precoDe(vis, porte))}</span></button>
+        <button class="bt bt-sel largo" data-l="visita" data-so-tecnico>Visita Técnica &amp; Diagnóstico — <span class="nw">${brl(precoDe(vis, porte))}</span></button>
         <div class="composicao" data-l="composicao" hidden></div>
-        ${campo('Valor do serviço (R$)', 'type="number" inputmode="decimal" step="any" data-l="v"')}
-        <div class="dupla"><button class="bt bt-sel" data-aj="-20">- R$ 20</button><button class="bt bt-sel" data-aj="50">+ R$ 50</button></div>
+        <div class="campo-tec" data-so-tecnico>${campo('Valor do serviço (R$)', 'type="number" inputmode="decimal" step="any" data-l="v"')}</div>
+        <div class="dupla" data-so-tecnico><button class="bt bt-sel" data-aj="-20">- R$ 20</button><button class="bt bt-sel" data-aj="50">+ R$ 50</button></div>
       </section>
       <section class="cartao" data-l="envio" aria-label="Cliente e envio">
         <h3>Cliente e envio</h3>
@@ -1499,26 +1500,36 @@ function telaLaudo(op) {
           ${campo('Cidade', `type="text" data-t="cidade" value="${esc(tit.cidade)}" autocomplete="off"`)}${campo('Chave Pix', `type="text" data-t="pix" value="${esc(tit.pix)}" autocomplete="off"`)}
           <div class="pix-prev"><span data-l="qr"></span><p data-l="pixtx"></p></div></div></details>
         <button class="bt bt-verde bt-grande largo" ${VERDE} data-l="zap">${ico('zap', '#ffffff', 26)}<span>Disparar Laudo de Aprovação + Pix no WhatsApp</span></button>
-        <div class="envio-sec"><button class="bt bt-sel" data-l="pdf"><span>Baixar PDF Nº <span data-l="num2">${esc(numero)}</span> com QR Pix</span></button><button type="button" class="bt bt-sel" data-l="salvar-cofre">Salvar no Cofre</button></div>
+        <div class="envio-sec"><button class="bt bt-sel" data-l="pdf"><span>Baixar PDF Nº <span data-l="num2">${esc(numero)}</span> com QR Pix</span></button><button type="button" class="bt bt-sel" data-l="salvar-cofre" data-so-tecnico>Salvar no Cofre</button></div>
         <div class="aviso" data-l="msg" hidden></div><pre class="zap-prev" data-l="prevzap" hidden></pre>
       </section>
       <details class="cartao dobra" data-l="leit-sec"><summary>Leituras e evidências <span class="dobra-n" data-l="leit-n"></span></summary><div class="dobra-in">
         <div class="leit lista" data-l="leit"></div><button class="bt bt-sel bt-destr" data-l="limpar">${ico('lixeira', '#B91C1C', 18)}<span>Limpar leituras</span></button></div></details>
       <details class="cartao dobra" data-l="ref"><summary>Procedimento, referência e prevenção</summary><div class="dobra-in">
-        <p class="ref-item" data-l="proc"></p><p class="ref-item" data-l="faixa"></p><p class="ref-item" data-l="prev"><span data-l="prevtx"></span></p></div></details>
-      <section class="cartao dobra" data-l="cofre"><button type="button" class="dobra-cab" data-cofre-toggle aria-expanded="${!!S.cofreAberto}" aria-controls="cofre-lista">Cofre de Laudos <span class="dobra-n">(<b data-l="cofre-n">${S.cofre.length}</b>)</span></button>
+        <p class="ref-item" data-l="proc"></p><p class="ref-item" data-l="faixa" data-so-tecnico></p><p class="ref-item" data-l="prev"><span data-l="prevtx"></span></p></div></details>
+      <section class="cartao dobra" data-l="cofre" data-so-tecnico><button type="button" class="dobra-cab" data-cofre-toggle aria-expanded="${!!S.cofreAberto}" aria-controls="cofre-lista">Cofre de Laudos <span class="dobra-n">(<b data-l="cofre-n">${S.cofre.length}</b>)</span></button>
         <div class="cofre-lista" id="cofre-lista" data-l="cofre-lista" ${S.cofreAberto ? '' : 'hidden'}></div></section>
-      <details class="cartao dobra" data-l="pmoc-sec"><summary>Contrato PMOC <span class="dobra-n">${PM.length} atividades</span></summary><div class="dobra-in">
+      <details class="cartao dobra" data-l="pmoc-sec" data-so-tecnico><summary>Contrato PMOC <span class="dobra-n">${PM.length} atividades</span></summary><div class="dobra-in">
         ${campo('Mensalidade do contrato PMOC (R$)', `type="number" inputmode="decimal" step="any" data-l="pmocv" value="${esc(L.pmoc)}" placeholder="Valor combinado com o cliente"`)}
         <button class="bt bt-sel largo" data-l="pmoc">Gerar Contrato PMOC em PDF</button></div></details>
-      <button type="button" class="bt bt-sel bt-destr largo" data-l="excluir-atual" aria-label="Limpar o laudo atual (cliente, leituras e número)">${ico('lixeira', '#B91C1C', 18)}<span>Limpar laudo atual</span></button>`;
+      <button type="button" class="bt bt-sel bt-destr largo" data-l="excluir-atual" data-so-tecnico aria-label="Limpar o laudo atual (cliente, leituras e número)">${ico('lixeira', '#B91C1C', 18)}<span>Limpar laudo atual</span></button>`;
     const q = (k) => $(`[data-l=${k}]`, corpo), modo = q('modo');
     const tDados = () => { const g = (k) => $(`[data-t=${k}]`, corpo).value.trim(); return { nome: g('nome'), doc: g('doc'), docTipo: g('doc').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: g('cidade'), pix: g('pix') }; };
     const valor = () => Math.max(0, Number(L.v) || 0);
     // Combo da Tabela 2026 (combo_sugerido do CSV): soma o serviço complementar ao valor final, ao Pix, ao WhatsApp e ao PDF.
     const combo = () => (L.comboId && P.find(x => x.servico_id === L.comboId)) || null;
     const totalFinal = () => valor() + (combo() ? precoDe(combo(), porte) : 0);
-    const pintarModo = () => { modo.setAttribute('aria-pressed', String(L.tecnico)); modo.textContent = `Modo: ${L.tecnico ? 'Técnico' : 'Laudo'}`; q('bast').hidden = !L.tecnico; };
+    // Jurisdição G-6 (Lei 7 e Lei 8): no Modo Laudo a tela é o documento de aprovação do cliente; calibragem de preço e arquivo interno
+    // ([data-so-tecnico]) somem, Procedimento e Prevenção abrem e os dados/Pix do técnico saem da frente quando a chave já existe.
+    const pintarModo = () => {
+      modo.setAttribute('aria-pressed', String(L.tecnico));
+      modo.textContent = `Modo: ${L.tecnico ? 'Técnico' : 'Laudo'}`;
+      q('bast').hidden = !L.tecnico;
+      $$('[data-so-tecnico]', corpo).forEach(e => { e.hidden = !L.tecnico; });
+      q('ref').open = !L.tecnico;
+      const comPix = !!tDados().pix; q('tit').hidden = !L.tecnico && comPix;
+      if (!L.tecnico && comPix) q('tit').open = false;
+    };
     // Causa e serviço 1:1: cada opção de causa carrega o seu serviço; trocar o serviço troca a causa e vice-versa.
     const opcoesCausa = () => {
       const ops = [], vistos = new Set(), add = (c, s) => { c = limpa(c); if (c && !vistos.has(c) && P.some(x => x.servico_id === s)) { vistos.add(c); ops.push([c, s]); } };
