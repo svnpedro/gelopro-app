@@ -1,4 +1,4 @@
-// GeloPro · Bancada GeloPRO em modo avião — 07/11/2026 — v4.0 Consolidada: 48 tiles Option C, 19 CSVs, 126 artes e Contratos 00 a 12. Service worker próprio da página /bancada/ (escopo ./), separado do app (app/sw.js) e
+// GeloPro · Bancada GeloPRO em modo avião — 07/11/2026 — v4.0 Consolidada: 48 tiles Option C, 19 CSVs, 126 artes e Contratos 00 a 13. Service worker próprio da página /bancada/ (escopo ./), separado do app (app/sw.js) e
 // do guia (guia-pro/sw.js): cada um tem o seu cache e nenhum apaga o do outro.
 // No 1º acesso com sinal, o install guarda tudo o que as 4 teclas usam: a página, o motor (QR, Pix, marca, PDF, licença), os 4 componentes
 // visuais importados de ../app/ (.dc.html), as fontes, a textura e o mascote, os 19 CSVs da base técnica (com pmoc_atividades.csv e codigos_erro_novos.csv) e as 126 artes

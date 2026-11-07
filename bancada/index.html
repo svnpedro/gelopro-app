@@ -26,6 +26,8 @@
 [hidden]{display:none!important}
 :focus-visible{outline:3px solid #2563EB;outline-offset:2px}
 :root{--gp-navy:#091E42;--gp-navy-2:#19365C;--gp-data-bg:#0C1D36;--gp-cyan:#38BDF8;--gp-ok:#15803D;--gp-warn:#D97706;--gp-err:#B91C1C;--gp-folha:#E2E8F0;--gp-cartao:#FFFFFF}
+/* Contrato 13 (Dente 9): tokens de hardware do cockpit — bisel safira usinado nos mostradores e física de mola nos ponteiros. */
+:root{--gp-bezel-in:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 6px rgba(0,0,0,.55);--gp-spring:cubic-bezier(.22,1,.36,1)}
 :root{--f-tit:'Figtree','Roboto',system-ui,sans-serif;--f-txt:'Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--f-mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace}
 html{overflow-y:scroll;-webkit-text-size-adjust:100%;scroll-padding-top:68px}
 body{min-height:100vh;background:#c1c0c1 url(../app/ref/acetinado-sedoso.svg) center/100% 100% no-repeat fixed;font:400 15px/1.45 var(--f-txt);color:#0F172A;padding-bottom:calc(66px + env(safe-area-inset-bottom) + 16px)}
@@ -102,7 +104,7 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .cmp25 b{font:800 15px/1.25 var(--f-tit)}
 .cmp25.cego{background:#FEF2F2;border-color:#DC2626;color:#7F1D1D}
 .cmp25.real{background:#DCFCE7;border-color:#16A34A;color:#14532D}
-.graf-svg{display:block;border-radius:12px;overflow:hidden}
+.graf-svg{display:block;border-radius:12px;overflow:hidden;box-shadow:var(--gp-bezel-in)}
 .nw{white-space:nowrap}
 .bt-sel[data-l="visita"]{display:block;padding-top:12px;padding-bottom:12px}
 /* Orçamento e laudo (faxina 06/11/2026): 1 superfície por seção, linhas com separador, conteúdo secundário recolhido. */
@@ -131,7 +133,7 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .grade3-faixa .bt{flex-direction:column;gap:2px;padding:6px 4px;font-size:14px;line-height:1.2}
 .grade3-faixa .bt b{font:800 15px/1.2 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap}
 /* Resultado do técnico: valor principal em linha inteira, custo e nota da conta abaixo. */
-.bastidor-card{background:#06281E linear-gradient(180deg,#06281E 0%,#091E42 100%);border:2px solid #10B981;border-radius:12px;padding:14px;color:#FFFFFF;display:flex;flex-direction:column;gap:12px}
+.bastidor-card{background:#06281E linear-gradient(180deg,#06281E 0%,#091E42 100%);border:2px solid #10B981;border-radius:12px;padding:14px;color:#FFFFFF;display:flex;flex-direction:column;gap:12px;box-shadow:var(--gp-bezel-in)}
 .bastidor-card h3{color:#FFFFFF}
 .bast-linha{display:flex;flex-direction:column;gap:2px;min-width:0}
 .bast-linha .pr{font:700 14px/1.2 var(--f-txt);color:#CBD5E1}
@@ -139,7 +141,7 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .bast-linha.sec .val{font-size:20px}
 .bast-nota{font:500 14px/1.45 var(--f-txt);color:#CBD5E1}
 .bast-nota.adic{color:#E2E8F0}
-.degraus{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:6px}
+.degraus{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
 .degraus>div{display:flex;flex-direction:column;gap:2px;padding:6px 8px;border-radius:8px;border:1px solid #1E3A8A;background:#0C1D36;min-width:0}
 .degraus span{font:700 14px/1.2 var(--f-txt);color:#CBD5E1}
 .degraus b{font:800 15px/1.2 var(--f-tit);color:#FFFFFF;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -210,7 +212,7 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 
 /* Mostradores digitais (LeituraPoco.dc.html) */
 .pocos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.poco{background:#0C1D36;border:1px solid #071633;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;box-shadow:inset 0 2px 6px rgba(0,0,0,.45);min-width:0}
+.poco{background:#0C1D36;border:1px solid #071633;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--gp-bezel-in);min-width:0}
 .poco .pr{font:700 14px/1.2 var(--f-txt);color:#CBD5E1}
 .poco .val{font:700 28px/1.1 var(--f-mono);color:#FFFFFF;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .poco .val small{font:700 15px var(--f-mono);color:#67C6FF;margin-left:4px}
@@ -379,6 +381,39 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 [data-pro-travado] > :not([data-pro-ok]){display:none}
 .upgrade-pro{border:2px solid #16A34A;gap:10px}
 .upgrade-pro h2{margin:0}
+/* Contrato 13 · Instrumento 1 (Tecla 4): cluster 240° com shift-light, arco em 3 faixas, ponteiro de mola e 2 sub-dials. */
+.cluster{position:relative;border-radius:12px;background:#0C1D36;box-shadow:var(--gp-bezel-in)}
+.cluster svg{display:block;width:100%;height:auto}
+.cluster-pct{position:absolute;left:50%;top:61.9%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;line-height:1.05;pointer-events:none}
+.cluster-pct b{font:800 20px/1.05 var(--f-tit);color:#FFFFFF;font-variant-numeric:tabular-nums}
+.cluster-pct span{font:700 14px/1.1 var(--f-txt);color:#CBD5E1}
+.cluster-leg{display:flex;justify-content:space-between;gap:8px;padding:0 10px 8px;font:700 14px/1.2 var(--f-txt)}
+.cluster-leg .peca{color:#FDE68A}.cluster-leg .lucro{color:#86EFAC}
+[data-arco-faixa]{cursor:pointer}
+[data-ponteiro-lucro]{transform-box:view-box;transform-origin:170px 104px;transition:transform .7s var(--gp-spring)}
+[data-rpm-led]{transition:fill .25s ease-out}
+[data-dial-peca] .anel,[data-dial-lucro] .anel{transition:stroke-dasharray .6s var(--gp-spring)}
+.degraus .degrau-bt{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;padding:6px 14px;min-height:48px;min-width:0;text-align:left}
+.degraus .degrau-bt span{font:700 14px/1.2 var(--f-txt);color:inherit}
+.degraus .degrau-bt b{font:800 15px/1.2 var(--f-tit);color:inherit;font-variant-numeric:tabular-nums;white-space:nowrap}
+.degraus>.degrau-bt.on{border-color:#091E42}
+/* Instrumento 2 (Gás & SH): câmara criogênica com visor de líquido e cursor manométrico. */
+[data-g="gauge-sh"]{display:flex;flex-direction:column;gap:8px}
+.camara-sh{display:block;width:100%;height:auto;border-radius:12px;box-shadow:var(--gp-bezel-in)}
+.camara-sh .bolha{animation:gp-bolha 1.6s linear infinite}
+@keyframes gp-bolha{0%{transform:translateY(6px);opacity:0}30%{opacity:.9}100%{transform:translateY(-14px);opacity:0}}
+[data-cursor-sh]{transform-box:view-box;transition:transform .6s var(--gp-spring)}
+/* Instrumento 3 (Sensor NTC): anel pulsante da mira laser. */
+[data-mira-ntc] .pulso{animation:gp-pulso 1.4s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes gp-pulso{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+/* Instrumento 4 (Tecla 1 e Tecla 3): feixe tático nas 5 bolinhas e LED físico no ritmo da piscada. */
+.feixe-tatico{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.feixe-tatico polyline{animation:gp-feixe 2.4s linear infinite}
+@keyframes gp-feixe{to{stroke-dashoffset:-24}}
+.simulador-led{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:#0C1D36;box-shadow:var(--gp-bezel-in);color:#FFFFFF;font:700 14px/1.3 var(--f-txt)}
+.simulador-led .led{flex:none;width:28px;height:28px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FECACA 0%,#7F1D1D 70%);box-shadow:inset 0 -2px 4px rgba(0,0,0,.6),0 0 0 2px #1E293B;transition:background .08s linear,box-shadow .08s linear}
+.simulador-led .led.aceso{background:radial-gradient(circle at 35% 30%,#FFFFFF 0%,#F87171 35%,#DC2626 75%);box-shadow:inset 0 -2px 4px rgba(0,0,0,.35),0 0 14px 4px rgba(248,113,113,.75),0 0 0 2px #1E293B}
+@media (prefers-reduced-motion:reduce){[data-ponteiro-lucro],[data-rpm-led],[data-dial-peca] .anel,[data-dial-lucro] .anel,[data-cursor-sh]{transition:none}.camara-sh .bolha,[data-mira-ntc] .pulso,.feixe-tatico polyline{animation:none}}
 </style>
 </head>
 <body>
@@ -1140,7 +1175,7 @@ function telaCaso(i) {
     <div class="c1"><span>Bancada GeloPRO · Split &amp; Inverter</span><b>Diagnóstico ${f.id} · ${tx(f.bloco)}</b></div>
     <div class="c2 cartao"><h1>${quebraBarra(tx(f.titulo))}</h1><p>${tx(f.sub)}</p></div>
     <div class="c3">${f.chips.map((v, k) => `<div class="chip chip-${['sis', 'apl', 'fer'][k]}"><img src="${tileChip(f, k)}" alt=""><span class="chip-k">${['SISTEMA', 'APLICAÇÃO', 'INSTRUMENTO'][k]}</span><span class="v">${tx(v)}</span></div>`).join('')}</div>
-    <div class="c4"><div class="ilustra" data-ilustra><div class="ilustra-in"><img src="${IMG(f)}" alt="Ilustração de fábrica do Diagnóstico ${f.id} com os pontos de verificação" width="1672" height="941">${alvosDoCaso(f)}</div><button class="bt bt-sel ilustra-z" data-zoom-toggle aria-pressed="false" hidden></button></div></div>
+    <div class="c4"><div class="ilustra" data-ilustra><div class="ilustra-in"><img src="${IMG(f)}" alt="Ilustração de fábrica do Diagnóstico ${f.id} com os pontos de verificação" width="1672" height="941"><svg class="feixe-tatico" data-feixe-tatico viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline points="${f.alvos.map(([x, y]) => `${x},${y}`).join(' ')}" fill="none" stroke="#0EA5E9" stroke-width="2" stroke-dasharray="6,6" stroke-linecap="round" vector-effect="non-scaling-stroke" opacity="0.85"></polyline></svg>${alvosDoCaso(f)}</div><button class="bt bt-sel ilustra-z" data-zoom-toggle aria-pressed="false" hidden></button></div></div>
     <div data-quadro aria-live="polite"></div>
     <div class="c5">
       <section class="cartao" aria-label="Causas mais prováveis"><div class="bloco-h bh-causas" role="heading" aria-level="3"><b>Causas mais prováveis (ordem de escada)</b><span aria-hidden="true">1º → 5º</span></div>
@@ -1258,16 +1293,19 @@ function graficoNtc(c, t, r, R) {
   const corMed = R ? (R.estado === 'ok' ? '#4ADE80' : R.estado === 'alerta' ? '#FBBF24' : '#F87171') : '#4ADE80';
   return `<svg class="graf-svg" viewBox="0 0 340 144" width="100%" height="144" role="img" aria-label="Plano cartesiano da curva real do sensor NTC kΩ por °C">
     <rect x="0" y="0" width="340" height="144" rx="12" fill="#0C1D36"></rect>
+    <g data-grade-osc>${Array.from({ length: 13 }, (_, i) => `<line x1="${n(X0 + i * (X1 - X0) / 12)}" y1="${Y0}" x2="${n(X0 + i * (X1 - X0) / 12)}" y2="${Y1}" stroke="#12264A" stroke-width="0.6"></line>`).join('')}${Array.from({ length: 9 }, (_, i) => `<line x1="${X0}" y1="${n(Y0 + i * (Y1 - Y0) / 8)}" x2="${X1}" y2="${n(Y0 + i * (Y1 - Y0) / 8)}" stroke="#12264A" stroke-width="0.6"></line>`).join('')}</g>
     ${ticks.map(k => `<line x1="${X0}" y1="${n(Y(k))}" x2="${X1}" y2="${n(Y(k))}" stroke="#1E3A8A" stroke-dasharray="3,3"></line><text x="${X0 - 5}" y="${n(Y(k) + 3.5)}" text-anchor="end" font-size="12" font-weight="700" fill="#94A3B8" ${F}>${f1(k, 1)}</text>`).join('')}
     ${[15, 25, 35, 45].map(T => `<line x1="${n(X(T))}" y1="${Y0}" x2="${n(X(T))}" y2="${Y1}" stroke="#1E3A8A" stroke-dasharray="3,3"></line><text x="${n(X(T))}" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#CBD5E1" ${F}>${T} °C</text>`).join('')}
     <line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="#334155" stroke-width="1.5"></line><line x1="${X0}" y1="${Y1}" x2="${X1}" y2="${Y1}" stroke="#334155" stroke-width="1.5"></line>
     <text x="8" y="13" font-size="12.5" font-weight="800" fill="#94A3B8" ${F}>kΩ</text><text x="${X1}" y="140" text-anchor="end" font-size="12" font-weight="700" fill="#94A3B8" ${F}>Curva real ${esc(bandaNtc(c, 25)[2])} · °C</text>
-    <polygon points="${banda}" fill="#16A34A" opacity="0.3" data-banda></polygon>
+    <polygon points="${banda}" fill="#16A34A" opacity="0.3" data-banda></polygon><polygon points="${banda}" fill="none" stroke="#4ADE80" stroke-width="1.2" opacity="0.9" data-tunel></polygon>
     <line x1="${X0}" y1="${n(Y(r25))}" x2="${X1}" y2="${n(Y(r25))}" stroke="#F87171" stroke-width="2" stroke-dasharray="5,4" data-cego></line>
     <text x="${X1 - 2}" y="${n(Y(r25) - 4)}" text-anchor="end" font-size="13" font-weight="800" fill="#FCA5A5" ${F}>25 °C fixa: ${f1(r25, 2)} kΩ</text>
     <polyline points="${curva}" fill="none" stroke="#22D3EE" stroke-width="2.5" data-curva></polyline>
     ${tc === null ? '' : `<line x1="${n(X(tc))}" y1="${Y0}" x2="${n(X(tc))}" y2="${Y1}" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="2,3"></line><circle cx="${n(X(tc))}" cy="${n(Y(esp))}" r="5" fill="#FFFFFF" stroke="#22D3EE" stroke-width="2" data-alvo-ntc></circle>
       <text x="${n(Math.min(X1 - 4, Math.max(X0 + 4, X(tc) + (tc > 38 ? -8 : 8))))}" y="${n(Math.max(Y0 + 10, Y(esp) - 8))}" text-anchor="${tc > 38 ? 'end' : 'start'}" font-size="13" font-weight="800" fill="#FFFFFF" ${F}>Alvo ${f1(esp, 2)} kΩ</text>`}
+    ${tc === null ? '' : `<line x1="${n(X(tc))}" y1="${n(Y(r25))}" x2="${n(X(tc))}" y2="${n(Y(esp))}" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" data-abismo></line>`}
+    ${tc === null ? '' : (() => { const py = n(Y(r !== null && r > 0 ? r : esp)), px = n(X(tc)); return `<g data-mira-ntc><line x1="${X0}" y1="${py}" x2="${X1}" y2="${py}" stroke="#F472B6" stroke-width="1.2" stroke-dasharray="4,3"></line><line x1="${px}" y1="${Y0}" x2="${px}" y2="${Y1}" stroke="#F472B6" stroke-width="1.2" stroke-dasharray="4,3"></line><circle class="pulso" cx="${px}" cy="${py}" r="9" fill="none" stroke="#F472B6" stroke-width="1.5"></circle></g>`; })()}
     ${tc === null || r === null ? '' : `<circle cx="${n(X(tc))}" cy="${n(Y(r))}" r="6" fill="${corMed}" stroke="#091E42" stroke-width="1.5" data-medido="${R && R.estado === 'ok' ? 'dentro' : 'fora'}"></circle>`}
   </svg>`;
 }
@@ -1342,6 +1380,21 @@ const gpmPadrao = (fl, btu) => (fl === 'R32' ? (gpmAlto(btu) ? 24 : 12) : (gpmAl
 const AVISO_GPM = 'Referência prática de campo (confira o g/m gravado na etiqueta da condensadora)';
 const estadoSh = (sh) => sh < 7 ? ['def', 'EXCESSO DE FLUIDO', 'Abaixo de 7 °C: recolha fluido com a recolhedora e confira o fluxo de ar da evaporadora.'] : sh <= 11 ? ['ok', 'CARGA PERFEITA', 'Superaquecimento dentro da faixa alvo de 7 a 11 °C.'] : ['def', 'FALTA DE FLUIDO', 'Acima de 11 °C: ache o vazamento e complete a carga na fase líquida.'];
 // Escala linear de SH 0–20 °C em chassi escuro: < 7 °C (risco de golpe de líquido), 7–11 °C (zona alvo), > 11 °C (falta de fluido).
+// Câmara criogênica (SVG próprio, sem texto: os rótulos ficam na escala acima). Visor de líquido como o visor de linha real: cheio e limpo com
+// excesso, poucas bolhas no alvo e muitas bolhas com falta de fluido. O cursor manométrico desliza até o SH lido.
+const camaraSh = (sh) => {
+  const X = (v) => 84 + Math.max(0, Math.min(20, v)) / 20 * 236, zona = sh === null ? null : sh < 7 ? 'excesso' : sh <= 11 ? 'alvo' : 'falta';
+  const liq = { excesso: '#0284C7', alvo: '#10B981', falta: '#D97706' }[zona] || '#1E3A8A', nb = { excesso: 0, alvo: 2, falta: 6 }[zona] || 0;
+  const bolhas = Array.from({ length: nb }, (_, i) => `<circle class="bolha" cx="${(30 + (i * 7) % 22).toFixed(1)}" cy="${(36 - (i % 3) * 5).toFixed(1)}" r="${(1.6 + (i % 2)).toFixed(1)}" fill="#E0F2FE" style="animation-delay:${(i * 0.27).toFixed(2)}s"></circle>`).join('');
+  return `<svg class="camara-sh" viewBox="0 0 340 56" role="img" aria-label="Câmara de fluido: visor de líquido e cursor no superaquecimento" data-camara-sh="${zona || 'vazia'}">
+    <rect x="0" y="0" width="340" height="56" rx="12" fill="#0C1D36"></rect>
+    <g data-visor-fluido="${zona || 'vazio'}"><circle cx="40" cy="28" r="21" fill="#07162C" stroke="#94A3B8" stroke-width="3"></circle><circle cx="40" cy="28" r="16" fill="${liq}" opacity="0.85"></circle>${bolhas}<path d="M 28 20 A 14 14 0 0 1 44 15" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.5" fill="none"></path></g>
+    <rect x="84" y="20" width="236" height="16" rx="8" fill="#07162C" stroke="#334155" stroke-width="1.5"></rect>
+    <rect x="${X(0)}" y="23" width="${(X(7) - X(0)).toFixed(1)}" height="10" rx="5" fill="#0284C7" opacity="0.85"></rect><rect x="${X(7).toFixed(1)}" y="23" width="${(X(11) - X(7)).toFixed(1)}" height="10" fill="#10B981"></rect><rect x="${X(11).toFixed(1)}" y="23" width="${(X(20) - X(11)).toFixed(1)}" height="10" rx="5" fill="#D97706" opacity="0.85"></rect>
+    <path d="M 90 22 L 314 22" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.35"></path>
+    ${sh === null ? '' : `<g data-cursor-sh="${f1(sh)}" style="transform:translateX(${(X(sh) - 84).toFixed(1)}px)"><polygon points="78,12 90,12 84,20" fill="#FFFFFF"></polygon><line x1="84" y1="20" x2="84" y2="38" stroke="#FFFFFF" stroke-width="2.5"></line><polygon points="78,46 90,46 84,38" fill="#FFFFFF"></polygon></g>`}
+  </svg>`;
+};
 const gaugeSh = (sh) => {
   const X = (v) => 20 + Math.max(0, Math.min(20, v)) / 20 * 300, F = 'font-family="Figtree,Roboto,sans-serif"', x = sh === null ? 0 : X(sh), xt = Math.max(46, Math.min(294, x));
   return `<svg class="graf-svg" viewBox="0 0 340 68" width="100%" height="68" role="img" aria-label="Escala de superaquecimento de 0 a 20 °C com a zona alvo de 7 a 11 °C">
@@ -1384,7 +1437,7 @@ function afGas(corpo) {
       st.p = q('p').value; st.tt = q('tt').value; st.gpm = q('gpm').value;
       const R = calc(), v = q('v'), zero = R && R.p <= 0;
       q('pocos').innerHTML = mostrador('Evaporação', R && !zero ? f1(R.ts) : '—', '°C') + mostrador('Superaquecimento SH', R && !zero && R.sh !== null ? f1(R.sh) : '—', '°C', zero ? 'def' : R && R.sh !== null ? estadoSh(R.sh)[0] : '');
-      q('gauge-sh').innerHTML = gaugeSh(R && !zero && R.sh !== null ? R.sh : null);
+      q('gauge-sh').innerHTML = gaugeSh(R && !zero && R.sh !== null ? R.sh : null) + camaraSh(R && !zero && R.sh !== null ? R.sh : null);
       if (!R) { v.className = 'veredito neutro'; v.textContent = 'Digite a pressão de sucção lida no manifold.'; }
       else if (zero) { v.className = 'veredito def'; v.innerHTML = '0 PSI = SEM PRESSÃO / VAZAMENTO<small>Sistema vazio: ache e corrija o vazamento, faça vácuo e carga na balança antes de ligar o compressor.</small>'; }
       else if (R.sh === null) { v.className = 'veredito neutro'; v.innerHTML = `Evaporação ${f1(R.ts)} °C (${st.fl} a ${f1(R.p, 0)} PSI)<small>Agora meça o tubo de sucção a 20 cm da válvula, com o termopar preso e isolado.</small>`; }
@@ -1516,6 +1569,19 @@ const carregarCodigos = () => CODIGOS || (CODIGOS = Promise.all([csv('codigos_er
     .map(r => (r.pd ? { ...r, cd: idLed(r.d, r.np, r.pd, r.led) } : r));
 }));
 const PISC = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+// Contrato 13 · Instrumento 4 (Tecla 3): o LED do simulador pisca no compasso da piscada escolhida (n vezes de 300 ms, pausa de 1,5 s, repete),
+// para o técnico comparar no olho com o LED do aparelho. Com movimento reduzido, o LED fica aceso e o rótulo descreve o ritmo.
+let ledFase = 0;
+setInterval(() => {
+  const box = document.querySelector('[data-simulador-led]'); if (!box) { ledFase = 0; return; }
+  const led = box.querySelector('[data-led-olho]'), rot = box.querySelector('[data-led-rotulo]'), p = S.cod.pisc, n = typeof p === 'number' ? p : p === 'led' ? 1 : 0;
+  const txt = !n ? 'Toque no número de piscadas para ver o ritmo do LED' : p === 'led' ? 'Padrões de LED desta marca: compare a cor e o ritmo no aparelho'
+    : `LED piscando ${p === 10 ? '10 ou mais vezes' : p === 1 ? '1 vez' : p + ' vezes'} e pausa: compare com o aparelho`;
+  if (rot.textContent !== txt) rot.textContent = txt; led.dataset.pulsos = String(n);
+  if (!n) { led.classList.remove('aceso'); ledFase = 0; return; }
+  if (MOV_REDUZIDO) { led.classList.add('aceso'); return; }
+  const f = ledFase % (n * 2 + 5), on = f < n * 2 && f % 2 === 0; led.classList.toggle('aceso', on); if (on) led.dataset.flashes = String((+led.dataset.flashes || 0) + 1); ledFase++;
+}, 300);
 function telaCodigos() {
   montar('<div data-corpo><div class="carregando">Carregando códigos e piscadas oficiais…</div></div>');
   const corpo = $('[data-corpo]', tela);
@@ -1527,6 +1593,7 @@ function telaCodigos() {
         <p class="sub"><b>${nC} códigos e ${nP} piscadas reais de ${marcas.length} marcas.</b> Selo verde = o próprio fabricante descreve operação normal ou proteção.</p>
         <div class="marcas marcas-faixa" role="group" aria-label="Marca">${(st.marca ? [st.marca, '', ...marcas.filter(m => m !== st.marca)] : ['', ...marcas]).map(m => m ? `<button class="bt bt-sel" data-mk="${esc(m)}" aria-pressed="${m === st.marca}">${logo(m, 26)}<span>${esc(m)}</span></button>` : `<button class="bt bt-sel" data-mk="" aria-pressed="${!st.marca}">Todas as ${marcas.length}</button>`).join('')}</div>
         <h3>Piscadas do LED</h3>
+        <div class="simulador-led" data-simulador-led role="status" aria-live="polite"><span class="led" data-led-olho aria-hidden="true"></span><span data-led-rotulo>Toque no número de piscadas para ver o ritmo do LED</span></div>
         <button class="bt bt-sel largo" data-pisc-todos aria-pressed="${st.pisc === 'led'}">Ver todos os padrões de LED desta marca</button>
         <div class="grade4" style="grid-template-columns:repeat(5,minmax(0,1fr))" role="group" aria-label="Número de piscadas">${PISC.map(n => `<button class="bt bt-sel" data-pisc="${n}" aria-pressed="${st.pisc === n}">${n === 10 ? '10+' : n}</button>`).join('')}</div>
         ${campo('Código do visor', `type="search" data-q placeholder="CH05, E1, P4, F0, H6…" autocomplete="off" enterkeyhint="search" value="${esc(st.q)}"`, true)}
@@ -1591,6 +1658,38 @@ const qrMatriz = (t) => { try { if (!window.qrcode || !t) return null; const q =
 const pixPayload = (t, total, numero) => { try { return window.GeloProPix && t.pix ? window.GeloProPix.payload({ chave: t.pix, nome: t.nome, cidade: t.cidade, valor: total, txid: 'LAUDO' + numero }) : ''; } catch (e) { return ''; } };
 const qrSvg = (M) => { if (!M) return ''; const n = M.length, e = 4; let d = ''; M.forEach((lin, r) => [...lin].forEach((b, c) => { if (b === '1') d += `M${c + e} ${r + e}h1v1h-1z`; })); return `<svg viewBox="0 0 ${n + e * 2} ${n + e * 2}" shape-rendering="crispEdges" role="img" aria-label="QR Code Pix"><rect width="${n + e * 2}" height="${n + e * 2}" fill="#FFFFFF"></rect><path d="${d}" fill="#091E42"></path></svg>`; };
 const sinal = (v) => (v < 0 ? '−' : '+') + brl(Math.abs(v));
+// ───────────── Contrato 13 · Cockpit industrial ─────────────
+const MOV_REDUZIDO = (() => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+// Odômetro vivo: interpola o número exibido até o alvo (o alvo fica em data-alvo; com movimento reduzido, vai direto).
+const animarNumero = (el, alvo, fmt) => {
+  if (!el) return; const de = Number(el.dataset.alvo); el.dataset.alvo = String(alvo); cancelAnimationFrame(el._raf || 0);
+  if (MOV_REDUZIDO || !Number.isFinite(de) || de === alvo) { el.textContent = fmt(alvo); return; }
+  const t0 = performance.now(), D = 450, passo = (t) => { const u = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - u, 3); el.textContent = fmt(de + (alvo - de) * e); if (u < 1) el._raf = requestAnimationFrame(passo); };
+  el._raf = requestAnimationFrame(passo);
+};
+// Instrumento 1 (Tecla 4): cluster 240° no estilo BMW M. Montado uma vez; a cada mudança só os atributos mudam, para a mola animar.
+const CL = { cx: 170, cy: 104, R: 66 }, FAIXAS = ['min', 'ref', 'max'], COR_FAIXA = { min: '#0284C7', ref: '#10B981', max: '#F59E0B' };
+const ptArco = (a, r) => [CL.cx + r * Math.sin(a * Math.PI / 180), CL.cy - r * Math.cos(a * Math.PI / 180)].map(v => v.toFixed(2));
+const arcoD = (a1, a2, r) => { const [x1, y1] = ptArco(a1, r), [x2, y2] = ptArco(a2, r); return `M ${x1} ${y1} A ${r} ${r} 0 ${a2 - a1 > 180 ? 1 : 0} 1 ${x2} ${y2}`; };
+const DIAL_C = 2 * Math.PI * 16;
+const clusterSvg = () => {
+  const leds = Array.from({ length: 18 }, (_, i) => `<rect data-rpm-led="${i}" x="${(28.5 + i * 16).toFixed(1)}" y="6" width="11" height="6" rx="3" fill="#1E293B"></rect>`).join('');
+  const passo = 240 / 9, blocos = FAIXAS.map((k, s) => `<g data-arco-faixa="${k}" data-ativo="0" opacity="0.4">${[0, 1, 2].map(j => { const i = s * 3 + j, a1 = -120 + i * passo + 1.5, a2 = a1 + passo - 3; return `<path d="${arcoD(a1, a2, CL.R)}" stroke="${COR_FAIXA[k]}" stroke-width="12" fill="none"></path>`; }).join('')}<path d="${arcoD(-120 + s * 80, -120 + (s + 1) * 80, CL.R)}" stroke="#000000" stroke-opacity="0" stroke-width="30" fill="none"></path></g>`).join('');
+  const tracos = Array.from({ length: 30 }, (_, i) => { const a = -120 + i * 240 / 29, [x1, y1] = ptArco(a, CL.R + 9), [x2, y2] = ptArco(a, CL.R + (i % 5 ? 13 : 16)); return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#67C6FF" stroke-width="${i % 5 ? 1 : 1.6}" data-traco></line>`; }).join('');
+  const dial = (nome, x, cor) => `<g data-dial-${nome} data-fatia="0"><circle cx="${x}" cy="140" r="16" fill="#07162C" stroke="#1E293B" stroke-width="6"></circle><circle class="anel" cx="${x}" cy="140" r="16" fill="none" stroke="${cor}" stroke-width="6" stroke-linecap="round" stroke-dasharray="0 ${DIAL_C.toFixed(2)}" transform="rotate(-90 ${x} 140)"></circle></g>`;
+  return `<svg viewBox="0 0 340 168" role="img" aria-label="Cluster de lucro: ponteiro no preço, LEDs no lucro limpo e mostradores da peça e do lucro">
+    <defs><radialGradient id="haloCluster" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#38BDF8" stop-opacity="0.35"></stop><stop offset="100%" stop-color="#0C1D36" stop-opacity="0"></stop></radialGradient></defs>
+    <circle cx="${CL.cx}" cy="${CL.cy}" r="86" fill="url(#haloCluster)" data-halo></circle>${leds}${tracos}${blocos}
+    <circle cx="${CL.cx}" cy="${CL.cy}" r="38" fill="#07162C" stroke="#1E3A8A" stroke-width="2"></circle>
+    <g data-ponteiro-lucro data-angulo="0" style="transform:rotate(0deg)"><polygon points="165.5,66 174.5,66 170,40" fill="#F8FAFC"></polygon><polygon points="167.5,64 172.5,64 170,44" fill="#F87171"></polygon></g>
+    ${dial('peca', 40, '#F59E0B')}${dial('lucro', 300, '#10B981')}
+  </svg><div class="cluster-pct"><b data-l="cluster-pct">0%</b><span>margem</span></div>
+  <div class="cluster-leg"><span class="peca">● Peça <span data-l="cluster-peca">0%</span></span><span class="lucro">Lucro <span data-l="cluster-lucro">0%</span> ●</span></div>`;
+};
+// Ângulo do ponteiro: o preço entre os 3 degraus da Tabela 2026 (Mín no centro da faixa azul, Ref no topo, Máx no centro da âmbar).
+const anguloPreco = (v, fx) => { const seg = (a, b, va, vb) => (vb === va ? (a + b) / 2 : a + (b - a) * (v - va) / (vb - va));
+  const g = v <= fx.ref ? seg(-80, 0, fx.min, fx.ref) : seg(0, 80, fx.ref, fx.max); return Math.max(-118, Math.min(118, g)); };
+
 function telaLaudo(op) {
   montar('<div data-l="corpo"><div class="carregando">Carregando a Tabela Oficial 2026…</div></div>');
   const L = S.laudo || (S.laudo = { sid: null, v: null, causa: '', cli: '', tel: '', mala: false, tecnico: false, pmoc: '' });
@@ -1617,7 +1716,7 @@ function telaLaudo(op) {
         <p class="bast-nota" data-l="conta"></p>
         <button class="bt bt-sel largo" data-l="mala" aria-pressed="${L.mala}"></button>
         <div data-l="grafico-lucro"></div>
-        <div class="degraus" data-l="degraus" role="list" aria-label="Lucro limpo nos 3 degraus da Tabela 2026"></div>
+        <div class="degraus" data-l="degraus" role="group" aria-label="Lucro limpo nos 3 degraus da Tabela 2026: toque para aplicar o preço"></div>
         <div class="lista" data-l="combos-box"><p class="bast-nota adic">Adicional sugerido pela Tabela 2026: só entra no valor se você tocar.</p><div class="lista" data-l="combos"></div></div>
         <p class="odometro" data-l="lucro-cofre" hidden></p>
       </section>
@@ -1656,6 +1755,7 @@ function telaLaudo(op) {
     const q = (k) => $(`[data-l=${k}]`, corpo), modo = q('modo');
     const tDados = () => { const g = (k) => $(`[data-t=${k}]`, corpo).value.trim(); return { nome: g('nome'), doc: g('doc'), docTipo: g('doc').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: g('cidade'), pix: g('pix') }; };
     const valor = () => Math.max(0, Number(L.v) || 0);
+    const fx0 = () => faixaDe(srv(), porte);
     // Combo da Tabela 2026 (combo_sugerido do CSV): soma o serviço complementar ao valor final, ao Pix, ao WhatsApp e ao PDF.
     const combo = () => (L.comboId && P.find(x => x.servico_id === L.comboId)) || null;
     const totalFinal = () => valor() + (combo() ? precoDe(combo(), porte) : 0);
@@ -1724,16 +1824,20 @@ function telaLaudo(op) {
       q('conta').textContent = `Conta direta de bancada: valor total menos custo médio da peça na Tabela 2026${c0 ? ' (serviço + adicional)' : ''}${L.mala ? ', com Peça na Mala = R$ 0' : ''}.`;
       const perto = exato || null, wc = tot > 0 ? Math.max(0, Math.min(1, custoEf / tot)) : 1;
       const pts = [[28, 74], [170, 55], [312, 38]];
-      // Barra peça × lucro no topo e o plano com grade, eixos, área sob a curva e cotas; os valores ficam em HTML legível logo abaixo.
-      q('grafico-lucro').innerHTML = `<svg viewBox="0 0 340 112" width="100%" height="112" role="img" aria-label="Curva do lucro limpo no Mínimo, na Referência e no Máximo da Tabela 2026: ${['Mín', 'Ref', 'Máx'].map((r, k) => `${r} ${sinal(lk[k])}`).join(', ')}"><defs><linearGradient id="gradLucro" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38BDF8"></stop><stop offset="100%" stop-color="#38BDF8" stop-opacity="0"></stop></linearGradient></defs>`
-        + `<rect x="8" y="4" width="324" height="14" rx="7" fill="#047857" data-margem></rect>${wc > 0 ? `<rect x="8" y="4" width="${Math.max(10, 324 * wc).toFixed(1)}" height="14" rx="7" fill="#B45309" data-custo-barra></rect>` : ''}`
-        + `<rect x="12" y="26" width="316" height="82" rx="8" fill="#07162C" stroke="#1E3A8A" stroke-width="1"></rect>${[40, 60, 80].map(y => `<line x1="20" y1="${y}" x2="320" y2="${y}" stroke="#1E293B" stroke-dasharray="3,3" data-grade></line>`).join('')}`
-        + `<line x1="20" y1="30" x2="20" y2="100" stroke="#334155" stroke-width="1.5" data-eixo="y"></line><line x1="20" y1="100" x2="320" y2="100" stroke="#334155" stroke-width="1.5" data-eixo="x"></line>`
-        + `<path d="M 28 74 Q 170 54 312 38 L 312 100 L 28 100 Z" fill="url(#gradLucro)" opacity="0.28" data-area></path><path d="M 28 74 Q 170 54 312 38" stroke="#38BDF8" stroke-width="3" fill="none"></path>`
-        + pts.map(([x, y]) => `<line x1="${x}" y1="${y + 6}" x2="${x}" y2="100" stroke="#64748B" stroke-width="1" stroke-dasharray="3,3" data-cota></line>`).join('')
-        + pts.map(([x, y], k) => { const on = ['min', 'ref', 'max'][k] === perto; return `<circle cx="${x}" cy="${y}" r="${on ? 6 : 4}" fill="${on ? '#4ADE80' : '#38BDF8'}" stroke="#091E42" stroke-width="1.5"></circle>`; }).join('')
-        + `</svg>`;
-      q('degraus').innerHTML = ['min', 'ref', 'max'].map((k, i) => `<div role="listitem"${k === perto ? ' class="on"' : ''}><span>${['Mín', 'Ref', 'Máx'][i]}</span><b>${sinal(lk[i])}</b></div>`).join('');
+      // Contrato 13 · Instrumento 1: cluster 240° (montado 1 vez); ponteiro no preço, LEDs no lucro limpo relativo ao lucro no Máximo,
+      // sub-dial da peça (zera com Peça na Mala) e do lucro, setor do arco do degrau exato aceso. Os valores ficam em HTML legível.
+      const gl = q('grafico-lucro'); if (!gl.querySelector('[data-ponteiro-lucro]')) { gl.className = 'cluster'; gl.innerHTML = clusterSvg();
+        $$('[data-arco-faixa]', gl).forEach(g => g.addEventListener('click', () => { L.v = fx0()[g.dataset.arcoFaixa]; pintarValor(); })); }
+      const ang = anguloPreco(valor(), fx), lucroMax = lk[2], acesos = lucroMax > 0 ? Math.max(0, Math.min(18, Math.round(18 * Math.max(0, lucro) / lucroMax))) : 0;
+      const pont = $('[data-ponteiro-lucro]', gl); pont.dataset.angulo = ang.toFixed(1); pont.style.transform = `rotate(${ang.toFixed(1)}deg)`;
+      $$('[data-rpm-led]', gl).forEach(r => { const i = +r.dataset.rpmLed, on = i < acesos; r.dataset.aceso = on ? '1' : '0'; r.setAttribute('fill', on ? (i >= 15 ? '#F59E0B' : i % 2 ? '#4ADE80' : '#10B981') : '#1E293B'); });
+      $$('[data-arco-faixa]', gl).forEach(g => { const on = g.dataset.arcoFaixa === perto; g.dataset.ativo = on ? '1' : '0'; g.setAttribute('opacity', on ? '1' : '0.4'); });
+      const fPeca = tot > 0 ? Math.max(0, Math.min(1, custoEf / tot)) : 0, fLucro = tot > 0 ? Math.max(0, Math.min(1, lucro / tot)) : 0;
+      [['peca', fPeca], ['lucro', fLucro]].forEach(([k, fr]) => { const d = $(`[data-dial-${k}]`, gl); d.dataset.fatia = String(Math.round(fr * 100)); const an = $('.anel', d); an.setAttribute('stroke-dasharray', `${(fr * DIAL_C).toFixed(2)} ${DIAL_C.toFixed(2)}`); an.setAttribute('stroke-linecap', fr > 0.01 ? 'round' : 'butt'); });
+      gl.setAttribute('aria-label', `Lucro limpo: ${['Mín', 'Ref', 'Máx'].map((r, k) => `${r} ${sinal(lk[k])}`).join(', ')}`);
+      animarNumero(q('cluster-pct'), pct, (x) => `${Math.round(x)}%`); animarNumero(q('cluster-peca'), Math.round(fPeca * 100), (x) => `${Math.round(x)}%`); animarNumero(q('cluster-lucro'), Math.round(fLucro * 100), (x) => `${Math.round(x)}%`);
+      q('degraus').innerHTML = FAIXAS.map((k, i) => `<button type="button" class="bt bt-sel degrau-bt${k === perto ? ' on' : ''}" data-degrau-fx="${k}" aria-pressed="${k === perto}" aria-label="Aplicar o ${['Mínimo', 'Referência', 'Máximo'][i]} da Tabela 2026: lucro limpo ${sinal(lk[i])}"><span>${['Mín', 'Ref', 'Máx'][i]}</span><b>${sinal(lk[i])}</b></button>`).join('');
+      $$('[data-degrau-fx]', q('degraus')).forEach(b => b.addEventListener('click', () => { L.v = fx[b.dataset.degrauFx]; pintarValor(); }));
       const cs = String(s.combo_sugerido || '').split(';').map(x => P.find(y => y.servico_id === x.trim())).filter(Boolean);
       q('combos').innerHTML = cs.map(sc => { const on = L.comboId === sc.servico_id, nome = esc(sc.servico.split('(')[0].trim()), pr = `(+${brl(precoDe(sc, porte)).replace(' ', '\u00a0')})`;
         return `<button type="button" class="bt bt-cat largo" data-combo="${sc.servico_id}" aria-pressed="${on}">${on ? `✓ Somado: ${nome} ${pr} — Toque p/ remover` : `+ Somar ${nome} ${pr}`}</button>`; }).join('');
