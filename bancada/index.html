@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#091E42">
+<meta name="theme-color" content="#FFFFFF">
 <title>Bancada GeloPRO · Split &amp; Inverter</title>
 <!--
   Bancada GeloPRO (pasta limpa bancada/, 05/11/2026). Contrato Único de 1 Página (faxina estrutural de 06/11/2026, ver CONTRATO-VISUAL.md):
-  fundo acetinado no body e a .folha clara #E2E8F0 com moldura estrutural (Contrato 01 de contratos/, 07/11/2026), uma superfície branca
-  por seção, topo de 56 px com a marca e, fora da grade inicial, ‹ Voltar (#topo-passo) e Início (#topo-voltar), pílula de equipamento
-  colada ao 1º bloco da tela e dock de 66 px com 4 teclas 3D na mesma margem lateral.
+  Design System Anvil 2 (08/11/2026): fundo #F4F6F8, .folha #F9F9F9 e cartões #FFFFFF com borda #E6E6E6 (Contrato 01), uma superfície branca
+  por seção, topo claro de 56 px com a marca e, fora da grade inicial, ‹ Voltar (#topo-passo) e Início (#topo-voltar), pílula de equipamento
+  colada ao 1º bloco da tela e dock claro de 66 px com 4 teclas na mesma margem lateral.
   Claro por fora, Visor Safira por dentro (08/11/2026, Contratos 04 a 08): #192329 com moldura #344856 e trilho #24333d nos mostradores e
   nos 4 instrumentos (barra empilhada do Lucro, Manifold & Sight Glass do Gás & SH, Scanner Térmico NTC, Pulso LED + Trava 30s do Inverter).
   Componentes visuais reais importados de ../app/ em tempo de execução (IconeGP, LogoMarca, AtalhoTecla e CampoTexto .dc.html: o script de
@@ -26,11 +26,11 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 [hidden]{display:none!important}
-:focus-visible{outline:3px solid #2563EB;outline-offset:2px}
-:root{--gp-navy:#091E42;--gp-navy-2:#19365C;--gp-data-bg:#192329;--gp-visor-moldura:#344856;--gp-visor-trilho:#24333d;--gp-cyan:#38BDF8;--gp-ok:#15803D;--gp-warn:#D97706;--gp-err:#B91C1C;--gp-folha:#E2E8F0;--gp-cartao:#FFFFFF}
+:focus-visible{outline:3px solid #0265DC;outline-offset:2px}
+:root{--gp-texto:#040404;--gp-moldura:#344856;--gp-data-bg:#192329;--gp-visor-trilho:#24333d;--gp-ciano:#00CEFC;--gp-ok:#077E50;--gp-warn:#FFBE00;--gp-err:#D62100;--gp-folha:#F9F9F9;--gp-cartao:#FFFFFF;--gp-fundo:#F4F6F8;--gp-borda:#E6E6E6;--gp-acao:#0265DC}
 :root{--f-tit:'Figtree','Roboto',system-ui,sans-serif;--f-txt:'Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--f-mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace}
 html{overflow-y:scroll;-webkit-text-size-adjust:100%;scroll-padding-top:68px}
-body{min-height:100vh;background:#c1c0c1 url(../app/ref/acetinado-sedoso.svg) center/100% 100% no-repeat fixed;font:400 15px/1.45 var(--f-txt);color:#0F172A;padding-bottom:calc(66px + env(safe-area-inset-bottom) + 16px)}
+body{min-height:100vh;background:#F4F6F8;font:400 15px/1.45 var(--f-txt);color:#1A1A1A;padding-bottom:calc(66px + env(safe-area-inset-bottom) + 16px)}
 img{max-width:100%}
 button,select,input{font:inherit;color:inherit}
 button{border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -39,31 +39,30 @@ button{border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:trans
 .trilho{width:min(calc(100% - 24px),640px);margin:0 auto}
 
 /* Topo 56 px */
-#topo{position:sticky;top:0;z-index:30;height:56px;background:#091E42;border-bottom:1px solid #D4D4D4;box-shadow:0 1px 4px rgba(9,30,66,.25)}
+#topo{position:sticky;top:0;z-index:30;height:56px;background:#FFFFFF;border-bottom:1px solid #E6E6E6;box-shadow:0 1px 4px rgba(26,26,26,.06)}
 .topo-in{height:56px;display:flex;align-items:center;gap:10px}
 .topo-home{min-height:48px;display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-align:left;color:inherit;background:none;border:0;cursor:pointer;padding:0;border-radius:10px}
 .topo-home>img{width:36px;height:36px;flex:none}
 .marca-tx{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.15}
-.marca-tx b{font:800 16px/1.15 var(--f-tit);color:#FFFFFF}
-.marca-tx span{font:600 14px/1.2 var(--f-txt);color:#9FD3FF}
+.marca-tx b{font:800 16px/1.15 var(--f-tit);color:#040404}
+.marca-tx span{font:600 14px/1.2 var(--f-txt);color:#545454}
 .topo-nav{display:flex;align-items:center;gap:6px;flex:none}
 .topo-nav:empty{display:none}
-.topo-bt{min-height:48px;min-width:48px;border-radius:999px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;font:700 14px/1 var(--f-txt);white-space:nowrap;background:#19365C;color:#FFFFFF;border:1.5px solid #67C6FF}
-#topo-voltar{background:#FFFFFF;color:#091E42;border-color:#FFFFFF}
+.topo-bt{min-height:48px;min-width:48px;border-radius:999px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;font:700 14px/1 var(--f-txt);white-space:nowrap;background:#F1F5F9;color:#040404;border:1.5px solid #344856}
 @media (max-width:420px){#topo.fora .marca-tx span{display:none}#topo.fora .topo-in{gap:8px}#topo.fora .topo-home{gap:8px}}
-#modo{flex:none;min-height:48px;border-radius:999px;padding:6px 14px;font-size:14px;white-space:nowrap;background:#19365C;color:#FFFFFF;border:1.5px solid #67C6FF;box-shadow:none}
-#modo[aria-pressed=true]{background:#28559E;box-shadow:none}
+#modo{flex:none;min-height:48px;border-radius:999px;padding:6px 14px;font-size:14px;white-space:nowrap;background:#24333d;color:#FFFFFF;border:1.5px solid #B9C9D5;box-shadow:none}
+#modo[aria-pressed=true]{background:#0265DC;border-color:#9ECAFF;box-shadow:none}
 
 /* Painel: folha clara + cartões brancos */
 #visor{padding-top:12px}
-/* Tokens semânticos de 2 segundos (skills/ui-design/semantic-color-tokens-2s-and-daltonism.md): 4 camadas de profundidade, nada de branco sobre branco. */
-.folha{background:#E2E8F0;border:1.5px solid #94A3B8;border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 10px rgba(9,30,66,.10)}
-.cartao{background:#FFFFFF;border:1.5px solid #CBD5E1;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 2px 6px rgba(9,30,66,.08)}
-h1{font:800 24px/1.15 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
-h2{font:800 18px/1.25 var(--f-tit);color:#091E42}
-h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
-.tx{font-size:15px;color:#0F172A}
-.sub{font-size:14px;color:#334155}
+/* Design System Anvil 2 + Visor Safira (Contratos 01 e 04, 08/11/2026): fundo #F4F6F8 → folha #F9F9F9 → cartão #FFFFFF, borda #E6E6E6; visor #192329 por dentro. */
+.folha{background:#F9F9F9;border:1px solid #E6E6E6;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 8px rgba(26,26,26,.06)}
+.cartao{background:#FFFFFF;border:1px solid #E6E6E6;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0;box-shadow:0 2px 8px rgba(26,26,26,.08)}
+h1{font:800 24px/1.15 var(--f-tit);color:#040404;overflow-wrap:anywhere}
+h2{font:800 18px/1.25 var(--f-tit);color:#040404}
+h3{font:800 16px/1.3 var(--f-tit);color:#040404}
+.tx{font-size:15px;color:#1A1A1A}
+.sub{font-size:14px;color:#545454}
 .linha{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .cab-sec{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .grade2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
@@ -74,11 +73,14 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .opcoes{display:flex;flex-wrap:wrap;gap:6px}
 .opcoes .bt{flex:1 1 auto}
 
-/* Dock 66 px com 4 teclas 3D */
-#dock{position:fixed;left:0;right:0;bottom:0;z-index:30;height:calc(66px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:#091E42;border-top:1px solid #D4D4D4;box-shadow:0 -2px 8px rgba(9,30,66,.25)}
+/* Dock 66 px com 4 teclas limpas Anvil 2 (inativa branca, ativa azul #E6F1FF; a 4ª no papel verde) */
+#dock{position:fixed;left:0;right:0;bottom:0;z-index:30;height:calc(66px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:#FFFFFF;border-top:1px solid #E6E6E6;box-shadow:0 -2px 8px rgba(26,26,26,.06)}
+.tecla-ico{display:flex;line-height:0}
 .dock-in{height:66px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:center}
-.tecla{height:56px;min-height:48px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 14px/1.1 var(--f-txt);padding:2px 4px;text-align:center}
-.tecla[aria-current=page]{outline:3px solid #67C6FF;outline-offset:1px}
+#dock .tecla{height:56px;min-height:48px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:700 14px/1.1 var(--f-txt);padding:2px 4px;text-align:center;background:#FFFFFF;border:1px solid #E6E6E6;color:#545454;box-shadow:none;text-shadow:none}
+#dock .tecla[aria-current=page]{background:#E6F1FF;border:2px solid #0265DC;color:#003472}
+#dock .tecla[data-tecla=laudo]{background:#F5FEFB;border:1.5px solid #077E50;color:#04482E}
+#dock .tecla[data-tecla=laudo][aria-current=page]{background:#D3FDED;border:2px solid #077E50;color:#04482E}
 
 /* 4 famílias de botões (AtalhoTecla.dc.html): todos com 48 px ou mais */
 .bt{min-height:48px;border-radius:12px;padding:10px 14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 15px/1.25 var(--f-txt);text-align:center;transition:transform .1s ease-out}
@@ -86,66 +88,66 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .bt{overflow-wrap:anywhere}
 .bt:active{transform:translateY(2px)}
 .largo{width:100%}
-.bt-verde{background:linear-gradient(180deg,#00b100 0%,#008800 100%);border:2px solid #005500;color:#FFFFFF;text-shadow:0 1px 2px rgba(0,40,0,.65);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #005500}
-.bt-cat{background:linear-gradient(180deg,#fbbf24 0%,#d97706 100%);border:2px solid #92400e;color:#111827;font-weight:800;text-shadow:0 1px 0 rgba(255,255,255,.35);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 0 #92400e}
-.bt-cobalto{background:linear-gradient(180deg,#28559e 0%,#122a54 100%);border:2px solid #071633;color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 3px 0 #071633}
-.bt-sel{color:#091E42;font-weight:700}
-.bt-sel:not([aria-pressed="true"]){background:linear-gradient(180deg,#FFFFFF 0%,#E8EEF5 100%);border:1.5px solid #475569;color:#091E42;box-shadow:inset 0 1px 0 #FFFFFF,0 2px 0 #64748B}
-.bt-sel[aria-pressed="true"]{background:linear-gradient(180deg,#2563EB 0%,#1D4ED8 100%);border:2px solid #091E42;color:#FFFFFF;box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 0 0 2px #67C6FF}
+.bt-verde{background:linear-gradient(180deg,#077E50 0%,#05613E 100%);border:2px solid #04482E;color:#FFFFFF;box-shadow:0 2px 0 #04482E}
+.bt-cat{background:linear-gradient(180deg,#FFBE00 0%,#E3A000 100%);border:1.5px solid #704B00;color:#040404;font-weight:800;box-shadow:0 2px 0 #704B00}
+.bt-cobalto{background:linear-gradient(180deg,#0265DC 0%,#1D4CA3 100%);border:2px solid #003472;color:#FFFFFF;box-shadow:0 2px 0 #003472}
+.bt-sel{color:#040404;font-weight:700}
+.bt-sel:not([aria-pressed="true"]){background:linear-gradient(180deg,#FFFFFF 0%,#F4F6F8 100%);border:1.5px solid #545454;color:#040404;box-shadow:0 1px 0 #C4C4C4}
+.bt-sel[aria-pressed="true"]{background:linear-gradient(180deg,#0265DC 0%,#1D4CA3 100%);border:2px solid #003472;color:#FFFFFF;box-shadow:0 0 0 2px #9ECAFF}
 .bt-sel:disabled{opacity:.45;cursor:not-allowed}
 /* Papéis dos controles (faxina 06/11/2026). Seletor = rótulo + valor + chevron; ação secundária = .bt-sel neutro; ação principal =
    um destaque único por tela (.bt-verde no envio); destrutiva = texto e ícone vermelhos, com confirmação; ativo segue cobalto. */
 .escolha{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;font-size:15px}
 .escolha .seletor-tile{width:40px;height:40px;flex:none;object-fit:contain}
 .escolha .seletor-val{flex:1;min-width:0}
-.bt-sel.bt-destr:not([aria-pressed="true"]){background:#FEF2F2 linear-gradient(180deg,#FFF5F5 0%,#FEE2E2 100%);border:1.5px solid #DC2626;color:#991B1B}
-.bt-sel.bt-destr[data-armado]{background:#FEF2F2;border-color:#B91C1C;color:#991B1B}
+.bt-sel.bt-destr:not([aria-pressed="true"]){background:#FFE9E5 linear-gradient(180deg,#FFFBFA 0%,#FFE9E5 100%);border:1.5px solid #D62100;color:#731100;box-shadow:0 1px 0 #FFD4CC}
+.bt-sel.bt-destr[data-armado]{background:#FFD4CC;border-color:#A31900;color:#731100}
 /* Atalhos do Arsenal PRO na Home: 1 linha rolável; faixas roláveis ganham um esmaecido na borda direita enquanto há mais conteúdo. */
 .marcas-faixa.rola:not(.fim){-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 32px),transparent 100%)}
 /* Comparador 25 °C cego × curva real (Sensor NTC). */
 .cmp25{display:flex;flex-direction:column;gap:4px;border-radius:12px;padding:10px 12px;border:1.5px solid;font:700 14px/1.3 var(--f-txt);min-width:0}
 .cmp25 b{font:800 15px/1.25 var(--f-tit)}
-.cmp25.cego{background:#FEF2F2;border-color:#DC2626;color:#7F1D1D}
-.cmp25.real{background:#DCFCE7;border-color:#16A34A;color:#14532D}
+.cmp25.cego{background:#FFE9E5;border-color:#D62100;color:#731100}
+.cmp25.real{background:#D3FDED;border-color:#077E50;color:#04482E}
 .graf-svg{display:block;border-radius:12px;overflow:hidden}
 .nw{white-space:nowrap}
 .bt-sel[data-l="visita"]{display:block;padding-top:12px;padding-bottom:12px}
 /* Orçamento e laudo (faxina 06/11/2026): 1 superfície por seção, linhas com separador, conteúdo secundário recolhido. */
-.laudo-hero{background:linear-gradient(180deg,#091E42 0%,#0C1D36 100%);border:2px solid #16A34A;color:#FFFFFF;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 10px rgba(9,30,66,.25)}
-.laudo-hero h2{color:#FFFFFF}.laudo-hero .sub,.laudo-hero .orc-estado{color:#CBD5E1}.laudo-hero .orc-estado b{color:#67C6FF}
-.bt-sel.escolha:not([aria-pressed="true"]){background:#E0F2FE linear-gradient(180deg,#F0F9FF 0%,#E0F2FE 100%);border:2px solid #0284C7;color:#0C4A6E;box-shadow:0 2px 0 #0369A1}
-.bt-sel[data-aj="50"]{background:#DCFCE7 linear-gradient(180deg,#F0FDF4 0%,#DCFCE7 100%);border:1.5px solid #16A34A;color:#14532D}
+.laudo-hero{background:#192329 linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 24px);border:2px solid #344856;color:#FFFFFF;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 10px rgba(9,30,66,.25)}
+.laudo-hero h2{color:#FFFFFF}.laudo-hero .sub,.laudo-hero .orc-estado{color:#B9C9D5}.laudo-hero .orc-estado b{color:#00CEFC}
+.bt-sel.escolha:not([aria-pressed="true"]){background:#E6F1FF linear-gradient(180deg,#F5F9FF 0%,#E6F1FF 100%);border:2px solid #0265DC;color:#003472;box-shadow:0 1px 0 #9ECAFF}
+.bt-sel[data-aj="50"]{background:#D3FDED linear-gradient(180deg,#F5FEFB 0%,#D3FDED 100%);border:1.5px solid #077E50;color:#04482E}
 .orc-topo{display:flex;align-items:center;justify-content:space-between;gap:8px}
 /* Contrato 08 (Dente 7): “Orçamento e laudo” em 1 linha ao lado do #modo a 360 e 390 px, nos 2 modos. */
 .orc-topo h2{white-space:nowrap;font-size:clamp(17px,4.6vw,20px);min-width:0}
 /* Contrato 01 (Dente 7, Lei Universal Anti-Grude): a Tecla 4 empilha hero, lucro, serviço, envio e dobras com 12 px, como a .folha. */
 [data-l=corpo]{display:flex;flex-direction:column;gap:12px}
-.orc-estado{font:600 14px/1.35 var(--f-txt);color:#334155}
-.orc-estado b{color:#091E42}
+.orc-estado{font:600 14px/1.35 var(--f-txt);color:#545454}
+.orc-estado b{color:#040404}
 .composicao{display:flex;flex-direction:column}
-.comp-linha{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #E2E8F0;font-size:15px;color:#0F172A}
+.comp-linha{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #E6E6E6;font-size:15px;color:#1A1A1A}
 .comp-linha>span{flex:1;min-width:0}
-.comp-linha>b{font:800 16px/1.2 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap;color:#091E42}
+.comp-linha>b{font:800 16px/1.2 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap;color:#040404}
 .comp-linha .bt{flex:none;padding:6px 12px;font-size:14px}
 .comp-linha.adic{flex-wrap:wrap}
 .comp-linha.adic>span{flex:1 1 100%}
 .comp-linha.adic>b{margin-right:auto}
-.total{display:flex;justify-content:space-between;align-items:center;gap:8px;font:800 18px/1.2 var(--f-tit);background:#064E3B;border:2px solid #16A34A;border-radius:12px;padding:14px 16px;color:#FFFFFF}
-.total b{font:800 26px/1.1 var(--f-tit);font-variant-numeric:tabular-nums;color:#4ADE80;white-space:nowrap}
+.total{display:flex;justify-content:space-between;align-items:center;gap:8px;font:800 18px/1.2 var(--f-tit);background:#04482E;border:2px solid #0BD085;border-radius:12px;padding:14px 16px;color:#FFFFFF}
+.total b{font:800 26px/1.1 var(--f-tit);font-variant-numeric:tabular-nums;color:#0BD085;white-space:nowrap}
 .grade3-faixa{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .grade3-faixa .bt{flex-direction:column;gap:2px;padding:6px 4px;font-size:14px;line-height:1.2}
 .grade3-faixa .bt b{font:800 15px/1.2 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap}
 /* Card de lucro do Modo Técnico (Contrato 08): claro por fora, Instrumento 1 · Lucro no Bolso no visor safira por dentro; custo, nota e degraus abaixo. */
-.bastidor-card{background:#FFFFFF;border:2px solid #077E50;border-radius:12px;padding:12px;color:#091E42;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 6px rgba(9,30,66,.08)}
-.bastidor-card h3{color:#091E42}
+.bastidor-card{background:#FFFFFF;border:2px solid #077E50;border-radius:12px;padding:14px;color:#040404;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 6px rgba(9,30,66,.08)}
+.bastidor-card h3{color:#040404}
 .tag-margem{background:#192329;color:#0BD085;border-color:#344856;font-variant-numeric:tabular-nums}
-.bast-linha{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 8px;min-width:0;padding-top:8px;border-top:1px solid #E2E8F0}
-.bast-linha .pr{font:700 14px/1.2 var(--f-txt);color:#334155;white-space:nowrap}
+.bast-linha{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 8px;min-width:0;padding-top:8px;border-top:1px solid #E6E6E6}
+.bast-linha .pr{font:700 14px/1.2 var(--f-txt);color:#545454;white-space:nowrap}
 .bast-linha .val{margin-left:auto}
-.bast-linha s{font-size:16px;color:#64748B}
-.bast-linha .val{font:800 20px/1.1 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap;color:#091E42}
-.bast-nota{font:500 14px/1.45 var(--f-txt);color:#334155}
-.bast-nota.adic{color:#334155}
+.bast-linha s{font-size:16px;color:#707070}
+.bast-linha .val{font:800 20px/1.1 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap;color:#040404}
+.bast-nota{font:500 14px/1.45 var(--f-txt);color:#545454}
+.bast-nota.adic{color:#545454}
 .degraus{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:6px}
 .degraus>div{display:flex;flex-direction:column;gap:2px;padding:6px 8px;border-radius:8px;border:2px solid #344856;background:#192329;min-width:0}
 .degraus span{font:700 14px/1.2 var(--f-txt);color:#B9C9D5}
@@ -154,66 +156,66 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .degraus>.on b{color:#0BD085}
 .odometro{font:800 14px/1.3 var(--f-tit);color:#077E50;font-variant-numeric:tabular-nums}
 /* Linhas expansíveis (uma por assunto, sem sanfona dentro de sanfona). */
-details.dobra>summary,.dobra-cab{min-height:48px;width:100%;display:flex;align-items:center;gap:8px;font:800 16px/1.3 var(--f-tit);color:#091E42;cursor:pointer;list-style:none;background:none;border:0;padding:0;text-align:left}
+details.dobra>summary,.dobra-cab{min-height:48px;width:100%;display:flex;align-items:center;gap:8px;font:800 16px/1.3 var(--f-tit);color:#040404;cursor:pointer;list-style:none;background:none;border:0;padding:0;text-align:left}
 details.dobra>summary::-webkit-details-marker{display:none}
-details.dobra>summary::after,.dobra-cab::after{content:'▾';margin-left:auto;font-size:18px;color:#19365C;transition:transform .15s ease-out}
+details.dobra>summary::after,.dobra-cab::after{content:'▾';margin-left:auto;font-size:18px;color:#344856;transition:transform .15s ease-out}
 details.dobra[open]>summary::after,.dobra-cab[aria-expanded="true"]::after{transform:rotate(180deg)}
-.dobra-n{font:700 14px/1.2 var(--f-txt);color:#334155}
+.dobra-n{font:700 14px/1.2 var(--f-txt);color:#545454}
 .dobra-in{display:flex;flex-direction:column;gap:10px;padding-top:4px}
 .cartao.dobra{padding-top:4px;padding-bottom:4px}
 .cartao.dobra[open],.cartao.dobra:has(>.dobra-cab[aria-expanded="true"]){padding-bottom:12px}
-.reg{display:flex;flex-direction:column;gap:4px;padding:10px 0;border-top:1px solid #E2E8F0}
-.reg b{font:800 15px/1.25 var(--f-tit);color:#091E42}
-.ref-item{font-size:15px;line-height:1.6;color:#0F172A}
-.ref-item b{display:block;font:800 14px/1.3 var(--f-txt);color:#19365C}
-.leit .it{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid #E2E8F0;font-size:14px}
+.reg{display:flex;flex-direction:column;gap:4px;padding:10px 0;border-top:1px solid #E6E6E6}
+.reg b{font:800 15px/1.25 var(--f-tit);color:#040404}
+.ref-item{font-size:15px;line-height:1.6;color:#1A1A1A}
+.ref-item b{display:block;font:800 14px/1.3 var(--f-txt);color:#344856}
+.leit .it{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid #E6E6E6;font-size:14px}
 .leit .it span{flex:1;min-width:0}
 .leit .it .bt{flex:none;width:48px;padding:0}
-.selo-laudo-ok{background:#DCFCE7;border:1.5px solid #16A34A;color:#14532D;border-radius:10px;padding:8px 12px;font:800 14px/1.3 var(--f-tit);display:flex;align-items:center;gap:8px}
+.selo-laudo-ok{background:#D3FDED;border:1.5px solid #077E50;color:#04482E;border-radius:10px;padding:8px 12px;font:800 14px/1.3 var(--f-tit);display:flex;align-items:center;gap:8px}
 .envio-sec{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .envio-sec:has(> [hidden]){grid-template-columns:minmax(0,1fr)}
 /* Normal e Defeito com cor própria quando marcados (verde escuro × vermelho escuro, texto branco >= 4,5:1 nos 2 pontos do degradê). */
-.bt-sel[data-r="ok"][aria-pressed="true"],.bt-sel[data-s="ok"][aria-pressed="true"]{background:#15803D linear-gradient(180deg,#15803D 0%,#166534 100%);border:2px solid #052E16;color:#FFFFFF}
-.bt-sel[data-r="def"][aria-pressed="true"],.bt-sel[data-s="fo"][aria-pressed="true"]{background:#B91C1C linear-gradient(180deg,#DC2626 0%,#B91C1C 100%);border:2px solid #450A0A;color:#FFFFFF}
+.bt-sel[data-r="ok"][aria-pressed="true"],.bt-sel[data-s="ok"][aria-pressed="true"]{background:#077E50 linear-gradient(180deg,#077E50 0%,#05613E 100%);border:2px solid #04482E;color:#FFFFFF}
+.bt-sel[data-r="def"][aria-pressed="true"],.bt-sel[data-s="fo"][aria-pressed="true"]{background:#D62100 linear-gradient(180deg,#D62100 0%,#A31900 100%);border:2px solid #731100;color:#FFFFFF}
 .bt-grande{min-height:60px;font-size:16px;border-radius:14px}
 .capsula{border-radius:999px;width:100%;min-height:58px;padding:6px 14px 6px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;font:800 16.5px/1.2 var(--f-tit)}
-.cap-medalhao{width:38px;height:38px;border-radius:50%;background:#091930;border:1.5px solid #67C6FF;display:flex;align-items:center;justify-content:center;flex:none}
+.cap-medalhao{width:38px;height:38px;border-radius:50%;background:#192329;border:1.5px solid #344856;display:flex;align-items:center;justify-content:center;flex:none}
 .cap-tx{flex:1;min-width:0;text-align:center}
-.capsula[aria-pressed=true]{border-color:#67c6ff;box-shadow:0 0 0 2px #67c6ff,0 3px 0 #071633}
-.bt-cat[aria-pressed="true"]{background:linear-gradient(180deg,#f59e0b 0%,#b45309 100%);border:2px solid #091E42;color:#111827;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 2px #67C6FF}
+.capsula[aria-pressed=true]{border-color:#0265DC;box-shadow:0 0 0 2px #0265DC,0 2px 0 #704B00}
+.bt-cat[aria-pressed="true"]{background:linear-gradient(180deg,#E3A000 0%,#C98600 100%);border:2px solid #704B00;color:#040404;box-shadow:0 0 0 2px #0265DC}
 
 /* Pílula de equipamento */
-.eq-pilula{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;background:#FFFFFF;border:1.5px solid #19365C;border-radius:14px;padding:4px;align-items:stretch}
-.eq-bt{min-height:54px;min-width:0;border-radius:10px;background:#FFFFFF;border:1px solid #CBD5E1;color:#091E42;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:5px 4px;text-align:center}
+.eq-pilula{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;background:#FFFFFF;border:1px solid #E6E6E6;border-radius:14px;padding:4px;align-items:stretch}
+.eq-bt{min-height:54px;min-width:0;border-radius:10px;background:#FFFFFF;border:1px solid #E6E6E6;color:#040404;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:5px 4px;text-align:center}
 .eq-bt:active{transform:translateY(1px)}
-.tag.eq-rot{background:transparent;border:0;padding:0;color:#19365C;letter-spacing:.04em}
-.eq-bt[data-eq-abrir="marca"]{background:#EFF6FF;border:1.5px solid #2563EB}.eq-bt[data-eq-abrir="marca"] .eq-rot{color:#1E40AF}
-.eq-bt[data-eq-abrir="btu"]{background:#FFFBEB;border:1.5px solid #D97706}.eq-bt[data-eq-abrir="btu"] .eq-rot{color:#92400E}
+.tag.eq-rot{background:transparent;border:0;padding:0;color:#344856;letter-spacing:.04em}
+.eq-bt[data-eq-abrir="marca"]{background:#E6F1FF;border:1.5px solid #0265DC}.eq-bt[data-eq-abrir="marca"] .eq-rot{color:#003472}
+.eq-bt[data-eq-abrir="btu"]{background:#FFF9E2;border:1.5px solid #C98600}.eq-bt[data-eq-abrir="btu"] .eq-rot{color:#704B00}
 .eq-bt[data-eq-abrir="fluido"]{background:#ECFEFF;border:1.5px solid #0891B2}.eq-bt[data-eq-abrir="fluido"] .eq-rot{color:#155E75}
-.eq-val{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;font:800 15.5px/1.15 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
-.eq-seta{flex:none;font:800 18px/1 var(--f-txt);color:#19365C}
-.wordmark{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:28px;height:28px;padding:0 4px;border-radius:6px;background:#FFFFFF;border:1px solid #CBD5E1;font:800 14px/1 Arial,Helvetica,sans-serif;color:#091E42;letter-spacing:.04em}
+.eq-val{display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;font:800 15.5px/1.15 var(--f-tit);color:#040404;overflow-wrap:anywhere}
+.eq-seta{flex:none;font:800 18px/1 var(--f-txt);color:#344856}
+.wordmark{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:28px;height:28px;padding:0 4px;border-radius:6px;background:#FFFFFF;border:1px solid #E6E6E6;font:800 14px/1 Arial,Helvetica,sans-serif;color:#040404;letter-spacing:.04em}
 
 /* Campo (CampoTexto.dc.html: rótulo, poço de 56 px, ícone de busca) */
 .campo{display:flex;flex-direction:column;gap:6px;min-width:0}
-.campo>.rot{font:600 15px/1.3 var(--f-txt);color:#091E42}
-.campo .poco-in{height:56px;border-radius:14px;border:1.5px solid #CBD5E1;background:#FFFFFF;display:flex;align-items:center;gap:10px;padding:0 12px 0 14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(9,30,66,.12)}
-.campo .poco-in:focus-within{border-color:#19365C}
-.campo input{flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;font:600 16px/24px var(--f-txt);color:#0F172A;font-variant-numeric:tabular-nums}
-select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #19365C;background:#FFFFFF;color:#091E42;font:600 16px/1.3 var(--f-txt);padding:8px 12px}
+.campo>.rot{font:600 15px/1.3 var(--f-txt);color:#040404}
+.campo .poco-in{height:56px;border-radius:12px;border:1px solid #8B8B8B;background:#FFFFFF;display:flex;align-items:center;gap:10px;padding:0 12px 0 14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 0 rgba(9,30,66,.12)}
+.campo .poco-in:focus-within{border-color:#0265DC;box-shadow:0 0 0 3px #CCE3FF}
+.campo input{flex:1;min-width:0;height:100%;border:0;outline:none;background:transparent;font:600 16px/24px var(--f-txt);color:#040404;font-variant-numeric:tabular-nums}
+select.sel{width:100%;min-height:48px;border-radius:12px;border:1px solid #8B8B8B;background:#FFFFFF;color:#040404;font:600 16px/1.3 var(--f-txt);padding:8px 12px}
 
 /* Etiquetas .tag: 12 px bold (única exceção ao mínimo de 14 px) */
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{display:inline-flex;align-items:center;gap:4px;font:700 12px/1.2 var(--f-txt);letter-spacing:.02em;padding:5px 8px;border-radius:999px;border:1.5px solid;white-space:nowrap;max-height:30px}
-.tag-verm{background:#DC2626;color:#FFFFFF;border-color:#991B1B}
-.tag-preta{background:#0F172A;color:#FFFFFF;border-color:#334155}
-.tag-escala{background:#1E293B;color:#FDE68A;border-color:#475569}
+.tag-verm{background:#D62100;color:#FFFFFF;border-color:#A31900}
+.tag-preta{background:#040404;color:#FFFFFF;border-color:#404040}
+.tag-escala{background:#24333d;color:#FFE278;border-color:#344856}
 .tag-alvo{background:#192329;color:#00CEFC;border-color:#344856;font-family:var(--f-mono)}
-.tag-bonus{background:#FEF3C7;color:#78350F;border-color:#D97706}
-.tag-info{background:#F4F6F9;color:#091E42;border-color:#CBD5E1}
-.p1{background:#FEE2E2;color:#991B1B;border-color:#DC2626}
-.p2{background:#FEF3C7;color:#78350F;border-color:#D97706}
-.p3{background:#E0F2FE;color:#0C4A6E;border-color:#0284C7}
+.tag-bonus{background:#FFF9E2;color:#704B00;border-color:#C98600}
+.tag-info{background:#F4F6F8;color:#040404;border-color:#E6E6E6}
+.p1{background:#FFE9E5;color:#731100;border-color:#D62100}
+.p2{background:#FFF9E2;color:#704B00;border-color:#C98600}
+.p3{background:#E6F1FF;color:#003472;border-color:#0265DC}
 
 /* Visor Safira embutido (Contratos 04, 05 e 06, 08/11/2026): claro por fora (folha e cartões de leitura solar), visor #192329 por dentro,
    moldura #344856, trilho #24333d, sombra interna e brilho de vidro nos 24 px de cima. Número #FFFFFF, rótulo #B9C9D5, ponteiro #00CEFC,
@@ -270,66 +272,64 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 /* Veredito colorido */
 .veredito{border-radius:12px;padding:12px;font:800 16px/1.3 var(--f-tit);border:1.5px solid}
 .veredito small{display:block;font:500 14px/1.7 var(--f-txt);margin-top:4px}
-.veredito.ok{background:#DCFCE7;border-color:#16A34A;color:#14532D}
-.veredito.def{background:#FEE2E2;border-color:#DC2626;color:#7F1D1D}
-.veredito.alerta{background:#FEF3C7;border-color:#D97706;color:#78350F}
-.veredito.neutro{background:#F8FAFC;border-style:dashed;border-color:#94A3B8;color:#334155;font-weight:600}
+.veredito.ok{background:#D3FDED;border-color:#077E50;color:#04482E}
+.veredito.def{background:#FFE9E5;border-color:#D62100;color:#731100}
+.veredito.alerta{background:#FFF9E2;border-color:#C98600;color:#704B00}
+.veredito.neutro{background:#F9F9F9;border-style:dashed;border-color:#8B8B8B;color:#545454;font-weight:600}
 .veredito.ok::before{content:'✓ '}.veredito.def::before{content:'✗ '}.veredito.alerta::before{content:'⚠ '}.veredito.neutro::before{content:'▸ '}
 /* 10 tokens semânticos de texto inline (tk): grandeza, temperatura, dinheiro, pontas, bornes, estado da energia e código. */
 .tk{display:inline-block;padding:1px 6px;border-radius:5px;font:800 12.5px/1.25 var(--f-txt);vertical-align:baseline;margin:1px 0}
 .tk-ponta-v{background:#DC2626;color:#FFFFFF;white-space:nowrap}
 .tk-ponta-v::before,.tk-ponta-p::before{content:'● '}
-.tk-ponta-p{background:#0F172A;color:#FFFFFF;border:1px solid #334155;white-space:nowrap}
-.tk-borne{background:#1E3A8A;color:#FFFFFF;padding:1px 5px;font-family:var(--f-mono);white-space:nowrap}
-.tk-medida{background:#E0F2FE;color:#0C4A6E;border:1px solid #38BDF8;padding:1px 5px;font:800 13px/1.25 var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tk-ponta-p{background:#040404;color:#FFFFFF;border:1px solid #404040;white-space:nowrap}
+.tk-borne{background:#003472;color:#FFFFFF;padding:1px 5px;font-family:var(--f-mono);white-space:nowrap}
+.tk-medida{background:#E6F1FF;color:#003472;border:1px solid #9ECAFF;padding:1px 5px;font:800 13px/1.25 var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tk-temp{background:#FFEDD5;color:#9A3412;border:1px solid #FB923C;padding:1px 5px;font:800 13px/1.25 var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tk-dinheiro{background:#DCFCE7;color:#14532D;border:1px solid #4ADE80;font:800 13.5px/1.25 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap}
 .tk-off{background:#FEF3C7;color:#78350F;border:1px solid #F59E0B}
 .tk-on{background:#FEE2E2;color:#991B1B;border:1px solid #F87171}
 .tk-cod{background:#EBE3FF;color:#3F1D8F;border:1px solid #A78BFA;padding:1px 5px;font-family:var(--f-mono);white-space:nowrap}
-.ref-faixa{background:#F8FAFC;border:1px solid #CBD5E1;border-left:4px solid #0284C7;border-radius:8px;padding:8px 10px;font:500 14px/1.75 var(--f-txt);color:#0F172A}
-.ref-faixa b{color:#091E42}
-.armadilha{background:#FFF7ED;border:1.5px solid #EA580C;border-radius:12px;padding:12px;font-size:14px;line-height:1.75;color:#7C2D12}
-.armadilha b{color:#7C2D12}
+.ref-faixa{background:#F9F9F9;border:1px solid #E6E6E6;border-left:4px solid #0265DC;border-radius:8px;padding:8px 10px;font:500 14px/1.75 var(--f-txt);color:#1A1A1A}
+.ref-faixa b{color:#040404}
 
 /* Tecla 1 · Sintomas */
 .placas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
-.placa{min-height:146px;padding:14px 12px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 4px 0 #071633}
-.placa b{font:800 19px/1.15 var(--f-tit);color:#FFFFFF;text-shadow:0 1px 2px rgba(0,0,0,.65)}
-.placa-poco{width:52px;height:52px;border-radius:15px;background:#091930;border:2px solid #38BDF8;box-shadow:inset 0 2px 5px rgba(0,0,0,.65),0 0 10px rgba(56,189,248,.45);display:flex;align-items:center;justify-content:center;flex:none}
-/* As 8 placas com a mesma moldura azul ciano brilhante (pedido do Pedro, 06/11/2026). */
-.placa-badge{background:rgba(6,18,36,.55);border:1px solid rgba(103,198,255,.3);color:#9FD3FF;border-radius:999px;padding:2px 10px;font:700 12px/1.2 var(--f-mono);white-space:nowrap;max-height:30px}
-.placa[aria-pressed=true]{border-color:#67c6ff;box-shadow:inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),0 0 0 2px #67c6ff,0 4px 0 #071633}
+.bt.placa{min-height:132px;padding:14px 12px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;background:#FFFFFF;border:1.5px solid #DCE4EA;color:#040404;box-shadow:0 2px 8px rgba(26,26,26,.08)}
+.placa b{font:800 18px/1.15 var(--f-tit);color:#040404}
+.placa-poco{width:52px;height:52px;border-radius:12px;background:#192329;border:2px solid #344856;box-shadow:inset 0 2px 6px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;flex:none}
+/* As 8 placas claras com o visor safira no poço do ícone e a subárea técnica em pílula safira (Contrato 05, 08/11/2026). */
+.placa-badge{background:#192329;border:1px solid #344856;color:#00CEFC;border-radius:999px;padding:2px 10px;font:700 12px/1.2 var(--f-mono);white-space:nowrap;max-height:30px}
+.bt.placa[aria-pressed=true]{background:#F7F9FA;border:2px solid #0265DC;box-shadow:0 2px 8px rgba(26,26,26,.08)}
 .lista{display:flex;flex-direction:column;gap:8px}
 .lista-casos{display:flex;flex-direction:column;gap:10px}
 .opcao{width:100%;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:10px 12px}
 .opcao b{font:800 15px/1.25 var(--f-tit)}
 .opcao span{font:500 14px/1.3 var(--f-txt)}
-.bt.bt-sel.item-caso{display:grid;grid-template-columns:60px minmax(0,1fr);grid-template-areas:'img meio' 'img tags';align-items:center;gap:6px 12px;padding:12px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #1D4ED8;box-shadow:0 2px 0 #CBD5E1}
-.cod-badge{background:#1E3A8A;color:#FFFFFF;font:800 14px/1.2 var(--f-mono);padding:6px 9px;border-radius:8px;white-space:nowrap;max-height:30px}
+.bt.bt-sel.item-caso{display:grid;grid-template-columns:60px minmax(0,1fr);grid-template-areas:'img meio' 'img tags';align-items:center;gap:6px 12px;padding:12px;width:100%;text-align:left;padding:10px;background:#FFFFFF;border:1px solid #E6E6E6;border-left:4px solid #0265DC;box-shadow:0 2px 8px rgba(26,26,26,.06)}
+.cod-badge{background:#192329;color:#00CEFC;font:800 14px/1.2 var(--f-mono);padding:6px 9px;border-radius:8px;white-space:nowrap;max-height:30px}
 .item-caso .meio{grid-area:meio;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}
 .item-caso img{grid-area:img;align-self:center}.item-caso .tags{grid-area:tags}
 .item-caso .linha-cod{display:flex;align-items:flex-start;gap:8px;min-width:0;width:100%}.item-caso .linha-cod b{flex:1;min-width:0}.item-caso .linha-cod .cod-badge{flex:none;margin-top:-2px}
-.item-caso .meio b{font:800 17px/1.2 var(--f-tit);color:#091E42;overflow-wrap:anywhere}
-.item-caso .meio .s{font:500 14px/1.3 var(--f-txt);color:#334155}
+.item-caso .meio b{font:800 17px/1.2 var(--f-tit);color:#040404;overflow-wrap:anywhere}
+.item-caso .meio .s{font:500 14px/1.3 var(--f-txt);color:#545454}
 .item-caso img{width:60px;height:60px;border:0;background:transparent;padding:0;border-radius:12px;object-fit:contain}
-.tag-sis{background:#DBEAFE;color:#1E3A8A;border-color:#93C5FD}
-.tag-fer{background:#FEF3C7;color:#78350F;border-color:#FCD34D}
+.tag-sis{background:#E6F1FF;color:#003472;border-color:#9ECAFF}
+.tag-fer{background:#FFF9E2;color:#704B00;border-color:#FFE278}
 
 /* Diagnóstico em 7 camadas */
-.c1{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:8px;background:#091E42;color:#FFFFFF;border:1px solid #071633;border-radius:12px;padding:10px 12px}
-.c1 span{font:700 14px/1.25 var(--f-txt);color:#CBD5E1;min-width:0}
-.c1 b{font:800 15px/1.25 var(--f-tit);color:#67C6FF;text-align:right;min-width:0}
-.c2 p{font:600 15px/1.35 var(--f-txt);color:#334155;margin-top:4px}
+.c1{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:8px;background:#192329;color:#FFFFFF;border:2px solid #344856;border-radius:12px;padding:10px 12px;box-shadow:inset 0 2px 6px rgba(0,0,0,.45)}
+.c1 span{font:700 14px/1.25 var(--f-txt);color:#B9C9D5;min-width:0}
+.c1 b{font:800 15px/1.25 var(--f-tit);color:#00CEFC;text-align:right;min-width:0}
+.c2 p{font:600 15px/1.35 var(--f-txt);color:#545454;margin-top:4px}
 .c3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;align-items:stretch}
-.chip{background:#FFFFFF;border:1px solid #CBD5E1;border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
+.chip{background:#FFFFFF;border:1px solid #E6E6E6;border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
 .chip img{width:52px;height:52px;border:0;background:transparent;mix-blend-mode:normal;object-fit:contain}
 .chip-k{font:800 12px/1.2 var(--f-txt);letter-spacing:.04em;text-transform:uppercase}
 .chip-sis{background:#EEF2FF;border:1.5px solid #6366F1}.chip-sis .chip-k{color:#312E81}
 .chip-apl{background:#F0FDFA;border:1.5px solid #0D9488}.chip-apl .chip-k{color:#115E59}
 .chip-fer{background:#FFFBEB;border:1.5px solid #D97706}.chip-fer .chip-k{color:#78350F}
-.chip .v{font:700 14px/1.2 var(--f-txt);color:#0F172A;overflow-wrap:break-word}
-.ilustra{position:relative;overflow:hidden;border-radius:12px;border:2px solid #19365C;background:#FFFFFF}
+.chip .v{font:700 14px/1.2 var(--f-txt);color:#1A1A1A;overflow-wrap:break-word}
+.ilustra{position:relative;overflow:hidden;border-radius:12px;border:2px solid #344856;background:#FFFFFF}
 .ilustra-in{position:relative;transform-origin:var(--zx,50%) var(--zy,50%);transition:transform .22s ease-out}
 .ilustra.zoom .ilustra-in{transform:scale(1.85)}
 .ilustra-z{position:absolute;right:8px;bottom:8px;z-index:3;border-radius:999px;padding:6px 12px;font-size:14px}
@@ -345,29 +345,29 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .c5{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
 @media (min-width:720px){.c5{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .causa,.verif{width:100%;justify-content:flex-start;text-align:left;gap:10px;padding:8px 10px}
-.causa .num,.verif .num{flex:none;width:30px;height:30px;border-radius:50%;background:#19365C;color:#FFFFFF;font:800 14px/30px var(--f-mono);text-align:center}
+.causa .num,.verif .num{flex:none;width:30px;height:30px;border-radius:50%;background:#344856;color:#FFFFFF;font:800 14px/30px var(--f-mono);text-align:center}
 .causa img{flex:none;width:52px;height:52px;border:0;background:transparent;mix-blend-mode:normal;object-fit:contain}
 .causa .t,.verif .t{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
-.causa .nm,.verif .tt{font:800 16px/1.22 var(--f-tit);color:#091E42}
+.causa .nm,.verif .tt{font:800 16px/1.22 var(--f-tit);color:#040404}
 .verif .ln{font:500 14px/1.3 var(--f-txt)}
-.bloco-h{background:#091E42;color:#FFFFFF;padding:8px 12px;border-radius:10px;font:800 14px/1.2 var(--f-tit);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.bloco-h span{color:#67C6FF;flex:none}
-.bh-causas{border-bottom:3px solid #F59E0B}.bh-verif{border-bottom:3px solid #0284C7}.bh-prox{border-bottom:3px solid #16A34A}
-.bt.bt-sel.causa{background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #0284C7;box-shadow:0 2px 0 #CBD5E1}
-.bt.bt-sel.causa[data-c="1"]{border-left-color:#DC2626}.bt.bt-sel.causa[data-c="2"]{border-left-color:#D97706}
-.causa .num{border-radius:8px;background:#0369A1}
+.bloco-h{background:#192329;color:#FFFFFF;border:2px solid #344856;padding:8px 12px;border-radius:10px;font:800 14px/1.2 var(--f-tit);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.bloco-h span{color:#00CEFC;flex:none}
+.bh-causas{border-bottom:3px solid #FFBE00}.bh-verif{border-bottom:3px solid #0265DC}.bh-prox{border-bottom:3px solid #0BD085}
+.bt.bt-sel.causa{background:#FFFFFF;border:1px solid #E6E6E6;border-left:4px solid #0265DC;box-shadow:0 2px 8px rgba(26,26,26,.06)}
+.bt.bt-sel.causa[data-c="1"]{border-left-color:#D62100}.bt.bt-sel.causa[data-c="2"]{border-left-color:#C98600}
+.causa .num{border-radius:8px;background:#0265DC}
 .causa-tile{position:relative;width:52px;height:52px;flex:none}
 .causa-tile img{display:block}
-.causa-tile .num{position:absolute;top:-4px;left:-4px;width:22px;height:22px;font:800 12px/18px var(--f-mono);border:2px solid #FFFFFF;border-radius:6px}.causa[data-c="1"] .num{background:#B91C1C}.causa[data-c="2"] .num{background:#B45309}
-.bt.bt-sel.verif{background:#F0F7FF;border:1.5px solid #93C5FD;box-shadow:0 2px 0 #BFDBFE}
-.verif .num{background:#1D4ED8}
-.verif .tt{color:#091E42}
-.verif .ln{background:#DCFCE7;color:#14532D;border:1px solid #86EFAC;border-radius:8px;padding:4px 8px;font-weight:600;line-height:1.6}
-.bt.bt-sel.verif.ok{border-color:#16A34A;background:#F0FDF4}
-.bt.bt-sel.verif.def{border-color:#DC2626;background:#FEF2F2}
-.bt.bt-sel.causa.conf{border-color:#DC2626;border-left-color:#DC2626;background:#FEF2F2}
-.bt.bt-sel.causa.sel,.bt.bt-sel.verif.sel{box-shadow:0 0 0 3px #F59E0B}
-.lupa{position:relative;width:100%;aspect-ratio:16/10;background-size:175% auto;background-repeat:no-repeat;border-radius:12px;border:2px solid #19365C;background-color:#FFFFFF}
+.causa-tile .num{position:absolute;top:-4px;left:-4px;width:22px;height:22px;font:800 12px/18px var(--f-mono);border:2px solid #FFFFFF;border-radius:6px}.causa[data-c="1"] .num{background:#D62100}.causa[data-c="2"] .num{background:#704B00}
+.bt.bt-sel.verif{background:#F0F7FF;border:1px solid #9ECAFF;box-shadow:0 1px 0 #CCE3FF}
+.verif .num{background:#0265DC}
+.verif .tt{color:#040404}
+.verif .ln{background:#D3FDED;color:#04482E;border:1px solid #70EBBC;border-radius:8px;padding:4px 8px;font-weight:600;line-height:1.6}
+.bt.bt-sel.verif.ok{border-color:#077E50;background:#F5FEFB}
+.bt.bt-sel.verif.def{border-color:#D62100;background:#FFFBFA}
+.bt.bt-sel.causa.conf{border-color:#D62100;border-left-color:#D62100;background:#FFFBFA}
+.bt.bt-sel.causa.sel,.bt.bt-sel.verif.sel{box-shadow:0 0 0 3px #FFBE00}
+.lupa{position:relative;width:100%;aspect-ratio:16/10;background-size:175% auto;background-repeat:no-repeat;border-radius:12px;border:2px solid #344856;background-color:#FFFFFF}
 .cab-tile{display:flex;align-items:center;gap:10px;min-width:0}
 .cab-tile img{width:52px;height:52px;flex:none;object-fit:contain}
 .cab-tile h2,.cab-tile h3{min-width:0}
@@ -376,14 +376,14 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 [data-l="srv-sec"] .passo-cab{grid-template-columns:56px minmax(0,1fr)}
 [data-l="srv-sec"] .passo-tile{width:56px;height:56px}
 .passo-tx{display:flex;flex-direction:column;gap:4px;min-width:0}
-.lupa span{position:absolute;left:8px;top:8px;font:800 14px/1 var(--f-txt);background:#FFFFFF;color:#091E42;border:1.5px solid #19365C;border-radius:999px;padding:6px 10px}
+.lupa span{position:absolute;left:8px;top:8px;font:800 14px/1 var(--f-txt);background:#FFFFFF;color:#040404;border:1.5px solid #344856;border-radius:999px;padding:6px 10px}
 .quadro{border:2px solid #F59E0B;background:#FFFBEB}
 .prox{width:100%;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:10px 12px}
-.bt.bt-sel.prox{background:#FFFFFF;border:1.5px solid #CBD5E1;border-left:4px solid #16A34A;box-shadow:0 2px 0 #CBD5E1}
-.prox .se{font:600 14px/1.3 var(--f-txt);color:#0F172A}
-.se-b{background:#FEF3C7;color:#78350F;padding:2px 7px;border-radius:6px;font-weight:800}
-.prox .entao{font:800 15px/1.3 var(--f-tit);color:#091E42}
-.prox .acao{background:#DCFCE7;color:#166534;border:1px solid #16A34A;border-radius:999px;padding:4px 10px;font:800 14px/1.25 var(--f-txt);text-decoration:none}
+.bt.bt-sel.prox{background:#FFFFFF;border:1px solid #E6E6E6;border-left:4px solid #077E50;box-shadow:0 2px 8px rgba(26,26,26,.06)}
+.prox .se{font:600 14px/1.3 var(--f-txt);color:#1A1A1A}
+.se-b{background:#FFF9E2;color:#704B00;padding:2px 7px;border-radius:6px;font-weight:800}
+.prox .entao{font:800 15px/1.3 var(--f-tit);color:#040404}
+.prox .acao{background:#D3FDED;color:#04482E;border:1px solid #077E50;border-radius:999px;padding:4px 10px;font:800 14px/1.25 var(--f-txt);text-decoration:none}
 .c7{display:flex;gap:10px;align-items:flex-start;background:linear-gradient(180deg,#C2410C 0%,#9A3412 100%);border:2px solid #7C2D12;border-radius:12px;padding:12px;color:#FFFFFF}
 .c7 p{font:600 15px/1.65 var(--f-txt)}
 .c7 b{font-weight:800}
@@ -391,10 +391,10 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 
 /* Tecla 3 · Códigos */
 .codigo .cd{font:800 17px/1.2 var(--f-mono);background:#EBE3FF;color:#3F1D8F;border:1.5px solid #7C3AED;border-radius:8px;padding:3px 9px;display:inline-block;white-space:nowrap;max-width:100%}
-.mk-marca{display:inline-flex;align-items:center;gap:6px;font:700 14px/1.2 var(--f-txt);color:#091E42}
-.codigo .mk{font:500 14px/1.3 var(--f-txt);color:#475569}
-.selo-ok{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:#15803D;color:#FFFFFF;font:800 14px/1.25 var(--f-txt);border-radius:10px;padding:8px 10px}
-.faca{background:#ECFDF5;border-left:4px solid #16A34A;color:#14532D;font-weight:600;border-radius:8px;padding:8px 10px;font-size:14px;line-height:1.7}
+.mk-marca{display:inline-flex;align-items:center;gap:6px;font:700 14px/1.2 var(--f-txt);color:#040404}
+.codigo .mk{font:500 14px/1.3 var(--f-txt);color:#545454}
+.selo-ok{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;background:#077E50;color:#FFFFFF;font:800 14px/1.25 var(--f-txt);border-radius:10px;padding:8px 10px}
+.faca{background:#F5FEFB;border-left:4px solid #077E50;color:#04482E;font-weight:600;border-radius:8px;padding:8px 10px;font-size:14px;line-height:1.7}
 .marcas{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
 .marcas .bt{justify-content:flex-start;padding:6px 10px}
 .marcas.marcas-faixa{display:flex;overflow-x:auto;gap:6px;padding:2px 2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -402,30 +402,30 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .marcas.marcas-faixa .bt{flex:0 0 auto;min-height:48px;min-width:48px;padding:6px 12px;white-space:nowrap}
 
 /* Tecla 4 · Laudo */
-/* Painel de impacto do Laudo: chassi navy com filete esmeralda (bloco próprio; os cartões claros seguem brancos). */
+/* Painel de impacto do Laudo: hero no Visor Safira #192329 com moldura #344856 (bloco próprio; os cartões claros seguem brancos). */
 .dupla{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.aviso{border-radius:12px;padding:10px 12px;font-size:14px;border:1.5px solid #CBD5E1;background:#FFFFFF}
-.aviso.ok{border-color:#16A34A;background:#F0FDF4;color:#14532D}
-.aviso.def{border-color:#DC2626;background:#FEF2F2;color:#7F1D1D}
-.zap-prev{white-space:pre-wrap;overflow-wrap:anywhere;font:500 14px/1.45 var(--f-txt);background:#F4F6F9;border:1px solid #CBD5E1;border-radius:12px;padding:10px}
+.aviso{border-radius:12px;padding:10px 12px;font-size:14px;border:1px solid #E6E6E6;background:#FFFFFF}
+.aviso.ok{border-color:#077E50;background:#F5FEFB;color:#04482E}
+.aviso.def{border-color:#D62100;background:#FFFBFA;color:#731100}
+.zap-prev{white-space:pre-wrap;overflow-wrap:anywhere;font:500 14px/1.45 var(--f-txt);background:#F4F6F8;border:1px solid #E6E6E6;border-radius:12px;padding:10px}
 .pix-prev{display:flex;gap:10px;align-items:center}
 .pix-prev svg{width:112px;height:112px;flex:none}
 .pix-prev p{font-size:14px;overflow-wrap:anywhere}
 
 /* Folha inferior (equipamento) e aviso rápido */
-#fundo{position:fixed;inset:0;background:rgba(9,30,66,.45);z-index:40;display:none}
+#fundo{position:fixed;inset:0;background:rgba(4,4,4,.45);z-index:40;display:none}
 #fundo.on{display:block}
-#gaveta{position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:86vh;overflow-y:auto;background:#F4F6F9;border-top:1px solid #CBD5E1;border-radius:18px 18px 0 0;padding:14px 0 calc(16px + env(safe-area-inset-bottom));transform:translateY(16px);opacity:0;transition:transform .16s ease-out,opacity .16s ease-out;box-shadow:0 -6px 20px rgba(9,30,66,.25)}
+#gaveta{position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:86vh;overflow-y:auto;background:#F9F9F9;border-top:1px solid #E6E6E6;border-radius:18px 18px 0 0;padding:14px 0 calc(16px + env(safe-area-inset-bottom));transform:translateY(16px);opacity:0;transition:transform .16s ease-out,opacity .16s ease-out;box-shadow:0 -6px 20px rgba(26,26,26,.18)}
 #gaveta.on{transform:none;opacity:1}
 @media (prefers-reduced-motion:reduce){#gaveta{transition:none}}
 #gaveta .trilho{display:flex;flex-direction:column;gap:12px}
-#gaveta .trilho>.cab-sec:first-child{position:sticky;top:-14px;z-index:2;background:#F4F6F9;padding:10px 0 8px;margin-top:-10px;border-bottom:1px solid #CBD5E1}
-#toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50;background:#19365C;color:#FFFFFF;font:700 14px/1.3 var(--f-txt);padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 24px);text-align:center}
+#gaveta .trilho>.cab-sec:first-child{position:sticky;top:-14px;z-index:2;background:#F9F9F9;padding:10px 0 8px;margin-top:-10px;border-bottom:1px solid #E6E6E6}
+#toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50;background:#192329;color:#FFFFFF;font:700 14px/1.3 var(--f-txt);padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100% - 24px);text-align:center}
 #toast.on{opacity:1}
-.carregando{font-size:15px;color:#334155;padding:12px}
+.carregando{font-size:15px;color:#545454;padding:12px}
 /* Contrato 11 (07/11/2026): trava Essencial × Completo PRO. Só age com [data-pro-travado]; no modo padrão nenhum seletor abaixo casa. */
 [data-pro-travado] > :not([data-pro-ok]){display:none}
-.upgrade-pro{border:2px solid #16A34A;gap:10px}
+.upgrade-pro{border:2px solid #077E50;gap:10px}
 .upgrade-pro h2{margin:0}
 </style>
 </head>
@@ -437,10 +437,10 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 </div></header>
 <main id="visor"><div class="trilho" id="tela"><div class="carregando">Abrindo a bancada…</div></div></main>
 <nav id="dock" aria-label="Teclas da bancada"><div class="trilho dock-in">
-  <button class="tecla bt-cobalto" data-tecla="sintomas"><span data-ico="prancheta"></span><span>Sintomas</span></button>
-  <button class="tecla bt-cobalto" data-tecla="aferir"><span data-ico="multimetro"></span><span>Aferir Vivo</span></button>
-  <button class="tecla bt-cobalto" data-tecla="codigos"><span data-ico="led"></span><span>Códigos &amp; LED</span></button>
-  <button class="tecla bt-verde" data-tecla="laudo" data-verde="1"><span data-ico="documento"></span><span>Tabela &amp; Laudo</span></button>
+  <button class="tecla bt-cobalto" data-tecla="sintomas"><span class="tecla-ico" data-ico-dock="prancheta"></span><span>Sintomas</span></button>
+  <button class="tecla bt-cobalto" data-tecla="aferir"><span class="tecla-ico" data-ico-dock="multimetro"></span><span>Aferir Vivo</span></button>
+  <button class="tecla bt-cobalto" data-tecla="codigos"><span class="tecla-ico" data-ico-dock="led"></span><span>Códigos &amp; LED</span></button>
+  <button class="tecla bt-verde" data-tecla="laudo" data-verde="1"><span class="tecla-ico" data-ico-dock="documento"></span><span>Tabela &amp; Laudo</span></button>
 </div></nav>
 <div id="fundo"></div>
 <section id="gaveta" role="dialog" aria-modal="true" aria-label="Equipamento" hidden aria-hidden="true"><div class="trilho" id="gaveta-in"></div></section>
@@ -712,7 +712,7 @@ function alvoCurto(tt, ln) {
 // Família verde e amarela (AtalhoTecla.dc.html): o componente marca data-verde / data-amarelo; a bancada usa o mesmo par de atributos.
 const VERDE = 'data-verde="1"', AMARELO = 'data-amarelo="1"';
 // Campo (CampoTexto.dc.html): rótulo de 15 px, poço de 56 px e ícone de busca à esquerda.
-const campo = (rot, attrs, busca) => `<label class="campo" data-campo="1">${rot ? `<span class="rot">${rot}</span>` : ''}<span class="poco-in">${busca ? ico('busca', '#64748B', 18) : ''}<input ${attrs}></span></label>`;
+const campo = (rot, attrs, busca) => `<label class="campo" data-campo="1">${rot ? `<span class="rot">${rot}</span>` : ''}<span class="poco-in">${busca ? ico('busca', '#545454', 18) : ''}<input ${attrs}></span></label>`;
 const mostrador = (rot, val, un, cls = '') => `<div class="poco${cls ? ' ' + cls : ''}" data-leitura-poco="1"><span class="pr">${esc(rot)}</span><span class="val">${esc(val)}<small>${un}</small></span></div>`;
 const tagsPonta = (escala, alvo, pontas = true) => `<div class="tags">${pontas ? '<span class="tag tag-verm">● VERMELHA</span><span class="tag tag-preta">● PRETA</span>' : ''}${escala ? `<span class="tag tag-escala">▸ ${esc(escala)}</span>` : ''}${alvo ? `<span class="tag tag-alvo">◎ ${esc(alvo)}</span>` : ''}</div>`;
 
@@ -1047,7 +1047,10 @@ function abrirEquip(sec) {
   const alvo = sec && $(`[data-sec="${sec}"]`, gaveta); const cab = $('.cab-sec', gaveta); gaveta.scrollTop = alvo ? Math.max(0, alvo.offsetTop - 12 - (cab ? cab.offsetHeight : 0)) : 0;
 }
 function pintarDock() {
-  $$('#dock [data-tecla]').forEach(b => { if (b.dataset.tecla === S.tecla) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+  // Dock claro (Anvil 2): ícone em hex cravado na cor do papel da tecla (inativa #545454, ativa #003472, Tabela & Laudo #04482E).
+  $$('#dock [data-tecla]').forEach(b => { const on = b.dataset.tecla === S.tecla, cor = b.dataset.tecla === 'laudo' ? '#04482E' : on ? '#003472' : '#545454', i = $('[data-ico-dock]', b);
+    if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    if (i && i.dataset.cor !== cor) { i.innerHTML = ico(i.dataset.icoDock, cor, 20); i.dataset.cor = cor; } });
   const rot = $('#dock [data-tecla="laudo"] span:last-child'); if (rot) rot.textContent = S.leituras.length ? `Laudo (${S.leituras.length})` : 'Tabela & Laudo';
 }
 // Histórico de navegação (‹ Voltar): até 15 telas, sem repetir a mesma seguida; o ‹ Início do topo zera.
@@ -1118,7 +1121,7 @@ function convite(motivo) {
 // Exclusão em 2 toques: o 1º arma o botão com o nome do que será apagado, o 2º confirma; sem 2º toque em 5 s, volta ao normal.
 const confirmar2 = (b, rotulo, acao) => {
   if (b.dataset.armado) { delete b.dataset.armado; clearTimeout(b._t); return acao(); }
-  b.dataset.armado = '1'; b._orig = b.innerHTML; b.innerHTML = `${ico('lixeira', '#B91C1C', 18)}<span>${esc(rotulo)}</span>`;
+  b.dataset.armado = '1'; b._orig = b.innerHTML; b.innerHTML = `${ico('lixeira', '#D62100', 18)}<span>${esc(rotulo)}</span>`;
   b._t = setTimeout(() => { if (b.isConnected && b.dataset.armado) { delete b.dataset.armado; b.innerHTML = b._orig; } }, 5000);
 };
 // ───────────── Tecla 1 · Sintomas ─────────────
@@ -1127,8 +1130,8 @@ const casosDoBloco = (id) => F.filter(f => f.blocos.includes(id));
 const PLACA_BADGE = { b1: 'Frio & Gás', b2: 'Partida', b3: 'Disjuntor', b4: 'Dreno & Gelo', b5: 'Turbina & Som', b6: 'Comando & NTC', b7: 'Visor & LED', b8: 'Placa & IPM' };
 function telaSintomas() {
   montar(`${campo('', `type="search" data-busca placeholder="Buscar sintoma, peça ou D-001" autocomplete="off" enterkeyhint="search" aria-label="Buscar sintoma" value="${esc(S.termo)}"`, true)}
-    <div class="placas">${BLOCOS.map(([id, , curto, longo]) => `<button class="bt bt-cobalto placa" data-bloco="${id}" aria-pressed="${S.bloco === id}" aria-label="${esc(longo)}"><span class="placa-poco">${ico(BLOCO_ICO[id], '#67C6FF', 32)}</span><b>${esc(curto)}</b><span class="placa-badge">${esc(PLACA_BADGE[id])}</span></button>`).join('')}</div>
-    <button class="bt bt-cat capsula" data-todos aria-pressed="${S.todos}"><span class="cap-medalhao">${ico('prancheta', '#67C6FF', 22)}</span><span class="cap-tx">Ver Todos os Sintomas</span>${ico('avancar', '#111827', 20)}</button>
+    <div class="placas">${BLOCOS.map(([id, , curto, longo]) => `<button class="bt bt-cobalto placa" data-bloco="${id}" aria-pressed="${S.bloco === id}" aria-label="${esc(longo)}"><span class="placa-poco">${ico(BLOCO_ICO[id], '#00CEFC', 32)}</span><b>${esc(curto)}</b><span class="placa-badge">${esc(PLACA_BADGE[id])}</span></button>`).join('')}</div>
+    <button class="bt bt-cat capsula" data-todos aria-pressed="${S.todos}"><span class="cap-medalhao">${ico('prancheta', '#00CEFC', 22)}</span><span class="cap-tx">Ver Todos os Sintomas</span>${ico('avancar', '#040404', 20)}</button>
     <div data-resultado></div>`);
   const busca = $('[data-busca]', tela);
   busca.addEventListener('input', () => { S.termo = busca.value; listar(); });
@@ -1244,7 +1247,7 @@ function zoomNoPonto(f, j, ligar) {
   const il = $('[data-ilustra]', tela), bt = il && $('[data-zoom-toggle]', il); if (!il) return;
   const [fx, fy] = f.foco[j]; il.style.setProperty('--zx', fx + '%'); il.style.setProperty('--zy', fy + '%');
   il.classList.toggle('zoom', ligar); bt.hidden = false; bt.setAttribute('aria-pressed', String(ligar));
-  bt.innerHTML = ligar ? 'Ver imagem inteira' : `${ico('busca', '#091E42', 18)}<span>Ampliar ponto ${nn(j + 1)}</span>`;
+  bt.innerHTML = ligar ? 'Ver imagem inteira' : `${ico('busca', '#040404', 18)}<span>Ampliar ponto ${nn(j + 1)}</span>`;
   bt.onclick = () => zoomNoPonto(f, j, !il.classList.contains('zoom'));
 }
 
@@ -1321,8 +1324,8 @@ function graficoNtc(c, t, r, R) {
     ${ticks.map(k => `<line x1="${X0}" y1="${n(Y(k))}" x2="${X1}" y2="${n(Y(k))}" stroke="#344856" stroke-width="1"></line><text x="${X0 - 4}" y="${n(Y(k) + 4)}" text-anchor="end" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>${f1(k, 1)}</text>`).join('')}
     ${[15, 25, 35, 45].map(T => `<line x1="${n(X(T))}" y1="${Y0}" x2="${n(X(T))}" y2="${Y1}" stroke="#344856" stroke-width="1"></line><text x="${n(X(T))}" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>${T} °C</text>`).join('')}
     <text x="0" y="12" font-size="12" font-weight="800" fill="#B9C9D5" ${F}>kΩ</text>
-    <text x="${VW}" y="12" text-anchor="end" font-size="12" font-weight="800" fill="#FF8670" ${F} data-rot-cego>Medição Cega a 25 °C · ${f1(r25, 2)} kΩ</text>
-    <text x="${VW}" y="180" text-anchor="end" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>Curva real ${esc(bandaNtc(c, 25)[2])} · °C</text>
+    <text x="${VW - 2}" y="12" text-anchor="end" font-size="12" font-weight="800" fill="#FF8670" ${F} data-rot-cego>Medição Cega a 25 °C · ${f1(r25, 2)} kΩ</text>
+    <text x="${VW - 2}" y="180" text-anchor="end" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>Curva real ${esc(bandaNtc(c, 25)[2])} · °C</text>
     <polygon points="${banda}" fill="#0BD085" fill-opacity="0.22" data-banda></polygon>
     <line x1="${X0}" y1="${n(Y(r25))}" x2="${X1}" y2="${n(Y(r25))}" stroke="#FF8670" stroke-width="1.5" stroke-dasharray="6,4" data-cego></line>
     <circle cx="${n(X(25))}" cy="${n(Y(r25))}" r="4" fill="#192329" stroke="#FF8670" stroke-width="2"></circle>
@@ -1357,23 +1360,22 @@ function afNtc(corpo) {
         <div class="veredito neutro" data-n="v"></div>
         ${btMandar('ntc')}
         <div class="grade2" data-n="comparador-25"></div>
-        <div class="visor-safira" data-n="grafico-ntc" id="grafico-ntc"></div>
-        <div class="armadilha" data-n="cmp"></div></div>`;
+        <div class="visor-safira" data-n="grafico-ntc" id="grafico-ntc"></div></div>`;
     const q = (k) => $(`[data-n=${k}]`, corpo);
     const go = () => {
       const c = curva(), t = num(q('t').value), r = num(q('r').value), v = q('v'); st.t = q('t').value; st.r = q('r').value;
       $$('[data-t]', corpo).forEach(b => b.setAttribute('aria-pressed', String(t !== null && +b.dataset.t === t)));
       const R = t !== null && r !== null ? veredictoNtc(c, t, r) : null, cls = R ? (R.estado === 'ok' ? 'ok' : R.estado === 'alerta' ? 'alerta' : 'def') : '';
       q('pocos').innerHTML = mostrador(t !== null ? `Esperada a ${f1(t, Number.isInteger(t) ? 0 : 1)} °C` : 'Resistência esperada', t !== null ? f1(interp(c.pts, t), 2) : '—', 'kΩ') + mostrador('Desvio', R ? `${R.d > 0 ? '+' : ''}${f1(R.d)}` : '—', '%', cls);
-      if (t === null) { v.className = 'veredito neutro'; v.textContent = 'Toque na temperatura ambiente real ou digite a do termômetro.'; q('cmp').hidden = true; q('comparador-25').hidden = true; q('grafico-ntc').hidden = true; return; }
+      if (t === null) { v.className = 'veredito neutro'; v.textContent = 'Toque na temperatura ambiente real ou digite a do termômetro.'; q('comparador-25').hidden = true; q('grafico-ntc').hidden = true; return; }
       const esp = interp(c.pts, t), r25 = interp(c.pts, 25), dq = (r25 - esp) / r25 * 100;
-      q('cmp').hidden = false; q('comparador-25').hidden = false; q('grafico-ntc').hidden = false;
+      q('comparador-25').hidden = false; q('grafico-ntc').hidden = false;
       const [blo, bhi, brot] = bandaNtc(c, t), a25 = Math.abs(t - 25) < 0.05;
-      q('comparador-25').innerHTML = `<div class="cmp25 cego"><b>✗ TABELA FIXA 25\u00a0°C</b><span>Espera ${f1(r25, 2)}\u00a0kΩ</span>${a25 ? '<span>Só vale com o sensor a 25\u00a0°C</span>' : ''}</div>
-        <div class="cmp25 real"><b>✓ CURVA REAL ${f1(t, Number.isInteger(t) ? 0 : 1)}\u00a0°C</b><span>Alvo exato: ${f1(esp, 2)}\u00a0kΩ</span><span>Faixa ${brot === 'faixa da fonte' ? 'da fonte' : brot}: ${f1(blo, 2)} a ${f1(bhi, 2)}\u00a0kΩ</span></div>`;
+      // Comparador oficial: Medição Cega a 25 °C × Curva Real na temperatura atual (a queda em % fica no visor #grafico-ntc).
+      const tt = f1(t, Number.isInteger(t) ? 0 : 1), errC = a25 ? 'Só vale com o sensor a 25\u00a0°C' : dq > 0 ? 'Condena sensor bom' : 'Aprova sensor alterado';
+      q('comparador-25').innerHTML = `<div class="cmp25 cego"><b>✗ Medição Cega a 25\u00a0°C</b><span>Espera ${f1(r25, 2)}\u00a0kΩ</span><span>${errC}</span></div>
+        <div class="cmp25 real"><b>✓ Curva Real a ${tt}\u00a0°C</b><span>Alvo exato: ${f1(esp, 2)}\u00a0kΩ</span><span>Faixa ${brot === 'faixa da fonte' ? 'da fonte' : brot}: ${f1(blo, 2)} a ${f1(bhi, 2)}\u00a0kΩ</span></div>`;
       q('grafico-ntc').innerHTML = graficoNtc(c, t, r, R);
-      q('cmp').innerHTML = Math.abs(t - 25) < 0.05 ? `<b>Armadilha da tabela fixa de 25 °C:</b> ela só vale com o sensor a 25 °C (${f1(r25, 2)} kΩ). Em qualquer outra temperatura, compare com a curva real.`
-        : `<b>Armadilha da tabela fixa de 25 °C:</b> ${esc(c.marca)} ${st.nom}K a ${f1(t, Number.isInteger(t) ? 0 : 1)} °C = <b>${f1(esp, 2)} kΩ</b> reais contra <b>${f1(r25, 2)} kΩ</b> a 25 °C (${dq > 0 ? 'queda' : 'alta'} de ${f1(Math.abs(dq))}%). Quem compara com ${f1(r25, 2)} kΩ ${dq > 0 ? 'condena sensor bom' : 'aprova sensor alterado'}.`; tkEm(q('cmp'));
       if (r === null) { v.className = 'veredito neutro'; v.innerHTML = `A ${f1(t, Number.isInteger(t) ? 0 : 1)} °C a curva real pede ${f1(esp, 2)} kΩ<small>Digite o kΩ medido para o veredito.</small>`; tkSmall(v); return; }
       v.className = 'veredito ' + cls;
       v.innerHTML = `${ESTADO_NTC[R.estado]}<small>${R.estado === 'curto' ? 'Resistência zero: sensor ou chicote em curto. Substitua o sensor e confira o conector da placa.' : `Medido ${f1(r, 2)} kΩ a ${f1(t)} °C (${R.d > 0 ? '+' : ''}${f1(R.d)}% da curva). Referência: ${esc(R.ref)}.`}</small>`; tkSmall(v);
@@ -1428,7 +1430,7 @@ const reguaSh = (sh) => {
     <rect x="1" y="18" width="258" height="12" rx="6" fill="#24333d" data-trilho></rect>
     <g clip-path="url(#trilhoSH)"><rect x="${n1(X(0))}" y="18" width="${n1(X(7) - X(0))}" height="12" fill="#70B1FF" fill-opacity="0.3" data-zona="golpe"></rect><rect x="${n1(X(7))}" y="18" width="${n1(X(11) - X(7))}" height="12" fill="#0BD085" data-zona="alvo"></rect><rect x="${n1(X(11))}" y="18" width="${n1(X(20) - X(11))}" height="12" fill="#FF5B3D" fill-opacity="0.3" data-zona="falta"></rect></g>
     ${Array.from({ length: 21 }, (_, v) => { const m = [0, 7, 11, 20].includes(v); return `<line x1="${n1(X(v))}" y1="30" x2="${n1(X(v))}" y2="${m ? 40 : 35}" stroke="#B9C9D5" stroke-width="${m ? 2 : 1}"></line>`; }).join('')}
-    <text x="0" y="52" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>0</text><text x="${n1(X(7))}" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>7</text><text x="${n1(X(11))}" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>11</text><text x="260" y="52" text-anchor="end" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>20 °C</text>
+    <text x="0" y="52" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>0</text><text x="${n1(X(7))}" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>7</text><text x="${n1(X(11))}" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>11</text><text x="258" y="52" text-anchor="end" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>20 °C</text>
     ${sh === null ? `<text x="130" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>Digite pressão e tubo</text>`
       : `<g data-agulha data-sh="${f1(sh)}"><line x1="${n1(x)}" y1="15" x2="${n1(x)}" y2="32" stroke="#00CEFC" stroke-width="2.5"></line><polygon points="${n1(x - 6)},42 ${n1(x + 6)},42 ${n1(x)},32" fill="#00CEFC"></polygon><text x="${n1(xt)}" y="66" text-anchor="middle" font-size="12" font-weight="800" fill="#00CEFC" ${F}>SH ${f1(sh)} °C</text></g>`}
   </svg>`;
@@ -1520,12 +1522,12 @@ const recorte = (img, p) => { const f = diagPorImg(img), [fx, fy] = f.foco[p - 1
 function afInv(corpo) {
   const passo = (id, t, como, alvoTx, st, k) => `<div class="cartao" data-passo="${id}"><div class="passo-cab"><img class="passo-tile" src="${tile(PASSO_TILE[id])}" alt="" width="64" height="64" data-tile><div class="passo-tx"><h3>${k ? k + '. ' : ''}${esc(t)}</h3><p class="sub">${tk(esc(como))}</p></div></div>${alvoTx}
       <div class="dupla">${['ok', 'fo'].map(r => `<button class="bt bt-sel" data-s="${r}" aria-pressed="${st === r}">${rotNF(r, st === r)}</button>`).join('')}</div>${btMandar('inv-' + id)}</div>`;
-  corpo.innerHTML = `<div class="cartao" style="border:2px solid #D97706"><div class="cab-sec"><h2>Trava Eliminatória de 30 Segundos</h2><span class="tag tag-bonus">TRAVA DE 30 SEGUNDOS</span></div>
+  corpo.innerHTML = `<div class="cartao" style="border:2px solid #C98600"><div class="cab-sec"><h2>Trava Eliminatória de 30 Segundos</h2><span class="tag tag-bonus">TRAVA DE 30 SEGUNDOS</span></div>
       <p class="sub">Antes de abrir a placa, elimine o que derruba qualquer Inverter: rede, capacitor e sensor.</p>
       <div class="visor-safira" data-trava-visor><span class="vs-rot">Analisador · Trava de 30 s</span><ul class="vs-trava">${TRAVA.map(([id, t]) => `<li data-trava-item="${id}"><i aria-hidden="true">○</i><span>${esc(t)}</span><em></em></li>`).join('')}</ul></div>
       <div class="veredito neutro" data-iv="trava"></div></div>
     ${TRAVA.map(([id, t, como, esc0, alvo]) => passo(id, t, como, `${tagsPonta(esc0, alvo)}<div class="ref-faixa vs-faixa" data-ref-faixa><b>Referência:</b> ${tk(esc(TRAVA_FAIXA[id]))}</div>`, S.trava[id], '')).join('')}
-    <div class="cartao" style="border:2px solid #19365C"><div class="cab-sec"><h2>7 testes da Placa Inverter</h2><span class="tag tag-bonus">7 TESTES DE BANCADA</span></div><p class="sub">Cada teste mostra a peça, a escala e onde encostar as pontas, sem curto.</p><div class="veredito neutro" data-iv="v"></div></div>
+    <div class="cartao" style="border:2px solid #344856"><div class="cab-sec"><h2>7 testes da Placa Inverter</h2><span class="tag tag-bonus">7 TESTES DE BANCADA</span></div><p class="sub">Cada teste mostra a peça, a escala e onde encostar as pontas, sem curto.</p><div class="veredito neutro" data-iv="v"></div></div>
     ${INV7.map(([id, t, como, faixa, [im, pt]], k) => passo(id, t, como, `${tagsPonta(INV_TAGS[id][0], INV_TAGS[id][1])}<div class="ref-faixa vs-faixa" data-ref-faixa><b>Faixa:</b> ${tk(esc(faixa))}</div>`, S.inv[id], k + 1)).join('')}`;
   const veredito = () => {
     const ft = TRAVA.filter(x => S.trava[x[0]] === 'fo'), okT = TRAVA.filter(x => S.trava[x[0]] === 'ok'), vt = $('[data-iv=trava]', corpo);
@@ -1755,7 +1757,7 @@ function telaLaudo(op) {
       </section>
       <section class="cartao" data-l="envio" aria-label="Cliente e envio">
         <h3>Cliente e envio</h3>
-        <div class="selo-laudo-ok" data-l="carimbo" data-chancela hidden>${ico('sucesso', '#15803D', 20)}<span>LAUDO TÉCNICO AFERIDO · PRONTO PARA APROVAÇÃO PIX</span></div>
+        <div class="selo-laudo-ok" data-l="carimbo" data-chancela hidden>${ico('sucesso', '#077E50', 20)}<span>LAUDO TÉCNICO AFERIDO · PRONTO PARA APROVAÇÃO PIX</span></div>
         ${campo('Cliente', `type="text" data-l="cli" value="${esc(L.cli)}" placeholder="Nome" autocomplete="off"`)}
         ${campo('WhatsApp do cliente', `type="tel" data-l="tel" value="${esc(L.tel)}" placeholder="DDD + nº" autocomplete="off"`)}
         <details class="dobra" data-l="tit" ${tit.pix ? '' : 'open'}><summary>Seus dados e chave Pix</summary><div class="dobra-in">
@@ -1767,7 +1769,7 @@ function telaLaudo(op) {
         <div class="aviso" data-l="msg" hidden></div><pre class="zap-prev" data-l="prevzap" hidden></pre>
       </section>
       <details class="cartao dobra" data-l="leit-sec"><summary>Leituras e evidências <span class="dobra-n" data-l="leit-n"></span></summary><div class="dobra-in">
-        <div class="leit lista" data-l="leit"></div><button class="bt bt-sel bt-destr" data-l="limpar">${ico('lixeira', '#B91C1C', 18)}<span>Limpar leituras</span></button></div></details>
+        <div class="leit lista" data-l="leit"></div><button class="bt bt-sel bt-destr" data-l="limpar">${ico('lixeira', '#D62100', 18)}<span>Limpar leituras</span></button></div></details>
       <details class="cartao dobra" data-l="ref"><summary>Procedimento, referência e prevenção</summary><div class="dobra-in">
         <p class="ref-item" data-l="proc"></p><p class="ref-item" data-l="faixa" data-so-tecnico></p><p class="ref-item" data-l="prev"><span data-l="prevtx"></span></p></div></details>
       <section class="cartao dobra" data-l="cofre" data-so-tecnico><button type="button" class="dobra-cab" data-cofre-toggle aria-expanded="${!!S.cofreAberto}" aria-controls="cofre-lista">Cofre de Laudos <span class="dobra-n">(<b data-l="cofre-n">${S.cofre.length}</b>)</span></button>
@@ -1775,7 +1777,7 @@ function telaLaudo(op) {
       <details class="cartao dobra" data-l="pmoc-sec" data-so-tecnico><summary>Contrato PMOC <span class="dobra-n">${PM.length} atividades</span></summary><div class="dobra-in">
         ${campo('Mensalidade do contrato PMOC (R$)', `type="number" inputmode="decimal" step="any" data-l="pmocv" value="${esc(L.pmoc)}" placeholder="Valor combinado com o cliente"`)}
         <button class="bt bt-sel largo" data-l="pmoc">Gerar Contrato PMOC em PDF</button></div></details>
-      <button type="button" class="bt bt-sel bt-destr largo" data-l="excluir-atual" data-so-tecnico aria-label="Limpar o laudo atual (cliente, leituras e número)">${ico('lixeira', '#B91C1C', 18)}<span>Limpar laudo atual</span></button>`;
+      <button type="button" class="bt bt-sel bt-destr largo" data-l="excluir-atual" data-so-tecnico aria-label="Limpar o laudo atual (cliente, leituras e número)">${ico('lixeira', '#D62100', 18)}<span>Limpar laudo atual</span></button>`;
     const q = (k) => $(`[data-l=${k}]`, corpo), modo = q('modo');
     const tDados = () => { const g = (k) => $(`[data-t=${k}]`, corpo).value.trim(); return { nome: g('nome'), doc: g('doc'), docTipo: g('doc').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: g('cidade'), pix: g('pix') }; };
     const valor = () => Math.max(0, Number(L.v) || 0);
@@ -1813,7 +1815,7 @@ function telaLaudo(op) {
     };
     const pintarLeit = () => {
       q('leit-n').textContent = `(${S.leituras.length})`; q('carimbo').hidden = !S.leituras.length; q('limpar').hidden = !S.leituras.length;
-      q('leit').innerHTML = S.leituras.length ? S.leituras.map((a, k) => `<div class="it"><span>${esc(a.txt)}</span><button class="bt bt-sel bt-destr" data-rm="${k}" aria-label="Tirar do laudo: ${esc(a.txt.slice(0, 60))}">${ico('fechar', '#B91C1C', 18)}</button></div>`).join('')
+      q('leit').innerHTML = S.leituras.length ? S.leituras.map((a, k) => `<div class="it"><span>${esc(a.txt)}</span><button class="bt bt-sel bt-destr" data-rm="${k}" aria-label="Tirar do laudo: ${esc(a.txt.slice(0, 60))}">${ico('fechar', '#D62100', 18)}</button></div>`).join('')
         : `<p class="sub">Nenhuma leitura ainda. Toque em <b>+ Mandar para o Laudo</b> nos Sintomas, no Aferir Vivo ou nos Códigos: a causa e o serviço já chegam aqui.</p><button class="bt bt-cobalto largo" data-ir-af>Aferir Vivo agora</button>`;
       $$('[data-rm]', corpo).forEach(b => b.addEventListener('click', () => { S.leituras.splice(+b.dataset.rm, 1); pintarLeit(); pintarDock(); salvarSessao(); }));
       const af = $('[data-ir-af]', corpo); if (af) af.addEventListener('click', () => irTecla('aferir'));
@@ -1828,7 +1830,7 @@ function telaLaudo(op) {
       q('faixa').innerHTML = `<b>Faixa Oficial 2026:</b> ${tk(esc(`${brl(s.valor_min)} a ${brl(s.valor_max)} · Valor típico: ${brl(precoDe(s, porte))}${fxp.escala ? ` · Porte ${PORTE_TX[porte]} (faixa da tabela em escala proporcional): ${brl(fxp.min)} a ${brl(fxp.max)}` : ''}`))}`;
       q('prevtx').innerHTML = `<b>Prevenção:</b> ${tk(esc(s.economia_preventiva))}`;
       q('ref').dataset.servico = s.servico_id;
-      q('custo').innerHTML = L.mala && custoBase > 0 ? `<s data-custo-riscado>${brl(custo)}</s> ${brl(custoCombo)}` : brl(custo); q('mala').innerHTML = `${ico(L.mala ? 'sucesso' : 'neutro', L.mala ? '#FFFFFF' : '#091E42', 18)}<span>Peça na Mala = R$ 0</span>`; q('mala').setAttribute('aria-pressed', String(L.mala));
+      q('custo').innerHTML = L.mala && custoBase > 0 ? `<s data-custo-riscado>${brl(custo)}</s> ${brl(custoCombo)}` : brl(custo); q('mala').innerHTML = `${ico(L.mala ? 'sucesso' : 'neutro', L.mala ? '#FFFFFF' : '#040404', 18)}<span>Peça na Mala = R$ 0</span>`; q('mala').setAttribute('aria-pressed', String(L.mala));
       const lucro = totalFinal() - (L.mala ? 0 : custoBase) - custoCombo;
       q('limpo').textContent = sinal(lucro); q('total').textContent = brl(totalFinal());
       // Faixa da Tabela 2026 em 1 toque (mínimo, referência do porte, máximo) e o tile da peça do serviço.
@@ -1893,7 +1895,7 @@ function telaLaudo(op) {
     const pintarCofre = () => {
       q('cofre-n').textContent = S.cofre.length; const lc = q('lucro-cofre'); lc.hidden = !S.cofre.length; lc.textContent = `Acumulado no Cofre: ${brl(S.cofre.reduce((a, x) => a + (Number(x.valor) || 0), 0))}`; const lst = q('cofre-lista'); lst.hidden = !S.cofreAberto; $('[data-cofre-toggle]', corpo).setAttribute('aria-expanded', String(!!S.cofreAberto));
       lst.innerHTML = S.cofre.length ? S.cofre.map(it => `<div class="reg" data-cofre-item="${esc(it.id)}"><b>Nº ${esc(it.num)} · ${esc(it.data)}</b><span class="tx">${esc(it.servico)} — ${brl(it.valor)}</span><span class="sub">${esc(it.equip)}${it.cli ? ' · ' + esc(it.cli) : ''}</span>
-        <div class="dupla"><button type="button" class="bt bt-sel" data-cofre-abrir="${esc(it.id)}" aria-label="Abrir o laudo Nº ${esc(it.num)} de ${esc(it.data)}">Abrir</button><button type="button" class="bt bt-sel bt-destr" data-cofre-del="${esc(it.id)}" aria-label="Excluir o laudo Nº ${esc(it.num)} de ${esc(it.data)}">${ico('lixeira', '#B91C1C', 18)}<span>Excluir</span></button></div></div>`).join('')
+        <div class="dupla"><button type="button" class="bt bt-sel" data-cofre-abrir="${esc(it.id)}" aria-label="Abrir o laudo Nº ${esc(it.num)} de ${esc(it.data)}">Abrir</button><button type="button" class="bt bt-sel bt-destr" data-cofre-del="${esc(it.id)}" aria-label="Excluir o laudo Nº ${esc(it.num)} de ${esc(it.data)}">${ico('lixeira', '#D62100', 18)}<span>Excluir</span></button></div></div>`).join('')
         : '<p class="sub">Nenhum laudo salvo ainda. Toque em "Salvar no Cofre" ou dispare no WhatsApp/PDF para arquivar com a data do dia.</p>';
       $$('[data-cofre-del]', lst).forEach(b => b.addEventListener('click', () => { const it = S.cofre.find(x => x.id === b.dataset.cofreDel); if (!it) return;
         confirmar2(b, `Confirmar: excluir Nº ${it.num} de ${it.data}`, () => { S.cofre = S.cofre.filter(x => x.id !== it.id); guardarCofre(); pintarCofre(); pintarEstado(); toast(`Laudo Nº ${it.num} excluído do Cofre`); }); }));
