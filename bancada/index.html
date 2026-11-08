@@ -11,6 +11,8 @@
   fundo acetinado no body e a .folha clara #E2E8F0 com moldura estrutural (Contrato 01 de contratos/, 07/11/2026), uma superfície branca
   por seção, topo de 56 px com a marca e, fora da grade inicial, ‹ Voltar (#topo-passo) e Início (#topo-voltar), pílula de equipamento
   colada ao 1º bloco da tela e dock de 66 px com 4 teclas 3D na mesma margem lateral.
+  Claro por fora, Visor Safira por dentro (08/11/2026, Contratos 04 a 08): #192329 com moldura #344856 e trilho #24333d nos mostradores e
+  nos 4 instrumentos (barra empilhada do Lucro, Manifold & Sight Glass do Gás & SH, Scanner Térmico NTC, Pulso LED + Trava 30s do Inverter).
   Componentes visuais reais importados de ../app/ em tempo de execução (IconeGP, LogoMarca, AtalhoTecla e CampoTexto .dc.html: o script de
   cada componente é lido e executado com um React mínimo que gera SVG em texto). Motor real: pdf-gelopro.js, gelopro-pix.js, licenca-gelopro.js.
   Dados: ../base-tecnica/*.csv e as 126 artes .webp de ../guia-pro/imagens/. Modo avião: sw.js próprio (escopo ./).
@@ -25,7 +27,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 [hidden]{display:none!important}
 :focus-visible{outline:3px solid #2563EB;outline-offset:2px}
-:root{--gp-navy:#091E42;--gp-navy-2:#19365C;--gp-data-bg:#0C1D36;--gp-cyan:#38BDF8;--gp-ok:#15803D;--gp-warn:#D97706;--gp-err:#B91C1C;--gp-folha:#E2E8F0;--gp-cartao:#FFFFFF}
+:root{--gp-navy:#091E42;--gp-navy-2:#19365C;--gp-data-bg:#192329;--gp-visor-moldura:#344856;--gp-visor-trilho:#24333d;--gp-cyan:#38BDF8;--gp-ok:#15803D;--gp-warn:#D97706;--gp-err:#B91C1C;--gp-folha:#E2E8F0;--gp-cartao:#FFFFFF}
 :root{--f-tit:'Figtree','Roboto',system-ui,sans-serif;--f-txt:'Roboto',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;--f-mono:'Roboto Mono',ui-monospace,Menlo,Consolas,monospace}
 html{overflow-y:scroll;-webkit-text-size-adjust:100%;scroll-padding-top:68px}
 body{min-height:100vh;background:#c1c0c1 url(../app/ref/acetinado-sedoso.svg) center/100% 100% no-repeat fixed;font:400 15px/1.45 var(--f-txt);color:#0F172A;padding-bottom:calc(66px + env(safe-area-inset-bottom) + 16px)}
@@ -49,7 +51,7 @@ button{border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:trans
 .topo-bt{min-height:48px;min-width:48px;border-radius:999px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;font:700 14px/1 var(--f-txt);white-space:nowrap;background:#19365C;color:#FFFFFF;border:1.5px solid #67C6FF}
 #topo-voltar{background:#FFFFFF;color:#091E42;border-color:#FFFFFF}
 @media (max-width:420px){#topo.fora .marca-tx span{display:none}#topo.fora .topo-in{gap:8px}#topo.fora .topo-home{gap:8px}}
-#modo{flex:none;min-height:48px;border-radius:999px;padding:6px 14px;font-size:14px;background:#19365C;color:#FFFFFF;border:1.5px solid #67C6FF;box-shadow:none}
+#modo{flex:none;min-height:48px;border-radius:999px;padding:6px 14px;font-size:14px;white-space:nowrap;background:#19365C;color:#FFFFFF;border:1.5px solid #67C6FF;box-shadow:none}
 #modo[aria-pressed=true]{background:#28559E;box-shadow:none}
 
 /* Painel: folha clara + cartões brancos */
@@ -66,6 +68,9 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .cab-sec{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
 .grade2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .grade4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+/* Anti-estouro (08/11/2026): número e unidade nunca se separam; nos pares de campos, os 2 poços ficam na mesma linha de base. */
+.bt[data-t]{white-space:nowrap;padding-left:6px;padding-right:6px}
+.grade2>.campo{justify-content:flex-end}
 .opcoes{display:flex;flex-wrap:wrap;gap:6px}
 .opcoes .bt{flex:1 1 auto}
 
@@ -130,22 +135,24 @@ h3{font:800 16px/1.3 var(--f-tit);color:#091E42}
 .grade3-faixa{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .grade3-faixa .bt{flex-direction:column;gap:2px;padding:6px 4px;font-size:14px;line-height:1.2}
 .grade3-faixa .bt b{font:800 15px/1.2 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap}
-/* Resultado do técnico: valor principal em linha inteira, custo e nota da conta abaixo. */
-.bastidor-card{background:#06281E linear-gradient(180deg,#06281E 0%,#091E42 100%);border:2px solid #10B981;border-radius:12px;padding:14px;color:#FFFFFF;display:flex;flex-direction:column;gap:12px}
-.bastidor-card h3{color:#FFFFFF}
-.bast-linha{display:flex;flex-direction:column;gap:2px;min-width:0}
-.bast-linha .pr{font:700 14px/1.2 var(--f-txt);color:#CBD5E1}
-.bast-linha .val{font:800 28px/1.1 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap}
-.bast-linha.sec .val{font-size:20px}
-.bast-nota{font:500 14px/1.45 var(--f-txt);color:#CBD5E1}
-.bast-nota.adic{color:#E2E8F0}
+/* Card de lucro do Modo Técnico (Contrato 08): claro por fora, Instrumento 1 · Lucro no Bolso no visor safira por dentro; custo, nota e degraus abaixo. */
+.bastidor-card{background:#FFFFFF;border:2px solid #077E50;border-radius:12px;padding:12px;color:#091E42;display:flex;flex-direction:column;gap:12px;box-shadow:0 2px 6px rgba(9,30,66,.08)}
+.bastidor-card h3{color:#091E42}
+.tag-margem{background:#192329;color:#0BD085;border-color:#344856;font-variant-numeric:tabular-nums}
+.bast-linha{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 8px;min-width:0;padding-top:8px;border-top:1px solid #E2E8F0}
+.bast-linha .pr{font:700 14px/1.2 var(--f-txt);color:#334155;white-space:nowrap}
+.bast-linha .val{margin-left:auto}
+.bast-linha s{font-size:16px;color:#64748B}
+.bast-linha .val{font:800 20px/1.1 var(--f-tit);font-variant-numeric:tabular-nums;white-space:nowrap;color:#091E42}
+.bast-nota{font:500 14px/1.45 var(--f-txt);color:#334155}
+.bast-nota.adic{color:#334155}
 .degraus{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:6px}
-.degraus>div{display:flex;flex-direction:column;gap:2px;padding:6px 8px;border-radius:8px;border:1px solid #1E3A8A;background:#0C1D36;min-width:0}
-.degraus span{font:700 14px/1.2 var(--f-txt);color:#CBD5E1}
+.degraus>div{display:flex;flex-direction:column;gap:2px;padding:6px 8px;border-radius:8px;border:2px solid #344856;background:#192329;min-width:0}
+.degraus span{font:700 14px/1.2 var(--f-txt);color:#B9C9D5}
 .degraus b{font:800 15px/1.2 var(--f-tit);color:#FFFFFF;font-variant-numeric:tabular-nums;white-space:nowrap}
-.degraus>.on{border-color:#4ADE80}
-.degraus>.on b{color:#4ADE80}
-.odometro{font:800 14px/1.3 var(--f-tit);color:#A7F3D0;font-variant-numeric:tabular-nums}
+.degraus>.on{border-color:#0BD085}
+.degraus>.on b{color:#0BD085}
+.odometro{font:800 14px/1.3 var(--f-tit);color:#077E50;font-variant-numeric:tabular-nums}
 /* Linhas expansíveis (uma por assunto, sem sanfona dentro de sanfona). */
 details.dobra>summary,.dobra-cab{min-height:48px;width:100%;display:flex;align-items:center;gap:8px;font:800 16px/1.3 var(--f-tit);color:#091E42;cursor:pointer;list-style:none;background:none;border:0;padding:0;text-align:left}
 details.dobra>summary::-webkit-details-marker{display:none}
@@ -201,22 +208,64 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 .tag-verm{background:#DC2626;color:#FFFFFF;border-color:#991B1B}
 .tag-preta{background:#0F172A;color:#FFFFFF;border-color:#334155}
 .tag-escala{background:#1E293B;color:#FDE68A;border-color:#475569}
-.tag-alvo{background:#0C1D36;color:#67C6FF;border-color:#0284C7;font-family:var(--f-mono)}
+.tag-alvo{background:#192329;color:#00CEFC;border-color:#344856;font-family:var(--f-mono)}
 .tag-bonus{background:#FEF3C7;color:#78350F;border-color:#D97706}
 .tag-info{background:#F4F6F9;color:#091E42;border-color:#CBD5E1}
 .p1{background:#FEE2E2;color:#991B1B;border-color:#DC2626}
 .p2{background:#FEF3C7;color:#78350F;border-color:#D97706}
 .p3{background:#E0F2FE;color:#0C4A6E;border-color:#0284C7}
 
-/* Mostradores digitais (LeituraPoco.dc.html) */
+/* Visor Safira embutido (Contratos 04, 05 e 06, 08/11/2026): claro por fora (folha e cartões de leitura solar), visor #192329 por dentro,
+   moldura #344856, trilho #24333d, sombra interna e brilho de vidro nos 24 px de cima. Número #FFFFFF, rótulo #B9C9D5, ponteiro #00CEFC,
+   alvo e lucro #0BD085, custo e falta #FF5B3D (traço) / #FF8670 (texto), atenção #FFE278. Toda cor do visor mora só aqui e nos SVGs em hex. */
+.visor-safira,.poco{background:#192329 linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,0) 24px);border:2px solid #344856;border-radius:12px;box-shadow:inset 0 2px 6px rgba(0,0,0,.45);color:#FFFFFF;min-width:0}
+.visor-safira{padding:12px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.vs-rot{font:700 14px/1.25 var(--f-txt);letter-spacing:.04em;text-transform:uppercase;color:#B9C9D5}
+.vs-num{font:800 32px/1.1 var(--f-mono);font-variant-numeric:tabular-nums;color:#FFFFFF;white-space:nowrap}
+.vs-num small{font:700 16px var(--f-mono);color:#B9C9D5;margin-left:4px}
+.vs-sub{font:600 14px/1.35 var(--f-txt);color:#B9C9D5;font-variant-numeric:tabular-nums}
+.vs-sub b{color:#FFFFFF}
+.vs-legenda{display:flex;justify-content:space-between;gap:8px;font:700 14px/1.25 var(--f-txt);color:#B9C9D5;white-space:nowrap}
+.vs-legenda .peca{color:#FF8670}.vs-legenda .lucro{color:#0BD085}
+.vs-topo{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0}
+.vs-leitura{display:flex;flex-direction:column;gap:2px;min-width:0}
+.vs-graf{display:block;width:100%;height:auto;overflow:visible}
+/* Mostradores digitais (LeituraPoco.dc.html) no mesmo chassi do visor safira */
 .pocos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.poco{background:#0C1D36;border:1px solid #071633;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:4px;box-shadow:inset 0 2px 6px rgba(0,0,0,.45);min-width:0}
-.poco .pr{font:700 14px/1.2 var(--f-txt);color:#CBD5E1}
+.poco{padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.poco .pr{font:700 14px/1.2 var(--f-txt);color:#B9C9D5}
 .poco .val{font:700 28px/1.1 var(--f-mono);color:#FFFFFF;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.poco .val small{font:700 15px var(--f-mono);color:#67C6FF;margin-left:4px}
-.poco.ok{box-shadow:inset 0 2px 6px rgba(0,0,0,.45),0 0 0 2px #16A34A}
-.poco.def{box-shadow:inset 0 2px 6px rgba(0,0,0,.45),0 0 0 2px #DC2626}
-.poco.alerta{box-shadow:inset 0 2px 6px rgba(0,0,0,.45),0 0 0 2px #D97706}
+.poco .val small{font:700 15px var(--f-mono);color:#00CEFC;margin-left:4px}
+.poco.ok{box-shadow:inset 0 2px 6px rgba(0,0,0,.45),0 0 0 2px #0BD085}
+.poco.def{box-shadow:inset 0 2px 6px rgba(0,0,0,.45),0 0 0 2px #FF5B3D}
+.poco.alerta{box-shadow:inset 0 2px 6px rgba(0,0,0,.45),0 0 0 2px #FFE278}
+/* Instrumento 1 · Lucro no Bolso: barra horizontal empilhada (custo hachurado × lucro limpo), sem velocímetro. */
+#grafico-lucro rect[data-fatia]{transition:width .2s ease-out,x .2s ease-out}
+.vs-lucro-val{font:800 32px/1.1 var(--f-tit);font-variant-numeric:tabular-nums;color:#0BD085;white-space:nowrap}
+/* Instrumento 2 · Manifold & Sight Glass: janela circular de fluido Ø 56 px e régua linear 0 a 20 °C. */
+.sight-glass{flex:none;width:56px;height:56px;display:block}
+.sight-glass .bolha{animation:bolha 1.2s linear infinite}
+.sight-glass .bolha:nth-of-type(2){animation-delay:-.4s}.sight-glass .bolha:nth-of-type(3){animation-delay:-.8s}
+@keyframes bolha{0%{transform:translateY(10px);opacity:0}20%{opacity:.6}100%{transform:translateY(-16px);opacity:0}}
+/* Instrumento 4 · Simulador de Pulso LED: LED Ø 32 px com halo radial no compasso do fabricante. */
+.vs-led{flex-direction:row;align-items:center;gap:14px}
+.led-casa{position:relative;flex:none;width:72px;height:72px;display:flex;align-items:center;justify-content:center}
+.led-halo{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,var(--led) 0%,transparent 70%);opacity:0}
+.led-bulbo{position:relative;width:32px;height:32px;border-radius:50%;background:#24333d;border:2px solid #344856;box-shadow:inset 0 2px 4px rgba(0,0,0,.5)}
+.vs-led[data-aceso] .led-bulbo{background:var(--led);border-color:#FFFFFF}
+.vs-led[data-aceso] .led-halo{opacity:.45}
+.vs-led-tx{display:flex;flex-direction:column;gap:6px;min-width:0}
+.selo-led{display:inline-flex;align-items:center;align-self:flex-start;min-height:32px;border-radius:16px;padding:4px 12px;background:#077E50;color:#FFFFFF;font:800 14px/1.2 var(--f-txt)}
+/* Instrumento 4 · Analisador Inverter: faixa de cada teste e status da Trava 30s no visor safira. */
+.ref-faixa.vs-faixa{background:#192329;border:2px solid #344856;border-left:4px solid #00CEFC;color:#FFFFFF;box-shadow:inset 0 2px 6px rgba(0,0,0,.45)}
+.ref-faixa.vs-faixa b{color:#B9C9D5}
+.vs-trava{display:flex;flex-direction:column;gap:4px}
+.vs-trava li{list-style:none;display:flex;align-items:center;gap:8px;font:700 14px/1.35 var(--f-txt);color:#FFFFFF}
+.vs-trava li i{font-style:normal;flex:none;width:20px;text-align:center;color:#B9C9D5}
+.vs-trava li[data-est=ok] i{color:#0BD085}.vs-trava li[data-est=fo] i{color:#FF8670}
+.vs-trava li span{flex:1;min-width:0}
+.vs-trava li em{font-style:normal;color:#B9C9D5;white-space:nowrap}.vs-trava li[data-est=ok] em{color:#0BD085}.vs-trava li[data-est=fo] em{color:#FF8670}
+@media (prefers-reduced-motion:reduce){#grafico-lucro rect[data-fatia]{transition:none}.sight-glass .bolha{animation:none;opacity:.6}}
 
 /* Veredito colorido */
 .veredito{border-radius:12px;padding:12px;font:800 16px/1.3 var(--f-tit);border:1.5px solid}
@@ -354,7 +403,6 @@ select.sel{width:100%;min-height:48px;border-radius:12px;border:1.5px solid #193
 
 /* Tecla 4 · Laudo */
 /* Painel de impacto do Laudo: chassi navy com filete esmeralda (bloco próprio; os cartões claros seguem brancos). */
-/* Card de lucro do Modo Técnico: chassi verde-navy com filete esmeralda (bloco próprio, fora da contagem de .cartao). */
 .dupla{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .aviso{border-radius:12px;padding:10px 12px;font-size:14px;border:1.5px solid #CBD5E1;background:#FFFFFF}
 .aviso.ok{border-color:#16A34A;background:#F0FDF4;color:#14532D}
@@ -1245,9 +1293,12 @@ function veredictoNtc(c, t, r) {
 // Faixa aceita na temperatura t: faixa mín/máx da fonte → tolerância declarada → critério de campo ±5% (mesma ordem do veredito).
 const bandaNtc = (c, T) => { const e = interp(c.pts, T); if (c.faixa) return [interp(c.faixa.map(p => [p[0], p[1]]), T), interp(c.faixa.map(p => [p[0], p[2]]), T), 'faixa da fonte'];
   const k = (c.tol !== null ? c.tol : TOL_CAMPO) / 100; return [e * (1 - k), e * (1 + k), `±${f1(c.tol !== null ? c.tol : TOL_CAMPO, 0)}%`]; };
-// Plano cartesiano kΩ × °C de 15 a 45 °C: curva real, faixa aceita, linha cega da tabela de 25 °C, alvo e ponto medido.
+// Instrumento 3 · Scanner Térmico NTC no visor safira: plano kΩ × °C de 15 a 45 °C com a banda aceita (verde 22%), a Medição Cega a 25 °C
+// tracejada, a curva real branca, a seta da queda (ou alta) da curva até a temperatura atual e o ponto medido ciano. Todo texto do SVG
+// cabe em 1 linha dentro dos 260 px do visor; rótulo que encavalaria sai do SVG (o valor segue no mostrador e no comparador em HTML).
+const VW = 260, ESTIMA = (t, fs) => String(t).length * fs * 0.6;
 function graficoNtc(c, t, r, R) {
-  const X0 = 46, X1 = 326, Y0 = 16, Y1 = 108, A = [];
+  const X0 = 36, X1 = 240, Y0 = 26, Y1 = 140, A = [];
   for (let T = 15; T <= 45; T++) A.push([T, interp(c.pts, T), ...bandaNtc(c, T)]);
   const r25 = interp(c.pts, 25), vals = [...A.map(a => a[3]), r25, ...(r !== null && r > 0 ? [r] : [])], lows = [...A.map(a => a[2]), ...(r !== null && r > 0 ? [r] : [])];
   const yMax = Math.max(...vals) * 1.06, yMin = Math.max(0, Math.min(...lows) * 0.9);
@@ -1255,20 +1306,31 @@ function graficoNtc(c, t, r, R) {
   const curva = A.map(a => `${n(X(a[0]))},${n(Y(a[1]))}`).join(' '), banda = [...A.map(a => `${n(X(a[0]))},${n(Y(a[3]))}`), ...A.slice().reverse().map(a => `${n(X(a[0]))},${n(Y(a[2]))}`)].join(' ');
   const ticks = [0, 0.5, 1].map(u => yMin + u * (yMax - yMin)), F = 'font-family="Figtree,Roboto,sans-serif"';
   const tc = t === null ? null : Math.max(15, Math.min(45, t)), esp = t === null ? null : interp(c.pts, t);
-  const corMed = R ? (R.estado === 'ok' ? '#4ADE80' : R.estado === 'alerta' ? '#FBBF24' : '#F87171') : '#4ADE80';
-  return `<svg class="graf-svg" viewBox="0 0 340 144" width="100%" height="144" role="img" aria-label="Plano cartesiano da curva real do sensor NTC kΩ por °C">
-    <rect x="0" y="0" width="340" height="144" rx="12" fill="#0C1D36"></rect>
-    ${ticks.map(k => `<line x1="${X0}" y1="${n(Y(k))}" x2="${X1}" y2="${n(Y(k))}" stroke="#1E3A8A" stroke-dasharray="3,3"></line><text x="${X0 - 5}" y="${n(Y(k) + 3.5)}" text-anchor="end" font-size="12" font-weight="700" fill="#94A3B8" ${F}>${f1(k, 1)}</text>`).join('')}
-    ${[15, 25, 35, 45].map(T => `<line x1="${n(X(T))}" y1="${Y0}" x2="${n(X(T))}" y2="${Y1}" stroke="#1E3A8A" stroke-dasharray="3,3"></line><text x="${n(X(T))}" y="124" text-anchor="middle" font-size="12.5" font-weight="700" fill="#CBD5E1" ${F}>${T} °C</text>`).join('')}
-    <line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="#334155" stroke-width="1.5"></line><line x1="${X0}" y1="${Y1}" x2="${X1}" y2="${Y1}" stroke="#334155" stroke-width="1.5"></line>
-    <text x="8" y="13" font-size="12.5" font-weight="800" fill="#94A3B8" ${F}>kΩ</text><text x="${X1}" y="140" text-anchor="end" font-size="12" font-weight="700" fill="#94A3B8" ${F}>Curva real ${esc(bandaNtc(c, 25)[2])} · °C</text>
-    <polygon points="${banda}" fill="#16A34A" opacity="0.3" data-banda></polygon>
-    <line x1="${X0}" y1="${n(Y(r25))}" x2="${X1}" y2="${n(Y(r25))}" stroke="#F87171" stroke-width="2" stroke-dasharray="5,4" data-cego></line>
-    <text x="${X1 - 2}" y="${n(Y(r25) - 4)}" text-anchor="end" font-size="13" font-weight="800" fill="#FCA5A5" ${F}>25 °C fixa: ${f1(r25, 2)} kΩ</text>
-    <polyline points="${curva}" fill="none" stroke="#22D3EE" stroke-width="2.5" data-curva></polyline>
-    ${tc === null ? '' : `<line x1="${n(X(tc))}" y1="${Y0}" x2="${n(X(tc))}" y2="${Y1}" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="2,3"></line><circle cx="${n(X(tc))}" cy="${n(Y(esp))}" r="5" fill="#FFFFFF" stroke="#22D3EE" stroke-width="2" data-alvo-ntc></circle>
-      <text x="${n(Math.min(X1 - 4, Math.max(X0 + 4, X(tc) + (tc > 38 ? -8 : 8))))}" y="${n(Math.max(Y0 + 10, Y(esp) - 8))}" text-anchor="${tc > 38 ? 'end' : 'start'}" font-size="13" font-weight="800" fill="#FFFFFF" ${F}>Alvo ${f1(esp, 2)} kΩ</text>`}
-    ${tc === null || r === null ? '' : `<circle cx="${n(X(tc))}" cy="${n(Y(r))}" r="6" fill="${corMed}" stroke="#091E42" stroke-width="1.5" data-medido="${R && R.estado === 'ok' ? 'dentro' : 'fora'}"></circle>`}
+  const dentro = !!R && (R.estado === 'ok' || R.estado === 'alerta');
+  // Rótulos do miolo: queda/alta da curva ao lado da seta e o valor medido ao lado do ponto, nunca encavalados nem fora do visor.
+  const caixas = [], cabe = (x, y, w) => x >= 0 && x + w <= VW && y - 12 >= Y0 - 4 && y <= Y1 + 2 && !caixas.some(k => x < k[0] + k[2] + 4 && k[0] < x + w + 4 && y - 12 < k[1] + 2 && k[1] - 12 < y + 2);
+  const rotulo = (txt, xs, ys, cor, dado) => { const w = ESTIMA(txt, 14); for (const y of ys) for (const [x0, lado] of xs) { const x = lado === 'end' ? x0 - w : x0; if (cabe(x, y, w)) { caixas.push([x, y, w]); return `<text x="${n(x)}" y="${n(y)}" font-size="14" font-weight="800" fill="${cor}" ${F} ${dado}>${esc(txt)}</text>`; } } return ''; };
+  let seta = '', rq = '', rm = '';
+  if (tc !== null && Math.abs(tc - 25) >= 1) {
+    const xa = X(tc), ya = Y(r25), yb = Y(esp), dq = (esp - r25) / r25 * 100, sobe = yb < ya, ym = (ya + yb) / 2;
+    seta = `<g data-seta-queda><line x1="${n(xa)}" y1="${n(ya)}" x2="${n(xa)}" y2="${n(sobe ? yb + 6 : yb - 6)}" stroke="#FFE278" stroke-width="2"></line><polygon points="${n(xa - 4)},${n(sobe ? yb + 7 : yb - 7)} ${n(xa + 4)},${n(sobe ? yb + 7 : yb - 7)} ${n(xa)},${n(yb)}" fill="#FFE278"></polygon></g>`;
+    rq = rotulo(`${dq < 0 ? '−' : '+'}${f1(Math.abs(dq))}%`, [[xa - 8, 'end'], [xa + 8, 'start']], [ym + 5, ya + (sobe ? -6 : 18), ya + (sobe ? 18 : -6)], '#FFE278', 'data-rot-queda');
+  }
+  if (tc !== null && r !== null && r > 0) { const xm = X(tc), ymd = Y(r); rm = rotulo(`${f1(r, 2)} kΩ`, [[xm + 14, 'start'], [xm - 14, 'end']], [ymd + 5, ymd - 12, ymd + 20], '#FFFFFF', 'data-rot-medido'); }
+  return `<span class="vs-rot">Scanner térmico · kΩ × °C</span><svg class="vs-graf" viewBox="0 0 ${VW} 184" width="100%" role="img" aria-label="Plano cartesiano da curva real do sensor NTC kΩ por °C">
+    ${ticks.map(k => `<line x1="${X0}" y1="${n(Y(k))}" x2="${X1}" y2="${n(Y(k))}" stroke="#344856" stroke-width="1"></line><text x="${X0 - 4}" y="${n(Y(k) + 4)}" text-anchor="end" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>${f1(k, 1)}</text>`).join('')}
+    ${[15, 25, 35, 45].map(T => `<line x1="${n(X(T))}" y1="${Y0}" x2="${n(X(T))}" y2="${Y1}" stroke="#344856" stroke-width="1"></line><text x="${n(X(T))}" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>${T} °C</text>`).join('')}
+    <text x="0" y="12" font-size="12" font-weight="800" fill="#B9C9D5" ${F}>kΩ</text>
+    <text x="${VW}" y="12" text-anchor="end" font-size="12" font-weight="800" fill="#FF8670" ${F} data-rot-cego>Medição Cega a 25 °C · ${f1(r25, 2)} kΩ</text>
+    <text x="${VW}" y="180" text-anchor="end" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>Curva real ${esc(bandaNtc(c, 25)[2])} · °C</text>
+    <polygon points="${banda}" fill="#0BD085" fill-opacity="0.22" data-banda></polygon>
+    <line x1="${X0}" y1="${n(Y(r25))}" x2="${X1}" y2="${n(Y(r25))}" stroke="#FF8670" stroke-width="1.5" stroke-dasharray="6,4" data-cego></line>
+    <circle cx="${n(X(25))}" cy="${n(Y(r25))}" r="4" fill="#192329" stroke="#FF8670" stroke-width="2"></circle>
+    <polyline points="${curva}" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" data-curva></polyline>
+    ${seta}
+    ${tc === null ? '' : `<circle cx="${n(X(tc))}" cy="${n(Y(esp))}" r="4" fill="#192329" stroke="#FFFFFF" stroke-width="2" data-alvo-ntc></circle>`}
+    ${tc === null || r === null ? '' : `<circle cx="${n(X(tc))}" cy="${n(Y(r))}" r="12" fill="#00CEFC" fill-opacity="0.25"></circle><circle cx="${n(X(tc))}" cy="${n(Y(r))}" r="6" fill="#00CEFC" stroke="${dentro ? '#0BD085' : '#FF5B3D'}" stroke-width="2" data-medido="${R && R.estado === 'ok' ? 'dentro' : 'fora'}"></circle>`}
+    ${rq}${rm}
   </svg>`;
 }
 const ESTADO_NTC = { ok: 'SENSOR BOM', alerta: 'ATENÇÃO — Desvio moderado (5% a 10%): confira conexão e poço térmico', def: 'SENSOR ALTERADO — Substituir', curto: '0 kΩ = SENSOR EM CURTO' };
@@ -1288,14 +1350,14 @@ function afNtc(corpo) {
         <div class="marcas marcas-faixa" role="group" aria-label="Marca da curva">${[st.m, ...marcas.filter(m => m !== st.m)].map(m => `<button class="bt bt-sel" data-m="${esc(m)}" aria-pressed="${m === st.m}">${logo(m, 26)}<span>${esc(m)}</span></button>`).join('')}</div>
         <div class="opcoes" role="group" aria-label="Sensor nominal">${NOMS.map(n => `<button class="bt bt-sel" data-nom="${n}" aria-pressed="${n === st.nom}" ${disp().has(n) ? '' : 'disabled'}>${n}K</button>`).join('')}</div>
         ${curvas().length > 1 ? `<div class="opcoes" role="group" aria-label="Ponto do sensor">${curvas().map((c, k) => `<button class="bt bt-sel" data-ci="${k}" aria-pressed="${k === Math.min(st.ci, curvas().length - 1)}">${esc(c.sensor)}</button>`).join('')}</div>` : `<p class="sub">Ponto: ${esc(curva().sensor)}</p>`}
-        <div class="grade4" role="group" aria-label="Temperatura ambiente real">${[25, 30, 35, 40].map(x => `<button class="bt bt-sel" data-t="${x}" aria-pressed="${num(st.t) === x}">${x} °C</button>`).join('')}</div>
-        <div class="grade2">${campo('Temperatura (°C)', `type="number" inputmode="decimal" step="any" data-n="t" value="${esc(st.t)}"`)}${campo('kΩ medido', `type="number" inputmode="decimal" step="any" data-n="r" value="${esc(st.r)}" placeholder="Ex.: 6,3"`)}</div>
+        <div class="grade4" role="group" aria-label="Temperatura ambiente real">${[25, 30, 35, 40].map(x => `<button class="bt bt-sel" data-t="${x}" aria-pressed="${num(st.t) === x}">${x}\u00a0°C</button>`).join('')}</div>
+        <div class="grade2">${campo('Temperatura&nbsp;(°C)', `type="number" inputmode="decimal" step="any" data-n="t" value="${esc(st.t)}"`)}${campo('kΩ medido', `type="number" inputmode="decimal" step="any" data-n="r" value="${esc(st.r)}" placeholder="Ex.: 6,3"`)}</div>
         ${tagsPonta('ESCALA kΩ', 'ALVO: CURVA REAL °C')}
         <div class="pocos" data-n="pocos"></div>
         <div class="veredito neutro" data-n="v"></div>
         ${btMandar('ntc')}
         <div class="grade2" data-n="comparador-25"></div>
-        <div data-n="grafico-ntc"></div>
+        <div class="visor-safira" data-n="grafico-ntc" id="grafico-ntc"></div>
         <div class="armadilha" data-n="cmp"></div></div>`;
     const q = (k) => $(`[data-n=${k}]`, corpo);
     const go = () => {
@@ -1307,8 +1369,8 @@ function afNtc(corpo) {
       const esp = interp(c.pts, t), r25 = interp(c.pts, 25), dq = (r25 - esp) / r25 * 100;
       q('cmp').hidden = false; q('comparador-25').hidden = false; q('grafico-ntc').hidden = false;
       const [blo, bhi, brot] = bandaNtc(c, t), a25 = Math.abs(t - 25) < 0.05;
-      q('comparador-25').innerHTML = `<div class="cmp25 cego"><b>✗ TABELA FIXA 25 °C</b><span>Espera ${f1(r25, 2)} kΩ</span>${a25 ? '<span>Só vale com o sensor a 25 °C</span>' : ''}</div>
-        <div class="cmp25 real"><b>✓ CURVA REAL ${f1(t, Number.isInteger(t) ? 0 : 1)} °C</b><span>Alvo exato: ${f1(esp, 2)} kΩ</span><span>Faixa ${brot === 'faixa da fonte' ? 'da fonte' : brot}: ${f1(blo, 2)} a ${f1(bhi, 2)} kΩ</span></div>`;
+      q('comparador-25').innerHTML = `<div class="cmp25 cego"><b>✗ TABELA FIXA 25\u00a0°C</b><span>Espera ${f1(r25, 2)}\u00a0kΩ</span>${a25 ? '<span>Só vale com o sensor a 25\u00a0°C</span>' : ''}</div>
+        <div class="cmp25 real"><b>✓ CURVA REAL ${f1(t, Number.isInteger(t) ? 0 : 1)}\u00a0°C</b><span>Alvo exato: ${f1(esp, 2)}\u00a0kΩ</span><span>Faixa ${brot === 'faixa da fonte' ? 'da fonte' : brot}: ${f1(blo, 2)} a ${f1(bhi, 2)}\u00a0kΩ</span></div>`;
       q('grafico-ntc').innerHTML = graficoNtc(c, t, r, R);
       q('cmp').innerHTML = Math.abs(t - 25) < 0.05 ? `<b>Armadilha da tabela fixa de 25 °C:</b> ela só vale com o sensor a 25 °C (${f1(r25, 2)} kΩ). Em qualquer outra temperatura, compare com a curva real.`
         : `<b>Armadilha da tabela fixa de 25 °C:</b> ${esc(c.marca)} ${st.nom}K a ${f1(t, Number.isInteger(t) ? 0 : 1)} °C = <b>${f1(esp, 2)} kΩ</b> reais contra <b>${f1(r25, 2)} kΩ</b> a 25 °C (${dq > 0 ? 'queda' : 'alta'} de ${f1(Math.abs(dq))}%). Quem compara com ${f1(r25, 2)} kΩ ${dq > 0 ? 'condena sensor bom' : 'aprova sensor alterado'}.`; tkEm(q('cmp'));
@@ -1341,19 +1403,42 @@ const gpmAlto = (btu) => Number(String(btu).replace(/\D/g, '')) >= 24000;
 const gpmPadrao = (fl, btu) => (fl === 'R32' ? (gpmAlto(btu) ? 24 : 12) : (gpmAlto(btu) ? 30 : 15));
 const AVISO_GPM = 'Referência prática de campo (confira o g/m gravado na etiqueta da condensadora)';
 const estadoSh = (sh) => sh < 7 ? ['def', 'EXCESSO DE FLUIDO', 'Abaixo de 7 °C: recolha fluido com a recolhedora e confira o fluxo de ar da evaporadora.'] : sh <= 11 ? ['ok', 'CARGA PERFEITA', 'Superaquecimento dentro da faixa alvo de 7 a 11 °C.'] : ['def', 'FALTA DE FLUIDO', 'Acima de 11 °C: ache o vazamento e complete a carga na fase líquida.'];
-// Escala linear de SH 0–20 °C em chassi escuro: < 7 °C (risco de golpe de líquido), 7–11 °C (zona alvo), > 11 °C (falta de fluido).
-const gaugeSh = (sh) => {
-  const X = (v) => 20 + Math.max(0, Math.min(20, v)) / 20 * 300, F = 'font-family="Figtree,Roboto,sans-serif"', x = sh === null ? 0 : X(sh), xt = Math.max(46, Math.min(294, x));
-  return `<svg class="graf-svg" viewBox="0 0 340 68" width="100%" height="68" role="img" aria-label="Escala de superaquecimento de 0 a 20 °C com a zona alvo de 7 a 11 °C">
-    <rect x="0" y="0" width="340" height="68" rx="12" fill="#0C1D36"></rect>
-    <text x="${(X(7) + X(11)) / 2}" y="13" text-anchor="middle" font-size="12.5" font-weight="800" fill="#86EFAC" ${F}>ALVO 7–11 °C</text>
-    <rect x="${X(0)}" y="18" width="${X(7) - X(0)}" height="12" fill="#0284C7" data-zona="golpe"></rect><rect x="${X(7)}" y="18" width="${X(11) - X(7)}" height="12" fill="#16A34A" data-zona="alvo"></rect><rect x="${X(11)}" y="18" width="${X(20) - X(11)}" height="12" fill="#D97706" data-zona="falta"></rect>
-    ${Array.from({ length: 21 }, (_, v) => `<line x1="${X(v)}" y1="30" x2="${X(v)}" y2="${v % 5 ? 33 : 36}" stroke="#94A3B8" stroke-width="1"></line>`).join('')}
-    <text x="20" y="48" font-size="12" font-weight="700" fill="#94A3B8" ${F}>0 °C</text><text x="320" y="48" text-anchor="end" font-size="12" font-weight="700" fill="#94A3B8" ${F}>20 °C</text>
-    ${sh === null ? `<text x="170" y="58" text-anchor="middle" font-size="12.5" font-weight="700" fill="#CBD5E1" ${F}>Digite pressão e tubo</text>`
-      : `<g data-agulha data-sh="${f1(sh)}"><line x1="${x}" y1="15" x2="${x}" y2="33" stroke="#FFFFFF" stroke-width="2.5"></line><polygon points="${x - 6},45 ${x + 6},45 ${x},36" fill="#FFFFFF"></polygon><text x="${xt}" y="62" text-anchor="middle" font-size="13" font-weight="800" fill="#FFFFFF" ${F}>SH ${f1(sh)} °C</text></g>`}
+// Instrumento 2 · Manifold & Sight Glass no visor safira: leitura grande do SH ao lado da janela circular de fluido (Ø 56 px, aro 4 px
+// #344856, vidro #24333d) que muda nos 3 estados do estadoSh, e abaixo a régua linear 0 a 20 °C (13 px/°C) com a zona alvo 7 a 11 °C
+// em #0BD085 e o ponteiro triangular #00CEFC. A zona de baixo é azul (#70B1FF, excesso) e a de cima vermelha (#FF5B3D, falta), a 30%.
+const ESTADO_VIDRO = { vazio: 'Sem leitura: digite a pressão e o tubo', excesso: 'Excesso de Fluido / Retorno de Líquido', ideal: 'Carga Ideal', falta: 'Falta de Fluido' };
+const vidroDe = (sh) => (sh === null ? 'vazio' : sh < 7 ? 'excesso' : sh <= 11 ? 'ideal' : 'falta');
+const sightGlass = (est) => `<svg class="sight-glass" viewBox="0 0 56 56" width="56" height="56" role="img" aria-label="Janela de fluido: ${esc(ESTADO_VIDRO[est])}" data-sight-glass data-estado="${est}">
+    <defs><clipPath id="vidroSG"><circle cx="28" cy="28" r="24"></circle></clipPath></defs>
+    <circle cx="28" cy="28" r="24" fill="#24333d"></circle>
+    <g clip-path="url(#vidroSG)">${{
+      vazio: '',
+      ideal: '<rect x="0" y="9" width="56" height="47" fill="#70B1FF" fill-opacity="0.55" data-fluido></rect><line x1="0" y1="9" x2="56" y2="9" stroke="#0BD085" stroke-width="2"></line>',
+      falta: '<rect x="0" y="32" width="56" height="24" fill="#70B1FF" fill-opacity="0.3" data-fluido></rect><circle class="bolha" cx="20" cy="40" r="4" fill="#FFFFFF" fill-opacity="0.6" data-bolha></circle><circle class="bolha" cx="31" cy="44" r="5" fill="#FFFFFF" fill-opacity="0.6" data-bolha></circle><circle class="bolha" cx="38" cy="38" r="3" fill="#FFFFFF" fill-opacity="0.6" data-bolha></circle>',
+      excesso: '<rect x="0" y="0" width="56" height="56" fill="#70B1FF" fill-opacity="0.65" data-fluido></rect><ellipse cx="9" cy="26" rx="2" ry="4" fill="#FFFFFF" fill-opacity="0.55"></ellipse><ellipse cx="47" cy="32" rx="2" ry="4" fill="#FFFFFF" fill-opacity="0.55"></ellipse><ellipse cx="28" cy="49" rx="3" ry="2" fill="#FFFFFF" fill-opacity="0.55"></ellipse>',
+    }[est]}</g>
+    <path d="M13 24 A16 16 0 0 1 24 12" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="4" stroke-linecap="round"></path>
+    <circle cx="28" cy="28" r="26" fill="none" stroke="#344856" stroke-width="4"></circle>
+  </svg>`;
+const reguaSh = (sh) => {
+  const X = (v) => 1 + Math.max(0, Math.min(20, v)) / 20 * 258, F = 'font-family="Figtree,Roboto,sans-serif"', x = sh === null ? 0 : X(sh), xt = Math.max(34, Math.min(226, x));
+  return `<svg class="vs-graf" viewBox="0 0 260 70" width="100%" role="img" aria-label="Escala de superaquecimento de 0 a 20 °C com a zona alvo de 7 a 11 °C" data-regua>
+    <defs><clipPath id="trilhoSH"><rect x="1" y="18" width="258" height="12" rx="6"></rect></clipPath></defs>
+    <text x="${n1(X(9))}" y="12" text-anchor="middle" font-size="12" font-weight="800" fill="#0BD085" ${F}>ALVO 7–11 °C</text>
+    <rect x="1" y="18" width="258" height="12" rx="6" fill="#24333d" data-trilho></rect>
+    <g clip-path="url(#trilhoSH)"><rect x="${n1(X(0))}" y="18" width="${n1(X(7) - X(0))}" height="12" fill="#70B1FF" fill-opacity="0.3" data-zona="golpe"></rect><rect x="${n1(X(7))}" y="18" width="${n1(X(11) - X(7))}" height="12" fill="#0BD085" data-zona="alvo"></rect><rect x="${n1(X(11))}" y="18" width="${n1(X(20) - X(11))}" height="12" fill="#FF5B3D" fill-opacity="0.3" data-zona="falta"></rect></g>
+    ${Array.from({ length: 21 }, (_, v) => { const m = [0, 7, 11, 20].includes(v); return `<line x1="${n1(X(v))}" y1="30" x2="${n1(X(v))}" y2="${m ? 40 : 35}" stroke="#B9C9D5" stroke-width="${m ? 2 : 1}"></line>`; }).join('')}
+    <text x="0" y="52" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>0</text><text x="${n1(X(7))}" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>7</text><text x="${n1(X(11))}" y="52" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>11</text><text x="260" y="52" text-anchor="end" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>20 °C</text>
+    ${sh === null ? `<text x="130" y="66" text-anchor="middle" font-size="12" font-weight="700" fill="#B9C9D5" ${F}>Digite pressão e tubo</text>`
+      : `<g data-agulha data-sh="${f1(sh)}"><line x1="${n1(x)}" y1="15" x2="${n1(x)}" y2="32" stroke="#00CEFC" stroke-width="2.5"></line><polygon points="${n1(x - 6)},42 ${n1(x + 6)},42 ${n1(x)},32" fill="#00CEFC"></polygon><text x="${n1(xt)}" y="66" text-anchor="middle" font-size="12" font-weight="800" fill="#00CEFC" ${F}>SH ${f1(sh)} °C</text></g>`}
   </svg>`;
 };
+const n1 = (v) => v.toFixed(1);
+// Visor inteiro do Gás & SH: SH grande + janela de fluido, linha da evaporação e régua. Sem leitura, o visor diz o que medir.
+const gaugeSh = (R, fl) => { const sh = R && R.p > 0 && R.sh !== null ? R.sh : null, est = R && R.p <= 0 ? 'vazio' : vidroDe(sh);
+  return `<div class="vs-topo"><div class="vs-leitura" data-leitura="sh"><span class="vs-rot">Superaquecimento SH</span><b class="vs-num" data-sh-num>${sh === null ? '—' : f1(sh)}<small>°C</small></b><span class="vs-sub" data-estado-vidro>${esc(R && R.p <= 0 ? '0 PSI: sistema sem pressão' : ESTADO_VIDRO[est])}</span></div>${sightGlass(est)}</div>
+    <p class="vs-sub" data-leitura="evap">${R && R.p > 0 ? `Evaporação <b>${f1(R.ts)}\u00a0°C</b> · ${esc(fl)} a ${f1(R.p, 0)}\u00a0PSI` : 'Evaporação pela pressão de sucção do manifold'}</p>
+    ${reguaSh(sh)}`; };
 let PT = null;
 const carregarPT = () => PT || (PT = Promise.all([csv('pt_r410a_r32_r22.csv'), csv('criterios_operacionais.csv')]));
 const tSat = (T, k, p) => { const P = T.map(r => [num(r[k]), num(r.temp_c)]).filter(x => x[0] !== null && x[1] !== null).sort((a, b) => a[0] - b[0]); if (p <= P[0][0]) return P[0][1]; for (let j = 1; j < P.length; j++) if (p <= P[j][0]) { const [p0, t0] = P[j - 1], [p1, t1] = P[j]; return t0 + (p - p0) / (p1 - p0) * (t1 - t0); } return P[P.length - 1][1]; };
@@ -1364,13 +1449,12 @@ function afGas(corpo) {
     const refGpm = () => `Padrão ${st.fl} ${gpmAlto(S.equip.btu) ? '24.000+' : '9.000 a 18.000'} BTU/h: ${gpmPadrao(st.fl, S.equip.btu)} g/m. ${AVISO_GPM}.`;
     const crit = CRI.find(c => /Superaquecimento correto/i.test(c.criterio));
     corpo.innerHTML = `<div class="cartao"><div class="cab-sec"><div class="cab-tile"><img src="${tile('t03_manifold')}" alt="" width="52" height="52" data-tile><h2>Gás &amp; Superaquecimento</h2></div><span class="tag tag-bonus">CARGA PELO SH</span></div>
-        <p class="sub">SH = tubo de sucção menos a evaporação pela pressão. Faixa alvo <b>7 a 11 °C</b>${crit ? ` (${esc(crit.marca)}, fonte ${esc(crit.fonte_id)})` : ''}.</p>
+        <p class="sub">SH = tubo de sucção menos a evaporação pela pressão. Faixa alvo <b>7 a 11&nbsp;°C</b>${crit ? ` (${esc(crit.marca)}, fonte ${esc(crit.fonte_id)})` : ''}.</p>
         <div class="grade4" style="grid-template-columns:repeat(3,minmax(0,1fr))" role="group" aria-label="Fluido">${Object.keys(FLUIDOS).map(k => `<button class="bt bt-sel" data-fl="${k}" aria-pressed="${k === st.fl}">${k}</button>`).join('')}</div>
-        <div class="grade2">${campo('Pressão de sucção (PSI)', `type="number" inputmode="decimal" step="any" data-g="p" value="${esc(st.p)}" placeholder="Ex.: 140"`)}${campo('Tubo de sucção (°C)', `type="number" inputmode="decimal" step="any" data-g="tt" value="${esc(st.tt)}" placeholder="Ex.: 18"`)}</div>
+        <div class="grade2">${campo('Pressão de sucção&nbsp;(PSI)', `type="number" inputmode="decimal" step="any" data-g="p" value="${esc(st.p)}" placeholder="Ex.: 140"`)}${campo('Tubo de sucção&nbsp;(°C)', `type="number" inputmode="decimal" step="any" data-g="tt" value="${esc(st.tt)}" placeholder="Ex.: 18"`)}</div>
         ${tagsPonta('MANIFOLD PSI', 'ALVO: SH 7–11 °C', false)}
-        <div class="pocos" data-g="pocos"></div>
-        <div data-g="gauge-sh"></div>
-        <p class="sub">Escala de SH: abaixo de 7 °C, risco de golpe de líquido (azul); 7 a 11 °C, faixa alvo (verde); acima de 11 °C, falta de fluido (âmbar).</p>
+        <div class="visor-safira" data-g="gauge-sh" id="gauge-sh"></div>
+        <p class="sub">Régua do SH: abaixo de 7&nbsp;°C, excesso de fluido e risco de golpe de líquido (azul); 7 a 11&nbsp;°C, faixa alvo (verde); acima de 11&nbsp;°C, falta de fluido (vermelho).</p>
         <div class="veredito neutro" data-g="v"></div>
         <h3>Tubulação acima de 3 m</h3>
         <div class="opcoes" role="group" aria-label="Comprimento da linha">${LINHAS.map(l => `<button class="bt bt-sel" data-lin="${l}" aria-pressed="${l === st.lin}">${l === 3 ? 'Até 3 m' : l + ' m'}</button>`).join('')}</div>
@@ -1383,8 +1467,7 @@ function afGas(corpo) {
     const go = () => {
       st.p = q('p').value; st.tt = q('tt').value; st.gpm = q('gpm').value;
       const R = calc(), v = q('v'), zero = R && R.p <= 0;
-      q('pocos').innerHTML = mostrador('Evaporação', R && !zero ? f1(R.ts) : '—', '°C') + mostrador('Superaquecimento SH', R && !zero && R.sh !== null ? f1(R.sh) : '—', '°C', zero ? 'def' : R && R.sh !== null ? estadoSh(R.sh)[0] : '');
-      q('gauge-sh').innerHTML = gaugeSh(R && !zero && R.sh !== null ? R.sh : null);
+      q('gauge-sh').innerHTML = gaugeSh(R, st.fl);
       if (!R) { v.className = 'veredito neutro'; v.textContent = 'Digite a pressão de sucção lida no manifold.'; }
       else if (zero) { v.className = 'veredito def'; v.innerHTML = '0 PSI = SEM PRESSÃO / VAZAMENTO<small>Sistema vazio: ache e corrija o vazamento, faça vácuo e carga na balança antes de ligar o compressor.</small>'; }
       else if (R.sh === null) { v.className = 'veredito neutro'; v.innerHTML = `Evaporação ${f1(R.ts)} °C (${st.fl} a ${f1(R.p, 0)} PSI)<small>Agora meça o tubo de sucção a 20 cm da válvula, com o termopar preso e isolado.</small>`; }
@@ -1438,12 +1521,15 @@ function afInv(corpo) {
   const passo = (id, t, como, alvoTx, st, k) => `<div class="cartao" data-passo="${id}"><div class="passo-cab"><img class="passo-tile" src="${tile(PASSO_TILE[id])}" alt="" width="64" height="64" data-tile><div class="passo-tx"><h3>${k ? k + '. ' : ''}${esc(t)}</h3><p class="sub">${tk(esc(como))}</p></div></div>${alvoTx}
       <div class="dupla">${['ok', 'fo'].map(r => `<button class="bt bt-sel" data-s="${r}" aria-pressed="${st === r}">${rotNF(r, st === r)}</button>`).join('')}</div>${btMandar('inv-' + id)}</div>`;
   corpo.innerHTML = `<div class="cartao" style="border:2px solid #D97706"><div class="cab-sec"><h2>Trava Eliminatória de 30 Segundos</h2><span class="tag tag-bonus">TRAVA DE 30 SEGUNDOS</span></div>
-      <p class="sub">Antes de abrir a placa, elimine o que derruba qualquer Inverter: rede, capacitor e sensor.</p><div class="veredito neutro" data-iv="trava"></div></div>
-    ${TRAVA.map(([id, t, como, esc0, alvo]) => passo(id, t, como, `${tagsPonta(esc0, alvo)}<div class="ref-faixa" data-ref-faixa><b>Referência:</b> ${tk(esc(TRAVA_FAIXA[id]))}</div>`, S.trava[id], '')).join('')}
+      <p class="sub">Antes de abrir a placa, elimine o que derruba qualquer Inverter: rede, capacitor e sensor.</p>
+      <div class="visor-safira" data-trava-visor><span class="vs-rot">Analisador · Trava de 30 s</span><ul class="vs-trava">${TRAVA.map(([id, t]) => `<li data-trava-item="${id}"><i aria-hidden="true">○</i><span>${esc(t)}</span><em></em></li>`).join('')}</ul></div>
+      <div class="veredito neutro" data-iv="trava"></div></div>
+    ${TRAVA.map(([id, t, como, esc0, alvo]) => passo(id, t, como, `${tagsPonta(esc0, alvo)}<div class="ref-faixa vs-faixa" data-ref-faixa><b>Referência:</b> ${tk(esc(TRAVA_FAIXA[id]))}</div>`, S.trava[id], '')).join('')}
     <div class="cartao" style="border:2px solid #19365C"><div class="cab-sec"><h2>7 testes da Placa Inverter</h2><span class="tag tag-bonus">7 TESTES DE BANCADA</span></div><p class="sub">Cada teste mostra a peça, a escala e onde encostar as pontas, sem curto.</p><div class="veredito neutro" data-iv="v"></div></div>
-    ${INV7.map(([id, t, como, faixa, [im, pt]], k) => passo(id, t, como, `${tagsPonta(INV_TAGS[id][0], INV_TAGS[id][1])}<div class="ref-faixa" data-ref-faixa><b>Faixa:</b> ${tk(esc(faixa))}</div>`, S.inv[id], k + 1)).join('')}`;
+    ${INV7.map(([id, t, como, faixa, [im, pt]], k) => passo(id, t, como, `${tagsPonta(INV_TAGS[id][0], INV_TAGS[id][1])}<div class="ref-faixa vs-faixa" data-ref-faixa><b>Faixa:</b> ${tk(esc(faixa))}</div>`, S.inv[id], k + 1)).join('')}`;
   const veredito = () => {
     const ft = TRAVA.filter(x => S.trava[x[0]] === 'fo'), okT = TRAVA.filter(x => S.trava[x[0]] === 'ok'), vt = $('[data-iv=trava]', corpo);
+    TRAVA.forEach(([id]) => { const li = $(`[data-trava-item="${id}"]`, corpo), e = S.trava[id] || ''; li.dataset.est = e; $('i', li).textContent = e === 'ok' ? '✓' : e === 'fo' ? '✕' : '○'; $('em', li).textContent = e === 'ok' ? 'Normal' : e === 'fo' ? 'Fora da faixa' : 'Conferir'; });
     if (ft.length) { vt.className = 'veredito def'; vt.innerHTML = `PARE: ${esc(ft.map(x => x[1]).join(', '))} fora da faixa<small>Corrija antes de condenar a placa. Mande a leitura para o Laudo: o serviço já vem sugerido.</small>`; }
     else if (okT.length === TRAVA.length) { vt.className = 'veredito ok'; vt.innerHTML = 'LIBERADO: rede, capacitor e sensor normais<small>Siga para os 7 testes da placa logo abaixo.</small>'; }
     else { vt.className = 'veredito neutro'; vt.innerHTML = `${okT.length + ft.length} de 3 itens conferidos<small>Toque em Normal ou Fora da faixa em cada item.</small>`; }
@@ -1515,6 +1601,25 @@ const carregarCodigos = () => CODIGOS || (CODIGOS = Promise.all([csv('codigos_er
     .map((r, i) => ({ ...r, i, ok: NORMAL.test(r.d.trim()) && !NAO_NORMAL.test(r.d), naoConf: /n[aã]o confirma/i.test(r.d), txt: norm(`${r.c} ${r.d} ${r.l} ${r.fa} ${r.m}`), np: r.pd ? piscadasDe(r.pd) : [] }))
     .map(r => (r.pd ? { ...r, cd: idLed(r.d, r.np, r.pd, r.led) } : r));
 }));
+// Instrumento 4 · Simulador de Pulso LED no visor safira: LED Ø 32 px com halo radial, n piscadas de 250 ms aceso / 250 ms apagado e
+// pausa de 2.000 ms (compasso de interface, sem tempo no manual). Cor do LED pelo nome da base (verde, vermelho, azul, laranja, amarelo);
+// sem cor na base, LED branco. Selo verde só quando todos os resultados da contagem são operação normal ou proteção do próprio fabricante.
+const COR_LED = [[/verde/, '#0BD085'], [/vermelh/, '#FF5B3D'], [/azul/, '#70B1FF'], [/laranja/, '#FFA037'], [/amarel/, '#FFE278']];
+const corLed = (nome) => { const t = norm(nome || ''); const c = COR_LED.find(([re]) => re.test(t)); return c ? c[1] : '#FFFFFF'; };
+const ritmoLed = (n) => { const P = n * 500 + 2000, k = []; k.push({ offset: 0, opacity: 0 });
+  for (let i = 0; i < n; i++) { const t0 = i * 500; k.push({ offset: (t0 + 40) / P, opacity: 1 }, { offset: (t0 + 250) / P, opacity: 1 }, { offset: (t0 + 290) / P, opacity: 0 }); }
+  k.push({ offset: 1, opacity: 0 }); return [k, P]; };
+function simularLed(v, pisc, R) {
+  if (!v) return; const tx = $('[data-led-tx]', v), casa = $('.led-casa', v); (v.__anim || []).forEach(a => a.cancel()); v.__anim = []; v.removeAttribute('data-aceso');
+  const nomes = [...new Set(R.filter(r => r.tp === 'Piscada de LED').map(r => r.led))], nome = nomes.length === 1 ? nomes[0] : '', cor = corLed(nome);
+  casa.style.setProperty('--led', cor); v.dataset.n = typeof pisc === 'number' ? String(pisc) : '';
+  if (typeof pisc !== 'number') { tx.innerHTML = `<span class="vs-rot">Simulador de LED</span><span class="vs-sub">${pisc === 'led' ? 'Padrões combinados de LED desta marca: o padrão completo está em cada cartão abaixo.' : 'Toque no número de piscadas para ver o LED pulsar no compasso e filtrar os códigos.'}</span>`; return; }
+  const n = Math.min(pisc, 10), todosOk = R.length > 0 && R.every(r => r.ok);
+  tx.innerHTML = `<span class="vs-rot">Simulador de LED</span><span class="vs-sub"><b>${pisc === 10 ? '10 ou mais' : n} piscada${n === 1 ? '' : 's'}</b> · pausa de 2\u00a0s</span>${nome ? `<span class="vs-sub">${esc(nome)}</span>` : ''}${todosOk ? '<span class="selo-led" data-led-selo>✓ NÃO É DEFEITO</span>' : ''}`;
+  v.dataset.aceso = ''; if (matchMedia('(prefers-reduced-motion: reduce)').matches || !v.animate) return;
+  v.removeAttribute('data-aceso'); const [kf, P] = ritmoLed(n), op = { duration: P, iterations: Infinity };
+  v.__anim = [$('.led-halo', v).animate(kf.map(x => ({ ...x, opacity: x.opacity * 0.45 })), op), $('.led-bulbo', v).animate(kf.map(x => ({ offset: x.offset, backgroundColor: x.opacity ? cor : '#24333d', borderColor: x.opacity ? '#FFFFFF' : '#344856' })), op)];
+}
 const PISC = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 function telaCodigos() {
   montar('<div data-corpo><div class="carregando">Carregando códigos e piscadas oficiais…</div></div>');
@@ -1529,6 +1634,7 @@ function telaCodigos() {
         <h3>Piscadas do LED</h3>
         <button class="bt bt-sel largo" data-pisc-todos aria-pressed="${st.pisc === 'led'}">Ver todos os padrões de LED desta marca</button>
         <div class="grade4" style="grid-template-columns:repeat(5,minmax(0,1fr))" role="group" aria-label="Número de piscadas">${PISC.map(n => `<button class="bt bt-sel" data-pisc="${n}" aria-pressed="${st.pisc === n}">${n === 10 ? '10+' : n}</button>`).join('')}</div>
+        <div class="visor-safira vs-led" data-led-sim aria-live="polite"><div class="led-casa"><span class="led-halo"></span><span class="led-bulbo"></span></div><div class="vs-led-tx" data-led-tx></div></div>
         ${campo('Código do visor', `type="search" data-q placeholder="CH05, E1, P4, F0, H6…" autocomplete="off" enterkeyhint="search" value="${esc(st.q)}"`, true)}
         <p class="sub" data-cont aria-live="polite"></p></div><div class="lista" data-lista></div>`;
     let lim = 30;
@@ -1543,6 +1649,7 @@ function telaCodigos() {
       const bt = $('[data-pisc-todos]', corpo); bt.disabled = !temLedMarca; bt.setAttribute('aria-pressed', String(st.pisc === 'led')); bt.textContent = `Ver todos os padrões de LED desta marca (${nLedMarca})`;
       const R = U.filter(r => marcaCasa(r.m, mk) && (st.pisc === null || (st.pisc === 'led' ? r.tp === 'Piscada de LED' : st.pisc === 10 ? r.np.some(n => n >= 10) : r.np.includes(st.pisc))) && (!q || q.split(/\s+/).every(w => r.txt.includes(w))));
       R.sort((a, b) => (q && norm(b.c) === q) - (q && norm(a.c) === q));
+      simularLed($('[data-led-sim]', corpo), st.pisc, R);
       $('[data-cont]', corpo).textContent = `${R.length} resultado${R.length === 1 ? '' : 's'}${mk ? ' · ' + mk : ''}${st.pisc === 'led' ? ' · todos os padrões de LED' : st.pisc !== null ? ` · ${st.pisc === 10 ? '10 ou mais' : st.pisc} piscada${st.pisc === 1 ? '' : 's'}` : ''}`;
       const lista = $('[data-lista]', corpo);
       lista.innerHTML = R.length ? R.slice(0, lim).map(r => `<div class="cartao codigo" data-cod="${r.i}"><div class="linha"><span class="cd">${esc(r.cd || r.c)}</span><span class="mk-marca">${logo(r.m, 20)}<b>${esc(r.m)}</b></span></div>${r.pd ? `<p class="sub"><b>${esc(r.led)}:</b> ${esc(r.padrao)}</p>` : ''}<span class="mk">${esc(r.tp)} · ${esc(r.m)} · ${esc(r.l)}</span><p class="tx">${tk(tx(r.d))}</p>
@@ -1591,6 +1698,21 @@ const qrMatriz = (t) => { try { if (!window.qrcode || !t) return null; const q =
 const pixPayload = (t, total, numero) => { try { return window.GeloProPix && t.pix ? window.GeloProPix.payload({ chave: t.pix, nome: t.nome, cidade: t.cidade, valor: total, txid: 'LAUDO' + numero }) : ''; } catch (e) { return ''; } };
 const qrSvg = (M) => { if (!M) return ''; const n = M.length, e = 4; let d = ''; M.forEach((lin, r) => [...lin].forEach((b, c) => { if (b === '1') d += `M${c + e} ${r + e}h1v1h-1z`; })); return `<svg viewBox="0 0 ${n + e * 2} ${n + e * 2}" shape-rendering="crispEdges" role="img" aria-label="QR Code Pix"><rect width="${n + e * 2}" height="${n + e * 2}" fill="#FFFFFF"></rect><path d="${d}" fill="#091E42"></path></svg>`; };
 const sinal = (v) => (v < 0 ? '−' : '+') + brl(Math.abs(v));
+const barraLucro = (el, d) => {
+  const W = 260, esc0 = Math.max(d.marcas[2], d.tot, 1), k = W / esc0, cl = (v) => Math.max(0, Math.min(W, v));
+  const wT = cl(d.tot * k), wP = cl(Math.min(d.tot, Math.max(0, d.custo)) * k), xL = wP > 0 ? Math.min(wT, wP + 2) : 0, wL = Math.max(0, wT - xL);
+  if (!el.querySelector('svg[data-barra-lucro]')) el.innerHTML = `<svg class="vs-graf" viewBox="0 0 260 40" width="100%" role="img" data-barra-lucro>
+    <defs><pattern id="hachuraPeca" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><rect width="6" height="6" fill="#FF5B3D"></rect><rect width="2" height="6" fill="#192329"></rect></pattern>
+    <clipPath id="barraLucroClip"><rect x="0" y="4" width="260" height="24" rx="6"></rect></clipPath></defs>
+    <rect x="0" y="4" width="260" height="24" rx="6" fill="#24333d" data-trilho></rect>
+    <g clip-path="url(#barraLucroClip)"><rect x="0" y="4" width="0" height="24" fill="url(#hachuraPeca)" data-fatia="peca" data-custo-barra></rect><rect x="0" y="4" width="0" height="24" fill="#0BD085" data-fatia="lucro"></rect></g>
+    ${['min', 'ref', 'max'].map(m => `<line x1="0" y1="30" x2="0" y2="40" stroke="#B9C9D5" stroke-width="2" data-degrau="${m}"></line>`).join('')}</svg>`;
+  const svg = el.querySelector('svg'), pe = svg.querySelector('[data-fatia=peca]'), lu = svg.querySelector('[data-fatia=lucro]');
+  pe.setAttribute('width', wP.toFixed(1)); lu.setAttribute('x', xL.toFixed(1)); lu.setAttribute('width', wL.toFixed(1));
+  ['min', 'ref', 'max'].forEach((m, i) => { const ln = svg.querySelector(`[data-degrau=${m}]`), x = Math.max(1, Math.min(W - 1, d.marcas[i] * k)).toFixed(1); ln.setAttribute('x1', x); ln.setAttribute('x2', x);
+    ln.setAttribute('stroke', d.on === m ? '#FFFFFF' : '#B9C9D5'); ln.toggleAttribute('data-on', d.on === m); });
+  svg.setAttribute('aria-label', `Barra de margem: peça ${brl(Math.max(0, d.custo))} e lucro limpo ${sinal(d.tot - d.custo)} sobre ${brl(d.tot)}; degraus da Tabela 2026: ${['Mín', 'Ref', 'Máx'].map((r, i) => `${r} ${sinal(d.lk[i])}`).join(', ')}`);
+};
 function telaLaudo(op) {
   montar('<div data-l="corpo"><div class="carregando">Carregando a Tabela Oficial 2026…</div></div>');
   const L = S.laudo || (S.laudo = { sid: null, v: null, causa: '', cli: '', tel: '', mala: false, tecnico: false, pmoc: '' });
@@ -1611,12 +1733,13 @@ function telaLaudo(op) {
         <p class="sub" data-l="fx-estado" data-so-tecnico></p>
       </header>
       <section class="bastidor-card" data-l="bast" hidden aria-label="Seu lucro no bolso (só no Modo Técnico)">
-        <div class="cab-sec"><h3>Seu lucro no bolso</h3><span class="tag" style="background:#0C1D36;color:#67C6FF;border-color:#0284C7" data-l="margem-pct"></span></div>
-        <div class="bast-linha"><span class="pr">VOCÊ LUCRA LIMPO (SOBROU LIMPO)</span><b class="val" data-l="limpo" style="color:#4ADE80"></b></div>
-        <div class="bast-linha sec"><span class="pr">CUSTO MÉDIO DA PEÇA</span><b class="val" data-l="custo" style="color:#FDE68A"></b></div>
-        <p class="bast-nota" data-l="conta"></p>
+        <div class="cab-sec"><h3>Seu lucro no bolso</h3><span class="tag tag-margem" data-l="margem-pct"></span></div>
+        <div class="visor-safira" data-visor-lucro><span class="vs-rot">VOCÊ LUCRA LIMPO <span class="nw">(SOBROU LIMPO)</span></span><b class="vs-lucro-val" data-l="limpo"></b>
+          <div data-l="grafico-lucro" id="grafico-lucro"></div>
+          <div class="vs-legenda" aria-hidden="true"><span class="peca">▨ Peça</span><span class="lucro">✓ Lucro limpo</span></div></div>
+        <div class="bast-linha sec"><span class="pr">CUSTO MÉDIO DA PEÇA</span><b class="val" data-l="custo"></b></div>
         <button class="bt bt-sel largo" data-l="mala" aria-pressed="${L.mala}"></button>
-        <div data-l="grafico-lucro"></div>
+        <p class="bast-nota" data-l="conta"></p>
         <div class="degraus" data-l="degraus" role="list" aria-label="Lucro limpo nos 3 degraus da Tabela 2026"></div>
         <div class="lista" data-l="combos-box"><p class="bast-nota adic">Adicional sugerido pela Tabela 2026: só entra no valor se você tocar.</p><div class="lista" data-l="combos"></div></div>
         <p class="odometro" data-l="lucro-cofre" hidden></p>
@@ -1705,7 +1828,7 @@ function telaLaudo(op) {
       q('faixa').innerHTML = `<b>Faixa Oficial 2026:</b> ${tk(esc(`${brl(s.valor_min)} a ${brl(s.valor_max)} · Valor típico: ${brl(precoDe(s, porte))}${fxp.escala ? ` · Porte ${PORTE_TX[porte]} (faixa da tabela em escala proporcional): ${brl(fxp.min)} a ${brl(fxp.max)}` : ''}`))}`;
       q('prevtx').innerHTML = `<b>Prevenção:</b> ${tk(esc(s.economia_preventiva))}`;
       q('ref').dataset.servico = s.servico_id;
-      q('custo').textContent = brl(custo); q('mala').innerHTML = `${ico(L.mala ? 'sucesso' : 'neutro', L.mala ? '#FFFFFF' : '#091E42', 18)}<span>Peça na Mala = R$ 0</span>`; q('mala').setAttribute('aria-pressed', String(L.mala));
+      q('custo').innerHTML = L.mala && custoBase > 0 ? `<s data-custo-riscado>${brl(custo)}</s> ${brl(custoCombo)}` : brl(custo); q('mala').innerHTML = `${ico(L.mala ? 'sucesso' : 'neutro', L.mala ? '#FFFFFF' : '#091E42', 18)}<span>Peça na Mala = R$ 0</span>`; q('mala').setAttribute('aria-pressed', String(L.mala));
       const lucro = totalFinal() - (L.mala ? 0 : custoBase) - custoCombo;
       q('limpo').textContent = sinal(lucro); q('total').textContent = brl(totalFinal());
       // Faixa da Tabela 2026 em 1 toque (mínimo, referência do porte, máximo) e o tile da peça do serviço.
@@ -1722,17 +1845,10 @@ function telaLaudo(op) {
       const tot = totalFinal(), pct = tot > 0 ? Math.round(lucro / tot * 100) : 0; q('margem-pct').textContent = `MARGEM LIMPA ${pct}%`;
       const custoEf = (L.mala ? 0 : custoBase) + custoCombo, comboP = c0 ? precoDe(c0, porte) : 0, lk = ['min', 'ref', 'max'].map(k => fx[k] + comboP - custoEf);
       q('conta').textContent = `Conta direta de bancada: valor total menos custo médio da peça na Tabela 2026${c0 ? ' (serviço + adicional)' : ''}${L.mala ? ', com Peça na Mala = R$ 0' : ''}.`;
-      const perto = exato || null, wc = tot > 0 ? Math.max(0, Math.min(1, custoEf / tot)) : 1;
-      const pts = [[28, 74], [170, 55], [312, 38]];
-      // Barra peça × lucro no topo e o plano com grade, eixos, área sob a curva e cotas; os valores ficam em HTML legível logo abaixo.
-      q('grafico-lucro').innerHTML = `<svg viewBox="0 0 340 112" width="100%" height="112" role="img" aria-label="Curva do lucro limpo no Mínimo, na Referência e no Máximo da Tabela 2026: ${['Mín', 'Ref', 'Máx'].map((r, k) => `${r} ${sinal(lk[k])}`).join(', ')}"><defs><linearGradient id="gradLucro" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#38BDF8"></stop><stop offset="100%" stop-color="#38BDF8" stop-opacity="0"></stop></linearGradient></defs>`
-        + `<rect x="8" y="4" width="324" height="14" rx="7" fill="#047857" data-margem></rect>${wc > 0 ? `<rect x="8" y="4" width="${Math.max(10, 324 * wc).toFixed(1)}" height="14" rx="7" fill="#B45309" data-custo-barra></rect>` : ''}`
-        + `<rect x="12" y="26" width="316" height="82" rx="8" fill="#07162C" stroke="#1E3A8A" stroke-width="1"></rect>${[40, 60, 80].map(y => `<line x1="20" y1="${y}" x2="320" y2="${y}" stroke="#1E293B" stroke-dasharray="3,3" data-grade></line>`).join('')}`
-        + `<line x1="20" y1="30" x2="20" y2="100" stroke="#334155" stroke-width="1.5" data-eixo="y"></line><line x1="20" y1="100" x2="320" y2="100" stroke="#334155" stroke-width="1.5" data-eixo="x"></line>`
-        + `<path d="M 28 74 Q 170 54 312 38 L 312 100 L 28 100 Z" fill="url(#gradLucro)" opacity="0.28" data-area></path><path d="M 28 74 Q 170 54 312 38" stroke="#38BDF8" stroke-width="3" fill="none"></path>`
-        + pts.map(([x, y]) => `<line x1="${x}" y1="${y + 6}" x2="${x}" y2="100" stroke="#64748B" stroke-width="1" stroke-dasharray="3,3" data-cota></line>`).join('')
-        + pts.map(([x, y], k) => { const on = ['min', 'ref', 'max'][k] === perto; return `<circle cx="${x}" cy="${y}" r="${on ? 6 : 4}" fill="${on ? '#4ADE80' : '#38BDF8'}" stroke="#091E42" stroke-width="1.5"></circle>`; }).join('')
-        + `</svg>`;
+      const perto = exato || null;
+      // Instrumento 1 · barra horizontal empilhada no visor safira (sem velocímetro): escala fixa de 260 px = Máximo da Tabela 2026
+      // (+ adicional), fatia da peça hachurada #FF5B3D × #192329, divisória de 2 px, fatia do lucro limpo #0BD085 e as 3 marcas dos degraus.
+      barraLucro(q('grafico-lucro'), { tot, custo: custoEf, marcas: ['min', 'ref', 'max'].map(k => fx[k] + comboP), on: perto, lk });
       q('degraus').innerHTML = ['min', 'ref', 'max'].map((k, i) => `<div role="listitem"${k === perto ? ' class="on"' : ''}><span>${['Mín', 'Ref', 'Máx'][i]}</span><b>${sinal(lk[i])}</b></div>`).join('');
       const cs = String(s.combo_sugerido || '').split(';').map(x => P.find(y => y.servico_id === x.trim())).filter(Boolean);
       q('combos').innerHTML = cs.map(sc => { const on = L.comboId === sc.servico_id, nome = esc(sc.servico.split('(')[0].trim()), pr = `(+${brl(precoDe(sc, porte)).replace(' ', '\u00a0')})`;
