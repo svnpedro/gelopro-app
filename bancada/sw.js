@@ -1,21 +1,23 @@
 // GeloPro · Bancada GeloPRO em modo avião — 12/11/2026 — versão oficial e única em /bancada/ (escopo ./, Design System v4 transplantado 1:1).
-// Cache bancada-offline-v12 (12/11/2026, Bancada autônoma: motor em ./motor/, marca em ./marca/, PDF Executivo v4): o activate apaga todo cache antigo da Bancada (bancada-offline-* diferente, bancada-v2-offline-* e
-// bancada-v3-offline-*, das versões aposentadas em historico-versoes/); nenhum outro cache é tocado. No 1º acesso com sinal o
-// install guarda tudo o que as 4 teclas usam: a página, o motor próprio em ./motor/ (QR, Pix, marca, PDF do PMOC, licença), os arquivos literais do Design System
-// em ./ds/, as fontes locais (./fontes), o mascote, os 19 CSVs da base técnica, as 126 artes de ../guia-pro/imagens/ e os 48 tiles de
-// ./tiles/. Com sinal: página, .js, .html, .json e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e imagens
-// saem do cache e só vão à rede se faltarem.
+// Cache bancada-offline-v13 (12/11/2026, celular real): o install guarda SÓ o núcleo leve (página, motor próprio em ./motor/ com a base
+// embutida base-inline.js, PDF v4, estilos e gerador do Design System, fontes e mascote), 2 downloads por vez, sem disputar a antena.
+// As 126 artes de ../guia-pro/imagens/, os 48 tiles de ./tiles/, os 19 CSVs e os arquivos literais de ./ds/ entram depois, aquecidos
+// 1 por vez quando a página pede (mensagem aquecer-artes, 4 s após carregar e ociosa). Busca: cache primeiro, com atualização silenciosa
+// em segundo plano (stale-while-revalidate) para página, .js, .html, .json e .csv; artes, fontes e imagens saem do cache e só vão à rede
+// se faltarem. Nenhuma espera de rede ao tocar. O activate apaga os caches antigos da Bancada (bancada-offline-* diferente,
+// bancada-v2-offline-* e bancada-v3-offline-*); o install reaproveita as artes que já estavam no cache anterior (sem baixar de novo).
 'use strict';
-const CACHE = 'bancada-offline-v12'; // v12 (12/11/2026): Bancada autônoma (motor/ e marca/ próprios, zero dependência da pasta antiga do app)
-const REDE_MS = 3000;
+const CACHE = 'bancada-offline-v13'; // v13 (12/11/2026): núcleo leve no install, artes aquecidas 1 por vez, cache primeiro sem prazo de rede
 const PAGINA = './';
 const MOTOR = [
-  './motor/vendor/qrcode-generator-1.4.4.js', './motor/gelopro-pix.js', './motor/marca-gelopro.js', './motor/pdf-gelopro.js', './motor/licenca-gelopro.js',
-  './pdf-bancada-v4.js', './ds/estilos.js', './ds/gerador-copias.js', './ds/icones.json', './ds/InstrumentosVivos.dc.html', './ds/InstrumentosVivosEscuro.dc.html', './ds/LogoMarca.dc.html',
+  './motor/base-inline.js', './motor/vendor/qrcode-generator-1.4.4.js', './motor/gelopro-pix.js', './motor/marca-gelopro.js', './motor/pdf-gelopro.js', './motor/licenca-gelopro.js',
+  './pdf-bancada-v4.js', './ds/estilos.js', './ds/gerador-copias.js',
   './fontes/barlow-semi-condensed-latin-500-normal.woff2', './fontes/barlow-semi-condensed-latin-600-normal.woff2', './fontes/barlow-semi-condensed-latin-700-normal.woff2',
   './fontes/barlow-semi-condensed-latin-800-normal.woff2', './fontes/jetbrains-mono-latin-500-normal.woff2', './fontes/jetbrains-mono-latin-700-normal.woff2',
   './marca/gelopro-mascote.png'
 ];
+// Arquivos literais do Design System: a página lê a cópia embutida em base-inline.js; o original fica guardado para conferência offline.
+const DS = ['./ds/icones.json', './ds/InstrumentosVivos.dc.html', './ds/InstrumentosVivosEscuro.dc.html', './ds/LogoMarca.dc.html'];
 const BASE = [
   '../base-tecnica/precos_regionais_2026.csv',
   '../base-tecnica/pmoc_atividades.csv',
@@ -99,32 +101,46 @@ const TILES = [
   './tiles/t41_pasta_dissipador.webp', './tiles/t42_eeprom_micro.webp', './tiles/t43_bomba_dreno.webp', './tiles/t44_coxim_suporte.webp',
   './tiles/t45_rolamento_bucha.webp', './tiles/t46_condensadora_sol.webp', './tiles/t47_balanca_carga.webp', './tiles/t48_nivel_bolha.webp'
 ];
-const TUDO = [PAGINA, ...MOTOR, ...BASE, ...ARTES, ...TILES];
+const NUCLEO = [PAGINA, ...MOTOR];
+const AQUECER = [...DS, ...BASE, ...ARTES, ...TILES];
+const TUDO = [...NUCLEO, ...AQUECER];
 const abs = (u) => new URL(u, self.location).href;
 const URL_PAGINA = abs(PAGINA);
+const baixar = async (c, u) => { try { const r = await fetch(u, { cache: 'reload', credentials: 'omit' }); if (r.ok) await c.put(u, r); } catch (err) { } };
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then(async (c) => {
+    // Artes, tiles e CSVs que já estavam num cache anterior da Bancada passam para o novo sem tocar na rede.
+    const velhos = (await caches.keys()).filter(k => /^bancada-offline-/.test(k) && k !== CACHE);
+    for (const k of velhos) { const v = await caches.open(k); for (const u of AQUECER.map(abs)) { if (await c.match(u)) continue; const hit = await v.match(u); if (hit) await c.put(u, hit); } }
     let i = 0;
-    const um = async () => { while (i < TUDO.length) { const u = abs(TUDO[i++]); try { const r = await fetch(u, { cache: 'reload', credentials: 'omit' }); if (r.ok) await c.put(u, r); } catch (err) { } } };
-    await Promise.all([um(), um(), um(), um()]);
+    const um = async () => { while (i < NUCLEO.length) await baixar(c, abs(NUCLEO[i++])); };
+    await Promise.all([um(), um()]);
   }).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => /^bancada(-v2|-v3)?-offline-/.test(k) && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
+// Aquecimento em fila suave: 1 arquivo por vez, só o que falta, quando a página avisa que está ociosa (aquecer-artes).
+let AQUECENDO = null;
+const aquecer = () => AQUECENDO || (AQUECENDO = caches.open(CACHE).then(async (c) => {
+  for (const u of AQUECER.map(abs)) if (!(await c.match(u))) await baixar(c, u);
+}).finally(() => { AQUECENDO = null; }));
 // A página (e a sonda de modo avião) pergunta se o cache já está completo.
 self.addEventListener('message', (e) => {
   const d = e.data || {};
+  if (d.tipo === 'aquecer-artes') { e.waitUntil(aquecer()); return; }
   if (d.tipo !== 'status' || !e.source) return;
   e.waitUntil(caches.open(CACHE).then(async (c) => {
-    let n = 0; const faltam = []; for (const u of TUDO) { if (await c.match(abs(u))) n++; else faltam.push(u); }
-    e.source.postMessage({ tipo: 'status', cache: CACHE, guardados: n, total: TUDO.length, faltam });
+    let n = 0, nucleo = 0; const faltam = []; for (const u of TUDO) { if (await c.match(abs(u))) { n++; if (NUCLEO.includes(u)) nucleo++; } else faltam.push(u); }
+    e.source.postMessage({ tipo: 'status', cache: CACHE, guardados: n, total: TUDO.length, nucleo, totalNucleo: NUCLEO.length, aquecendo: !!AQUECENDO, faltam });
   }));
 });
 
 const guardar = (chave, r) => { if (r && r.ok) { const cp = r.clone(); return caches.open(CACHE).then(c => c.put(chave, cp)).catch(() => {}); } return Promise.resolve(); };
 const doCache = async (chave, req) => { const c = await caches.open(CACHE); return (await c.match(chave)) || (req.mode === 'navigate' ? await c.match(URL_PAGINA) : null); };
+// Atualização silenciosa: cada arquivo do núcleo é revalidado no máximo 1 vez por vida do service worker.
+const REVALIDADO = new Set();
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
@@ -133,31 +149,14 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
   // A página é uma só: ?testarSeguranca=1 e #D-xxx abrem a mesma cópia guardada.
   const chave = req.mode === 'navigate' ? URL_PAGINA : req.url.split('#')[0];
-  const fresco = req.mode === 'navigate' || /\.(js|csv|html|json)$/.test(url.pathname);
-  if (fresco) {
-    e.respondWith((async () => {
-      const rede = fetch(req.mode === 'navigate' ? req.url : chave, { cache: 'no-store', credentials: 'omit' }).then((r) => { if (r && r.ok) e.waitUntil(guardar(chave, r)); return r; });
-      rede.catch(() => {});
-      let relogio;
-      const prazo = new Promise((ok) => { relogio = setTimeout(ok, REDE_MS, null); });
-      try {
-        const r = await Promise.race([rede, prazo]);
-        clearTimeout(relogio);
-        if (r) return r;
-        return (await doCache(chave, req)) || await rede;
-      } catch (err) {
-        clearTimeout(relogio);
-        const hit = await doCache(chave, req);
-        if (hit) return hit;
-        throw err;
-      }
-    })());
-    return;
-  }
+  const versionado = req.mode === 'navigate' || /\.(js|csv|html|json)$/.test(url.pathname);
   e.respondWith((async () => {
     const hit = await doCache(chave, req);
-    if (hit) return hit;
-    const r = await fetch(req);
+    if (hit) {
+      if (versionado && !REVALIDADO.has(chave)) { REVALIDADO.add(chave); e.waitUntil(fetch(req.mode === 'navigate' ? URL_PAGINA : chave, { cache: 'no-store', credentials: 'omit' }).then(r => guardar(chave, r)).catch(() => {})); }
+      return hit;
+    }
+    const r = await fetch(req.mode === 'navigate' ? req.url : req);
     e.waitUntil(guardar(chave, r));
     return r;
   })());

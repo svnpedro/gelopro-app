@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#DBD8D1" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171B20" media="(prefers-color-scheme: dark)">
@@ -19,7 +19,9 @@
     Paywall Essencial × Completo PRO × Bumps, gelopro.sessao.v1, GeloProPix com QR real, PDF Nº 1001 e licenca-gelopro.js (motor próprio em ./motor/ e marca em ./marca/: a Bancada é autônoma).
   · O motor entra no painel vivo só pelas props (lista LIGACOES). Painéis e bases pré-carregados na abertura: todo instrumento
     responde ao primeiro toque em menos de 50 ms.
-  Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v12). PDF do laudo: ./pdf-bancada-v4.js (Executivo v4). Os 48 tiles ficam em ./tiles/.
+  Base embutida: ./motor/base-inline.js (19 CSVs e os arquivos do Design System lidos em tempo de execução, gerados por
+  scripts/gerar-base-inline.js): zero fetch() ao tocar. Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v13, núcleo leve no install e artes aquecidas
+  1 por vez depois de 4 s de página ociosa). PDF do laudo: ./pdf-bancada-v4.js (Executivo v4). Os 48 tiles ficam em ./tiles/.
 -->
 <style>
 @font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-display:swap;font-weight:500;src:url(./fontes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2')}
@@ -29,9 +31,13 @@
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-display:swap;font-weight:500;src:url(./fontes/jetbrains-mono-latin-500-normal.woff2) format('woff2')}
 @font-face{font-family:'JetBrains Mono';font-style:normal;font-display:swap;font-weight:700;src:url(./fontes/jetbrains-mono-latin-700-normal.woff2) format('woff2')}
 /* Só o que o estilo em linha do pacote não alcança: reinício do navegador, estados :active/:disabled/:focus do contrato de marcação,
-   dock fixo de chapa opaca (some com gaveta ou teclado aberto) e o rótulo curto do dock abaixo de 390 px. */
-html,body{margin:0;padding:0;background:#DBD8D1;-webkit-text-size-adjust:100%}
+   dock fixo de chapa opaca (some com gaveta ou teclado aberto), o rótulo curto do dock abaixo de 390 px e a trava de instrumento nativo
+   do celular (sem pinça nem toque duplo de zoom, sem rolagem lateral; o único zoom é o 1,85× da ilustração; fundo do tema escolhido). */
+html,body{margin:0;padding:0;background:#DBD8D1;-webkit-text-size-adjust:100%;touch-action:manipulation;width:100%}
+html{overflow-x:hidden}
 @media (prefers-color-scheme:dark){html,body{background:#171B20}}
+html[data-tema="claro"],html[data-tema="claro"] body{background:#DBD8D1;color-scheme:light}
+html[data-tema="escuro"],html[data-tema="escuro"] body{background:#171B20;color-scheme:dark}
 *,*::before,*::after{box-sizing:border-box}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent;text-align:inherit}
 img{display:block}
@@ -52,6 +58,7 @@ body[data-teclado] .dock-fixo{display:none}
 <body>
 <div id="app"></div>
 <div id="toast" role="status" aria-live="polite"></div>
+<script src="./motor/base-inline.js"></script>
 <script src="./motor/vendor/qrcode-generator-1.4.4.js"></script>
 <script src="./motor/gelopro-pix.js"></script>
 <script src="./motor/marca-gelopro.js"></script>
@@ -236,7 +243,10 @@ function parseCSV(t) {
   const [h, ...rs] = L; return rs.filter(r => r.length > 1).map(r => Object.fromEntries(h.map((k, i) => [k.trim(), (r[i] ?? '').trim()])));
 }
 const CSV = {};
-const csv = (nome) => CSV[nome] || (CSV[nome] = fetch('../base-tecnica/' + nome).then(r => { if (!r.ok) throw new Error(nome + ' HTTP ' + r.status); return r.text(); }).then(parseCSV));
+// Base embutida (./motor/base-inline.js, gerada byte a byte dos CSVs e do Design System por scripts/gerar-base-inline.js): ao tocar em
+// Gás & SH, Sensor NTC, Códigos ou Laudo a Bancada não faz nenhum fetch(); a rede fica só de reserva se o arquivo gerado faltar.
+const lerTexto = (u) => { const B = self.GELOPRO_BASE_INLINE, t = B && B[u]; return typeof t === 'string' ? Promise.resolve(t) : fetch(u).then(r => { if (!r.ok) throw new Error(u.split('/').pop() + ' HTTP ' + r.status); return r.text(); }); };
+const csv = (nome) => CSV[nome] || (CSV[nome] = lerTexto('../base-tecnica/' + nome).then(parseCSV));
 // ═════ motor · ativos ═════
 F.forEach((f, i) => { Object.assign(f, IMGS[f.img]); f.n = i; f.txt = norm(limpa([f.id, f.id.replace('-', ''), f.titulo, f.sub, f.busca, f.bloco, ...f.chips, ...f.causas.map(c => c[0]), ...f.verifs.flat()].join(' '))); });
 const ARTES = '../guia-pro/imagens/';
@@ -396,6 +406,7 @@ const S = {
   leituras: [], srvSug: null, causaSug: null, laudo: null, numero: null, numeroGravado: false, hist: [], cofreAberto: false, casoLaudo: -1, origemCofre: null, rolagemLista: null,
   // Cofre simples de laudos salvos no aparelho (bancada.cofre): número, data, equipamento, serviço, valor e cliente.
   cofre: (() => { const a = lerJSON('bancada.cofre'); return Array.isArray(a) ? a.filter(x => x && typeof x.id === 'string') : []; })(),
+  tema: (() => { const t = (lerJSON('gelopro.sessao.v1') || {}).tema; return t === 'claro' || t === 'escuro' ? t : null; })(),
   equip: (() => { const e = (lerJSON('gelopro.sessao.v1') || {}).equip || lerJSON('bancada.equip'); return e && MARCAS.includes(e.marca) && BTUS.includes(e.btu) && FLS.includes(e.fluido) ? e : { marca: 'LG', btu: '12.000', fluido: 'R32' }; })(),
 };
 // Sessão de bancada no aparelho (Contrato 11, gelopro.sessao.v1): pílula (marca, BTU/h, fluido), tecla ativa, leituras enviadas,
@@ -403,8 +414,8 @@ const S = {
 // (?largura=360) só a pílula é guardada. Migra uma única vez as chaves antigas (bancada.sessao e bancada.equip).
 const SESSAO_OFF = /[?&]largura=360\b/.test(location.search);
 const K_SESSAO = 'gelopro.sessao.v1';
-const salvarSessao = () => guardar(K_SESSAO, JSON.stringify(SESSAO_OFF ? { v: 1, equip: S.equip }
-  : { v: 1, equip: S.equip, tecla: S.tecla, leituras: S.leituras, srvSug: S.srvSug, causaSug: S.causaSug, laudo: S.laudo, trava: S.trava, inv: S.inv, casoLaudo: S.casoLaudo }));
+const salvarSessao = () => guardar(K_SESSAO, JSON.stringify(SESSAO_OFF ? { v: 1, equip: S.equip, ...(S.tema ? { tema: S.tema } : {}) }
+  : { v: 1, equip: S.equip, ...(S.tema ? { tema: S.tema } : {}), tecla: S.tecla, leituras: S.leituras, srvSug: S.srvSug, causaSug: S.causaSug, laudo: S.laudo, trava: S.trava, inv: S.inv, casoLaudo: S.casoLaudo }));
 (() => {
   const z = lerJSON(K_SESSAO) || lerJSON('bancada.sessao');
   try { if (ler('bancada.sessao') !== null || ler('bancada.equip') !== null) { localStorage.removeItem('bancada.sessao'); localStorage.removeItem('bancada.equip'); guardar(K_SESSAO, JSON.stringify({ ...(z && typeof z === 'object' ? z : {}), v: 1, equip: S.equip })); } } catch (e) {}
@@ -633,7 +644,10 @@ const limparDoc = (o) => (typeof o === 'string' ? limpa(o) : Array.isArray(o) ? 
 // Modo escuro: a tela clara passa por GeradorCopias.telaEscura (ds/gerador-copias.js, o gerador do próprio pacote); abaixo de 390 px,
 // por GeradorCopias.redimensionar. Painéis vivos: ds/InstrumentosVivos.dc.html (e o Escuro gerado pelo pacote) rodando literalmente.
 // ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
-const escuro = () => { try { return matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; } };
+// Tema: segue o celular (prefers-color-scheme) até o técnico tocar na tecla Sol/Lua da Home; a escolha fica em gelopro.sessao.v1 (tema).
+const escuro = () => { if (S.tema === 'escuro' || S.tema === 'claro') return S.tema === 'escuro'; try { return matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; } };
+const aplicarTema = () => { const esc = escuro(), cor = esc ? '#171B20' : '#DBD8D1'; document.documentElement.dataset.tema = esc ? 'escuro' : 'claro';
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', cor)); };
 const reduzido = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
 const PISC = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const toastEl = $('#toast');
@@ -664,9 +678,12 @@ function pintarEl(tag, props, kids) {
 }
 const h = (tag, props, ...kids) => new Html(tag, props, kids);
 const ReactMin = { createElement: h, cloneElement: (el, novo) => new Html(el.type, { ...el.props, ...novo }, el.kids), createRef: () => ({ current: null }), Fragment: 'g' };
+// Arrasto a 60 fps: o setState do painel pinta no próximo quadro (requestAnimationFrame), nos nós existentes (morph), sem trocar o
+// <input type="range"> sob o dedo; vários eventos input do mesmo quadro viram uma pintura só. Aba em segundo plano: cai para microtarefa.
+const quadro = (f) => { if (document.hidden) return queueMicrotask(f); let feito = false; const uma = () => { if (!feito) { feito = true; f(); } }; requestAnimationFrame(uma); setTimeout(uma, 50); };
 class DCLogic {
   constructor(p) { this.props = p || {}; this.state = {}; }
-  setState(u, cb) { const ch = typeof u === 'function' ? u(this.state, this.props) : u; this.state = { ...this.state, ...ch }; if (this.__pinta && !this.__pend) { this.__pend = true; queueMicrotask(() => { this.__pend = false; this.__pinta(); }); } if (cb) queueMicrotask(cb); }
+  setState(u, cb) { const ch = typeof u === 'function' ? u(this.state, this.props) : u; this.state = { ...this.state, ...ch }; if (this.__pinta && !this.__pend) { this.__pend = true; quadro(() => { this.__pend = false; this.__pinta(); }); } if (cb) queueMicrotask(cb); }
   forceUpdate() { if (this.__pinta) this.__pinta(); }
 }
 const olhar = (p, sc) => (p === 'true' ? true : p === 'false' ? false : p.split('.').reduce((o, k) => (o == null ? undefined : o[k]), sc));
@@ -725,7 +742,7 @@ const LIGACOES_ESCURO = [["pill: { bg: '#FFFFFF', bd: '#3A424C', fg: '#6FA3B3' }
 const assinatura = (o) => JSON.stringify(o, (k, v) => (typeof v === 'function' ? undefined : v));
 async function fonteVivo(esc) {
   const nome = esc ? 'InstrumentosVivosEscuro' : 'InstrumentosVivos'; if (FONTE_VIVO[nome]) return FONTE_VIVO[nome];
-  const v = await fetch(`./ds/${nome}.dc.html`).then(r => { if (!r.ok) throw new Error(nome + ' HTTP ' + r.status); return r.text(); });
+  const v = await lerTexto(`./ds/${nome}.dc.html`);
   if (!ESTILO_VIVO.feito) { const st = (v.match(/<style>([\s\S]*?)<\/style>/) || [])[1] || ''; const e = document.createElement('style'); e.dataset.vivo = ''; e.textContent = st; document.head.appendChild(e); ESTILO_VIVO.feito = true; }
   let js = v.slice(v.indexOf('class Component'), v.indexOf('<\/script>', v.indexOf('class Component')));
   for (const [a, b] of LIGACOES.concat(esc ? LIGACOES_ESCURO : [])) { if (!js.includes(a)) throw new Error('ligação do motor não encontrada no painel: ' + a.slice(0, 40)); js = js.split(a).join(b); }
@@ -770,11 +787,10 @@ function montarVivo(chave, props, aoPintar) {
   }).catch(e => { const hh = app.querySelector(`[data-dc-host="${chave}"]`); if (hh) hh.textContent = 'Painel vivo indisponível: ' + e.message; });
 }
 function desmontarVivo(chave) { const v = VIVOS[chave]; if (!v) return; try { if (v.c.componentWillUnmount) v.c.componentWillUnmount(); } catch (e) {} if (v.raiz) v.raiz.remove(); delete VIVOS[chave]; }
-window.addEventListener('resize', () => Object.values(VIVOS).forEach(v => { try { v.c.ajustarZoom(); } catch (e) {} }));
 
 // Logomarca do pacote (LogoMarca.dc.html sem fundo, C37), com a versão própria do modo escuro.
 let LOGO = null;
-const carregarLogo = () => LOGO || (LOGO = fetch('./ds/LogoMarca.dc.html').then(r => r.text()).then(t => {
+const carregarLogo = () => LOGO || (LOGO = lerTexto('./ds/LogoMarca.dc.html').then(t => {
   const m = t.match(/<script type="text\/x-dc" data-dc-script[^>]*>([\s\S]*?)<\/script>/), tp = t.match(/<x-dc>([\s\S]*?)<\/x-dc>/);
   return { C: new Function('React', 'DCLogic', m[1] + '\n;return Component;')(ReactMin, DCLogic), tpl: tp[1].trim() }; }));
 let LG = null;
@@ -858,9 +874,12 @@ const TRAVAS_PRO = [
 
 // ───────────── Telas ─────────────
 const busca = (valor, cor) => `<div style="flex:none;margin:${S.caso < 0 && !listaAtiva() ? '8px 16px 0' : '0 16px'};height:50px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#FFFFFF;border:1px solid #5A6A7E;${S.caso < 0 && !listaAtiva() ? 'border-radius:10px;box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7)' : 'box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7);border-radius:10px'}">${svg('busca', '#334155', 20, ' style="flex:none"')}<input type="search" data-in="busca" value="${escH(valor)}" placeholder="Buscar sintoma, peça ou D-033" aria-label="Buscar sintoma, peça ou D-033" autocomplete="off" enterkeyhint="search" style="flex:1;min-width:0;height:44px;border:0;outline:0;background:transparent;font-size:17px;font-weight:500;color:#0C2747"></div>`;
+// Tecla Sol/Lua (Modo Normal × Modo Preto) no canto direito do cabeçalho da Home: tecla clara Domo de 44 × 44 px (S37) com os ícones
+// sol e lua de 20 px de ds/icones.json; troca o app inteiro em 1 toque.
+const teclaTema = () => { const esc = escuro(); return `<button type="button" data-a="tema" data-tema-tecla="${esc ? 'escuro' : 'claro'}" data-tecla="clara" aria-pressed="${esc}" aria-label="Modo escuro (preto)" style="${E.S37};flex:none;width:44px;height:44px;padding:0">${svg(esc ? 'sol' : 'lua', '#0C2747', 20)}</button>`; };
 function telaHome() {
   const g = S.gav && ['marca', 'btu', 'fluido'].includes(S.gav) ? gavetaEquip() : '';
-  return { nome: 'home', label: '01 Home', raizDock: true, html: `${BARRA}<div style="${E.S134}"><img src="./marca/gelopro-mascote.png" alt="" style="width:36px;height:36px;object-fit:contain"><div style="flex:1;display:flex;flex-direction:column;gap:4px"><b data-titulo style="font-size:20px;font-weight:700;line-height:1;letter-spacing:.14em">BANCADA</b><span style="${E.S135}">GELOPRO · SPLIT &amp; INVERTER</span></div><span style="${E.S136}"></span></div>
+  return { nome: 'home', label: '01 Home', raizDock: true, html: `${BARRA}<div style="${E.S134}"><img src="./marca/gelopro-mascote.png" alt="" style="width:36px;height:36px;object-fit:contain"><div style="flex:1;display:flex;flex-direction:column;gap:4px"><b data-titulo style="font-size:20px;font-weight:700;line-height:1;letter-spacing:.14em">BANCADA</b><span style="${E.S135}">GELOPRO · SPLIT &amp; INVERTER</span></div>${teclaTema()}</div>
     <div style="${E.S137}" role="group" aria-label="Equipamento ${escH(equipTx())}">${[['marca', 'MARCA', S.equip.marca], ['btu', 'BTU/h', S.equip.btu], ['fluido', 'FLUIDO', fl(S.equip.fluido)]].map(([k, r, v], i) => `<div role="button" tabindex="0" data-a="gav" data-v="${k}" aria-label="${r} ${escH(v)}. Trocar" style="${i ? E.S70 : 'padding:8px 12px;display:flex;flex-direction:column;gap:8px'};cursor:pointer"><span style="${E.S33}">${r}</span><b style="font:700 17px/1 'JetBrains Mono',monospace;color:#0C2747">${escH(v)}</b></div>`).join('')}</div>
     ${busca(S.termo)}
     <div style="${E.S139}">${BLOCOS.map(([id, n, curto, longo]) => `<button type="button" data-a="bloco" data-v="${id}" data-tecla="marinho" aria-label="${escH(curto)}: ${escH(longo)}" style="${E.S140}"><span style="${E.S141}" aria-hidden="true">${n}</span><span style="${E.S142}"></span>${svg(BLOCO_ICO[id], '#A5F3FC', 40)}<b data-placa-nome style="${E.S143}">${escH(curto)}</b></button>`).join('')}</div>
@@ -1146,14 +1165,17 @@ function render(soLed) {
   const t = telaAtual(); let html = t.html;
   if (t.nome === 'laudo' && (S.gav === 'causa')) html += gavetaCausa();
   const gavSobre = !!S.gav && !['servico', 'upgrade', 'pmoc'].includes(S.gav);
-  let raiz = `<div id="tela" data-screen-label="${t.label}" data-tela="${t.nome}"${t.raizDock ? ' data-raiz-dock' : ''}${t.gaveta ? ' data-gaveta' : ''} style="${RAIZ}${gavSobre ? ';height:' + Math.round(innerHeight) + 'px;overflow:hidden' : ''}">${html}</div>`;
-  const w = Math.round(innerWidth), hh = Math.round(innerHeight), esc = escuro(), chaveT = `${esc ? 1 : 0}|${w}|${hh}|${raiz}`;
+  let raiz = `<div id="tela" data-screen-label="${t.label}" data-tela="${t.nome}"${t.raizDock ? ' data-raiz-dock' : ''}${t.gaveta ? ' data-gaveta' : ''} style="${RAIZ}${gavSobre ? (PRANCHA ? ';height:' + Math.round(innerHeight) + 'px' : ';height:100vh;height:100dvh') + ';overflow:hidden' : ''}">${html}</div>`;
+  // Celular real: a tela ocupa 100% da largura até 430 px (centrada acima disso) e a altura dinâmica do aparelho (100dvh), então a barra
+  // de endereço subindo e descendo, minimizar e voltar não mudam nada. Só ?prancha=1 (sonda) usa a medida da prancha em px.
+  const w = Math.min(Math.round(innerWidth), 430), hh = PRANCHA ? Math.round(innerHeight) : 844, esc = escuro(), chaveT = `${esc ? 1 : 0}|${w}|${hh}|${raiz}`;
   // Cache por assinatura: a mesma tela clara no mesmo modo e tamanho não passa de novo pelo gerador (troca de tela instantânea).
   const doCache = TRANSF.get(chaveT);
   if (doCache) raiz = doCache;
   else {
     if (esc) raiz = GeradorCopias.telaEscura(raiz);
     if (w < 390) raiz = GeradorCopias.redimensionar(raiz, 'P', w, hh, t.label); else raiz = raiz.replace('width:390px;min-height:844px;', `width:${w}px;min-height:${hh}px;`);
+    if (!PRANCHA) raiz = raiz.replace(`width:${w}px;min-height:${hh}px;`, 'width:100%;max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;');
     TRANSF.set(chaveT, raiz); if (TRANSF.size > 60) TRANSF.delete(TRANSF.keys().next().value);
   }
   raiz = raiz.replace(/<i data-logo-ph="([^"|]+)\|(\d+)"><\/i>/g, (x, m, t) => logoReal(m.replace(/&amp;/g, '&'), t));
@@ -1165,16 +1187,23 @@ function render(soLed) {
   if (!soLed) salvarSessao();
 }
 let PT_PRONTO = null;
+// Digitação numérica: uma pintura por quadro (vários dígitos do mesmo quadro viram 1 render, e o gerador do escuro roda no máximo 1 vez).
+let RQ = false;
+const renderQuadro = () => { if (RQ) return; RQ = true; quadro(() => { RQ = false; render(); }); };
+// No arrasto, a sessão vai ao localStorage uma vez quando o dedo para (120 ms), não a cada evento input; ao minimizar, grava na hora.
+let T_SALVAR = 0;
+const salvarDepois = () => { clearTimeout(T_SALVAR); T_SALVAR = setTimeout(() => { T_SALVAR = 0; salvarSessao(); }, 120); };
+const salvarJa = () => { if (T_SALVAR) { clearTimeout(T_SALVAR); T_SALVAR = 0; salvarSessao(); } };
 // Props do motor soberano para os 3 painéis vivos.
 function ligarVivos(nome) {
   if (nome !== 'aferir' || S.sub !== 'ntc') desmontarVivo('ntc'); if (nome !== 'aferir' || S.sub !== 'gas') desmontarVivo('manifold'); if (nome !== 'aferir' || S.sub !== 'inv') desmontarVivo('led');
   const marcar = (raiz) => { const b = raiz.querySelector('b[style*="font:700 48px"]'); if (b) { b.setAttribute('data-leitura-principal', ''); b.setAttribute('aria-label', b.textContent.trim()); } };
   if (nome === 'aferir' && S.sub === 'ntc' && CURVAS_PRONTAS) { const c = curvaAtual(); if (!c) return; const t = num(S.ntc.t) ?? 35, r = num(S.ntc.r);
     montarVivo('ntc', { nu: true, so: 'ntc', lido: r ?? interp(c.pts, t), ta: t, curva: (T) => interp(c.pts, T), tInv: tInv(c), dentro: (L) => { const R = veredictoNtc(c, t, L); return R.estado === 'ok'; },
-      aoLer: (v) => { S.ntc.r = String(Math.round(v * 100) / 100); const i = app.querySelector('[data-in="ntc-r"]'); if (i) i.value = S.ntc.r; salvarSessao(); } }, (raiz) => { marcar(raiz); rodapeTabela25(raiz, c, t); }); }
+      aoLer: (v) => { S.ntc.r = String(Math.round(v * 100) / 100); const i = app.querySelector('[data-in="ntc-r"]'); if (i) i.value = S.ntc.r; salvarDepois(); } }, (raiz) => { marcar(raiz); rodapeTabela25(raiz, c, t); }); }
   if (nome === 'aferir' && S.sub === 'gas' && PT_PRONTO) { const st = S.gas, p = num(st.p), ev = p === null ? 4.4 : tSat(PT_PRONTO, FLUIDOS[S.equip.fluido], p);
     montarVivo('manifold', { nu: true, so: 'manifold', fluido: fl(S.equip.fluido), sh: st.sh, semLeitura: st.sh === null || p === null, evap: ev, psi: p === null ? '—' : f1(p, 0), estado: st.sh !== null && p !== null ? { leu: true, shA: st.sh } : {},
-      aoSh: (v) => { st.sh = v; salvarSessao(); } }, marcar); }
+      aoSh: (v) => { st.sh = v; salvarDepois(); } }, marcar); }
   // Inverter & 30s igual à tela 15 do Design System: Trava 30s nas 3 fichas literais e os 7 testes (sem o painel Vivo LED, que a tela 15 não tem).
 }
 
@@ -1222,6 +1251,7 @@ const ACOES = {
   abrirCofre: (b) => { const it = S.cofre.find(x => x.id === b.dataset.v); if (!it) return; Object.assign(S.laudo, novoLaudo(it.itens ? it : { sid: it.sid, v: it.vBase ?? it.valor, comboId: it.comboId, causa: it.causa, cli: it.cli, tel: it.tel }), { tecnico: true }); S.leituras = Array.isArray(it.leituras) ? it.leituras : []; S.numero = it.num; S.numeroGravado = true; S.msg = [`Laudo Nº ${it.num} de ${it.data} aberto do Cofre`, 'ok']; render(); window.scrollTo(0, 0); },
   limpar: (b) => { if (!S.limparArmado) { S.limparArmado = true; render(); clearTimeout(S._tl); S._tl = setTimeout(() => { S.limparArmado = false; render(); }, 5000); return; } S.limparArmado = false; Object.assign(S.laudo, novoLaudo({ mala: S.laudo.mala, pmoc: S.laudo.pmoc }), { tecnico: true }); S.leituras = []; S.casoLaudo = -1; S.srvSug = null; S.causaSug = null; S.numero = null; S.numeroGravado = false; S.msg = ['Laudo atual limpo', 'ok']; render(); },
   pmocTeaser: () => abrirUpgrade('', true), upIr: () => { const u = S.gav === 'pmoc' ? CHECKOUT_PMOC : CHECKOUT_PRO; if (u) location.href = u; else toast('O link do upgrade ainda não foi configurado'); },
+  tema: () => { S.tema = escuro() ? 'claro' : 'escuro'; aplicarTema(); ULT = ''; Object.keys(VIVOS).forEach(desmontarVivo); render(); salvarSessao(); },
   zap: () => enviarZap(), pdf: (b) => gerarPdfLaudo(b), pmoc: (b) => gerarPdfPmoc(b),
 };
 const confirmar2 = (b, acao) => { if (b.dataset.etapa === 'confirmar') return acao(); b.dataset.etapa = 'confirmar'; b.textContent = b.dataset.confirmarTexto || 'Toque de novo para confirmar'; setTimeout(() => { if (b.isConnected) { delete b.dataset.etapa; render(); } }, 5000); };
@@ -1237,9 +1267,9 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => { const el = e.target; if ((e.key === 'Enter' || e.key === ' ') && el && el.getAttribute && el.getAttribute('role') === 'button' && el.tagName !== 'BUTTON') { e.preventDefault(); el.click(); } });
 function aoMudarCampo(k) {
   // kΩ digitado: só o painel muda (valor, dígitos e chave em tempo real, sem replay e sem remontar a tela).
-  if (k === 'ntc-r') { const v = VIVOS.ntc, r = num(S.ntc.r); if (v && r !== null) { clearTimeout(v.c._pt); clearInterval(v.c._pi); v.c.setState({ lidoA: r, step: 4, cnt: r }); } else render(); }
-  else render();
-  salvarSessao();
+  if (k === 'ntc-r') { const v = VIVOS.ntc, r = num(S.ntc.r); if (v && r !== null) { clearTimeout(v.c._pt); clearInterval(v.c._pi); v.c.setState({ lidoA: r, step: 4, cnt: r }); } else renderQuadro(); }
+  else renderQuadro();
+  salvarDepois();
 }
 document.addEventListener('input', (e) => {
   const el = e.target, k = el.dataset && el.dataset.in; if (!k) return;
@@ -1308,8 +1338,9 @@ const gerarPdfPmoc = () => gerarDoc(() => { const numero = numeroLaudo(true), t 
 // ───────────── Início ─────────────
 const S_TECLA_INICIAL = S.teclaSalva;
 async function iniciar() {
-  try { ICON = await fetch('./ds/icones.json').then(r => r.json()); } catch (e) {}
+  try { ICON = JSON.parse(await lerTexto('./ds/icones.json')); } catch (e) {}
   try { LG = await carregarLogo(); } catch (e) {}
+  aplicarTema();
   if (ehEssencial() && S.equip.fluido === 'R32') S.equip.fluido = 'R410A';
   const m = location.hash.match(/D-\d{3}/), i = m ? F.findIndex(f => f.id === m[0]) : -1;
   if (i < 0 && S_TECLA_INICIAL) S.tecla = S_TECLA_INICIAL;
@@ -1320,17 +1351,39 @@ async function iniciar() {
   Promise.all([fonteVivo(escuro()).catch(() => {}), carregarCurvas().then(C => { CURVAS_PRONTAS = C; }).catch(() => {}), carregarPT().then(([T]) => { PT_PRONTO = T; }).catch(() => {}),
     carregarPrecos().then(() => csv('pmoc_atividades.csv').catch(() => [])).then(PM => { PMOC_ATIV = PM; }).catch(() => {}), carregarCodigos().then(U => { CODIGOS_PRONTOS = U; }).catch(() => {})])
     .then(() => { fonteVivo(!escuro()).catch(() => {}); if (S.tecla !== 'sintomas') render(); });
-  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { ULT = ''; Object.keys(VIVOS).forEach(desmontarVivo); render(); }); } catch (e) {}
-  let rz = 0; window.addEventListener('resize', () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => render()); });
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.tema) return; aplicarTema(); ULT = ''; Object.keys(VIVOS).forEach(desmontarVivo); render(); }); } catch (e) {}
+  // Redimensionar (girar, minimizar e voltar, barra de endereço, teclado): só a largura refaz a tela e o ajustarZoom(), com espera limpa
+  // de 150 ms; altura sozinha (barra de URL do Safari/Chrome, teclado) não mexe em nada. Na prancha da sonda vale a altura também.
+  let rz = 0, LARG = Math.round(innerWidth), ALT = Math.round(innerHeight);
+  const aoRedimensionar = () => { clearTimeout(rz); rz = setTimeout(() => { const nw = Math.round(innerWidth), nh = Math.round(innerHeight); const mudouW = nw !== LARG, mudouH = PRANCHA && nh !== ALT; LARG = nw; ALT = nh;
+    if (!mudouW && !mudouH) return; render(); Object.values(VIVOS).forEach(v => { try { v.c.ajustarZoom(); } catch (e) {} }); }, 150); };
+  window.addEventListener('resize', aoRedimensionar); window.addEventListener('orientationchange', aoRedimensionar);
+  // Voltar do WhatsApp ou do PDF (pageshow / visibilitychange): a sessão é gravada ao sair e, na volta, a tela confere a largura no mesmo lugar.
+  document.addEventListener('visibilitychange', () => { if (document.hidden) salvarJa(); else aoRedimensionar(); });
+  window.addEventListener('pagehide', salvarJa); window.addEventListener('pageshow', aoRedimensionar);
 }
 window.addEventListener('hashchange', () => { const m = location.hash.match(/D-\d{3}/), i = m ? F.findIndex(f => f.id === m[0]) : -1; if (i >= 0 && !(S.tecla === 'sintomas' && S.caso === i)) abrirCaso(i); });
 iniciar();
-if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('./sw.js').catch(() => {});
+// Service worker só depois da página carregada (o install do núcleo não disputa a antena com a abertura) e o aquecimento das artes,
+// tiles e CSVs 4 s depois, com a página ociosa (requestIdleCallback): o sw.js baixa 1 arquivo por vez, nunca durante o toque.
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  const ocioso = (f) => (window.requestIdleCallback ? requestIdleCallback(f, { timeout: 3000 }) : setTimeout(f, 200));
+  const aquecer = () => navigator.serviceWorker.ready.then(r => { const a = r.active || navigator.serviceWorker.controller; if (a) a.postMessage({ tipo: 'aquecer-artes' }); }).catch(() => {});
+  const aoCarregar = () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); setTimeout(() => ocioso(aquecer), 4000); };
+  if (document.readyState === 'complete') aoCarregar(); else addEventListener('load', aoCarregar, { once: true });
+}
 
 </script>
 <script>
-// Teclado do celular aberto: o dock some para não cobrir o campo (regra B do pacote).
-(function(){var v=window.visualViewport;if(!v)return;var f=function(){document.body.toggleAttribute('data-teclado',v.height<innerHeight*0.75);};v.addEventListener('resize',f);})();
+// Teclado do celular aberto: o dock some para não cobrir o campo (regra B do pacote). Só conta como teclado com um campo de texto
+// focado; ao sair do campo (blur), ao minimizar (visibilitychange) e ao voltar do WhatsApp ou do PDF (pageshow) a marca é limpa,
+// e o dock nunca fica preso escondido. Pinça do Safari (gesturestart) bloqueada: o celular vira instrumento, sem zoom fora da ilustração.
+(function(){var b=document.body,v=window.visualViewport,campo=function(){var a=document.activeElement;return !!a&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName)&&!/^(range|checkbox|radio|button)$/.test(a.type||'');},limpa=function(){b.removeAttribute('data-teclado');},
+f=function(){if(!v)return;b.toggleAttribute('data-teclado',campo()&&v.height<innerHeight*0.75);};
+if(v)v.addEventListener('resize',f);document.addEventListener('focusin',f);
+document.addEventListener('focusout',function(){setTimeout(function(){if(!campo())limpa();},0);});
+document.addEventListener('visibilitychange',limpa);addEventListener('pageshow',limpa);
+['gesturestart','gesturechange'].forEach(function(t){document.addEventListener(t,function(e){e.preventDefault();},{passive:false});});})();
 </script>
 </body>
 </html>
