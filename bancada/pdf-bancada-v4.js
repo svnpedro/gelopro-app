@@ -5,7 +5,7 @@
 // Gás & SH (0 a 20 °C, alvo 7 a 11 °C), Sensor NTC (desvio de −30% a +30%, zona −5% a +5%) e linhas ✓ NORMAL / ✕ DEFEITO da Trava 30s e do
 // diagnóstico. Cada serviço leva a barra do valor dentro da Referência Regional Auditada 2026. Sem custo, lucro ou margem (documento do cliente).
 // Fontes padrão: Helvetica e Helvetica-Bold (texto), Courier-Bold (números, no lugar da JetBrains Mono), Symbol (Ω, −, ≤) e ZapfDingbats (✓ ✕),
-// em WinAnsiEncoding. O motor app/pdf-gelopro.js segue intacto (PMOC e app). Uso: GeloProBancadaPDF.gerar(dados) → { bytes, blob, nome, paginas }.
+// em WinAnsiEncoding. O motor ./motor/pdf-gelopro.js segue intacto (PMOC). Uso: GeloProBancadaPDF.gerar(dados) → { bytes, blob, nome, paginas }.
 (function () {
   'use strict';
   const PW = 595.28, PH = 841.89, MX = 40, LARG = PW - 2 * MX, TOPO = 40, FIM = PH - 46;

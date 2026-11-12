@@ -16,10 +16,10 @@
     env(safe-area-inset-*): a barra de status e o indicador de início das pranchas só entram com ?prancha=1 (medição da sonda).
   · JURISDIÇÃO DE MOTOR E OFERTA: 19 CSVs de ../base-tecnica/, curvas NTC ponto a ponto, P-T, Tabela Oficial 2026 por porte com
     PECA_PEDRO, 411 códigos e 152 piscadas, até 6 serviços por visita, âncora "Referência Regional Auditada 2026" no Modo: Laudo,
-    Paywall Essencial × Completo PRO × Bumps, gelopro.sessao.v1, GeloProPix com QR real, PDF Nº 1001 e licenca-gelopro.js.
+    Paywall Essencial × Completo PRO × Bumps, gelopro.sessao.v1, GeloProPix com QR real, PDF Nº 1001 e licenca-gelopro.js (motor próprio em ./motor/ e marca em ./marca/: a Bancada é autônoma).
   · O motor entra no painel vivo só pelas props (lista LIGACOES). Painéis e bases pré-carregados na abertura: todo instrumento
     responde ao primeiro toque em menos de 50 ms.
-  Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v11). PDF do laudo: ./pdf-bancada-v4.js (Executivo v4). Os 48 tiles ficam em ./tiles/.
+  Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v12). PDF do laudo: ./pdf-bancada-v4.js (Executivo v4). Os 48 tiles ficam em ./tiles/.
 -->
 <style>
 @font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-display:swap;font-weight:500;src:url(./fontes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2')}
@@ -52,11 +52,11 @@ body[data-teclado] .dock-fixo{display:none}
 <body>
 <div id="app"></div>
 <div id="toast" role="status" aria-live="polite"></div>
-<script src="../app/vendor/qrcode-generator-1.4.4.js"></script>
-<script src="../app/gelopro-pix.js"></script>
-<script src="../app/marca-gelopro.js"></script>
-<script src="../app/pdf-gelopro.js"></script>
-<script src="../app/licenca-gelopro.js"></script>
+<script src="./motor/vendor/qrcode-generator-1.4.4.js"></script>
+<script src="./motor/gelopro-pix.js"></script>
+<script src="./motor/marca-gelopro.js"></script>
+<script src="./motor/pdf-gelopro.js"></script>
+<script src="./motor/licenca-gelopro.js"></script>
 <script src="./pdf-bancada-v4.js"></script>
 <script src="./ds/estilos.js"></script>
 <script src="./ds/gerador-copias.js"></script>
@@ -425,7 +425,6 @@ const marcaCodigo = (m) => (['Midea', 'Springer'].includes(m) ? 'Midea/Springer'
 const LICENCA = window.GeloProLicenca;
 const LIVRE = (() => { if (!LICENCA || !LICENCA.blindado) return true; try { const c = LICENCA.cracha(); return !!(c && LICENCA.confere(c) && !c.bloqueado && c.plano); } catch (e) { return false; } })();
 const AMOSTRA = 'D-001';
-const APP_URL = '../app/GeloPro%20App%20v5.2.dc.html' + (LICENCA && LICENCA.blindado ? '?testarSeguranca=1' : '');
 // ═════ motor · licenca ═════
 const PARAMS = (() => { try { return new URLSearchParams(location.search); } catch (e) { return new Map(); } })();
 const licencaComercial = () => {
@@ -861,7 +860,7 @@ const TRAVAS_PRO = [
 const busca = (valor, cor) => `<div style="flex:none;margin:${S.caso < 0 && !listaAtiva() ? '8px 16px 0' : '0 16px'};height:50px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#FFFFFF;border:1px solid #5A6A7E;${S.caso < 0 && !listaAtiva() ? 'border-radius:10px;box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7)' : 'box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7);border-radius:10px'}">${svg('busca', '#334155', 20, ' style="flex:none"')}<input type="search" data-in="busca" value="${escH(valor)}" placeholder="Buscar sintoma, peça ou D-033" aria-label="Buscar sintoma, peça ou D-033" autocomplete="off" enterkeyhint="search" style="flex:1;min-width:0;height:44px;border:0;outline:0;background:transparent;font-size:17px;font-weight:500;color:#0C2747"></div>`;
 function telaHome() {
   const g = S.gav && ['marca', 'btu', 'fluido'].includes(S.gav) ? gavetaEquip() : '';
-  return { nome: 'home', label: '01 Home', raizDock: true, html: `${BARRA}<div style="${E.S134}"><img src="../app/marca/gelopro-mascote.png" alt="" style="width:36px;height:36px;object-fit:contain"><div style="flex:1;display:flex;flex-direction:column;gap:4px"><b data-titulo style="font-size:20px;font-weight:700;line-height:1;letter-spacing:.14em">BANCADA</b><span style="${E.S135}">GELOPRO · SPLIT &amp; INVERTER</span></div><span style="${E.S136}"></span></div>
+  return { nome: 'home', label: '01 Home', raizDock: true, html: `${BARRA}<div style="${E.S134}"><img src="./marca/gelopro-mascote.png" alt="" style="width:36px;height:36px;object-fit:contain"><div style="flex:1;display:flex;flex-direction:column;gap:4px"><b data-titulo style="font-size:20px;font-weight:700;line-height:1;letter-spacing:.14em">BANCADA</b><span style="${E.S135}">GELOPRO · SPLIT &amp; INVERTER</span></div><span style="${E.S136}"></span></div>
     <div style="${E.S137}" role="group" aria-label="Equipamento ${escH(equipTx())}">${[['marca', 'MARCA', S.equip.marca], ['btu', 'BTU/h', S.equip.btu], ['fluido', 'FLUIDO', fl(S.equip.fluido)]].map(([k, r, v], i) => `<div role="button" tabindex="0" data-a="gav" data-v="${k}" aria-label="${r} ${escH(v)}. Trocar" style="${i ? E.S70 : 'padding:8px 12px;display:flex;flex-direction:column;gap:8px'};cursor:pointer"><span style="${E.S33}">${r}</span><b style="font:700 17px/1 'JetBrains Mono',monospace;color:#0C2747">${escH(v)}</b></div>`).join('')}</div>
     ${busca(S.termo)}
     <div style="${E.S139}">${BLOCOS.map(([id, n, curto, longo]) => `<button type="button" data-a="bloco" data-v="${id}" data-tecla="marinho" aria-label="${escH(curto)}: ${escH(longo)}" style="${E.S140}"><span style="${E.S141}" aria-hidden="true">${n}</span><span style="${E.S142}"></span>${svg(BLOCO_ICO[id], '#A5F3FC', 40)}<b data-placa-nome style="${E.S143}">${escH(curto)}</b></button>`).join('')}</div>
