@@ -1,19 +1,20 @@
-// GeloPro · Bancada GeloPRO em modo avião — 07/11/2026 — v4.0 Consolidada: 48 tiles Option C, 19 CSVs, 126 artes e Contratos 00 a 12. Service worker próprio da página /bancada/ (escopo ./), separado do app (app/sw.js) e
-// do guia (guia-pro/sw.js): cada um tem o seu cache e nenhum apaga o do outro.
-// No 1º acesso com sinal, o install guarda tudo o que as 4 teclas usam: a página, o motor (QR, Pix, marca, PDF, licença), os 4 componentes
-// visuais importados de ../app/ (.dc.html), as fontes, a textura e o mascote, os 19 CSVs da base técnica (com pmoc_atividades.csv e codigos_erro_novos.csv) e as 126 artes
-// .webp lidas de ../guia-pro/imagens/. Com sinal: página, .js, .html e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e
-// imagens saem do cache e só vão à rede se faltarem.
+// GeloPro · Bancada GeloPRO em modo avião — 12/11/2026 — versão oficial e única em /bancada/ (escopo ./, Design System v4 transplantado 1:1).
+// Cache bancada-offline-v10: o activate apaga todo cache antigo da Bancada (bancada-offline-* diferente, bancada-v2-offline-* e
+// bancada-v3-offline-*, das versões aposentadas em historico-versoes/); o do app e o do guia ficam intactos. No 1º acesso com sinal o
+// install guarda tudo o que as 4 teclas usam: a página, o motor (QR, Pix, marca, PDF, licença), os arquivos literais do Design System
+// em ./ds/, as fontes locais (./fontes), o mascote, os 19 CSVs da base técnica, as 126 artes de ../guia-pro/imagens/ e os 48 tiles de
+// ./tiles/. Com sinal: página, .js, .html, .json e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e imagens
+// saem do cache e só vão à rede se faltarem.
 'use strict';
-const CACHE = 'bancada-offline-v4'; // v4 (07/11/2026, Versão Final Consolidada): nome novo derruba o anterior (o activate apaga todo bancada-offline-* diferente; guia e app têm caches próprios)
+const CACHE = 'bancada-offline-v10'; // v10 (12/11/2026): Bancada oficial única, Design System v4
 const REDE_MS = 3000;
 const PAGINA = './';
 const MOTOR = [
   '../app/vendor/qrcode-generator-1.4.4.js', '../app/gelopro-pix.js', '../app/marca-gelopro.js', '../app/pdf-gelopro.js', '../app/licenca-gelopro.js',
-  '../app/IconeGP.dc.html', '../app/LogoMarca.dc.html', '../app/AtalhoTecla.dc.html', '../app/CampoTexto.dc.html',
-  '../app/fontes/figtree-latin-wght-normal.woff2', '../app/fontes/figtree-latin-ext-wght-normal.woff2', '../app/fontes/roboto-latin-wght-normal.woff2',
-  '../app/fontes/roboto-latin-ext-wght-normal.woff2', '../app/fontes/roboto-mono-latin-wght-normal.woff2',
-  '../app/ref/acetinado-sedoso.svg', '../app/marca/gelopro-mascote.png'
+  './ds/estilos.js', './ds/gerador-copias.js', './ds/icones.json', './ds/InstrumentosVivos.dc.html', './ds/InstrumentosVivosEscuro.dc.html', './ds/LogoMarca.dc.html',
+  './fontes/barlow-semi-condensed-latin-500-normal.woff2', './fontes/barlow-semi-condensed-latin-600-normal.woff2', './fontes/barlow-semi-condensed-latin-700-normal.woff2',
+  './fontes/barlow-semi-condensed-latin-800-normal.woff2', './fontes/jetbrains-mono-latin-500-normal.woff2', './fontes/jetbrains-mono-latin-700-normal.woff2',
+  '../app/marca/gelopro-mascote.png'
 ];
 const BASE = [
   '../base-tecnica/precos_regionais_2026.csv',
@@ -83,7 +84,7 @@ const ARTES = [
   '../guia-pro/imagens/icones/s07_p3.webp', '../guia-pro/imagens/icones/s07_p4.webp', '../guia-pro/imagens/icones/s07_p5.webp',
   '../guia-pro/imagens/icones/s07_sistema.webp'
 ];
-// 48 tiles oficiais Option C (t01–t24 e t25–t48) da lista, dos chips, das causas e dos passos (pasta da própria bancada).
+// 48 tiles oficiais Option C (t01–t24 e t25–t48) da lista, dos chips, das causas e dos passos (lidos de ../bancada/tiles/, sem cópia).
 const TILES = [
   './tiles/t01_alicate.webp', './tiles/t02_multimetro.webp', './tiles/t03_manifold.webp', './tiles/t04_termometro_nivel.webp',
   './tiles/t05_placa_pcb.webp', './tiles/t06_modulo_ipm.webp', './tiles/t07_barramento_pfc.webp', './tiles/t08_fusivel_varistor.webp',
@@ -110,7 +111,7 @@ self.addEventListener('install', (e) => {
   }).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('bancada-offline-') && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => /^bancada(-v2|-v3)?-offline-/.test(k) && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
 // A página (e a sonda de modo avião) pergunta se o cache já está completo.
 self.addEventListener('message', (e) => {
@@ -132,7 +133,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
   // A página é uma só: ?testarSeguranca=1 e #D-xxx abrem a mesma cópia guardada.
   const chave = req.mode === 'navigate' ? URL_PAGINA : req.url.split('#')[0];
-  const fresco = req.mode === 'navigate' || /\.(js|csv|html)$/.test(url.pathname);
+  const fresco = req.mode === 'navigate' || /\.(js|csv|html|json)$/.test(url.pathname);
   if (fresco) {
     e.respondWith((async () => {
       const rede = fetch(req.mode === 'navigate' ? req.url : chave, { cache: 'no-store', credentials: 'omit' }).then((r) => { if (r && r.ok) e.waitUntil(guardar(chave, r)); return r; });
