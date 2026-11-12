@@ -4,8 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#DBD8D1" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171B20" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#DBD8D1">
 <title>Bancada GeloPRO · Split &amp; Inverter</title>
 <!--
   Bancada GeloPRO (bancada/, versão oficial e única desde 12/11/2026; a v1, a v2 e a Planta revogada estão em ../historico-versoes/, fora do ar).
@@ -20,7 +19,7 @@
   · O motor entra no painel vivo só pelas props (lista LIGACOES). Painéis e bases pré-carregados na abertura: todo instrumento
     responde ao primeiro toque em menos de 50 ms.
   Base embutida: ./motor/base-inline.js (19 CSVs e os arquivos do Design System lidos em tempo de execução, gerados por
-  scripts/gerar-base-inline.js): zero fetch() ao tocar. Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v13, núcleo leve no install e artes aquecidas
+  scripts/gerar-base-inline.js): zero fetch() ao tocar. Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v14, página e núcleo pela rede primeiro (1,2 s) com o cache de reserva, núcleo leve no install e artes aquecidas
   1 por vez depois de 4 s de página ociosa). PDF do laudo: ./pdf-bancada-v4.js (Executivo v4). Os 48 tiles ficam em ./tiles/.
 -->
 <style>
@@ -35,7 +34,6 @@
    do celular (sem pinça nem toque duplo de zoom, sem rolagem lateral; o único zoom é o 1,85× da ilustração; fundo do tema escolhido). */
 html,body{margin:0;padding:0;background:#DBD8D1;-webkit-text-size-adjust:100%;touch-action:manipulation;width:100%}
 html{overflow-x:hidden}
-@media (prefers-color-scheme:dark){html,body{background:#171B20}}
 html[data-tema="claro"],html[data-tema="claro"] body{background:#DBD8D1;color-scheme:light}
 html[data-tema="escuro"],html[data-tema="escuro"] body{background:#171B20;color-scheme:dark}
 *,*::before,*::after{box-sizing:border-box}
@@ -49,6 +47,7 @@ input[aria-invalid="true"]{outline:3px solid #B91C1C;outline-offset:2px}
 input[type="number"]{-moz-appearance:textfield}
 input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 #tela>[data-gaveta]{z-index:20}
+[data-dc-host] input[type="range"]{touch-action:none}
 .dk-curto{display:none}
 @media (max-width:389px){.dk-longo{display:none}.dk-curto{display:inline}}
 body[data-teclado] .dock-fixo{display:none}
@@ -423,7 +422,7 @@ const salvarSessao = () => guardar(K_SESSAO, JSON.stringify(SESSAO_OFF ? { v: 1,
   const obj = (o) => (o && typeof o === 'object' && !Array.isArray(o) ? o : null), txt = (v) => (typeof v === 'string' ? v : null);
   if (Array.isArray(z.leituras)) S.leituras = z.leituras.filter(a => a && typeof a.k === 'string' && typeof a.txt === 'string');
   S.srvSug = txt(z.srvSug); S.causaSug = txt(z.causaSug);
-  if (obj(z.laudo)) S.laudo = { ...z.laudo, tecnico: false }; // a Tecla 4 migra o formato antigo (1 serviço + combo) para a lista de serviços
+  if (obj(z.laudo)) S.laudo = { ...z.laudo, tecnico: true }; // Tecla 4 sempre nasce no Modo: Técnico // a Tecla 4 migra o formato antigo (1 serviço + combo) para a lista de serviços
   if (obj(z.trava)) S.trava = z.trava; if (obj(z.inv)) S.inv = z.inv;
   if (Number.isInteger(z.casoLaudo) && z.casoLaudo >= -1 && z.casoLaudo < F.length) S.casoLaudo = z.casoLaudo;
   if (['aferir', 'codigos', 'laudo'].includes(z.tecla)) S.teclaSalva = z.tecla;
@@ -632,7 +631,7 @@ const brl0 = (v) => brl(v).replace(/,00$/, '');
 // Laudo vazio ou migrado do formato de 1 serviço + combo (bancada-v2) para a lista de serviços.
 const novoLaudo = (o = {}) => { const itens = Array.isArray(o.itens) ? o.itens.filter(x => x && typeof x.sid === 'string').map(x => ({ sid: x.sid, v: Number.isFinite(x.v) ? x.v : null }))
   : [o.sid, o.comboId].filter(x => typeof x === 'string').map((sid, k) => ({ sid, v: k === 0 && Number.isFinite(o.v) ? o.v : null }));
-  return { itens: itens.slice(0, MAX_SERV), causa: typeof o.causa === 'string' ? o.causa : '', cli: o.cli || '', tel: o.tel || '', mala: !!o.mala, tecnico: false, pmoc: o.pmoc || '', sel: 0 }; };
+  return { itens: itens.slice(0, MAX_SERV), causa: typeof o.causa === 'string' ? o.causa : '', cli: o.cli || '', tel: o.tel || '', mala: !!o.mala, tecnico: true, pmoc: o.pmoc || '', sel: 0 }; };
 // Ponte diagnóstico → serviço: a leitura enviada com serviço sugerido entra no laudo (se ainda não está e há vaga) e vira a causa da visita.
 const pontearServico = (L, sid, causa) => { if (!sid) return; if (!L.itens.some(i => i.sid === sid) && L.itens.length < MAX_SERV) L.itens.push({ sid, v: null }); if (causa) L.causa = causa; };
 // ═════ motor · pdf ═════
@@ -644,8 +643,10 @@ const limparDoc = (o) => (typeof o === 'string' ? limpa(o) : Array.isArray(o) ? 
 // Modo escuro: a tela clara passa por GeradorCopias.telaEscura (ds/gerador-copias.js, o gerador do próprio pacote); abaixo de 390 px,
 // por GeradorCopias.redimensionar. Painéis vivos: ds/InstrumentosVivos.dc.html (e o Escuro gerado pelo pacote) rodando literalmente.
 // ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
-// Tema: segue o celular (prefers-color-scheme) até o técnico tocar na tecla Sol/Lua da Home; a escolha fica em gelopro.sessao.v1 (tema).
-const escuro = () => { if (S.tema === 'escuro' || S.tema === 'claro') return S.tema === 'escuro'; try { return matchMedia('(prefers-color-scheme: dark)').matches; } catch (e) { return false; } };
+// Tema (Pedro, 12/11/2026): o Modo Claro é o principal soberano. Toda abertura nasce clara, mesmo com o celular em modo escuro; o escuro
+// só entra pela tecla Sol/Lua da Home (escolha guardada em gelopro.sessao.v1, tema) ou por ?tema=escuro na URL (a sonda mede os 2 modos).
+let TEMA_URL = (location.search.match(/[?&]tema=(claro|escuro)\b/) || [])[1] || null;
+const escuro = () => (TEMA_URL || S.tema || 'claro') === 'escuro';
 const aplicarTema = () => { const esc = escuro(), cor = esc ? '#171B20' : '#DBD8D1'; document.documentElement.dataset.tema = esc ? 'escuro' : 'claro';
   document.querySelectorAll('meta[name="theme-color"]').forEach(m => m.setAttribute('content', cor)); };
 const reduzido = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
@@ -724,6 +725,10 @@ const ESTILO_VIVO = { feito: false };
 // Ligações de dado do motor soberano no motor do painel (Seção 0, jurisdição de motor): onde o painel tinha o valor de demonstração fixo
 // (Beta 3972, 35 °C, 118 PSI, evaporação 4,4 °C), passa a ler a curva do CSV, a temperatura ambiente e a tabela P-T vindas das props.
 const LIGACOES = [
+  // Celular real (fora de ?prancha=1): o visor fica em zoom 1 desde o quadro 0, sem o salto do ajustarZoom() depois das fontes
+  // (Pedro, 12/11/2026). Na prancha o C30 segue inteiro (ampliação que cabe, 1,0 a 1,6).
+  ["lay: { c: nu ? 1 : 0, ai: nu ? 'stretch' : 'flex-start', h: nu ? '100%' : 'auto', z: nu ? (s.z || 1) : 1 }", "lay: { c: nu ? 1 : 0, ai: nu ? 'stretch' : 'flex-start', h: nu ? '100%' : 'auto', z: nu && !this.props.zoom1 ? (s.z || 1) : 1 }"],
+  ["const nu = this.props.nu === true || this.props.nu === 'true'; if (!nu || !this._raiz) return;", "const nu = this.props.nu === true || this.props.nu === 'true'; if (!nu || !this._raiz || this.props.zoom1) return;"],
   ['const Rn = T => 10 * Math.exp(3972 * (1 / (T + 273.15) - 1 / 298.15));', 'const Rn = this.props.curva || (T => 10 * Math.exp(3972 * (1 / (T + 273.15) - 1 / 298.15)));'],
   ['const TA = 35, ref = Rn(TA),', 'const TA = this.props.ta ?? 35, ref = Rn(TA),'],
   ['fimR = s.step === 4, fim = fimR && Math.abs(devF) <= 5;', 'fimR = s.step === 4, fim = fimR && (this.props.dentro ? this.props.dentro(LD) : Math.abs(devF) <= 5);'],
@@ -781,6 +786,19 @@ function montarVivo(chave, props, aoPintar) {
     const cortar = () => { if (c.state.step !== undefined && c.state.step < 4) { clearTimeout(c._pt); clearInterval(c._pi); c.setState({ step: 4, cnt: c.state.lidoA ?? (parseFloat(c.props.lido) || 0) }); } };
     ['pointerdown', 'touchstart', 'mousedown', 'keydown', 'input', 'click'].forEach(t => v.raiz.addEventListener(t, cortar, { capture: true, passive: true }));
     v.cortar = cortar;
+    // Régua no dedo (celular real, Pedro 12/11/2026): no toque, o range do painel não faz o arrasto nativo (preventDefault no touchstart,
+    // touch-action:none no CSS); o valor segue o dedo a cada pointermove, antes de soltar, casado com a régua desenhada (trilho de 16 px
+    // a 16 px da borda, a mesma conta da bolinha do painel), e dispara o input do próprio painel, que pinta no próximo quadro nos nós
+    // existentes. O <input> nunca é recriado sob o dedo. Mouse e teclado seguem o range nativo.
+    let ativo = null;
+    const naRegua = (e) => e.target && e.target.closest && e.target.closest('input[type="range"]');
+    const seguir = (e) => { const rg = ativo; if (!rg || !rg.isConnected) return; const r = rg.getBoundingClientRect(), mn = parseFloat(rg.min), mx = parseFloat(rg.max), st = parseFloat(rg.step) || 1;
+      const fr = Math.max(0, Math.min(1, (e.clientX - r.left - 16) / Math.max(1, r.width - 32))), val = Math.round((mn + fr * (mx - mn)) / st) * st, vs = String(Math.round(val * 1000) / 1000);
+      if (rg.value === vs) return; rg.value = vs; rg.dispatchEvent(new Event('input', { bubbles: true })); };
+    v.raiz.addEventListener('touchstart', (e) => { if (naRegua(e)) e.preventDefault(); }, { passive: false });
+    v.raiz.addEventListener('pointerdown', (e) => { const rg = naRegua(e); if (!rg || e.pointerType === 'mouse') return; ativo = rg; try { rg.setPointerCapture(e.pointerId); } catch (x) {} seguir(e); });
+    v.raiz.addEventListener('pointermove', (e) => { if (ativo && e.pointerType !== 'mouse') seguir(e); });
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(t => v.raiz.addEventListener(t, () => { ativo = null; }));
     if (c.componentDidMount) c.componentDidMount();
     // C30 sem espera: a ampliação que cabe sai no próximo quadro, sem aguardar os 900 ms do arquivo do pacote.
     requestAnimationFrame(() => { try { c.ajustarZoom(); } catch (e) {} });
@@ -825,10 +843,15 @@ const faixaTit = (icone, rot, cor = '#0C2747') => `<div style="margin:-12px -12p
 // Uma só ação âmbar por tela (L5): a 2ª em diante (fichas de código abaixo da primeira) é tecla clara com a mesma ação.
 // Texto em caixa alta escrito como no Design System (L3: caixa alta por text-transform só até 14 px); o nome literal fica no aria-label.
 const CONCLUIDA = 'min-height:52px;display:flex;align-items:center;justify-content:center;background:#DCFCE7;border:1.5px solid #15803D;color:#14532D;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.08em';
+// + Mandar para o Laudo (Pedro, 12/11/2026): todos em Verde Domo CTA escuro com texto branco, o mesmo par da tecla verde do pacote (S86:
+// #1A8642 → #126B34, borda e base #14532D, letra #FFFFFF), na geometria de cada tela; a confirmação segue o selo claro ✓ LEITURA NO LAUDO.
+const AMBAR_TECLA = 'background:radial-gradient(140% 130% at 50% -10%,#FFD477 0%,#FFC044 45%,#E08F00 100%);border:1px solid #7A4E00;box-shadow:inset 0 1px 1px rgba(255,255,255,.65),inset 0 -2px 0 #5C3A00;color:#1A1203';
+const VERDE_TECLA = 'background:radial-gradient(140% 130% at 50% -10%,#1A8642 0%,#1A8642 45%,#126B34 100%);border:1px solid #14532D;box-shadow:inset 0 1px 1px rgba(255,255,255,.35),inset 0 -2px 0 #14532D;color:#FFFFFF';
+const verde = (est) => { if (!est.includes(AMBAR_TECLA)) throw new Error('tecla sem o par âmbar de referência'); return est.replace(AMBAR_TECLA, VERDE_TECLA); };
 const mandarBt = (k, est = E.S108, cheio, secundaria) => jaNoLaudo(k)
   ? secundaria ? `<div data-confirmado style="${CONCLUIDA}">✓ LEITURA NO LAUDO</div>` : `<div data-confirmado style="${est.replace(/background:radial-gradient\(140% 130% at 50% -10%,#FFD477 0%,#FFC044 45%,#E08F00 100%\);border:1px solid #7A4E00;box-shadow:inset 0 1px 1px rgba\(255,255,255,\.65\),inset 0 -2px 0 #5C3A00;color:#1A1203/, 'background:#DCFCE7;border:1.5px solid #15803D;color:#14532D')}">✓ LEITURA NO LAUDO</div>`
-  : secundaria ? `<button type="button" data-a="${cheio || 'mandar'}" data-mandar="${escH(k)}" data-tecla="clara" aria-label="+ Mandar para o Laudo" style="${E.S37}">+ MANDAR PARA O LAUDO</button>`
-  : `<button type="button" data-a="${cheio || 'mandar'}" data-mandar="${escH(k)}" data-tecla="ambar" data-confirma="✓ LEITURA NO LAUDO" aria-label="+ Mandar para o Laudo" style="${est}">+ MANDAR PARA O LAUDO</button>`;
+  : secundaria ? `<button type="button" data-a="${cheio || 'mandar'}" data-mandar="${escH(k)}" data-tecla="verde" aria-label="+ Mandar para o Laudo" style="${E.S86}">+ MANDAR PARA O LAUDO</button>`
+  : `<button type="button" data-a="${cheio || 'mandar'}" data-mandar="${escH(k)}" data-tecla="verde" data-confirma="✓ LEITURA NO LAUDO" aria-label="+ Mandar para o Laudo" style="${verde(est)}">+ MANDAR PARA O LAUDO</button>`;
 // Dobra do Design System (cartão com faixa de 44 px e ▾/▴).
 const dobra = (id, rot, corpo, aberta) => `<div style="${E.S15}" data-dobra="${id}"><button type="button" data-a="dobra" data-v="${id}" aria-expanded="${!!aberta}" style="${E.S16};width:100%;text-align:left"><span>${rot}</span><span style="font-size:15px">${aberta ? '▴' : '▾'}</span></button>${aberta ? `<div style="${E.S44}">${corpo}</div>` : ''}</div>`;
 
@@ -843,7 +866,9 @@ function voltar() {
   const e = S.hist.pop(); if (!e) return irInicio(); Object.assign(S, e); render();
 }
 const irInicio = () => { S.gav = null; S.hist = []; S.tecla = 'sintomas'; S.caso = -1; S.bloco = null; S.termo = ''; S.todos = false; render(); window.scrollTo(0, 0); };
-function irTecla(t, op) { if (t !== S.tecla || S.caso >= 0) empilhar(); S.gav = null; S.tecla = t; if (t === 'sintomas') { S.caso = -1; } if (t === 'laudo' && op && op.servico && S.laudo) pontearServico(S.laudo, op.servico, op.causa || CAUSA_PADRAO[op.servico]); if (t === 'laudo' && op && op.servico && !S.laudo) { S.laudo = novoLaudo(); pontearServico(S.laudo, op.servico, op.causa || CAUSA_PADRAO[op.servico]); } render(); window.scrollTo(0, 0); }
+// Tecla 4 (Pedro, 12/11/2026): Tabela & Laudo abre SEMPRE no Modo: Técnico (lucro, faixa, Peça na Mala, Cofre), inclusive vindo de
+// + Mandar para o Laudo; o Modo: Laudo (visão do cliente) só pela chave de 2 ícones.
+function irTecla(t, op) { if (t !== S.tecla || S.caso >= 0) empilhar(); S.gav = null; S.tecla = t; if (t === 'sintomas') { S.caso = -1; } if (t === 'laudo' && S.laudo) S.laudo.tecnico = true; if (t === 'laudo' && op && op.servico && S.laudo) pontearServico(S.laudo, op.servico, op.causa || CAUSA_PADRAO[op.servico]); if (t === 'laudo' && op && op.servico && !S.laudo) { S.laudo = novoLaudo(); pontearServico(S.laudo, op.servico, op.causa || CAUSA_PADRAO[op.servico]); } if (t === 'laudo' && S.laudo) S.laudo.tecnico = true; render(); window.scrollTo(0, 0); }
 function abrirCaso(i) {
   if (i < 0 || i >= F.length) i = 0;
   if (!LIVRE && F[i].id !== AMOSTRA) return abrirUpgrade(`O Diagnóstico ${F[i].id} (${limpa(F[i].titulo)}) faz parte do Plano Completo.`);
@@ -1199,10 +1224,10 @@ function ligarVivos(nome) {
   if (nome !== 'aferir' || S.sub !== 'ntc') desmontarVivo('ntc'); if (nome !== 'aferir' || S.sub !== 'gas') desmontarVivo('manifold'); if (nome !== 'aferir' || S.sub !== 'inv') desmontarVivo('led');
   const marcar = (raiz) => { const b = raiz.querySelector('b[style*="font:700 48px"]'); if (b) { b.setAttribute('data-leitura-principal', ''); b.setAttribute('aria-label', b.textContent.trim()); } };
   if (nome === 'aferir' && S.sub === 'ntc' && CURVAS_PRONTAS) { const c = curvaAtual(); if (!c) return; const t = num(S.ntc.t) ?? 35, r = num(S.ntc.r);
-    montarVivo('ntc', { nu: true, so: 'ntc', lido: r ?? interp(c.pts, t), ta: t, curva: (T) => interp(c.pts, T), tInv: tInv(c), dentro: (L) => { const R = veredictoNtc(c, t, L); return R.estado === 'ok'; },
+    montarVivo('ntc', { nu: true, zoom1: !PRANCHA, so: 'ntc', lido: r ?? interp(c.pts, t), ta: t, curva: (T) => interp(c.pts, T), tInv: tInv(c), dentro: (L) => { const R = veredictoNtc(c, t, L); return R.estado === 'ok'; },
       aoLer: (v) => { S.ntc.r = String(Math.round(v * 100) / 100); const i = app.querySelector('[data-in="ntc-r"]'); if (i) i.value = S.ntc.r; salvarDepois(); } }, (raiz) => { marcar(raiz); rodapeTabela25(raiz, c, t); }); }
   if (nome === 'aferir' && S.sub === 'gas' && PT_PRONTO) { const st = S.gas, p = num(st.p), ev = p === null ? 4.4 : tSat(PT_PRONTO, FLUIDOS[S.equip.fluido], p);
-    montarVivo('manifold', { nu: true, so: 'manifold', fluido: fl(S.equip.fluido), sh: st.sh, semLeitura: st.sh === null || p === null, evap: ev, psi: p === null ? '—' : f1(p, 0), estado: st.sh !== null && p !== null ? { leu: true, shA: st.sh } : {},
+    montarVivo('manifold', { nu: true, zoom1: !PRANCHA, so: 'manifold', fluido: fl(S.equip.fluido), sh: st.sh, semLeitura: st.sh === null || p === null, evap: ev, psi: p === null ? '—' : f1(p, 0), estado: st.sh !== null && p !== null ? { leu: true, shA: st.sh } : {},
       aoSh: (v) => { st.sh = v; salvarDepois(); } }, marcar); }
   // Inverter & 30s igual à tela 15 do Design System: Trava 30s nas 3 fichas literais e os 7 testes (sem o painel Vivo LED, que a tela 15 não tem).
 }
@@ -1251,7 +1276,7 @@ const ACOES = {
   abrirCofre: (b) => { const it = S.cofre.find(x => x.id === b.dataset.v); if (!it) return; Object.assign(S.laudo, novoLaudo(it.itens ? it : { sid: it.sid, v: it.vBase ?? it.valor, comboId: it.comboId, causa: it.causa, cli: it.cli, tel: it.tel }), { tecnico: true }); S.leituras = Array.isArray(it.leituras) ? it.leituras : []; S.numero = it.num; S.numeroGravado = true; S.msg = [`Laudo Nº ${it.num} de ${it.data} aberto do Cofre`, 'ok']; render(); window.scrollTo(0, 0); },
   limpar: (b) => { if (!S.limparArmado) { S.limparArmado = true; render(); clearTimeout(S._tl); S._tl = setTimeout(() => { S.limparArmado = false; render(); }, 5000); return; } S.limparArmado = false; Object.assign(S.laudo, novoLaudo({ mala: S.laudo.mala, pmoc: S.laudo.pmoc }), { tecnico: true }); S.leituras = []; S.casoLaudo = -1; S.srvSug = null; S.causaSug = null; S.numero = null; S.numeroGravado = false; S.msg = ['Laudo atual limpo', 'ok']; render(); },
   pmocTeaser: () => abrirUpgrade('', true), upIr: () => { const u = S.gav === 'pmoc' ? CHECKOUT_PMOC : CHECKOUT_PRO; if (u) location.href = u; else toast('O link do upgrade ainda não foi configurado'); },
-  tema: () => { S.tema = escuro() ? 'claro' : 'escuro'; aplicarTema(); ULT = ''; Object.keys(VIVOS).forEach(desmontarVivo); render(); salvarSessao(); },
+  tema: () => { S.tema = escuro() ? 'claro' : 'escuro'; TEMA_URL = null; aplicarTema(); ULT = ''; Object.keys(VIVOS).forEach(desmontarVivo); render(); salvarSessao(); },
   zap: () => enviarZap(), pdf: (b) => gerarPdfLaudo(b), pmoc: (b) => gerarPdfPmoc(b),
 };
 const confirmar2 = (b, acao) => { if (b.dataset.etapa === 'confirmar') return acao(); b.dataset.etapa = 'confirmar'; b.textContent = b.dataset.confirmarTexto || 'Toque de novo para confirmar'; setTimeout(() => { if (b.isConnected) { delete b.dataset.etapa; render(); } }, 5000); };
@@ -1351,7 +1376,6 @@ async function iniciar() {
   Promise.all([fonteVivo(escuro()).catch(() => {}), carregarCurvas().then(C => { CURVAS_PRONTAS = C; }).catch(() => {}), carregarPT().then(([T]) => { PT_PRONTO = T; }).catch(() => {}),
     carregarPrecos().then(() => csv('pmoc_atividades.csv').catch(() => [])).then(PM => { PMOC_ATIV = PM; }).catch(() => {}), carregarCodigos().then(U => { CODIGOS_PRONTOS = U; }).catch(() => {})])
     .then(() => { fonteVivo(!escuro()).catch(() => {}); if (S.tecla !== 'sintomas') render(); });
-  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.tema) return; aplicarTema(); ULT = ''; Object.keys(VIVOS).forEach(desmontarVivo); render(); }); } catch (e) {}
   // Redimensionar (girar, minimizar e voltar, barra de endereço, teclado): só a largura refaz a tela e o ajustarZoom(), com espera limpa
   // de 150 ms; altura sozinha (barra de URL do Safari/Chrome, teclado) não mexe em nada. Na prancha da sonda vale a altura também.
   let rz = 0, LARG = Math.round(innerWidth), ALT = Math.round(innerHeight);
@@ -1369,7 +1393,7 @@ iniciar();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   const ocioso = (f) => (window.requestIdleCallback ? requestIdleCallback(f, { timeout: 3000 }) : setTimeout(f, 200));
   const aquecer = () => navigator.serviceWorker.ready.then(r => { const a = r.active || navigator.serviceWorker.controller; if (a) a.postMessage({ tipo: 'aquecer-artes' }); }).catch(() => {});
-  const aoCarregar = () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); setTimeout(() => ocioso(aquecer), 4000); };
+  const aoCarregar = () => { navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {}); setTimeout(() => ocioso(aquecer), 4000); };
   if (document.readyState === 'complete') aoCarregar(); else addEventListener('load', aoCarregar, { once: true });
 }
 

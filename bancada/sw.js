@@ -1,13 +1,15 @@
 // GeloPro · Bancada GeloPRO em modo avião — 12/11/2026 — versão oficial e única em /bancada/ (escopo ./, Design System v4 transplantado 1:1).
-// Cache bancada-offline-v13 (12/11/2026, celular real): o install guarda SÓ o núcleo leve (página, motor próprio em ./motor/ com a base
+// Cache bancada-offline-v14 (12/11/2026, fim do cache fantasma): a página e os scripts do núcleo vão à rede primeiro (cache: 'no-cache',
+// prazo de 1,2 s) e atualizam o cache na hora; rede caída ou lenta abre o cache na mesma hora, então o celular nunca fica preso numa
+// versão antiga depois de um deploy e o modo avião segue instantâneo. O install guarda SÓ o núcleo leve (página, motor próprio em ./motor/ com a base
 // embutida base-inline.js, PDF v4, estilos e gerador do Design System, fontes e mascote), 2 downloads por vez, sem disputar a antena.
 // As 126 artes de ../guia-pro/imagens/, os 48 tiles de ./tiles/, os 19 CSVs e os arquivos literais de ./ds/ entram depois, aquecidos
-// 1 por vez quando a página pede (mensagem aquecer-artes, 4 s após carregar e ociosa). Busca: cache primeiro, com atualização silenciosa
-// em segundo plano (stale-while-revalidate) para página, .js, .html, .json e .csv; artes, fontes e imagens saem do cache e só vão à rede
-// se faltarem. Nenhuma espera de rede ao tocar. O activate apaga os caches antigos da Bancada (bancada-offline-* diferente,
+// 1 por vez quando a página pede (mensagem aquecer-artes, 4 s após carregar e ociosa). CSVs e .json/.html do Design System: cache
+// primeiro com atualização silenciosa; artes, tiles, fontes e imagens saem do cache e só vão à rede se faltarem. Nenhuma espera de rede ao tocar. O activate apaga os caches antigos da Bancada (bancada-offline-* diferente,
 // bancada-v2-offline-* e bancada-v3-offline-*); o install reaproveita as artes que já estavam no cache anterior (sem baixar de novo).
 'use strict';
-const CACHE = 'bancada-offline-v13'; // v13 (12/11/2026): núcleo leve no install, artes aquecidas 1 por vez, cache primeiro sem prazo de rede
+const CACHE = 'bancada-offline-v14'; // v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
+const PRAZO_REDE_MS = 1200;
 const PAGINA = './';
 const MOTOR = [
   './motor/base-inline.js', './motor/vendor/qrcode-generator-1.4.4.js', './motor/gelopro-pix.js', './motor/marca-gelopro.js', './motor/pdf-gelopro.js', './motor/licenca-gelopro.js',
@@ -139,8 +141,19 @@ self.addEventListener('message', (e) => {
 
 const guardar = (chave, r) => { if (r && r.ok) { const cp = r.clone(); return caches.open(CACHE).then(c => c.put(chave, cp)).catch(() => {}); } return Promise.resolve(); };
 const doCache = async (chave, req) => { const c = await caches.open(CACHE); return (await c.match(chave)) || (req.mode === 'navigate' ? await c.match(URL_PAGINA) : null); };
-// Atualização silenciosa: cada arquivo do núcleo é revalidado no máximo 1 vez por vida do service worker.
+// Atualização silenciosa (CSVs e arquivos do Design System): cada um é revalidado no máximo 1 vez por vida do service worker.
 const REVALIDADO = new Set();
+const NUCLEO_URL = new Set(NUCLEO.map(abs));
+// Página e núcleo: rede primeiro com prazo curto; a resposta nova entra no cache na hora (mesmo se chegar depois do prazo).
+const redePrimeiro = (e, chave, req) => {
+  const rede = fetch(req.mode === 'navigate' ? URL_PAGINA : chave, { cache: 'no-cache', credentials: 'omit' }).then((r) => { if (r && r.ok) { e.waitUntil(guardar(chave, r.clone())); return r; } throw new Error('HTTP ' + (r && r.status)); });
+  return new Promise((ok) => {
+    let feito = false; const entrega = (r) => { if (!feito && r) { feito = true; ok(r); } };
+    const doCacheJa = async () => { const hit = await doCache(chave, req); if (hit) entrega(hit); else rede.then(entrega, () => entrega(Response.error())); };
+    const relogio = setTimeout(doCacheJa, PRAZO_REDE_MS);
+    rede.then((r) => { clearTimeout(relogio); entrega(r); }, () => { clearTimeout(relogio); doCacheJa(); });
+  });
+};
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
@@ -149,7 +162,8 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
   // A página é uma só: ?testarSeguranca=1 e #D-xxx abrem a mesma cópia guardada.
   const chave = req.mode === 'navigate' ? URL_PAGINA : req.url.split('#')[0];
-  const versionado = req.mode === 'navigate' || /\.(js|csv|html|json)$/.test(url.pathname);
+  if (req.mode === 'navigate' || NUCLEO_URL.has(chave)) { e.respondWith(redePrimeiro(e, chave, req)); return; }
+  const versionado = /\.(js|csv|html|json)$/.test(url.pathname);
   e.respondWith((async () => {
     const hit = await doCache(chave, req);
     if (hit) {
