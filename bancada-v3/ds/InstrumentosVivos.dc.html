@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@600;700&family=Barlow+Semi+Condensed:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>body{margin:0}*{box-sizing:border-box}a{color:#0B5C7A}a:hover{color:#0C2747}button{font:inherit;cursor:pointer}@keyframes gpBolha{0%{transform:translateY(0);opacity:0}15%{opacity:.8}100%{transform:translateY(-46px);opacity:0}}@keyframes gpMare{from{transform:translateX(0)}to{transform:translateX(-60px)}}@keyframes gpSobe{0%{transform:translateY(0);opacity:0}20%{opacity:.7}100%{transform:translateY(-22px);opacity:0}}@keyframes gpOnda{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}@keyframes gpPulso{0%,100%{transform:scale(1);box-shadow:0 0 0 0 var(--gp-c)}50%{transform:scale(1.05);box-shadow:0 0 0 7px transparent}}[data-rm="1"] *{animation:none !important;transition:none !important}@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}</style>
+</helmet>
+<div ref="{{ refRaiz }}" data-rm="{{ rm }}" style="display:flex;flex-wrap:wrap;gap:32px;align-items:{{ lay.ai }};height:{{ lay.h }}">
+    <sc-if value="{{ ver.manifold }}" hint-placeholder-val="{{ true }}"><!-- 2 MANIFOLD -->
+    <div data-screen-label="Vivo Manifold" style="display:flex;flex-direction:column;gap:8px;width:{{ wEsp }};max-width:100%">
+      <sc-if value="{{ comTitulo }}" hint-placeholder-val="{{ true }}"><span style="font:700 15px/1.3 'Schibsted Grotesk',sans-serif;color:#0B0B0C">Gás &amp; SH · botija de fluido</span></sc-if>
+      <div style="display:flex;flex-direction:column;flex-grow:{{ lay.c }};background:{{ tile.bg }};border-radius:{{ tile.r }};padding:{{ tile.pad }};box-shadow:{{ tile.sh }};color:#0C2747;font-family:'Barlow Semi Condensed',sans-serif">
+        <div style="background:#FFFFFF;border:1px solid #94A3B8;border-radius:12px;padding:12px;flex-grow:{{ lay.c }};display:flex;flex-direction:column;gap:{{ g.cg }};min-width:0;box-shadow:0 1px 3px rgba(9,30,66,.14)">
+
+<div style="margin:-12px -12px 0;padding:8px 12px;border-radius:12px 12px 0 0;background:#EFEDE8;border-bottom:1px solid #CFCBC2;display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="display:flex;align-items:center;gap:8px;min-width:0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none"><sc-for list="{{ ic.manifold }}" as="d" hint-placeholder-count="1"><path d="{{ d }}"></path></sc-for></svg><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#334155;white-space:nowrap">Gás &amp; SH</span></span><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.02em;display:inline-flex;align-items:center;height:32px;box-sizing:border-box;padding:0 8px;border-radius:999px;white-space:nowrap;box-shadow:inset 0 0 0 1px {{ man.pill.bd }};background:{{ man.pill.bg }};color:{{ man.pill.fg }}">{{ man.pillTx }}</span></div>
+
+<div data-visor="262" style="zoom:{{ lay.z }};flex-grow:{{ lay.c }};padding:{{ g.vp }};display:flex;align-items:center;gap:12px;overflow:hidden;min-width:0;background:linear-gradient(180deg,#F1EAD8 0%,#FFFEFA 34%,#FAF5E8 100%);border:1.5px solid #A6945F;border-radius:12px;box-shadow:inset 0 2px 6px rgba(63,50,16,.24),0 1px 0 rgba(255,255,255,.7)">
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;flex-direction:column;gap:4px;white-space:nowrap"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#334155">Superaquecimento</span><div style="display:flex;align-items:baseline;gap:8px"><b style="font:700 48px/1.1 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">{{ man.num }}</b><span style="font:700 20px/1.1 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">°C</span></div><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:color .2s;color:{{ man.cor }}">{{ man.alvo }}</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-top:1px solid #E5DCC3;padding-top:8px;white-space:nowrap"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#334155">Tubo</span><b style="font:700 17px/1.2 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">{{ man.tuboTx }}</b></div><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-top:1px solid #E5DCC3;padding-top:8px;white-space:nowrap"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#334155">Evaporação</span><b style="font:700 17px/1.2 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">{{ man.evap }}</b></div><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-top:1px solid #E5DCC3;padding-top:8px;white-space:nowrap"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#334155">Sucção</span><b style="font:700 17px/1.2 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">{{ man.suc }}</b></div></div>
+  </div>
+  {{ man.glass }}
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="position:relative;height:48px">
+  <div style="position:absolute;left:16px;right:16px;top:20px;height:8px;border-radius:2px;background:#E5E2DC"></div>
+  <div style="position:absolute;left:calc(16px + (100% - 32px) * .35);width:calc((100% - 32px) * .2);top:20px;height:8px;background:#15803D"></div>
+  <span style="position:absolute;top:8px;width:32px;height:32px;border-radius:50%;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 0 rgba(165,243,252,.5),0 0 0 3px #FFB020;filter:{{ man.thF }};left:{{ man.thumb }}"></span>
+  <input type="range" min="0" max="20" step="0.5" value="{{ man.val }}" onChange="{{ setA2 }}" aria-label="Temperatura do tubo de sucção" style="position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer">
+</div>
+<div style="position:relative;height:17px;margin:0 16px;font:700 12px/1.4 'JetBrains Mono',monospace;color:#334155;white-space:nowrap"><span style="position:absolute;left:0">0</span><span style="position:absolute;left:35%;transform:translateX(-50%)">7</span><span style="position:absolute;left:55%;transform:translateX(-50%)">11</span><span style="position:absolute;right:0">20&nbsp;°C</span></div>
+</div>
+        </div>
+      </div>
+      </div></sc-if>
+    <sc-if value="{{ ver.ntc }}" hint-placeholder-val="{{ true }}"><!-- 3 NTC -->
+    <div data-screen-label="Vivo NTC" style="display:flex;flex-direction:column;gap:8px;width:{{ wEsp }};max-width:100%">
+      <sc-if value="{{ comTitulo }}" hint-placeholder-val="{{ true }}"><span style="font:700 15px/1.3 'Schibsted Grotesk',sans-serif;color:#0B0B0C">Sensor NTC · multímetro</span></sc-if>
+      <div style="display:flex;flex-direction:column;flex-grow:{{ lay.c }};background:{{ tile.bg }};border-radius:{{ tile.r }};padding:{{ tile.pad }};box-shadow:{{ tile.sh }};color:#0C2747;font-family:'Barlow Semi Condensed',sans-serif">
+        <div style="background:#FFFFFF;border:1px solid #94A3B8;border-radius:12px;padding:12px;flex-grow:{{ lay.c }};display:flex;flex-direction:column;gap:8px;min-width:0;box-shadow:0 1px 3px rgba(9,30,66,.14)">
+
+<div style="margin:-12px -12px 0;padding:8px 12px;border-radius:12px 12px 0 0;background:#EFEDE8;border-bottom:1px solid #CFCBC2;display:flex;align-items:center;justify-content:space-between;gap:8px"><span style="display:flex;align-items:center;gap:8px;min-width:0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none"><sc-for list="{{ ic.ntc }}" as="d" hint-placeholder-count="1"><path d="{{ d }}"></path></sc-for></svg><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#334155;white-space:nowrap">Sensor NTC</span></span><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.02em;display:inline-flex;align-items:center;height:32px;box-sizing:border-box;padding:0 8px;border-radius:999px;white-space:nowrap;box-shadow:inset 0 0 0 1px {{ rep.pill.bd }};background:{{ rep.pill.bg }};color:{{ rep.pill.fg }}">{{ rep.pillTx }}</span></div>
+
+<div data-visor="278" style="zoom:{{ lay.z }};flex-grow:{{ lay.c }};padding:8px 12px;display:flex;align-items:center;gap:12px;overflow:hidden;min-width:0;background:linear-gradient(180deg,#F1EAD8 0%,#FFFEFA 34%,#FAF5E8 100%);border:1.5px solid #A6945F;border-radius:12px;box-shadow:inset 0 2px 6px rgba(63,50,16,.24),0 1px 0 rgba(255,255,255,.7)">
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+    <div style="display:flex;flex-direction:column;gap:4px;white-space:nowrap"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#334155">O sensor marca</span><div style="display:flex;align-items:baseline;gap:8px"><b style="font:700 48px/1.1 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">{{ rep.num }}</b><span style="font:700 20px/1.1 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">°C</span></div><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:color .2s;color:{{ rep.cor }}">{{ rep.alvo }}</span></div>
+    <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-top:1px solid #E5DCC3;padding-top:8px;white-space:nowrap"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#334155">Lido</span><b style="font:700 17px/1.2 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">{{ rep.lido }}</b></div><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-top:1px solid #E5DCC3;padding-top:8px;white-space:nowrap"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#334155">Esperado</span><b style="font:700 17px/1.2 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">{{ rep.ref }}</b></div><div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;border-top:1px solid #E5DCC3;padding-top:8px;white-space:nowrap"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#334155">Desvio</span><b style="font:700 17px/1.2 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;transition:color .2s;color:{{ rep.devCor }}">{{ rep.dev }}</b></div></div>
+  </div>
+  {{ rep.mult }}
+</div>
+
+<div style="display:flex;flex-direction:column;gap:8px">
+<div style="position:relative;height:48px">
+  <div style="position:absolute;left:16px;right:16px;top:20px;height:8px;border-radius:2px;background:#E5E2DC"></div>
+  <div style="position:absolute;left:calc(16px + (100% - 32px) * .4167);width:calc((100% - 32px) * .1666);top:20px;height:8px;background:#15803D"></div>
+  <span style="position:absolute;top:8px;width:32px;height:32px;border-radius:50%;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 0 rgba(165,243,252,.5),0 0 0 3px #FFB020;left:{{ rep.thumb }}"></span>
+  <input type="range" min="-30" max="30" step="0.5" value="{{ rep.val }}" onChange="{{ setN }}" aria-label="Leitura do multímetro em relação ao esperado" style="position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer">
+</div>
+<div style="position:relative;height:17px;margin:0 16px;font:700 12px/1.4 'JetBrains Mono',monospace;color:#334155;white-space:nowrap"><span style="position:absolute;left:0">−30%</span><span style="position:absolute;left:41.67%;transform:translateX(-50%)">−5</span><span style="position:absolute;left:58.33%;transform:translateX(-50%)">+5</span><span style="position:absolute;right:0">+30%</span></div>
+</div>
+        </div>
+      </div>
+      </div></sc-if>
+    <sc-if value="{{ ver.led }}" hint-placeholder-val="{{ true }}"><!-- 4 LED -->
+    <div data-screen-label="Vivo LED" style="display:flex;flex-direction:column;gap:8px;width:{{ wEsp }};max-width:100%">
+      <sc-if value="{{ comTitulo }}" hint-placeholder-val="{{ true }}"><span style="font:700 15px/1.3 'Schibsted Grotesk',sans-serif;color:#0B0B0C">Pulso de LED + Trava 30s</span></sc-if>
+      <div style="display:flex;flex-direction:column;flex-grow:{{ lay.c }};background:{{ tile.bg }};border-radius:{{ tile.r }};padding:{{ tile.pad }};box-shadow:{{ tile.sh }};color:#0C2747;font-family:'Barlow Semi Condensed',sans-serif">
+        <div style="background:#FFFFFF;border:1px solid #94A3B8;border-radius:12px;padding:12px;flex-grow:{{ lay.c }};display:flex;flex-direction:column;gap:8px;min-width:0;box-shadow:0 1px 3px rgba(9,30,66,.14)">
+          
+          <div style="margin:-12px -12px 0;padding:8px 12px;border-radius:12px 12px 0 0;background:#EFEDE8;border-bottom:1px solid #CFCBC2;display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <span style="display:flex;align-items:center;gap:8px;min-width:0"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none"><sc-for list="{{ ic.led }}" as="d" hint-placeholder-count="1"><path d="{{ d }}"></path></sc-for></svg><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#334155;white-space:nowrap">LED &amp; Trava 30s</span></span>
+            <span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.02em;display:inline-flex;align-items:center;height:32px;box-sizing:border-box;padding:0 8px;border-radius:999px;white-space:nowrap;box-shadow:inset 0 0 0 1px {{ led.pill.bd }};background:{{ led.pill.bg }};color:{{ led.pill.fg }}">{{ led.pillTx }}</span>
+          </div>
+          
+          <div data-visor="270" style="zoom:{{ lay.z }};flex-grow:{{ lay.c }};justify-content:center;background:linear-gradient(180deg,#F1EAD8 0%,#FFFEFA 34%,#FAF5E8 100%);border:1.5px solid #A6945F;border-radius:12px;box-shadow:inset 0 2px 6px rgba(63,50,16,.24),0 1px 0 rgba(255,255,255,.7);padding:12px;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-width:0">
+            <div style="display:flex;align-items:center;gap:16px;padding-bottom:4px">
+              <div style="position:relative;flex:none;width:72px;height:72px;display:flex;align-items:center;justify-content:center">
+                <span style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,{{ led.cor }} 0%,transparent 70%);opacity:{{ led.halo }}"></span>
+                <span style="position:relative;width:40px;height:40px;border-radius:50%;box-shadow:inset 0 2px 4px rgba(0,0,0,.5);background:{{ led.bulbo }};border:2px solid {{ led.aro }}"></span>
+              </div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#334155;white-space:nowrap">Simulador de LED</span><div style="display:flex;align-items:baseline;gap:8px;white-space:nowrap"><b style="font:700 48px/1.1 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:#0C2747">{{ led.cont }}</b><span style="font:700 17px/1.1 'JetBrains Mono',monospace;color:#334155">piscadas</span></div></div>
+            </div>
+            <div style="position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid #CFCBC2;border-radius:8px;overflow:hidden">
+              <sc-for list="{{ led.fases }}" as="f" hint-placeholder-count="3">
+                <div style="position:relative;padding:4px 8px 16px;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;white-space:nowrap;background:#EFEDE8">
+                  <span style="display:flex;align-items:center;gap:8px;font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:{{ f.tinta }}"><span style="flex:none;width:10px;height:10px;border-radius:50%;background:{{ f.picBg }};border:{{ f.picBd }}"></span>{{ f.nome }}</span>
+                  <b style="font:700 12px/1.2 'JetBrains Mono',monospace;color:#0C2747">{{ f.ms }}</b>
+                  <span style="position:absolute;left:8px;right:8px;bottom:4px;height:4px;border-radius:2px;background:#E5E2DC"></span>
+                  <span style="position:absolute;left:8px;right:8px;bottom:4px;height:4px;border-radius:2px;background:{{ f.barra }}"></span>
+                </div>
+              </sc-for>
+              <span style="position:absolute;top:0;bottom:0;left:33.333%;width:1px;background:#CFCBC2"></span><span style="position:absolute;top:0;bottom:0;left:66.666%;width:1px;background:#CFCBC2"></span>
+            </div>
+            <sc-if value="{{ selo }}" hint-placeholder-val="{{ true }}"><span style="align-self:flex-start;font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;display:inline-flex;align-items:center;height:32px;box-sizing:border-box;padding:0 8px;border-radius:999px;background:#15803D;color:#FFFFFF;white-space:nowrap">✓ NÃO É DEFEITO</span></sc-if>
+            <div style="height:1px;background:#94A3B8"></div>
+            <span style="font:700 12px/1.2 'Barlow Semi Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#334155;white-space:nowrap">Trava 30s · <span style="font-family:'JetBrains Mono',monospace;color:#0C2747">{{ led.feitos }}/3</span></span>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ led.passos }}" as="t" hint-placeholder-count="3">
+                <button onClick="{{ t.on }}" aria-pressed="{{ t.pressed }}" style="min-height:44px;width:100%;border-radius:8px;padding:0 8px;display:flex;align-items:center;gap:8px;text-align:left;background:#FFFFFF;border:1px solid #7A6A3A;color:#0C2747;font:700 14px/1.2 'Barlow Semi Condensed',sans-serif"><span style="flex:none;width:18px;text-align:center;color:{{ t.cor }}">{{ t.ic }}</span><span style="flex:1;min-width:0">{{ t.nome }}</span><span style="font:600 12px/1 'JetBrains Mono',monospace;white-space:nowrap;color:{{ t.cor }}">{{ t.alvo }}</span></button>
+              </sc-for>
+            </div>
+          </div>
+          
+          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+            <sc-for list="{{ led.ops }}" as="o" hint-placeholder-count="4">
+              <button onClick="{{ o.on }}" aria-pressed="{{ o.pressed }}" style="min-height:44px;min-width:0;border-radius:12px;padding:4px 4px;font:700 15px/1 'JetBrains Mono',monospace;text-align:center;background:{{ o.s.bg }};border:{{ o.s.bd }};color:{{ o.s.fg }};box-shadow:{{ o.s.sh }}">{{ o.n }}×</button>
+            </sc-for>
+          </div>
+          <button onClick="{{ led.reset }}" disabled="{{ led.travado }}" style="min-height:44px;width:100%;border-radius:12px;padding:8px 12px;font:700 15px/1.25 'Barlow Semi Condensed',sans-serif;background:#FFFFFF;border:1.5px solid #B91C1C;color:#7F1D1D;opacity:{{ led.op }};cursor:{{ led.cursor }}">{{ led.acao }}</button>
+        </div>
+      </div>
+      </div></sc-if>
+    
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:600},&quot;so&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;todos&quot;,&quot;manifold&quot;,&quot;ntc&quot;,&quot;led&quot;],&quot;default&quot;:&quot;todos&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;nu&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;sh&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:14,&quot;min&quot;:0,&quot;max&quot;:20,&quot;step&quot;:0.5,&quot;tsType&quot;:&quot;number&quot;},&quot;lido&quot;:{&quot;editor&quot;:&quot;float&quot;,&quot;default&quot;:6.49,&quot;min&quot;:1,&quot;max&quot;:10,&quot;step&quot;:0.01,&quot;tsType&quot;:&quot;number&quot;},&quot;reduzirMovimento&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;semLeitura&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;corLed&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;vermelho&quot;,&quot;verde&quot;,&quot;laranja&quot;],&quot;default&quot;:&quot;vermelho&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;seloNaoEDefeito&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;fluido&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;R-410A&quot;,&quot;R-32&quot;,&quot;R-22&quot;],&quot;default&quot;:&quot;R-410A&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { mala: false, shA: 14, step: 0, tAn: 25, pisc: 3, ledOn: false, blink: 0, fase: 'pausa', trava: { rede: false, cap: false, ntc: false }, tecla: 'aferir', marca: 0, btu: 1, fluido: 0, placa: '' };
+  GRUPOS = (() => {
+    const C = (x, y, r) => 'M' + (x + r) + ' ' + y + 'a' + r + ' ' + r + ' 0 1 1-' + (2 * r) + ' 0 ' + r + ' ' + r + ' 0 0 1 ' + (2 * r) + ' 0z';
+    const R = (x, y, w, h, r) => 'M' + (x + r) + ' ' + y + 'h' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + ' ' + r + 'v' + (h - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1-' + r + ' ' + r + 'h-' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1-' + r + '-' + r + 'v-' + (h - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + '-' + r + 'z';
+    return [
+      ['Gerais', {
+        inicio: ['M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8', 'M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'],
+        busca: [C(11, 11, 7), 'm20 20-4-4'],
+        documento: ['M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z', 'M14 2v4a2 2 0 0 0 2 2h4', 'M10 9H8', 'M16 13H8', 'M16 17H8'],
+        'doc-olho': ['M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z', 'M14 2v4a2 2 0 0 0 2 2h4', 'M8 14s1.5-2.5 4-2.5 4 2.5 4 2.5-1.5 2.5-4 2.5-4-2.5-4-2.5Z', C(12, 14, 1)],
+        cadeado: [R(3, 11, 18, 11, 2), 'M7 11V7a5 5 0 0 1 10 0v4'],
+        info: [C(12, 12, 9), 'M12 16v-4', 'M12 8h.01'],
+        alerta: ['m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3', 'M12 9v4', 'M12 17h.01'],
+        erro: [C(12, 12, 9), 'm15 9-6 6', 'm9 9 6 6'],
+        sucesso: [C(12, 12, 9), 'm8.5 12.5 2.5 2.5 5-5.5'],
+        ok: ['M20 6 9 17l-5-5'],
+        neutro: ['M5 12h14'],
+        voltar: ['m15 18-6-6 6-6'], avancar: ['m9 18 6-6-6-6'], abrir: ['m6 9 6 6 6-6'], fechar: ['M18 6 6 18', 'm6 6 12 12'],
+        mais: ['M5 12h14', 'M12 5v14'],
+        lixeira: ['M3 6h18', 'M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6', 'M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2', 'M10 11v6', 'M14 11v6'],
+        usuario: ['M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2', C(12, 7, 4)],
+        sol: [C(12, 12, 4), 'M12 2v2', 'M12 20v2', 'm4.93 4.93 1.41 1.41', 'm17.66 17.66 1.41 1.41', 'M2 12h2', 'M20 12h2', 'm6.34 17.66-1.41 1.41', 'm19.07 4.93-1.41 1.41'],
+        cofre: [R(3, 3, 18, 18, 2), C(12, 12, 3), 'M7.5 7.5h.01', 'M16.5 7.5h.01', 'M7.5 16.5h.01', 'M16.5 16.5h.01'],
+        garantia: ['M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z', 'm9 12 2 2 4-4'],
+        'garantia-dinheiro': ['M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z', 'M12 7.5v10', 'M14.6 9.6c-.4-.8-1.3-1.3-2.6-1.3-1.5 0-2.6.8-2.6 1.9 0 2.7 5.3 1.3 5.3 4 0 1.1-1.1 2-2.7 2-1.3 0-2.4-.6-2.8-1.5'],
+        calendario: ['M8 2v4', 'M16 2v4', R(3, 4, 18, 18, 2), 'M3 10h18'],
+        assinatura: ['m21 17-2.156-1.868A.5.5 0 0 0 18 15.5v.5a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1c0-2.545-3.991-3.97-8.5-4a1 1 0 0 0 0 5c4.153 0 4.745-11.295 5.708-13.5a2.5 2.5 0 1 1 3.31 3.284', 'M3 21h18'],
+        qr: ['M3 3h5v5H3z', 'M16 3h5v5h-5z', 'M3 16h5v5H3z', 'M21 16h-3a2 2 0 0 0-2 2v3', 'M21 21v.01', 'M12 7v3a2 2 0 0 1-2 2H7', 'M3 12h.01', 'M12 3h.01', 'M12 16v.01', 'M16 12h1', 'M21 12v.01', 'M12 21v-1'],
+        mensagem: ['M7.9 20A9 9 0 1 0 4 16.1L2 22Z'],
+        sino: ['M10.268 21a2 2 0 0 0 3.464 0', 'M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326'],
+        enviar: ['M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z', 'm21.854 2.147-10.94 10.939'],
+        imprimir: ['M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2', 'M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6', R(6, 14, 12, 8, 1)],
+        raio: ['M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'],
+        ciclo: ['M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8', 'M21 3v5h-5', 'M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16', 'M8 16H3v5'],
+        copiar: [R(8, 8, 14, 14, 2), 'M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2'],
+        lua: ['M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'],
+        'sol-fraco': [C(12, 12, 4), 'M12 4h.01', 'M20 12h.01', 'M12 20h.01', 'M4 12h.01', 'M17.657 6.343h.01', 'M17.657 17.657h.01', 'M6.343 17.657h.01', 'M6.343 6.343h.01'],
+        prancheta: [R(8, 2, 8, 4, 1), 'M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2', 'M12 11h4', 'M12 16h4', 'M8 11h.01', 'M8 16h.01'],
+      }],
+      ['Sintomas', {
+        'nao-gela': ['M12 2v2', 'M12 8a4 4 0 0 0-1.645 7.647', 'M2 12h2', 'M20 14.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z', 'm4.93 4.93 1.41 1.41', 'm6.34 17.66-1.41 1.41'],
+        'gela-pouco': ['M12.8 19.6A2 2 0 1 0 14 16H2', 'M17.5 8a2.5 2.5 0 1 1 2 4H2', 'M9.8 4.4A2 2 0 1 1 11 8H2'],
+        gelo: ['M2 12h20', 'M12 2v20', 'm20 16-4-4 4-4', 'm4 8 4 4-4 4', 'm16 4-4 4-4-4', 'm8 20 4-4 4 4'],
+        pinga: ['M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z', 'M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97'],
+        desliga: ['M12 2v10', 'M18.4 6.6a9 9 0 1 1-12.77.04'],
+        'nao-liga': ['M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z', 'm2 2 20 20'],
+        barulho: ['M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z', 'M16 9a5 5 0 0 1 0 6', 'M19.364 18.364a9 9 0 0 0 0-12.728'],
+        codigo: [R(2, 3, 20, 14, 2), 'M8 21h8', 'M12 17v4', 'M12 7v4', 'M12 14h.01'],
+        led: [C(12, 12, 4), 'M12 2v3', 'M12 19v3', 'M2 12h3', 'M19 12h3', 'm4.9 4.9 2.1 2.1', 'm17 17 2.1 2.1', 'm19.1 4.9-2.1 2.1', 'm7 17-2.1 2.1'],
+      }],
+      ['Refrigeração · GeloPro', {
+        evaporadora: [R(2, 6, 20, 8, 1.5), 'M5 11h14', 'M17.5 8.5h1', 'M7 17.5c0 1-1 1.5-1 2.5', 'M12 17.5v3', 'M17 17.5c0 1 1 1.5 1 2.5'],
+        condensadora: [R(3, 4, 18, 14, 1.5), C(9.5, 11, 4), C(9.5, 11, 1), 'M16 8h2.5', 'M16 11h2.5', 'M16 14h2.5', 'M6 18v2.5', 'M18 18v2.5'],
+        ventilador: ['M10.827 16.379a6.082 6.082 0 0 1-8.618-7.002l5.412 1.45a6.082 6.082 0 0 1 7.002-8.618l-1.45 5.412a6.082 6.082 0 0 1 8.618 7.002l-5.412-1.45a6.082 6.082 0 0 1-7.002 8.618l1.45-5.412Z', 'M12 12v.01'],
+        compressor: ['M7 9a5 5 0 0 1 10 0v8a3 3 0 0 1-3 3h-4a3 3 0 0 1-3-3z', 'M7 13.5h10', 'M10 4.4V2', 'M14 4.4V2.5h2.5', 'M5 22h14'],
+        capacitor: [R(7, 7, 10, 15, 2), 'M6 7h12', 'M10 7V3.5', 'M14 7V3.5', 'M10.5 14h3', 'M12 12.5v3'],
+        'sensor-ntc': ['M10 2v8.5', 'M14 2v8.5', C(12, 15, 4.5), 'M10.5 15h3', 'M12 13v4'],
+        'termometro-escala': ['M12 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z', 'M10 14v3', 'M15.5 5h2.5', 'M15.5 8.5h3.5', 'M15.5 12h2.5'],
+        termometro: ['M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z', 'M12 14v3'],
+        manifold: [C(7, 7.5, 4), C(17, 7.5, 4), 'M7 7.5l2-2', 'M17 7.5l-2-2', R(3, 14, 18, 4, 1), 'M7 11.5V14', 'M17 11.5V14', 'M7 18v3', 'M12 18v3', 'M17 18v3'],
+        medidor: ['m12 14 4-4', 'M3.34 19a10 10 0 1 1 17.32 0'],
+        'pt-sh': ['M3.34 19a10 10 0 1 1 17.32 0', 'm12 14 4-4', 'M8 8.5h2.5', 'M9.25 8.5v4'],
+        'valvula-servico': ['M2 15h7', 'M15 15h7', R(9, 11, 6, 8, 1), 'M10.5 11V7h3v4', 'M9.5 7h5', 'M12 4v3'],
+        'cilindro-fluido': ['M6.5 10a5.5 4 0 0 1 11 0v9a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2z', 'M6.5 15h11', 'M11 3h2v3h-2z', 'M8.5 6h7', 'M8.5 6v1.5', 'M15.5 6v1.5'],
+        diodo: ['M2 12h6', 'M8 6v12l9-6z', 'M17 6v12', 'M17 12h5'],
+        'placa-ipm': [R(2, 4, 20, 16, 2), R(7, 9, 7, 6, 0.5), 'M9 7v2', 'M12 7v2', 'M9 15v2', 'M12 15v2', 'M17.5 9v6'],
+        'bomba-vacuo': [R(2, 9, 12, 9, 1.5), 'M5 9V6h6v3', 'M5 18v2.5', 'M11 18v2.5', 'M14 13.5h3a2 2 0 0 1 2 2V21', C(19, 6.5, 2.5), 'M19 6.5l1-1'],
+        dreno: ['M12 3.5c1.6 2 2.5 3.4 2.5 4.6a2.5 2.5 0 0 1-5 0c0-1.2.9-2.6 2.5-4.6z', 'M3 13h18l-2 4.5H5z', 'M17 17.5V21'],
+        filtro: [R(3, 3, 18, 18, 1.5), 'M3 9h18', 'M3 15h18', 'M9 3v18', 'M15 3v18'],
+        tubulacao: ['M2 8h12a4 4 0 0 1 4 4v10', 'M2 14h7a2 2 0 0 1 2 2v6', 'M5 5.5v1', 'M9 5.5v1'],
+        'carga-termica': ['M3 11 12 4l9 7v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z', 'M9 13.5c-1 1 1 2 0 3.5', 'M12 13.5c-1 1 1 2 0 3.5', 'M15 13.5c-1 1 1 2 0 3.5'],
+        multimetro: [R(5, 2, 14, 20, 2), R(8, 5, 8, 4, 0.5), C(12, 15, 2.5), 'M12 15l1.5-1.5'],
+        inverter: [R(7, 7, 10, 10, 1), 'M9.5 3v4', 'M14.5 3v4', 'M9.5 17v4', 'M14.5 17v4', 'M3 9.5h4', 'M3 14.5h4', 'M17 9.5h4', 'M17 14.5h4'],
+      }],
+      ['Medições (Lucide)', {
+        'lucide-cpu': ['M12 20v2', 'M12 2v2', 'M17 20v2', 'M17 2v2', 'M2 12h2', 'M2 17h2', 'M2 7h2', 'M20 12h2', 'M20 17h2', 'M20 7h2', 'M7 20v2', 'M7 2v2', R(4, 4, 16, 16, 2), R(8, 8, 8, 8, 1)],
+        'lucide-cable': ['M17 19a1 1 0 0 1-1-1v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a1 1 0 0 1-1 1z', 'M17 21v-2', 'M19 14V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V10', 'M21 21v-2', 'M3 5V3', 'M4 10a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a2 2 0 0 1-2 2z', 'M7 5V3'],
+        'lucide-thermometer-sun': ['M12 2v2', 'M12 8a4 4 0 0 0-1.645 7.647', 'M2 12h2', 'M20 14.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0z', 'm4.93 4.93 1.41 1.41', 'm6.34 17.66-1.41 1.41'],
+        'lucide-activity': ['M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2'],
+        'lucide-battery-charging': ['m11 7-3 5h4l-3 5', 'M14.856 6H16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.935', 'M22 14v-4', 'M5.14 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2.936'],
+        'lucide-gauge': ['m12 14 4-4', 'M3.34 19a10 10 0 1 1 17.32 0'],
+        'lucide-botija': ['M15 6.5V3a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v3.5', 'M9 18h8', 'M18 3h-3', 'M11 3a6 6 0 0 0-6 6v11', 'M5 13h4', 'M17 10a4 4 0 0 0-8 0v10a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2Z'],
+        'lucide-calculator': [R(4, 2, 16, 20, 2), 'M8 6h8', 'M16 14v4', 'M16 10h.01', 'M12 10h.01', 'M8 10h.01', 'M12 14h.01', 'M8 14h.01', 'M12 18h.01', 'M8 18h.01'],
+      }],
+    ];
+  })();
+  MAPA = Object.assign({}, ...this.GRUPOS.map(g => g[1]));
+  CAT = this.GRUPOS.map(([tit, m]) => ({ t: tit + ' · ' + Object.keys(m).length, itens: Object.entries(m).map(([n, d]) => ({ n, d })) }));
+  componentDidMount() { if (this.props.sh != null && this.props.sh !== '') this.setState({ shA: parseFloat(this.props.sh) }); this._rm = this.props.reduzirMovimento === true || this.props.reduzirMovimento === 'true' || !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); this.rodarLed(); this.play(); const temFonte = () => !document.fonts || Array.from(document.fonts).some(f => /Barlow Semi Condensed/.test(f.family)); const esperar = n => { if (temFonte() || n > 40) (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => { this._tz = setTimeout(() => this.ajustarZoom(), 900); }); else this._tz = setTimeout(() => esperar(n + 1), 250); }; esperar(0); if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', () => { clearTimeout(this._tz2); this._tz2 = setTimeout(() => this.ajustarZoom(), 400); }); }
+  componentWillUnmount() { clearTimeout(this._tz); clearTimeout(this._tz2); clearTimeout(this._t); clearTimeout(this._pt); clearInterval(this._pi); }
+  refRaiz = el => { this._raiz = el; };
+  _uid = Math.random().toString(36).slice(2, 7);
+  /* multímetro da rodada 32a: cores físicas do objeto, iguais no claro e no escuro (fica antes do motor para não passar pelo mapa do gerador). Fonte única do desenho: os geradores das rodadas foram apagados; para mudar o multímetro, editar aqui e gerar de novo o escuro e a peça do Design System */
+  MULT = (() => {
+const f = n => String(+(+n).toFixed(2));
+const G0 = '#15181C', G1 = '#2E333B', G2 = '#4A515C', G3 = '#23272E', RED = '#B91C1C', GRN = '#15803D';
+const SEG = { 0: 'ABCDEF', 1: 'BC', 2: 'ABGED', 3: 'ABGCD', 4: 'FGBC', 5: 'AFGCD', 6: 'AFGECD', 7: 'ABC', 8: 'ABCDEFG', 9: 'ABCDFG' };
+function segPts(s, x, y, w, h, t) {
+  const g = t * 0.14, x1 = x + t / 2 + g, x2 = x + w - t / 2 - g, m = y + h / 2;
+  const H = cy => [[x1, cy], [x1 + t / 2, cy - t / 2], [x2 - t / 2, cy - t / 2], [x2, cy], [x2 - t / 2, cy + t / 2], [x1 + t / 2, cy + t / 2]];
+  const V = (cx, y1, y2) => [[cx, y1], [cx + t / 2, y1 + t / 2], [cx + t / 2, y2 - t / 2], [cx, y2], [cx - t / 2, y2 - t / 2], [cx - t / 2, y1 + t / 2]];
+  return ({ A: H(y + t / 2), G: H(m), D: H(y + h - t / 2), F: V(x + t / 2, y + t / 2 + g, m - g), B: V(x + w - t / 2, y + t / 2 + g, m - g), E: V(x + t / 2, m + g, y + h - t / 2 - g), C: V(x + w - t / 2, m + g, y + h - t / 2 - g) })[s];
+}
+const poly = p => 'M' + p.map(q => f(q[0]) + ' ' + f(q[1])).join('L') + 'Z';
+function digits(str, xr, y, w, h, t, gap, dgap) {
+  const ds = str.replace('.', ''), n = ds.length, dot = str.indexOf('.') - 1, ex = dot >= 0 ? dgap - gap : 0, x0 = xr - (n * w + (n - 1) * gap + ex) - 0.0875 * h, dt = Math.max(3, t * 1.15);
+  let ghost = '', lit = '';
+  for (let i = 0; i < n; i++) {
+    const x = x0 + i * (w + gap) + (i > dot ? ex : 0);
+    'ABCDEFG'.split('').forEach(s => { const p = poly(segPts(s, x, y, w, h, t)); ghost += p; if (SEG[ds[i]].includes(s)) lit += p; });
+    if (i === dot) lit += 'M' + f(x + w + dgap / 2 - dt / 2) + ' ' + f(y + h - dt) + 'h' + f(dt) + 'v' + f(dt) + 'h-' + f(dt) + 'Z';
+  }
+  return '<g transform="translate(' + f(0.0875 * (y + h)) + ' 0) skewX(-5)"><path d="' + ghost + '" fill="' + G0 + '" opacity=".07"></path><path d="' + lit + '" fill="' + G0 + '"></path></g>';
+}
+const TX = (x, y, s, t, anchor, fill) => '<text x="' + f(x) + '" y="' + f(y) + '" text-anchor="' + anchor + '" font-family="JetBrains Mono,monospace" font-weight="700" font-size="' + s + '" fill="' + fill + '">' + t + '</text>';
+const stop = (o, c, op) => '<stop offset="' + o + '" stop-color="' + c + '"' + (op === undefined ? '' : ' stop-opacity="' + op + '"') + '></stop>';
+const Y0 = '#F2B705', Y1 = '#FFD703', Y2 = '#FFE74A', YE = '#B98708', BL0 = '#2563EB', BL1 = '#6C9BF2', BL2 = '#BAE6FD', INK = '#0C2747', GR = '#4AF08A', RD = '#D43A3A', BR = '#F7F8FA', SH = '#3F3210';
+const lin = (id, x1, y1, x2, y2, st, us) => '<linearGradient id="' + id + '" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"' + (us ? ' gradientUnits="userSpaceOnUse"' : '') + '>' + st + '</linearGradient>';
+const rad = (id, cx, cy, r, st) => '<radialGradient id="' + id + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '">' + st + '</radialGradient>';
+const blur = (id, sd) => '<filter id="' + id + '" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="' + sd + '"></feGaussianBlur></filter>';
+const defsPro = (id, o) => '<defs>'
+  + lin('y' + id, 0, 0, 1, 0, stop(0, Y0) + stop(.1, Y1) + stop(.36, Y2) + stop(.68, Y1) + stop(1, Y0))
+  + lin('ys' + id, 0, 0, 0, 1, stop(0, '#FFFFFF', .3) + stop(.3, '#FFFFFF', 0) + stop(.7, '#000000', 0) + stop(1, '#000000', .1))
+  + lin('yb' + id, 0, 0, 1, 1, stop(0, '#FFFFFF', .75) + stop(.45, '#FFFFFF', 0) + stop(.6, YE, 0) + stop(1, YE, .85))
+  + lin('f' + id, 0, 0, 0, 1, stop(0, G1) + stop(.5, G3) + stop(1, G0))
+  + rad('fs' + id, .18, .04, .75, stop(0, '#FFFFFF', .14) + stop(1, '#FFFFFF', 0))
+  + rad('lb' + id, .5, .5, .78, stop(0, o.aceso ? '#FFFFFF' : BL2) + stop(.5, BL1) + stop(1, BL0))
+  + lin('lg' + id, 0, 0, 0, 1, stop(0, '#FFFFFF', .24) + stop(1, '#FFFFFF', 0))
+  + rad('k' + id, .38, .28, .85, stop(0, '#5A636E') + stop(.5, G1) + stop(1, G0))
+  + lin('b' + id, 0, 0, 1, 0, stop(0, G0) + stop(.4, G2) + stop(.72, '#5A636E') + stop(1, '#8C95A1'))
+  + lin('pr' + id, 0, 0, 1, 0, stop(0, '#7F1D1D') + stop(.35, RD) + stop(.7, RED) + stop(1, '#7F1D1D'))
+  + lin('pk' + id, 0, 0, 1, 0, stop(0, G0) + stop(.35, G2) + stop(.7, G1) + stop(1, G0))
+  + lin('jr' + id, 0, 0, 1, 1, stop(0, '#8C95A1') + stop(1, G1))
+  + lin('ck' + id, 0, 168, 0, 185.5, stop(0, G0, 1) + stop(.57, G0, 1) + stop(1, G0, 0), true)
+  + lin('cr' + id, 0, 168, 0, 185.5, stop(0, RED, 1) + stop(.57, RED, 1) + stop(1, RED, 0), true)
+  + lin('ch' + id, 0, 168, 0, 185.5, stop(0, '#8C95A1', .85) + stop(.57, '#8C95A1', .85) + stop(1, '#8C95A1', 0), true)
+  + blur('s' + id, 2) + blur('g' + id, 4) + blur('t' + id, .9) + '</defs>';
+const selecao = (id, esc) => { const E = { '2k': [198, 'M49.9 130.9L40.2 133.6', 20], '20k': [216, 'M43.2 128.5L39.4 131.9', 20], '200k': [234, 'M37.9 122.5L36.4 130.9', 24] }[esc] || [216, 'M43.2 128.5L39.4 131.9', 20], a = E[0] * Math.PI / 180, x = f(60 + 26.6 * Math.sin(a)), y = f(105 - 26.6 * Math.cos(a)); return '<circle cx="' + x + '" cy="' + y + '" r="3.6" fill="' + GR + '" opacity=".5" filter="url(#t' + id + ')"></circle><path d="' + E[1] + '" stroke="' + GR + '" stroke-width="1" stroke-linecap="round"></path><circle cx="' + x + '" cy="' + y + '" r="1.9" fill="' + GR + '"></circle><rect x="19.5" y="131.5" width="' + E[2] + '" height="11.5" rx="4" fill="#06140C" stroke="' + GR + '" stroke-width="1"></rect><text x="' + (19.5 + E[2] / 2) + '" y="141.1" text-anchor="middle" font-family="Barlow Semi Condensed,sans-serif" font-weight="700" font-size="11" fill="' + GR + '">' + (esc || '20k') + '</text>'; };
+const ponteiro = id => { const RG = 'd="M56 87.5Q60 84.2 64 87.5L66.4 122.5Q60 126.6 53.6 122.5Z"'; return '<path ' + RG + ' transform="translate(-1.9 -.6)" fill="#000000" opacity=".5" filter="url(#t' + id + ')"></path><path ' + RG + ' fill="url(#b' + id + ')" stroke="' + G0 + '" stroke-width="1" stroke-linejoin="round"></path><path d="M62.6 89.5L64 121" stroke="#FFFFFF" stroke-width=".9" stroke-linecap="round" opacity=".18"></path><rect x="59" y="86.6" width="2" height="9.5" rx="1" fill="#FFFFFF"></rect>'; };
+function aparelhoPro(st, id, o) {
+  const cx = 60, cy = 105, P = (a, r) => [cx + r * Math.sin(a * Math.PI / 180), cy - r * Math.cos(a * Math.PI / 180)];
+  const arc = (a1, a2, r, col) => { const p = P(a1, r), q = P(a2, r); return '<path d="M' + f(p[0]) + ' ' + f(p[1]) + 'A' + r + ' ' + r + ' 0 0 1 ' + f(q[0]) + ' ' + f(q[1]) + '" fill="none" stroke="' + col + '" stroke-width="1.3" stroke-linecap="round"></path>'; };
+  const HOL = 'x="9" y="2" width="102" height="176" rx="16"', U = n => 'url(#' + n + id + ')';
+  let s = '';
+  if (o.sombra) s += '<rect ' + HOL + ' transform="translate(2 3.5)" fill="' + SH + '" opacity=".38" filter="' + U('s') + '"></rect>';
+  s += '<rect ' + HOL + ' fill="' + U('y') + '" stroke="' + YE + '" stroke-width="1.2"></rect><rect ' + HOL + ' fill="' + U('ys') + '"></rect><rect x="11" y="4" width="98" height="172" rx="14.2" fill="none" stroke="' + U('yb') + '" stroke-width="1.6"></rect><rect x="14.4" y="7.4" width="91.2" height="165.2" rx="10.4" fill="' + YE + '" opacity=".6"></rect>';
+  s += '<rect x="16" y="9" width="88" height="162" rx="9" fill="' + U('f') + '" stroke="' + G0 + '" stroke-width="1.2"></rect><rect x="16" y="9" width="88" height="162" rx="9" fill="' + U('fs') + '"></rect><path d="M26 10.4H94" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity=".22"></path>';
+  s += '<rect x="22" y="15" width="76" height="44" rx="6" fill="' + G0 + '" stroke="' + G2 + '" stroke-width=".8"></rect><path d="M28 16H92" stroke="#FFFFFF" stroke-width=".9" stroke-linecap="round" opacity=".22"></path><rect x="25" y="18" width="70" height="38" rx="3" fill="#000000" opacity=".55"></rect>';
+  s += '<rect x="27" y="19.5" width="66" height="35" rx="1.5" fill="' + U('lb') + '"></rect><path d="M30 20.6H90" stroke="' + INK + '" stroke-width="2" stroke-linecap="round" opacity=".22"></path><rect x="27" y="19.5" width="66" height="17" rx="1.5" fill="' + U('lg') + '"></rect>';
+  if (st) { const dg = digits(st.dig, 89.5, 25, 10.5, 24, 2.8, 3, 7).split('fill="' + G0 + '"').join('fill="' + INK + '"'); s += '<g transform="translate(.8 1)" opacity=".2">' + dg.replace(/<path d="[^"]*" fill="#0C2747" opacity="\.07"><\/path>/, '') + '</g>' + dg; }
+  s += '<rect x="22" y="62" width="17" height="10" rx="5" fill="' + G2 + '" stroke="' + G0 + '" stroke-width="1"></rect><path d="M26 63.6h9" stroke="#FFFFFF" stroke-width=".9" stroke-linecap="round" opacity=".28"></path><circle cx="92.5" cy="67" r="5.5" fill="' + U('k') + '" stroke="' + G0 + '" stroke-width="1"></circle>';
+  s += '<circle cx="60" cy="105" r="24.5" fill="#000000" opacity=".6"></circle><circle cx="60" cy="105" r="24.5" fill="none" stroke="' + G2 + '" stroke-width=".7" opacity=".8"></circle>' + arc(-9, 9, 29, RD) + arc(14, 40, 29, BR) + arc(50, 130, 29, GR) + arc(140, 148, 29, BR) + arc(157, 167, 29, RD) + arc(176, 256, 29, GR) + arc(266, 346, 29, BR);
+  for (let k = 0; k < 20; k++) { const a = k * 18, col = a === 0 || a === 162 ? RD : (a >= 180 && a <= 252) || (a >= 54 && a <= 126) ? GR : BR, p = P(a, 26.6); s += '<circle cx="' + f(p[0]) + '" cy="' + f(p[1]) + '" r="1" fill="' + col + '"></circle>'; }
+  if (!o.semSel) s += selecao(id, o.fs);
+  s += '<rect x="86" y="131.5" width="14" height="10" rx="2" fill="#000000" opacity=".6"></rect><rect x="86" y="131.5" width="14" height="10" rx="2" fill="none" stroke="' + G2 + '" stroke-width=".6"></rect><path d="M89 134.9h.1M92 134.9h.1M95 134.9h.1M98 134.9h.1M89 138.3h.1M92 138.3h.1M95 138.3h.1M98 138.3h.1" stroke="#5A636E" stroke-width="1.3" stroke-linecap="round"></path>';
+  s += '<circle cx="61.5" cy="107.5" r="22" fill="#000000" opacity=".55" filter="' + U('s') + '"></circle><circle cx="60" cy="105" r="22" fill="' + U('k') + '" stroke="' + G0 + '" stroke-width="1"></circle><circle cx="60" cy="105" r="20.9" fill="none" stroke="' + G2 + '" stroke-width="1.8" stroke-dasharray="1.1 1.25" opacity=".85"></circle><circle cx="60" cy="105" r="19" fill="' + U('k') + '"></circle>';
+  if (!o.semPont) s += '<g transform="rotate(216 60 105)">' + ponteiro(id) + '</g>';
+  s += '<path d="M16.6 146H103.4" stroke="#000000" stroke-width="1.2" opacity=".6"></path><path d="M17 147.3H103" stroke="#FFFFFF" stroke-width=".8" opacity=".12"></path><rect x="21" y="150" width="78" height="18" rx="5" fill="#000000" opacity=".3"></rect>';
+  [38, 60, 82].forEach(x => { s += '<circle cx="' + x + '" cy="159" r="6" fill="' + U('jr') + '"></circle><circle cx="' + x + '" cy="159" r="4.5" fill="' + G0 + '"></circle><circle cx="' + x + '" cy="159" r="2.4" fill="#000000"></circle>'; });
+  s += '<path d="M46.5 161.3l2.5-4.6 2.5 4.6ZM68.5 161.3l2.5-4.6 2.5 4.6Z" fill="' + RD + '"></path>';
+  [[60, 'pk', '#5A636E', o.fade ? U('ck') : G0, .14], [82, 'pr', '#7F1D1D', o.fade ? U('cr') : RED, .3]].forEach(([x, g, edge, cab, op]) => {
+    s += '<rect x="' + (x - 1.9) + '" y="166" width="3.8" height="22" fill="' + cab + '"></rect>' + (o.fade ? (g === 'pk' ? '<rect x="' + (x - 1.9) + '" y="168" width="1.2" height="20" fill="' + U('ch') + '"></rect>' : '') : '<path d="M' + (x - .8) + ' 169v19" stroke="#FFFFFF" stroke-width=".8" opacity="' + op + '"></path>') + '<rect x="' + (x - 4.8) + '" y="152" width="9.6" height="17" rx="3.6" fill="' + U(g) + '" stroke="' + edge + '" stroke-width=".9"></rect><path d="M' + (x - 3.2) + ' 162.4h6.4M' + (x - 3.2) + ' 164.6h6.4M' + (x - 3.2) + ' 166.8h6.4" stroke="#000000" stroke-width=".8" opacity=".45"></path>';
+  });
+  if (o.aceso) s += '<path d="M25 2H95Q111 2 111 18V162Q111 178 95 178H25Q9 178 9 162V18Q9 2 25 2ZM28 15H92Q98 15 98 21V53Q98 59 92 59H28Q22 59 22 53V21Q22 15 28 15Z" fill="#000000" fill-rule="evenodd" opacity=".17"></path><path d="M26 11H94Q102 11 102 19V55Q102 63 94 63H26Q18 63 18 55V19Q18 11 26 11ZM30 19.5H90Q93 19.5 93 22.5V51.5Q93 54.5 90 54.5H30Q27 54.5 27 51.5V22.5Q27 19.5 30 19.5Z" fill="' + BL1 + '" fill-rule="evenodd" opacity=".8" filter="' + U('g') + '"></path>';
+  return s;
+}
+const memo = {};
+return {
+  base: id => memo[id] || (memo[id] = defsPro(id, {}) + '<g transform="translate(3.6 5.4) scale(.94)">' + aparelhoPro(null, id, { sombra: true, fade: true, semPont: true, semSel: true }) + '</g>'),
+  digs: str => { const dg = digits(str, 89.5, 25, 10.5, 24, 2.8, 3, 7).split('fill="' + G0 + '"').join('fill="' + INK + '"'); return '<g transform="translate(.8 1)" opacity=".2">' + dg.replace(/<path d="[^"]*" fill="#0C2747" opacity="\.07"><\/path>/, '') + '</g>' + dg; },
+  sel: (id, esc) => selecao(id, esc),
+  pont: id => '<g transform="translate(-60 -105)">' + ponteiro(id) + '</g>'
+};
+  })();
+  ajustarZoom() {
+    const nu = this.props.nu === true || this.props.nu === 'true'; if (!nu || !this._raiz) return;
+    const vis = this._raiz.querySelector('[data-visor]'); if (!vis) return;
+    const esc = this._raiz.getBoundingClientRect().width / (this._raiz.offsetWidth || 1) || 1, r = vis.getBoundingClientRect(), cs = getComputedStyle(vis), n = x => parseFloat(x) || 0;
+    const padV = n(cs.paddingTop) + n(cs.paddingBottom) + n(cs.borderTopWidth) + n(cs.borderBottomWidth), padH = n(cs.paddingLeft) + n(cs.paddingRight) + n(cs.borderLeftWidth) + n(cs.borderRightWidth);
+    let topo = Infinity, base = -Infinity; Array.from(vis.children).forEach(c => { const q = c.getBoundingClientRect(); if (!q.height) return; topo = Math.min(topo, q.top); base = Math.max(base, q.bottom); });
+    if (!(base > topo)) return;
+    const zAtual = parseFloat(cs.zoom) || 1, natural = (base - topo) / esc / zAtual + padV, zh = (r.height / esc) / natural, zw = (r.width / esc - padH) / (parseFloat(vis.getAttribute('data-visor')) > 1 ? parseFloat(vis.getAttribute('data-visor')) : 262);
+    this.setState({ z: Math.floor(Math.max(1, Math.min(1.6, zh, zw)) * 20) / 20 });
+  }
+  play() {
+    clearTimeout(this._pt); clearInterval(this._pi);
+    const LD = this.state.lidoA ?? (parseFloat(this.props.lido ?? 6.49) || 6.49);
+    if (this._rm) { this.setState({ step: 4, cnt: LD }); return; }
+    this.setState({ step: 0, cnt: 0 });
+    this._pt = setTimeout(() => { this.setState({ step: 1 }); /* a chave gira de OFF para 20k e o visor acende */
+      this._pt = setTimeout(() => { let i = 0; this.setState({ step: 2 });
+        this._pi = setInterval(() => { i++;
+          if (i >= 14) { clearInterval(this._pi); this.setState({ cnt: LD }); this._pt = setTimeout(() => this.setState({ step: 4 }), 350); }
+          else this.setState({ cnt: LD * (1 - Math.pow(1 - i / 14, 2)) });
+        }, 60);
+      }, 750);
+    }, 450);
+  }
+  rodarLed() {
+    clearTimeout(this._t);
+    if (this._rm) { this.setState({ ledOn: true, blink: this.state.pisc, fase: 'fixo' }); return; }
+    let i = 0;
+    const on = () => { this.setState({ ledOn: true, blink: i + 1, fase: 'on' }); this._t = setTimeout(off, 250); };
+    const off = () => { i++; this.setState({ ledOn: false, fase: 'off' }); this._t = setTimeout(i < this.state.pisc ? on : pausa, 250); };
+    const pausa = () => { this.setState({ fase: 'pausa' }); this._t = setTimeout(() => { i = 0; on(); }, 2000); };
+    on();
+  }
+  renderVals() {
+    const s = this.state;
+    const OFF = { bg: 'radial-gradient(140% 130% at 50% -10%,#FFFFFF 0%,#F3F5F7 40%,#E8EBEF 75%,#D5DBE3 100%)', bd: '1px solid #5A6A7E', fg: '#0C2747', sh: 'inset 0 1px 1px #FFFFFF,inset 0 -2px 0 #5A6A7E' };
+    const ON = { bg: 'radial-gradient(140% 130% at 50% -10%,#FFFFFF 0%,#F2FAFC 45%,#DDF3F9 100%)', bd: '3px solid #FFB020', fg: '#0C2747', sh: 'inset 0 0 0 1px #081B33' };
+    const PILL = { ok: { bg: '#DCFCE7', bd: '#15803D', fg: '#14532D' }, def: { bg: '#FEE2E2', bd: '#B91C1C', fg: '#7F1D1D' }, alerta: { bg: '#FEF3C7', bd: '#B45309', fg: '#78350F' }, info: { bg: '#E0F2FE', bd: '#0284C7', fg: '#0C4A6E' }, neutro: { bg: '#F1F5F9', bd: '#94A3B8', fg: '#0C2747' } };
+    const sel = (a) => (a ? ON : OFF);
+    const largura = parseInt(this.props.largura ?? '360', 10) || 360, so = this.props.so ?? 'todos', nu = this.props.nu === true || this.props.nu === 'true';
+
+    const teclas = ['sintomas', 'aferir', 'codigos', 'laudo'], tk = {}, go = {};
+    teclas.forEach(k => { tk[k] = s.tecla === k ? '3px solid #FFB020' : '0 solid transparent'; go[k] = () => this.setState({ tecla: k }); });
+
+    const MARCAS = ['LG', 'Samsung', 'Midea', 'Gree'], BTUS = ['9.000', '12.000', '18.000', '24.000'], FLUIDOS = ['R-410A', 'R-32', 'R-22'];
+    const prox = (k, n) => () => this.setState(st => ({ [k]: (st[k] + 1) % n }));
+
+    const shBase = 'inset 0 2px 1px rgba(147,197,253,.48),inset 0 -4px 6px rgba(2,8,23,.62),';
+    const placas = [['b1', '01', 'Não Gela'], ['b2', '02', 'Não Liga'], ['b3', '03', 'Elétrica'], ['b5', '05', 'Ruídos']].map(([id, num, nome]) => ({
+      num, nome, ico: this.MAPA[{ b1: 'nao-gela', b2: 'nao-liga', b3: 'raio', b5: 'barulho' }[id]], bc: s.placa === id ? '#FFB020' : '#081B33', sh: shBase + (s.placa === id ? '0 0 0 2px #FFB020,0 4px 0 #081B33' : '0 4px 0 #081B33'),
+      on: () => this.setState(st => ({ placa: st.placa === id ? '' : id }))
+    }));
+
+    const h = React.createElement, f1 = n => n.toFixed(1).replace('.', ','), f2 = n => n.toFixed(2).replace('.', ',');
+    const selo = (key, tx, bg) => h('span', { key, style: { flex: 'none', display: 'inline-flex', alignItems: 'center', height: '32px', boxSizing: 'border-box', font: '800 12px/1.2 Barlow Semi Condensed,sans-serif', padding: '0 8px', borderRadius: '999px', whiteSpace: 'nowrap', background: bg, color: '#FFFFFF', '--gp-c': bg, animation: 'gpPulso 1.2s ease-in-out infinite' } }, tx);
+    const sh = s.shA, km = sh < 7 ? 0 : sh <= 11 ? 1 : 2, pm = sh * 5, nb = km === 2 ? Math.min(5, 1 + Math.floor((sh - 11) / 2)) : 0, corM = ['#78350F', '#14532D', '#78350F'][km];
+    const viv = ['#B45309', '#15803D', '#B45309'][km];
+    const gr = nu && so === 'manifold', g = gr ? { cg: '12px', vp: '12px', vg: '16px', rg: '8px', num: '48px', sl: '40px', dir: 'column', ai: 'flex-start', pg: '4px', gl: '20px', fl: '14px', pp: '12px 8px 8px' } : { cg: '12px', vp: '12px', vg: '12px', rg: '12px', num: '24px', sl: '32px', dir: 'row', ai: 'baseline', pg: '8px', gl: '12px', fl: '12px', pp: '12px 8px 8px' };
+    /* botija: cores físicas do objeto, iguais no claro e no escuro (não passam pelo mapa do gerador) */
+    const K = n => '#' + n, uid = this._uid, rm = this._rm, grad = (id, l, vert) => h('linearGradient', { key: id, id: id + uid, x1: '0', y1: '0', x2: vert ? '0' : '1', y2: vert ? '1' : '0' }, l.map((x, i) => h('stop', { key: i, offset: x[0], stopColor: K(x[1]), stopOpacity: x[2] == null ? 1 : x[2] })));
+    const CORPO = 'M14 60Q14 36 38 34H82Q106 36 106 60V150Q106 166 88 166H32Q14 166 14 150Z', AC = K('3F4854'), LT = K('5E4F25'), u = id => 'url(#' + id + uid + ')', ONDA = 'M-60 0q15 -3 30 0t30 0t30 0t30 0t30 0t30 0t30 0t30 0';
+    const botija = lv => { const fundo = (lv || 0) / 100 * 78, yl = 152 - fundo;
+      return h('svg', { 'data-ilustracao': 'botija', viewBox: '0 0 120 180', role: 'img', 'aria-label': 'Botija de fluido refrigerante', style: { flex: 'none', display: 'block', width: '39%', height: 'auto' } },
+        h('defs', null, grad('m', [[0, '5F6873'], [.14, '8C95A1'], [.34, 'D5DAE1'], [.46, 'F7F8FA'], [.62, 'D5DAE1'], [.82, '8F98A4'], [1, '5A636E']]), grad('h', [[0, 'FFFFFF', 0], [.1, 'FFFFFF', 0], [.4, 'FFFFFF', .45], [.72, 'FFFFFF', 0], [1, 'FFFFFF', 0]]), grad('b', [[0, '7A6A3A'], [.25, 'E8D9A8'], [.4, 'FFF6D6'], [.7, 'C9B579'], [1, '8A7440']]), grad('l', [[0, '6C9BF2'], [.35, '2563EB'], [1, '1D4ED8']], true), grad('v', [[0, 'FFFFFF'], [1, 'E6EEF9']], true), h('clipPath', { id: 'c' + uid }, h('rect', { x: 34, y: 74, width: 52, height: 78, rx: 10 }))),
+        h('ellipse', { cx: 60, cy: 177, rx: 44, ry: 3, fill: K('3F3210'), opacity: .18 }),
+        h('rect', { x: 24, y: 160, width: 72, height: 16, rx: 3, fill: u('m'), stroke: AC, strokeWidth: 1.5 }), h('path', { d: 'M30 171H90', stroke: AC, strokeWidth: 1, opacity: .35 }),
+        h('rect', { x: 55, y: 8, width: 10, height: 28, fill: u('b'), stroke: LT, strokeWidth: .8 }), h('rect', { x: 65, y: 21, width: 11, height: 6, rx: 1, fill: u('b'), stroke: LT, strokeWidth: .8 }), h('rect', { x: 45, y: 2, width: 30, height: 7, rx: 3.5, fill: u('b'), stroke: LT, strokeWidth: .8 }),
+        h('path', { fillRule: 'evenodd', d: 'M34 36V18Q34 12 40 12H80Q86 12 86 18V36ZM44 18H76Q78 18 78 20V30H42V20Q42 18 44 18Z', fill: u('m'), stroke: AC, strokeWidth: 1.5, strokeLinejoin: 'round' }),
+        h('path', { d: CORPO, fill: u('m') }), h('path', { d: CORPO, fill: u('h') }),
+        h('path', { d: 'M14.5 64H105.5M14.5 156H105.5', stroke: AC, strokeWidth: 1.2, opacity: .55 }), h('path', { d: 'M16.5 65.6H103.5M16.5 157.6H103.5', stroke: K('FFFFFF'), strokeWidth: 1, opacity: .55 }),
+        h('g', { clipPath: u('c') },
+          h('rect', { x: 0, y: 0, width: 120, height: 180, fill: u('v') }),
+          lv == null ? null : h('g', { style: { transform: 'translateY(' + yl.toFixed(1) + 'px)', transition: rm ? 'none' : 'transform .3s ease-out' } },
+            h('g', { style: { animation: rm ? 'none' : 'gpMare 3.2s linear infinite' } }, h('path', { d: ONDA + 'V96H-60Z', fill: u('l') }), h('path', { d: ONDA, fill: 'none', stroke: K('FFFFFF'), strokeWidth: 1.5, opacity: .7 })),
+            [[48, 30, 2.5], [66, 34, 1.8], [56, 26, 1.4]].map((b, i) => fundo > b[1] + 4 ? h('circle', { key: i, cx: b[0], cy: b[1], r: b[2], fill: K('FFFFFF'), style: rm ? { opacity: .7 } : { animation: 'gpSobe ' + (2.2 + i * .5) + 's linear ' + (-i * .8) + 's infinite' } }) : null)),
+          h('rect', { x: 0, y: 101.3, width: 120, height: 15.6, fill: K('15803D'), opacity: .2 }), h('path', { d: 'M0 101.3H120M0 116.9H120', stroke: K('15803D'), strokeWidth: 1.5, strokeDasharray: '4 3' }),
+          h('path', { d: 'M40 74L58 74L44 152L34 152Z', fill: K('FFFFFF'), opacity: .28 })),
+        h('rect', { x: 34, y: 74, width: 52, height: 78, rx: 10, fill: 'none', stroke: AC, strokeWidth: 5, opacity: .16 }), h('rect', { x: 34, y: 74, width: 52, height: 78, rx: 10, fill: 'none', stroke: AC, strokeWidth: 2 }),
+        h('path', { d: CORPO, fill: 'none', stroke: AC, strokeWidth: 2.5 }),
+        h('rect', { x: 34, y: 42, width: 52, height: 18, rx: 3, fill: K('FFFFFF'), stroke: AC, strokeWidth: 1.2 }), h('text', { x: 60, y: 55, textAnchor: 'middle', fontFamily: 'JetBrains Mono,monospace', fontSize: 12, fontWeight: 700, fill: K('0C2747') }, this.props.fluido ?? 'R-410A')); };
+    const glass = botija(100 - sh * 5);
+    const man = { glass, viv, alvo: km === 1 ? '✓ Alvo 7 a 11 °C' : km === 2 ? '▲ +' + f1(sh - 11) + ' acima do alvo' : '▼ −' + f1(7 - sh) + ' abaixo do alvo', tuboTx: f1(4.4 + sh) + '\u00A0°C', evap: '4,4\u00A0°C', suc: '118\u00A0PSI', txt: ['#B45309', '#15803D', '#B45309'][km], delta: km === 1 ? '✓ alvo' : km === 2 ? '▲ +' + f1(sh - 11) : '▼ −' + f1(7 - sh), pill: [PILL.alerta, PILL.ok, PILL.alerta][km], pillTx: ['EXCESSO', '✓ CARGA IDEAL', 'FALTA'][km], curto: ['EXCESSO', 'IDEAL', 'FALTA'][km], cor: corM, num: f1(sh), tubo: f1(4.4 + sh), val: sh, left: pm + '%', thumb: 'calc(' + pm + '% - ' + (pm * 0.32) + 'px)',
+      selo: selo('m' + km, ['EXCESSO DE FLUIDO', '✓ CARGA IDEAL', 'FALTA DE FLUIDO'][km], ['#B45309', '#15803D', '#B45309'][km]) };
+    const vazio = (this.props.semLeitura === true || this.props.semLeitura === 'true') && !s.leu;
+    man.ptOp = vazio ? 0 : 1; man.thF = vazio ? 'grayscale(1)' : 'none';
+    if (vazio) Object.assign(man, { glass: botija(null), viv: '#94A3B8', txt: '#334155', delta: 'sem leitura', pill: { bg: '#FFFFFF', bd: '#5A6A7E', fg: '#334155' }, pillTx: 'SEM LEITURA', curto: '—', cor: '#334155', num: '—', tubo: '—', left: '0%', thumb: 'calc(0% - 0px)', selo: h('span', { style: { flex: 'none', display: 'inline-flex', alignItems: 'center', height: '32px', boxSizing: 'border-box', font: '800 12px/1.2 Barlow Semi Condensed,sans-serif', padding: '0 8px', borderRadius: '999px', whiteSpace: 'nowrap', background: '#FFFFFF', color: '#334155', boxShadow: 'inset 0 0 0 1px #5A6A7E' } }, 'MEÇA A SUCÇÃO E O TUBO') });
+    if (vazio) Object.assign(man, { alvo: 'Meça a sucção e o tubo', tuboTx: '—', evap: '—', suc: '—' });
+    const Rn = T => 10 * Math.exp(3972 * (1 / (T + 273.15) - 1 / 298.15));
+    const pctF = n => (Math.abs(n) < 0.05 ? '0,0%' : (n < 0 ? '−' : '+') + f1(Math.abs(n)) + '%');
+    const TA = 35, ref = Rn(TA), LD = s.lidoA ?? (parseFloat(this.props.lido ?? 6.49) || 6.49), devF = (LD - ref) / ref * 100, fimR = s.step === 4, fim = fimR && Math.abs(devF) <= 5;
+    const Tm = 1 / (1 / 298.15 + Math.log(LD / 10) / 3972) - 273.15, dT = Tm - TA, cnt = fimR ? LD : (s.cnt || 0), lig = s.step >= 1, MM = this.MULT, mid = 'mm' + uid, escMM = LD <= 2 ? '2k' : LD <= 20 ? '20k' : '200k', angMM = { '2k': 198, '20k': 216, '200k': 234 }[escMM], /* MM11: a chave e a etiqueta acompanham a leitura */ pmN = Math.max(0, Math.min(100, 50 + devF / 60 * 100));
+    const rep = { num: fimR ? f1(Tm) : '—', cor: !fimR ? '#334155' : fim ? '#14532D' : '#7F1D1D',
+      alvo: !fimR ? '▸ Medindo' : fim ? '✓ Ambiente ' + TA + ' °C' : (dT < 0 ? '▼ −' : '▲ +') + f1(Math.abs(dT)) + ' °C do ambiente',
+      lido: (s.step >= 2 ? f2(cnt) : '—') + '\u00A0kΩ', ref: f2(ref) + '\u00A0kΩ', dev: fimR ? pctF(devF) : '—', devCor: !fimR || fim ? '#0C2747' : '#7F1D1D',
+      val: Math.max(-30, Math.min(30, Math.round(devF * 2) / 2)), thumb: 'calc(' + pmN + '% - ' + (pmN * 0.32) + 'px)',
+      pill: !fimR ? PILL.neutro : fim ? PILL.ok : PILL.def, pillTx: !fimR ? '▸ MEDINDO' : fim ? '✓ SENSOR BOM' : '✗ FORA DA CURVA',
+      mult: h('svg', { 'data-ilustracao': 'sensor', viewBox: '8 3.3 108 176.7', role: 'img', 'aria-label': 'Multímetro de capa amarela na escala de ' + escMM + ', medindo o sensor NTC', style: { flex: 'none', display: 'block', width: 'min(118px, calc(100% - 163px))', height: 'auto' } },
+        h('g', { dangerouslySetInnerHTML: { __html: MM.base(mid) } }),
+        h('g', { transform: 'translate(3.6 5.4) scale(.94)' },
+          h('rect', { x: 27, y: 19.5, width: 66, height: 35, rx: 1.5, fill: K('26303C'), style: { opacity: lig ? 0 : .92, transition: rm ? 'none' : 'opacity .25s' } }),
+          h('g', { dangerouslySetInnerHTML: { __html: lig ? MM.digs(cnt.toFixed(2)) : '' } }),
+          h('g', { style: { opacity: lig ? 1 : 0, transition: rm ? 'none' : 'opacity .3s .45s' }, dangerouslySetInnerHTML: { __html: MM.sel(mid, escMM) } }),
+          h('g', { style: { transform: 'translate(60px,105px) rotate(' + (lig ? angMM : 360) + 'deg)', transition: rm ? 'none' : 'transform .65s cubic-bezier(.3,1.25,.5,1)' }, dangerouslySetInnerHTML: { __html: MM.pont(mid) } }))) };
+
+    const feitos = Object.values(s.trava).filter(Boolean).length, livre = feitos === 3;
+    const LED_C = { vermelho: ['#DC2626', '#7F1D1D'], verde: ['#15803D', '#14532D'], laranja: ['#E89A0C', '#7A4E00'] }[this.props.corLed ?? 'vermelho'] || ['#DC2626', '#7F1D1D'];
+    const led = {
+      cor: LED_C[0], halo: s.ledOn ? 0.5 : 0, bulbo: s.ledOn ? LED_C[0] : '#FFFFFF', aro: s.ledOn ? LED_C[1] : LED_C[0],
+      cont: s.blink + '/' + s.pisc, fase: s.fase === 'fixo' ? 'ACESO FIXO · SEM PISCAR' : s.fase === 'on' ? 'ACESO 250 ms' : s.fase === 'off' ? 'APAGADO 250 ms' : 'PAUSA 2000 ms',
+      fases: [['Aceso', '250\u00A0ms', s.fase === 'on' || s.fase === 'fixo', true], ['Apagado', '250\u00A0ms', s.fase === 'off', false], ['Pausa', '2000\u00A0ms', s.fase === 'pausa', false]].map(([nome, ms, atual, cheio]) => ({ nome: (atual ? '▸ ' : '') + nome, ms, tinta: atual ? '#0C2747' : '#334155', barra: atual ? '#0C2747' : 'transparent', picBg: cheio ? LED_C[0] : 'transparent', picBd: cheio ? '1px solid ' + LED_C[1] : '2px solid ' + LED_C[0] })),
+      feitos, pill: PILL[livre ? 'ok' : 'alerta'], pillTx: livre ? '✓ TRAVA LIBERADA' : '⚠ TRAVA ' + feitos + '/3',
+      passos: [['rede', 'Rede', '198–242 V'], ['cap', 'Capacitor', '±5% etiqueta'], ['ntc', 'Sensor NTC', 'curva real']].map(([k, nome, alvo]) => ({
+        nome, alvo, ic: s.trava[k] ? '✓' : '○', cor: s.trava[k] ? '#14532D' : '#334155', pressed: String(s.trava[k]),
+        on: () => this.setState(st => ({ trava: { ...st.trava, [k]: !st.trava[k] } }))
+      })),
+      ops: [2, 3, 4, 5].map(n => ({ n, s: sel(s.pisc === n), pressed: String(s.pisc === n), on: () => this.setState({ pisc: n, blink: 0 }, () => this.rodarLed()) })),
+      travado: !livre, op: livre ? 1 : 0.45, cursor: livre ? 'pointer' : 'not-allowed',
+      acao: livre ? '✗ Condenar placa Inverter' : 'Faltam ' + (3 - feitos) + ' teste' + (3 - feitos === 1 ? '' : 's') + ' da Trava 30s',
+      reset: () => this.setState({ trava: { rede: false, cap: false, ntc: false } })
+    };
+
+    return {
+      ic: { prancheta: this.MAPA.prancheta, multimetro: this.MAPA.multimetro, led: this.MAPA.led, documento: this.MAPA.documento, dinheiro: this.MAPA['garantia-dinheiro'], manifold: this.MAPA.manifold, ntc: this.MAPA['sensor-ntc'] }, grupos: this.CAT,
+      wTela: largura + 'px', wEsp: nu ? '100%' : '390px', comTitulo: !nu, g, ver: { manifold: so === 'todos' || so === 'manifold', ntc: so === 'todos' || so === 'ntc', led: so === 'todos' || so === 'led' }, tile: nu ? { bg: 'none', r: '0', pad: '0', sh: 'none' } : { bg: 'radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.65) 0%,rgba(255,255,255,0) 58%),linear-gradient(180deg,#E6E3DD 0%,#CCC8BF 100%) #DBD8D1', r: '18px', pad: '16px', sh: '0 0 0 1px #8E97A3,0 8px 20px rgba(0,0,0,.12)' },
+      zonas: false, selo: this.props.seloNaoEDefeito ?? true,
+      lay: { c: nu ? 1 : 0, ai: nu ? 'stretch' : 'flex-start', h: nu ? '100%' : 'auto', z: nu ? (s.z || 1) : 1 }, refRaiz: this.refRaiz, rm: this._rm ? '1' : '0', comPisca: !this._rm, tk, go, placas, man, rep, led, setA2: e => this.setState({ leu: true, shA: parseFloat(e.target.value) }),
+      setA: ev => this.setState({ shA: parseFloat(ev.target.value) }), replay: () => this.play(), setN: e => { clearTimeout(this._pt); clearInterval(this._pi); const d = parseFloat(e.target.value); this.setState({ step: 4, lidoA: Rn(35) * (1 + d / 100) }); },
+      eq: { marca: MARCAS[s.marca], btu: BTUS[s.btu], fluido: FLUIDOS[s.fluido] },
+      ciclo: { marca: prox('marca', MARCAS.length), btu: prox('btu', BTUS.length), fluido: prox('fluido', FLUIDOS.length) },
+      lucro: { num: s.mala ? '480' : '330', peca: s.mala ? '0' : '150', pct: s.mala ? '100%' : '69%', wPeca: s.mala ? '0%' : '31.25%', bt: sel(s.mala), icp: this.MAPA[s.mala ? 'sucesso' : 'neutro'], pressed: String(s.mala) },
+      toggleMala: () => this.setState(st => ({ mala: !st.mala }))
+    };
+  }
+}
+</script>
+</body>
+</html>

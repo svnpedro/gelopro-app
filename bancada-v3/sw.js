@@ -1,16 +1,16 @@
 // GeloPro · Bancada GeloPRO v3 em modo avião — 12/11/2026 — pele do Design System v4 isolada em /bancada-v3/ (escopo ./), com cache próprio
-// (bancada-v3-offline-v1) que não toca o da /bancada/, o da /bancada-v2/, o do app nem o do guia. Lê os 48 tiles Option C de ../bancada/tiles/
+// (bancada-v3-offline-v2) que não toca o da /bancada/, o da /bancada-v2/, o do app nem o do guia. Lê os 48 tiles Option C de ../bancada/tiles/
 // e as 126 artes de ../guia-pro/imagens/ (sem duplicar binário no Git). No 1º acesso com sinal, o install guarda tudo o que as 4 teclas
-// usam: a página, o motor (QR, Pix, marca, PDF, licença), os 4 componentes visuais de ../app/ (.dc.html), as fontes locais Barlow Semi
+// usam: a página, o motor (QR, Pix, marca, PDF, licença), os arquivos literais do Design System em ./ds/ (estilos, gerador, ícones, painéis vivos claro e escuro, logomarcas), as fontes locais Barlow Semi
 // Condensed e JetBrains Mono (./fontes, sem CDN), o mascote, os 19 CSVs da base técnica, as artes e os tiles. Com sinal: página, .js, .html
 // e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e imagens saem do cache e só vão à rede se faltarem.
 'use strict';
-const CACHE = 'bancada-v3-offline-v1'; // v1 da bancada-v3 (12/11/2026): o activate apaga só bancada-v3-offline-* diferente; a /bancada/, a /bancada-v2/, o guia e o app ficam intactos
+const CACHE = 'bancada-v3-offline-v2'; // v2 da bancada-v3 (12/11/2026, reconstrução 1:1 do Design System): o activate apaga só bancada-v3-offline-* diferente; a /bancada/, a /bancada-v2/, o guia e o app ficam intactos
 const REDE_MS = 3000;
 const PAGINA = './';
 const MOTOR = [
   '../app/vendor/qrcode-generator-1.4.4.js', '../app/gelopro-pix.js', '../app/marca-gelopro.js', '../app/pdf-gelopro.js', '../app/licenca-gelopro.js',
-  '../app/IconeGP.dc.html', '../app/LogoMarca.dc.html', '../app/AtalhoTecla.dc.html', '../app/CampoTexto.dc.html',
+  './ds/estilos.js', './ds/gerador-copias.js', './ds/icones.json', './ds/InstrumentosVivos.dc.html', './ds/InstrumentosVivosEscuro.dc.html', './ds/LogoMarca.dc.html',
   './fontes/barlow-semi-condensed-latin-500-normal.woff2', './fontes/barlow-semi-condensed-latin-600-normal.woff2', './fontes/barlow-semi-condensed-latin-700-normal.woff2',
   './fontes/barlow-semi-condensed-latin-800-normal.woff2', './fontes/jetbrains-mono-latin-500-normal.woff2', './fontes/jetbrains-mono-latin-700-normal.woff2',
   '../app/marca/gelopro-mascote.png'
@@ -132,7 +132,7 @@ self.addEventListener('fetch', (e) => {
   if (url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
   // A página é uma só: ?testarSeguranca=1 e #D-xxx abrem a mesma cópia guardada.
   const chave = req.mode === 'navigate' ? URL_PAGINA : req.url.split('#')[0];
-  const fresco = req.mode === 'navigate' || /\.(js|csv|html)$/.test(url.pathname);
+  const fresco = req.mode === 'navigate' || /\.(js|csv|html|json)$/.test(url.pathname);
   if (fresco) {
     e.respondWith((async () => {
       const rede = fetch(req.mode === 'navigate' ? req.url : chave, { cache: 'no-store', credentials: 'omit' }).then((r) => { if (r && r.ok) e.waitUntil(guardar(chave, r)); return r; });
