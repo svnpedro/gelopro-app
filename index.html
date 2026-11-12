@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=app/GeloPro%20App%20v5.2.dc.html?ativar=LIFETIME_6">
-<title>GeloPro</title>
-<script>/* Destravamento temporário total: qualquer abertura da raiz já entra direto na Home com LIFETIME_6 sem pedir CPF/CNPJ */
-(function () { var q = location.search;
-location.replace('app/GeloPro%20App%20v5.2.dc.html' + (q || '?ativar=LIFETIME_6') + location.hash); })();</script>
+<meta http-equiv="refresh" content="0; url=bancada/">
+<title>Bancada GeloPRO</title>
+<script>/* Porta principal do domínio (12/11/2026, Regra 23): a raiz leva direto à Bancada oficial em /bancada/, levando junto a busca e o
+   endereço do diagnóstico (#D-xxx). */
+location.replace('bancada/' + location.search + location.hash);</script>
 </head>
 <body>
-<a href="app/GeloPro%20App%20v5.2.dc.html?ativar=LIFETIME_6">Abrir o GeloPro v5.2</a>
+<a href="bancada/">Abrir a Bancada GeloPRO</a>
 </body>
 </html>

@@ -1,17 +1,17 @@
 // GeloPro · Bancada GeloPRO em modo avião — 12/11/2026 — versão oficial e única em /bancada/ (escopo ./, Design System v4 transplantado 1:1).
-// Cache bancada-offline-v10: o activate apaga todo cache antigo da Bancada (bancada-offline-* diferente, bancada-v2-offline-* e
+// Cache bancada-offline-v11 (12/11/2026, + PDF Executivo v4 em ./pdf-bancada-v4.js): o activate apaga todo cache antigo da Bancada (bancada-offline-* diferente, bancada-v2-offline-* e
 // bancada-v3-offline-*, das versões aposentadas em historico-versoes/); o do app e o do guia ficam intactos. No 1º acesso com sinal o
 // install guarda tudo o que as 4 teclas usam: a página, o motor (QR, Pix, marca, PDF, licença), os arquivos literais do Design System
 // em ./ds/, as fontes locais (./fontes), o mascote, os 19 CSVs da base técnica, as 126 artes de ../guia-pro/imagens/ e os 48 tiles de
 // ./tiles/. Com sinal: página, .js, .html, .json e .csv vão à rede primeiro (3 s de prazo) e atualizam o cache; artes, fontes e imagens
 // saem do cache e só vão à rede se faltarem.
 'use strict';
-const CACHE = 'bancada-offline-v10'; // v10 (12/11/2026): Bancada oficial única, Design System v4
+const CACHE = 'bancada-offline-v11'; // v11 (12/11/2026): + PDF Executivo v4 (pdf-bancada-v4.js)
 const REDE_MS = 3000;
 const PAGINA = './';
 const MOTOR = [
   '../app/vendor/qrcode-generator-1.4.4.js', '../app/gelopro-pix.js', '../app/marca-gelopro.js', '../app/pdf-gelopro.js', '../app/licenca-gelopro.js',
-  './ds/estilos.js', './ds/gerador-copias.js', './ds/icones.json', './ds/InstrumentosVivos.dc.html', './ds/InstrumentosVivosEscuro.dc.html', './ds/LogoMarca.dc.html',
+  './pdf-bancada-v4.js', './ds/estilos.js', './ds/gerador-copias.js', './ds/icones.json', './ds/InstrumentosVivos.dc.html', './ds/InstrumentosVivosEscuro.dc.html', './ds/LogoMarca.dc.html',
   './fontes/barlow-semi-condensed-latin-500-normal.woff2', './fontes/barlow-semi-condensed-latin-600-normal.woff2', './fontes/barlow-semi-condensed-latin-700-normal.woff2',
   './fontes/barlow-semi-condensed-latin-800-normal.woff2', './fontes/jetbrains-mono-latin-500-normal.woff2', './fontes/jetbrains-mono-latin-700-normal.woff2',
   '../app/marca/gelopro-mascote.png'

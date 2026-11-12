@@ -19,7 +19,7 @@
     Paywall Essencial × Completo PRO × Bumps, gelopro.sessao.v1, GeloProPix com QR real, PDF Nº 1001 e licenca-gelopro.js.
   · O motor entra no painel vivo só pelas props (lista LIGACOES). Painéis e bases pré-carregados na abertura: todo instrumento
     responde ao primeiro toque em menos de 50 ms.
-  Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v10). Os 48 tiles ficam em ./tiles/.
+  Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v11). PDF do laudo: ./pdf-bancada-v4.js (Executivo v4). Os 48 tiles ficam em ./tiles/.
 -->
 <style>
 @font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-display:swap;font-weight:500;src:url(./fontes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2')}
@@ -57,6 +57,7 @@ body[data-teclado] .dock-fixo{display:none}
 <script src="../app/marca-gelopro.js"></script>
 <script src="../app/pdf-gelopro.js"></script>
 <script src="../app/licenca-gelopro.js"></script>
+<script src="./pdf-bancada-v4.js"></script>
 <script src="./ds/estilos.js"></script>
 <script src="./ds/gerador-copias.js"></script>
 <script>
@@ -928,7 +929,7 @@ function telaAferir() {
       <div style="display:grid;grid-template-columns:repeat(${Math.max(3, noms.length)},1fr);gap:8px">${noms.map(n => n === st.nom ? `<button type="button" data-a="nom" data-v="${n}" aria-pressed="true" data-tecla="selecionada" style="${E.S76}">${n}K</button>` : `<button type="button" data-a="nom" data-v="${n}" aria-pressed="false" data-tecla="clara" style="${E.S82}">${n}K</button>`).join('')}</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${ajuste('ntc-t', 'AMBIENTE · °C', st.t, 1)}${ajuste('ntc-r', 'LIDO · kΩ', st.r, 0.1)}</div>
       <div style="flex:1 1 auto;min-height:0;display:flex"><div data-dc-host="ntc" data-instrumento style="width:100%;display:flex;flex-direction:column"></div></div>
-      ${comparadorNtc()}</div>${mandarBt('ntc', E.S90, 'mandarNtc')}`;
+      </div>${mandarBt('ntc', E.S90, 'mandarNtc')}`;
   } else if (sub === 'gas') {
     const st = S.gas || (S.gas = { p: '', sh: null, lin: 3, gpm: gpmPadrao(S.equip.fluido, S.equip.btu), gpmManual: false });
     corpo = `<div style="${E.S62}"><div style="flex:1 1 auto;min-height:0;display:flex"><div data-dc-host="manifold" data-instrumento style="width:100%;display:flex;flex-direction:column"></div></div>
@@ -943,6 +944,19 @@ let CURVAS_PRONTAS = null;
 const curvaAtual = () => { const C = CURVAS_PRONTAS || [], mc = marcaCurva(S.equip.marca), base = C.some(c => c.marca === mc) ? mc : 'LG', st = S.ntc; return C.filter(c => c.marca === base && c.nom === st.nom)[0] || C[0]; };
 const tInv = (c) => (r) => { let lo = -20, hi = 120; for (let k = 0; k < 50; k++) { const m = (lo + hi) / 2; if (interp(c.pts, m) > r) lo = m; else hi = m; } return (lo + hi) / 2; };
 // Comparador da queda real (Planta 01, 4.1): Medição Cega a 25 °C × Curva Real na temperatura do ambiente, da curva do CSV.
+// Referência de 25 °C como rodapé interno da própria peça do Sensor NTC (Pedro, 12/11/2026): 1 linha no mesmo padrão das linhas
+// LIDO / ESPERADO / DESVIO do painel (a linha ESPERADO renderizada é clonada, então o modo claro e o escuro vêm do próprio painel),
+// sem cartão pendurado fora e sem alterar ds/InstrumentosVivos.dc.html. Volta a cada pintura do painel (o morph refaz a árvore).
+function rodapeTabela25(raiz, c, t) {
+  const ant = raiz.querySelector('[data-tabela25]'); if (ant) ant.remove();
+  const rot = [...raiz.querySelectorAll('span')].find(e => e.textContent.trim() === 'Esperado'); if (!rot) return;
+  const linha = rot.parentElement, cartao = raiz.querySelector('[data-visor]') && raiz.querySelector('[data-visor]').parentElement; if (!cartao) return;
+  const r25 = interp(c.pts, 25), esp = interp(c.pts, t), dq = (esp - r25) / r25 * 100;
+  const nova = linha.cloneNode(true); nova.setAttribute('data-tabela25', ''); nova.setAttribute('aria-label', `Tabela 25 °C: ${f1(r25, 2)} kΩ (${dq < 0 ? '−' : '+'}${f1(Math.abs(dq))}%)`);
+  nova.style.whiteSpace = 'nowrap';
+  nova.firstElementChild.textContent = 'Tabela 25 °C'; nova.lastElementChild.textContent = `${f1(r25, 2)} kΩ (${dq < 0 ? '−' : '+'}${f1(Math.abs(dq))}%)`;
+  cartao.appendChild(nova);
+}
 function comparadorNtc() {
   const c = curvaAtual(), t = num(S.ntc.t); if (!c || t === null) return '';
   const r25 = interp(c.pts, 25), esp = interp(c.pts, t), dq = (esp - r25) / r25 * 100;
@@ -1047,7 +1061,7 @@ function telaLaudo() {
   const faixaT = tec && I.length ? `<div style="${E.S92}" role="group" aria-label="Tabela Oficial 2026 somada dos serviços">${[['min', 'Mínimo'], ['ref', 'Referência'], ['max', 'Máximo']].map(([k, r]) => { const on = exato === k; return `<button type="button" data-a="faixa" data-v="${k}" aria-pressed="${on}" data-tecla="${on ? 'selecionada' : 'marinho'}" style="${on ? E.S116 : E.S54}"><span style="${on ? E.S93 : E.S55};text-transform:uppercase">${r}</span><b data-fx="${k}" style="font:700 17px/1 'JetBrains Mono',monospace">${brl(fx[k]).replace(/,00$/, '')}</b></button>`; }).join('')}</div>` : '';
   const lucroP = tec && I.length ? (ess ? `<div style="${E.S38}"><button type="button" data-a="proTeaser" data-tecla="ambar" data-confirma="abre o cartão do Completo PRO" aria-label="Painel de Lucro · Completo PRO" style="${E.S108}">PAINEL DE LUCRO · COMPLETO PRO</button></div>` : `<div style="${E.S38}" data-l="bast"><div style="${E.S94}" data-lucro>
         <span aria-hidden="true" style="${E.S95}"></span>
-        <div style="${E.S96}"><span data-l="rot-lucro" style="${E.S97}">VOCÊ LUCRA LIMPO (SOBROU LIMPO)</span><span style="${E.S98}">${pct}% DE MARGEM</span></div>
+        <div style="${E.S96}"><span data-l="rot-lucro" style="${E.S97}">LUCRO LIMPO NO BOLSO</span><span style="${E.S98}">${pct}% DE MARGEM</span></div>
         <div style="${E.S99}" data-l="limpo" aria-label="${lucro < 0 ? '−' : '+'}${brl(Math.abs(lucro))}"><span style="font-size:15px;font-weight:700;line-height:1">${lucro < 0 ? '−' : '+'}R$</span><span style="${E.S100}">${li}</span><span style="font-size:17px;font-weight:700;line-height:1">${lc}</span></div>
         <div style="${E.S101}"><div style="${E.S117.replace('13fr 87fr', `${wP}fr ${100 - wP}fr`)}"><span style="${E.S102}"></span><span style="background:#0C2747"></span></div><div style="${E.S103}"><span>PEÇA ${brl(ce)}</span><span>TOTAL ${brl(tot).replace(/,00$/, '')}</span></div></div>
       </div></div>
@@ -1158,7 +1172,7 @@ function ligarVivos(nome) {
   const marcar = (raiz) => { const b = raiz.querySelector('b[style*="font:700 48px"]'); if (b) { b.setAttribute('data-leitura-principal', ''); b.setAttribute('aria-label', b.textContent.trim()); } };
   if (nome === 'aferir' && S.sub === 'ntc' && CURVAS_PRONTAS) { const c = curvaAtual(); if (!c) return; const t = num(S.ntc.t) ?? 35, r = num(S.ntc.r);
     montarVivo('ntc', { nu: true, so: 'ntc', lido: r ?? interp(c.pts, t), ta: t, curva: (T) => interp(c.pts, T), tInv: tInv(c), dentro: (L) => { const R = veredictoNtc(c, t, L); return R.estado === 'ok'; },
-      aoLer: (v) => { S.ntc.r = String(Math.round(v * 100) / 100); const i = app.querySelector('[data-in="ntc-r"]'); if (i) i.value = S.ntc.r; salvarSessao(); } }, marcar); }
+      aoLer: (v) => { S.ntc.r = String(Math.round(v * 100) / 100); const i = app.querySelector('[data-in="ntc-r"]'); if (i) i.value = S.ntc.r; salvarSessao(); } }, (raiz) => { marcar(raiz); rodapeTabela25(raiz, c, t); }); }
   if (nome === 'aferir' && S.sub === 'gas' && PT_PRONTO) { const st = S.gas, p = num(st.p), ev = p === null ? 4.4 : tSat(PT_PRONTO, FLUIDOS[S.equip.fluido], p);
     montarVivo('manifold', { nu: true, so: 'manifold', fluido: fl(S.equip.fluido), sh: st.sh, semLeitura: st.sh === null || p === null, evap: ev, psi: p === null ? '—' : f1(p, 0), estado: st.sh !== null && p !== null ? { leu: true, shA: st.sh } : {},
       aoSh: (v) => { st.sh = v; salvarSessao(); } }, marcar); }
@@ -1174,21 +1188,24 @@ const ACOES = {
   ponto: (b) => { S.ponto = +b.dataset.v; S.zoom = true; render(); }, zoom: () => { S.zoom = !S.zoom; render(); },
   vf: (b) => { const f = F[S.caso], st = S.estado[f.id]; st[S.ponto] = b.dataset.v; if (b.dataset.v === 'def') S.defeito[f.id] = f.vc[S.ponto - 1] || 1; render(); },
   mandarDiag: () => { const f = F[S.caso], v = S.ponto, r = (S.estado[f.id] || {})[v], c = f.vc[v - 1] || 1, [nm, srv] = f.causas[c - 1], [tt, ln] = f.verifs[v - 1];
-    mandar(`${f.id}-v${v}`, `Diagnóstico ${f.id} · Ponto ${nn(v)} · ${tt}: ${r === 'ok' ? 'Normal' : r === 'def' ? 'DEFEITO' : 'verificado'} (${ln})`, r === 'ok' ? {} : { srv, causa: nm }); },
+    mandar(`${f.id}-v${v}`, `Diagnóstico ${f.id} · Ponto ${nn(v)} · ${tt}: ${r === 'ok' ? 'Normal' : r === 'def' ? 'DEFEITO' : 'verificado'} (${ln})`, { ...(r === 'ok' ? {} : { srv, causa: nm }), med: { tipo: 'diag', ok: r === 'ok' ? true : r === 'def' ? false : null } }); },
   prox: (b) => { const f = F[S.caso], [, , srv, ir] = f.proximo[+b.dataset.v]; if (ir) abrirCaso(F.findIndex(x => x.id === ir)); else irTecla('laudo', { servico: srv || servicoDoCaso(f), causa: causaDe(f, srv) }); },
   sub: (b) => { S.sub = b.dataset.v; render(); }, nom: (b) => { S.ntc.nom = +b.dataset.v; render(); },
   aj: (b) => { const k = b.dataset.k, d = +b.dataset.v, st = k.startsWith('ntc') ? S.ntc : S.gas, campo = { 'ntc-t': 't', 'ntc-r': 'r', 'gas-p': 'p', 'gas-gpm': 'gpm' }[k];
     const v = (num(st[campo]) ?? (k === 'gas-p' ? 118 : 0)) + d; st[campo] = String(Math.round(Math.max(0, v) * 100) / 100); if (k === 'gas-gpm') st.gpmManual = true; aoMudarCampo(k); },
   mandarNtc: () => { const c = curvaAtual(), t = num(S.ntc.t), r = num(S.ntc.r); if (!c || t === null || r === null) return toast('Digite a temperatura e o kΩ medido'); const R = veredictoNtc(c, t, r);
-    mandar('ntc', `Sensor NTC ${c.rot}: ${f1(r, 2)} kΩ a ${f1(t)} °C (curva real ${f1(R.esp, 2)} kΩ)`, R.estado === 'ok' || R.estado === 'alerta' ? {} : { srv: 'sensor_ntc', causa: R.estado === 'curto' ? 'Sensor NTC em curto (0 kΩ)' : CAUSA_PADRAO.sensor_ntc }); },
+    mandar('ntc', `Sensor NTC ${c.rot}: ${f1(r, 2)} kΩ a ${f1(t)} °C (curva real ${f1(R.esp, 2)} kΩ)`, { ...(R.estado === 'ok' || R.estado === 'alerta' ? {} : { srv: 'sensor_ntc', causa: R.estado === 'curto' ? 'Sensor NTC em curto (0 kΩ)' : CAUSA_PADRAO.sensor_ntc }),
+      med: { tipo: 'ntc', rot: c.rot, r, t, esp: R.esp, dev: (r - R.esp) / R.esp * 100, estado: R.estado === 'ok' ? 'ok' : 'def' } }); },
   lin: (b) => { S.gas.lin = +b.dataset.v; render(); },
   mandarGas: () => { const st = S.gas, p = num(st.p); if (p === null || st.sh === null) return toast('Meça a sucção e o tubo'); const ev = tSat(PT_PRONTO, FLUIDOS[S.equip.fluido], p), [cls, tit] = estadoSh(st.sh), ex = Math.max(0, st.lin - 3), g = num(st.gpm) || 0;
-    mandar('gas', `Pressão de sucção ${f1(p, 0)} PSI / SH ${f1(st.sh)} °C (${S.equip.fluido}, tubo ${f1(ev + st.sh)} °C, alvo 7–11 °C) — ${tit}${ex ? `; adicional de ${f1(ex * g, 0)} g para ${ex} m acima de 3 m` : ''}`, cls === 'def' ? { srv: 'carga_fluido', causa: st.sh > 11 ? CAUSA_PADRAO.carga_fluido : CAUSA_EXCESSO } : ex ? { srv: 'tubo_metro' } : {}); },
+    mandar('gas', `Pressão de sucção ${f1(p, 0)} PSI / SH ${f1(st.sh)} °C (${S.equip.fluido}, tubo ${f1(ev + st.sh)} °C, alvo 7–11 °C) — ${tit}${ex ? `; adicional de ${f1(ex * g, 0)} g para ${ex} m acima de 3 m` : ''}`, { ...(cls === 'def' ? { srv: 'carga_fluido', causa: st.sh > 11 ? CAUSA_PADRAO.carga_fluido : CAUSA_EXCESSO } : ex ? { srv: 'tubo_metro' } : {}),
+      med: { tipo: 'gas', fluido: S.equip.fluido, psi: p, sh: st.sh, tubo: ev + st.sh, evap: ev, estado: cls, titulo: tit } }); },
   trava: (b) => { const k = b.dataset.k; S.trava[k] = S.trava[k] === b.dataset.v ? undefined : b.dataset.v; if (!S.trava[k]) delete S.trava[k]; if (VIVOS.led) VIVOS.led.c.setState({ trava: { rede: S.trava.rede === 'ok', cap: S.trava.cap === 'ok', ntc: S.trava.ntc === 'ok' } }); render(); },
   teste: (b) => { const k = b.dataset.k; S.inv[k] = S.inv[k] === b.dataset.v ? undefined : b.dataset.v; if (!S.inv[k]) delete S.inv[k]; render(); }, inv7: () => { S.inv7 = !S.inv7; render(); },
   mandarInv: () => { const ft = TRAVA.filter(x => S.trava[x[0]] === 'fo'), fi = INV7.filter(x => S.inv[x[0]] === 'fo'), ok = TRAVA.filter(x => S.trava[x[0]] === 'ok').length;
     const txt = `Trava 30s · ${ok}/3 itens normais${ft.length ? `; fora da faixa: ${ft.map(x => x[1]).join(', ')}` : ''}${fi.length ? `; Placa Inverter fora da faixa: ${fi.map(x => x[1]).join(', ')}` : ''}`;
-    mandar('inv', txt, ft.length ? { srv: ft[0][6], causa: ft[0][7] } : fi.length ? { srv: fi[0][5], causa: `${fi[0][1]} fora da faixa` } : {}); },
+    const itens = [...TRAVA.filter(x => S.trava[x[0]]).map(x => [`Trava 30s · ${x[1]}`, S.trava[x[0]] === 'ok']), ...INV7.filter(x => S.inv[x[0]]).map(x => [`Placa Inverter · ${x[1]}`, S.inv[x[0]] === 'ok'])];
+    mandar('inv', txt, { ...(ft.length ? { srv: ft[0][6], causa: ft[0][7] } : fi.length ? { srv: fi[0][5], causa: `${fi[0][1]} fora da faixa` } : {}), med: { tipo: 'trava', itens: itens.length ? itens : [[txt, null]] } }); },
   mk: (b) => { S.cod.marca = marcaCodigo(b.dataset.v); S.codLim = 12; render(); rodarLed(); }, pisc: (b) => { const n = +b.dataset.v; S.cod.pisc = S.cod.pisc === n ? null : n; S.codLim = 12; render(); rodarLed(); },
   piscTodos: () => { S.cod.pisc = S.cod.pisc === 'led' ? null : 'led'; render(); rodarLed(); }, maisCod: () => { S.codLim += 12; render(); },
   mandarCod: (b) => { const r = CODIGOS_PRONTOS[+b.closest('[data-cod]').dataset.cod]; mandar('cod-' + r.i, `${r.tp} ${r.c} (${r.m}): ${r.d}${r.ok ? (ehProtecao(r) ? ' — PROTEÇÃO ATIVA, NÃO É DEFEITO DA PLACA' : ' — NÃO É DEFEITO, OPERAÇÃO NORMAL') : ''}`, { srv: 'visita_diag', causa: r.ok ? `${r.c} (${r.m}): ${ehProtecao(r) ? 'proteção ativa do equipamento, sem peça condenada' : 'operação normal do equipamento, sem peça condenada'}` : `${r.c} (${r.m}): ${r.d}` }); },
@@ -1263,12 +1280,25 @@ async function gerarDoc(montarDoc, rot) {
     S.msg = [`${rot} Nº ${doc.numero} gerado: ${r.nome}`, 'ok']; } catch (e) { S.msg = ['Não consegui gerar o PDF: ' + e.message, 'def']; }
   render();
 }
-const gerarPdfLaudo = () => { if (!S.laudo.itens.length) return; gerarDoc(() => { const numero = numeroLaudo(true), t = titular(), total = LD.total(), pl = pixPayload(t, total, numero), I = LD.itens(); arquivar(numero);
-  return limparDoc({ ...baseDoc(numero, t, total, pl), tipo: 'laudo', titulo: 'Laudo de Aprovação', itensTitulo: I.length > 1 ? 'Serviços técnicos' : 'Serviço técnico', garSelo: 'GARANTIA 90 DIAS',
-    itens: I.map(i => ({ q: 1, d: i.s.servico, v: BRL.format(LD.valor(i)), j: i.s.justificativa_tecnica || '', faixa: '', eco: `Prevenção: ${i.s.economia_preventiva}`, condicao: '', escopo: '', resultado: '' })),
-    fechamento: { bonif: '', linhas: [], total: [I.length > 1 ? 'Valor total' : 'Valor do serviço', BRL.format(total)], validade: `${LD.ancora()}. Aprovação pelo WhatsApp: o cliente responde APROVADO na mensagem do laudo.` },
-    blocos: [{ t: 'Sintoma', x: sintomaTx() }, { t: 'Leituras aferidas na bancada', x: leiturasTx().join('\n') }, { t: 'Causa confirmada', x: S.laudo.causa }, { t: 'Garantia de 90 dias', x: CLAUSULA }, ...(pl ? [{ t: 'Pagamento por Pix', x: `Chave ${t.pix}.\nCopia e cola: ${pl}` }] : []), { t: 'Aceite', x: ACEITE }],
-    nome: window.GeloProPDF.nomeArquivo('laudo', numero, S.laudo.cli) }); }, 'PDF'); };
+// PDF Executivo v4 da Bancada (pdf-bancada-v4.js): identidade do Design System v4, réguas lineares de Gás & SH e NTC, linhas da Trava 30s,
+// serviços com a barra na Referência Regional Auditada 2026, caixa champanhe, QR Pix real e o aceite. Sem custo, lucro ou margem.
+async function gerarPdfLaudo() {
+  if (!S.laudo.itens.length) return; S.laudo.tecnico = false;
+  if (!window.GeloProBancadaPDF) { S.msg = ['O motor de PDF não carregou. Abra a bancada com sinal uma vez.', 'def']; return render(); } if (semPix()) return;
+  try {
+    const numero = numeroLaudo(true), t = titular(), total = LD.total(), pl = pixPayload(t, total, numero), I = LD.itens(), fx = LD.faixa(), porte = LD.porte(); arquivar(numero);
+    const dados = limparDoc({ numero, data: dataBR(Date.now()), titular: { nome: t.nome, doc: t.doc, docTipo: String(t.doc || '').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: t.cidade, pix: t.pix },
+      cliente: { nome: S.laudo.cli || 'Cliente' }, equip: `${S.equip.marca} · ${S.equip.btu} BTU/h · ${fl(S.equip.fluido)}`, sintoma: sintomaTx(), causa: S.laudo.causa || '—',
+      leituras: S.leituras.map(a => ({ txt: a.txt, med: a.med || null })),
+      servicos: I.map(i => { const f = faixaDe(i.s, porte); return { nome: i.s.servico, valor: LD.valor(i), min: f.min, max: f.max, proc: i.s.justificativa_tecnica || '', prev: i.s.economia_preventiva || '' }; }),
+      total, faixa: { min: fx.min, max: fx.max }, garantia: CLAUSULA, aceite: ACEITE,
+      pix: pl ? { chave: t.pix, nome: t.nome, copia: pl, qr: qrMatriz(pl) } : null });
+    const r = window.GeloProBancadaPDF.gerar(dados); let texto = ''; try { texto = new TextDecoder('latin1').decode(r.bytes); } catch (e) {}
+    window.__ultimoPdf = { nome: r.nome, paginas: r.paginas, bytes: r.bytes.length, tipo: 'laudo', numero, qr: !!(dados.pix && dados.pix.qr), texto, doc: dados, motor: 'v4' };
+    window.GeloProBancadaPDF.baixar(r.blob, r.nome); S.msg = [`PDF Nº ${numero} gerado: ${r.nome}`, 'ok'];
+  } catch (e) { S.msg = ['Não consegui gerar o PDF: ' + e.message, 'def']; }
+  render();
+}
 const gerarPdfPmoc = () => gerarDoc(() => { const numero = numeroLaudo(true), t = titular(), mens = num(S.laudo.pmoc), PM = PMOC_ATIV || [], grupos = [...new Set(PM.map(a => a.grupo))];
   return limparDoc({ ...baseDoc(numero, t, mens || 0, mens ? pixPayload(t, mens, numero) : ''), tipo: 'pmoc', titulo: 'Contrato PMOC', itensTitulo: 'Plano de Manutenção, Operação e Controle', garSelo: 'PMOC',
     itens: [{ q: 1, d: `Contrato PMOC · ${equipTx()}`, v: mens ? BRL.format(mens) + ' por mês' : '___', j: `${PM.length} atividades de manutenção, operação e controle do PMOC`, faixa: '', eco: '', condicao: '', escopo: '', resultado: '' }],
