@@ -135,17 +135,19 @@
     // 4. Serviços · Tabela Oficial 2026 (cartão inteiro na página), com a barra do valor dentro da Referência Regional Auditada 2026.
     P.push({ h: 18, draw: (y) => [ROT(MX, y + 11, 'SERVIÇOS · TABELA OFICIAL 2026')] });
     (d.servicos || []).forEach(s => {
-      const nomeL = quebrar(s.nome, 'B', 11, W - 140), procL = quebrar(`Procedimento incluso: ${s.proc || ''}`, 'R', 9, W - 24), prevL = quebrar(`Prevenção: ${s.prev || ''}`, 'R', 9, W - 24);
-      const h = 14 + nomeL.length * 14 + 6 + procL.length * 12 + 50 + prevL.length * 12 + 8;
+      const nomeL = quebrar(s.nome, 'B', 11, W - 140), procL = quebrar(`Procedimento incluso: ${s.proc || ''}`, 'R', 9, W - 24), prevL = s.prev ? quebrar(`Prevenção: ${s.prev}`, 'R', 9, W - 24) : [];
+      // Serviço próprio do técnico (Modo Esperteza, 13/11/2026): sem a régua da Referência Regional Auditada 2026 (não há referência para ele).
+      const regua = s.proprio ? 0 : 48;
+      const h = 14 + nomeL.length * 14 + 6 + procL.length * 12 + regua + 2 + prevL.length * 12 + 8;
       P.push({ h: h + 8, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 10)]; let yy = y + 20;
         nomeL.forEach((l, k) => o.push(texto(MX + 12, yy + k * 14, l, 'B', 11, C.marinho))); o.push(texto(MX + W - 12, yy, BRL(s.valor), 'M', 12, C.marinho, 'd'));
         yy += nomeL.length * 14 + 4;
         procL.forEach((l, k) => { const i = l.indexOf(':'); o.push(k === 0 && i > 0 ? texto(MX + 12, yy + k * 12, l.slice(0, i + 1), 'B', 9, C.marinho) + ' ' + texto(MX + 12 + largura(l.slice(0, i + 2), 'B', 9), yy, l.slice(i + 2), 'R', 9, C.texto) : texto(MX + 12, yy + k * 12, l, 'R', 9, C.texto)); });
         yy += procL.length * 12 + 6;
-        const x0 = MX + 12, x1 = MX + W - 12, mn = Math.min(s.min, s.valor), mx = Math.max(s.max, s.valor), X = (v) => x0 + (mx > mn ? (v - mn) / (mx - mn) : 0.5) * (x1 - x0);
+        if (regua) { const x0 = MX + 12, x1 = MX + W - 12, mn = Math.min(s.min, s.valor), mx = Math.max(s.max, s.valor), X = (v) => x0 + (mx > mn ? (v - mn) / (mx - mn) : 0.5) * (x1 - x0);
         o.push(ROT(x0, yy + 4, 'REFERÊNCIA REGIONAL AUDITADA 2026'), caixa(x0, yy + 16, x1 - x0, 6, C.trilho, null, 3), linha(X(s.valor), yy + 13, X(s.valor), yy + 26, C.marinho, 2), tri(X(s.valor), yy + 14, 6, C.marinho));
         o.push(texto(x0, yy + 35, BRL(s.min), 'M', 7.5, C.rotulo), texto(x1, yy + 35, BRL(s.max), 'M', 7.5, C.rotulo, 'd'));
-        yy += 48;
+        yy += 48; }
         prevL.forEach((l, k) => { const i = l.indexOf(':'); o.push(k === 0 && i > 0 ? texto(MX + 12, yy + k * 12, l.slice(0, i + 1), 'B', 9, C.marinho) + ' ' + texto(MX + 12 + largura(l.slice(0, i + 2), 'B', 9), yy, l.slice(i + 2), 'R', 9, C.texto) : texto(MX + 12, yy + k * 12, l, 'R', 9, C.texto)); });
         return o; } });
     });
