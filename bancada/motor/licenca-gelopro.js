@@ -36,7 +36,8 @@ const _d = (a, k) => a.map((c, i) => String.fromCharCode(c ^ k ^ ((i * 7) & 31))
 const SAL_DOC = _d([76, 124, 89, 90, 88, 75, 93, 13, 80, 5, 72, 31, 94, 135, 95, 19, 8, 9, 73, 72, 85, 81, 94], 0x2b);
 const SAL_SIG = _d([82, 98, 71, 83, 64, 81, 67, 65, 29, 30, 81, 10, 71, 153, 65, 13, 22, 23, 87, 83, 75, 71, 76, 92, 92], 0x35);
 const MESTRE = _d([124, 123, 117, 109, 100, 125, 34, 104, 97, 98, 45, 120, 59, 55, 42, 39, 100, 98, 101, 124, 121, 59, 54, 45, 35, 32, 108, 51, 43, 126, 109, 101, 46, 126, 117, 110, 53, 127, 36, 111, 97, 100, 123, 120, 61, 55, 118, 33, 63, 104, 102, 112, 112, 106, 54, 123, 33, 38, 106, 49, 124, 126, 107, 98], 0x4d), MESTRE_PLANO = { plano: '\x4c\x49\x46\x45\x54\x49\x4d\x45\x5f\x36', bumps: ['\x70\x6d\x6f\x63', '\x73\x63\x72\x69\x70\x74\x73', '\x74\x61\x62\x65\x6c\x61'], maxAparelhos: 1 };
-const BLINDADO = (() => { try { return /[?&]testarSeguranca=1\b/.test(location.search); } catch (e) { return false; } })();
+const LOCAL = (() => { try { return /^(127\.0\.0\.1|localhost|\[::1\])$/.test(location.hostname); } catch (e) { return false; } })();
+const BLINDADO = (() => { try { return !LOCAL || /[?&]testarSeguranca=1\b/.test(location.search); } catch (e) { return true; } })();
 const digitos = (v) => String(v == null ? '' : v).replace(/\D+/g, '');
 const cpfOk = (c) => { if (c.length !== 11 || /^(\d)\1+$/.test(c)) return false; const dv = (n) => { let t = 0; for (let i = 0; i < n; i++) t += +c[i] * (n + 1 - i); const r = (t * 10) % 11; return r === 10 ? 0 : r; }; return dv(9) === +c[9] && dv(10) === +c[10]; };
 const cnpjOk = (c) => { if (c.length !== 14 || /^(\d)\1+$/.test(c)) return false; const dv = (n) => { const w = n === 12 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2]; let t = 0; for (let i = 0; i < n; i++) t += +c[i] * w[i]; const r = t % 11; return r < 2 ? 0 : 11 - r; }; return dv(12) === +c[12] && dv(13) === +c[13]; };
@@ -69,6 +70,7 @@ const titularLimpo = (t) => t ? { nome: limpar(t.nome), doc: limpar(t.doc), cida
 const planoOficial = (p) => (p === '\x42\x41\x53\x45\x5f\x39\x30' ? '\x45\x53\x53\x45\x4e\x43\x49\x41\x4c' : p);
 const montar = (id, d, antes) => assinar({ fonte: '\x73\x65\x72\x76\x69\x64\x6f\x72', identificador: id, plano: planoOficial(d.plano), bumps: Array.isArray(d.bumps) ? d.bumps.map(limpar) : [], titular: titularLimpo(d.titular) || null,
 exigeCadastroTitular: !!d.exigeCadastroTitular, aparelhoNumero: d.aparelhoNumero || null, maxAparelhos: d.maxAparelhos || 2, ativadoEm: (antes && antes.ativadoEm) || Date.now(), ultimaChecagem: Date.now(), bloqueado: false });
+if (BLINDADO) { const c0 = cracha(); if (c0 && c0.identificador === '\x6c\x69\x62\x65\x72\x61\x64\x6f') { gravarLS(K_CRACHA, null); idbPor(K_CRACHA, null); } }
 if (!BLINDADO && !cracha()) {
 try {
 const cAuto = assinar({ fonte: '\x6d\x65\x73\x74\x72\x65', identificador: '\x6c\x69\x62\x65\x72\x61\x64\x6f', plano: '\x4c\x49\x46\x45\x54\x49\x4d\x45\x5f\x36', bumps: ['\x70\x6d\x6f\x63', '\x73\x63\x72\x69\x70\x74\x73', '\x74\x61\x62\x65\x6c\x61'], titular: { nome: '\x47\x65\x6c\x6f\x50\x52\x4f\x20\x4f\x66\x69\x63\x69\x61\x6c', doc: '', cidade: '', pix: '' }, exigeCadastroTitular: false, aparelhoNumero: 1, maxAparelhos: 99, ativadoEm: Date.now(), ultimaChecagem: Date.now(), bloqueado: false });
@@ -83,12 +85,12 @@ if (BLINDADO && !doc) return { tipo: '\x65\x72\x72\x6f', codigo: '\x44\x4f\x43\x
 const r = await chamar({ identificador: BLINDADO ? doc : id, deviceId: deviceId(), titular: titularLimpo(titular) }, PRAZO_ATIVACAO);
 if (r.tipo === 'ok') { const c = montar(BLINDADO ? doc : id, r.dados, cracha()); await guardar(K_CRACHA, c); r.cracha = c; }
 else if (r.tipo === '\x73\x65\x6d\x2d\x73\x65\x72\x76\x69\x64\x6f\x72' && doc && ehMestre(doc)) {
-const antes = cracha();
-if (!antes || !confere(antes)) return { tipo: '\x65\x72\x72\x6f', codigo: '\x4c\x49\x4d\x49\x54\x45\x5f\x41\x50\x41\x52\x45\x4c\x48\x4f\x53', dados: { ok: false, codigo: '\x4c\x49\x4d\x49\x54\x45\x5f\x41\x50\x41\x52\x45\x4c\x48\x4f\x53', maxAparelhos: MESTRE_PLANO.maxAparelhos } };
+const antes = cracha(), velho = antes && confere(antes) && antes.fonte === '\x6d\x65\x73\x74\x72\x65' && antes.identificador !== '\x6c\x69\x62\x65\x72\x61\x64\x6f' ? antes : null;
 const c = assinar({ fonte: '\x6d\x65\x73\x74\x72\x65', identificador: '\x63\x70\x66\x5f\x68\x3a' + MESTRE, plano: MESTRE_PLANO.plano, bumps: MESTRE_PLANO.bumps.slice(), titular: null, exigeCadastroTitular: true,
-aparelhoNumero: 1, maxAparelhos: MESTRE_PLANO.maxAparelhos, ativadoEm: (antes && antes.ativadoEm) || Date.now(), ultimaChecagem: Date.now(), bloqueado: false });
+aparelhoNumero: 1, maxAparelhos: MESTRE_PLANO.maxAparelhos, ativadoEm: (velho && velho.ativadoEm) || Date.now(), ultimaChecagem: Date.now(), bloqueado: false });
 await guardar(K_CRACHA, c); return { tipo: 'ok', dados: { ok: true, plano: c.plano, bumps: c.bumps, maxAparelhos: 1, aparelhoNumero: 1, exigeCadastroTitular: true }, cracha: c };
 }
+else if (BLINDADO && r.tipo === '\x73\x65\x6d\x2d\x73\x65\x72\x76\x69\x64\x6f\x72') return { tipo: '\x65\x72\x72\x6f', codigo: r.status === 0 ? '\x53\x45\x4d\x5f\x53\x49\x4e\x41\x4c' : '\x4e\x41\x4f\x5f\x45\x4e\x43\x4f\x4e\x54\x52\x41\x44\x41', dados: { ok: false } };
 return r;
 }
 async function checar() {
@@ -131,7 +133,7 @@ return null;
 }
 const esquecer = () => guardar(K_CRACHA, null);
 const reassinar = () => { const c = cracha(), t = lerLS(K_TIT); if (t && typeof t === '\x6f\x62\x6a\x65\x63\x74') idbPor(K_TIT, t); if (!c) return Promise.resolve(); const n = assinar(c); gravarLS(K_CRACHA, n); return idbPor(K_CRACHA, n); };
-window.GeloProLicenca = { API, deviceId, cracha, ativar, checar, enviarTitular, restaurar, esquecer, limpar, blindado: BLINDADO, docCompra, confere, reassinar, avisar, avisosVistos, marcarAvisoVisto };
+window.GeloProLicenca = { API, deviceId, cracha, ativar, cpfOk, cnpjOk, local: LOCAL, checar, enviarTitular, restaurar, esquecer, limpar, blindado: BLINDADO, docCompra, confere, reassinar, avisar, avisosVistos, marcarAvisoVisto };
 try { window.dispatchEvent(new Event('\x67\x65\x6c\x6f\x70\x72\x6f\x3a\x6c\x69\x63\x65\x6e\x63\x61\x2d\x70\x72\x6f\x6e\x74\x61')); } catch (e) { }
 try {
 if (typeof document !== '\x75\x6e\x64\x65\x66\x69\x6e\x65\x64' && MESMA_PASTA && !document.querySelector('\x73\x63\x72\x69\x70\x74\x5b\x73\x72\x63\x2a\x3d\x22\x6f\x66\x66\x6c\x69\x6e\x65\x2d\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x6a\x73\x22\x5d')) {

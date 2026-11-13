@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bancada de Diagnóstico no Celular GeloPRO · Split e Inverter</title>
+<meta name="description" content="Ache o defeito do Split e do Inverter na primeira tentativa, sem trocar peça no chute, e feche o serviço com o Laudo Executivo Nº 1001 e o QR Pix na hora. Pagamento único, roda sem sinal.">
+<meta name="theme-color" content="#081B33">
+<meta property="og:title" content="Bancada de Diagnóstico no Celular GeloPRO">
+<meta property="og:description" content="Sintoma, aferição viva, 411 códigos e o Laudo com QR Pix que o cliente aprova na hora. Pagamento único, sem mensalidade.">
+<meta property="og:image" content="img/tela-01-home.webp">
+<link rel="preload" href="../bancada/fontes/barlow-semi-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="img/tela-01-home.webp" as="image" type="image/webp">
+<style>
+  @font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:500;font-display:swap;src:url(../bancada/fontes/barlow-semi-condensed-latin-500-normal.woff2) format('woff2')}
+  @font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:600;font-display:swap;src:url(../bancada/fontes/barlow-semi-condensed-latin-600-normal.woff2) format('woff2')}
+  @font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:700;font-display:swap;src:url(../bancada/fontes/barlow-semi-condensed-latin-700-normal.woff2) format('woff2')}
+  @font-face{font-family:'Barlow Semi Condensed';font-style:normal;font-weight:800;font-display:swap;src:url(../bancada/fontes/barlow-semi-condensed-latin-800-normal.woff2) format('woff2')}
+  @font-face{font-family:'Barlow Semi Condensed';font-style:italic;font-weight:800;font-display:swap;src:url(../bancada/fontes/barlow-semi-condensed-latin-800-italic.woff2) format('woff2')}
+  @font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:700;font-display:swap;src:url(../bancada/fontes/jetbrains-mono-latin-700-normal.woff2) format('woff2')}
+  :root{--marinho:#081B33;--marinho2:#0C2747;--aco:#2A5C8F;--titanio:#EFEDE8;--neve:#F8FAFC;--texto:#1E293B;--rotulo:#334155;--linha:#CBD5E1;--ciano:#A5F3FC;--ambar:#FFB020;--verde:#16A34A;--verde2:#15803D;--vermelho:#B91C1C}
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{margin:0;background:var(--neve);color:var(--texto);font:500 17px/1.45 'Barlow Semi Condensed',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  img{max-width:100%;height:auto;display:block}
+  a{color:inherit}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700}
+  .w{max-width:560px;margin:0 auto;padding:0 18px}
+  section{padding:44px 0}
+  .escuro{background:radial-gradient(120% 70% at 50% 0%,#12355F 0%,var(--marinho2) 45%,var(--marinho) 100%);color:#FFFFFF}
+  .titanio{background:linear-gradient(180deg,#F2F0EB 0%,var(--titanio) 100%)}
+  .neve{background:var(--neve)}
+  .selo{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+  .selo.claro{background:rgba(165,243,252,.12);border:1px solid rgba(165,243,252,.35);color:var(--ciano)}
+  .selo.aco{background:#E2E8F0;border:1px solid #94A3B8;color:var(--marinho2)}
+  h1,h2,h3{margin:0;line-height:1.08;letter-spacing:-.005em}
+  h1{font-size:clamp(30px,8.4vw,38px);font-weight:800}
+  h2{font-size:clamp(26px,7vw,32px);font-weight:800}
+  h3{font-size:21px;font-weight:700}
+  p{margin:12px 0 0}
+  .sub{font-size:19px;line-height:1.4;color:#DCE7F5}
+  .destaque{color:var(--ambar)}
+  .cta{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;min-height:60px;padding:12px 18px;margin-top:20px;border:0;border-radius:14px;text-decoration:none;cursor:pointer;
+    background:linear-gradient(180deg,var(--verde) 0%,var(--verde2) 100%);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 -3px 0 #14532D inset,0 8px 22px rgba(21,128,61,.35);color:#FFFFFF;font:800 19px/1.15 'Barlow Semi Condensed',sans-serif;letter-spacing:.04em;text-transform:uppercase;text-align:center;-webkit-tap-highlight-color:transparent}
+  .cta small{font-weight:600;font-size:14px;letter-spacing:.02em;text-transform:none;opacity:.95}
+  .cta:active{transform:translateY(1px)}
+  .cta:focus-visible,.aba:focus-visible,summary:focus-visible{outline:3px solid var(--ambar);outline-offset:3px}
+  .cta.secundaria{background:linear-gradient(180deg,#FFFFFF 0%,#E8EBEF 100%);color:var(--marinho2);box-shadow:0 1px 0 #FFFFFF inset,0 -3px 0 #94A3B8 inset,0 4px 12px rgba(9,30,66,.12);border:1px solid #94A3B8}
+  .confia{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin-top:12px;font-size:15px;color:#C9D6E8}
+  .confia span::before{content:'✓ ';color:#4ADE80;font-weight:800}
+  .lista{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:12px}
+  .lista li{position:relative;padding-left:30px}
+  .lista li::before{content:'';position:absolute;left:0;top:4px;width:20px;height:20px;border-radius:6px;background:var(--verde2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/14px no-repeat}
+  .lista.x li::before{background:#7F1D1D url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFFFFF' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M6 6l12 12M18 6L6 18'/%3E%3C/svg%3E") center/13px no-repeat}
+  .cartao{background:#FFFFFF;border:1px solid #94A3B8;border-radius:16px;box-shadow:0 1px 3px rgba(9,30,66,.14);padding:18px}
+  .rot{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--rotulo)}
+  .escuro .rot{color:var(--ciano)}
+  /* Topbar (Camada 01) */
+  .topbar{background:var(--marinho);color:#E2E8F0;font-size:14px;font-weight:600;letter-spacing:.04em;text-align:center;padding:9px 12px;border-bottom:1px solid rgba(165,243,252,.18)}
+  .topbar b{color:var(--ambar)}
+  /* Herói (Camada 02) */
+  .marca{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+  .marca b{font:italic 800 26px/1 'Barlow Semi Condensed',sans-serif;letter-spacing:.01em}
+  .marca b i{font-style:inherit;color:#38BDF8}
+  .marca span{font-size:12px;font-weight:700;letter-spacing:.18em;color:#94A3B8;text-transform:uppercase}
+  /* Vitrine (Camada 03) */
+  .vitrine{margin-top:24px}
+  .abas{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  .abas::-webkit-scrollbar{display:none}
+  .aba{flex:none;scroll-snap-align:start;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid rgba(165,243,252,.35);background:rgba(255,255,255,.06);color:#E2E8F0;font:700 15px/1 'Barlow Semi Condensed',sans-serif;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
+  .aba[aria-selected="true"]{background:linear-gradient(180deg,#FFFFFF 0%,#DDF3F9 100%);border:2px solid var(--ambar);color:var(--marinho2)}
+  .tela{position:relative;margin:6px auto 0;max-width:330px;border-radius:30px;padding:10px;background:linear-gradient(180deg,#1E3A5F 0%,#0B1C33 100%);box-shadow:0 0 0 1px rgba(165,243,252,.25),0 24px 50px rgba(0,0,0,.45)}
+  .tela img{border-radius:22px;width:100%;aspect-ratio:390/844;object-fit:cover;object-position:top;background:#E6E3DD}
+  .tela.pdf img{aspect-ratio:auto;object-fit:contain;background:#FFFFFF}
+  .legenda{margin-top:14px;text-align:center;font-size:17px;color:#DCE7F5;min-height:50px}
+  .legenda b{color:#FFFFFF}
+  .vsl{display:none;margin:6px auto 0;max-width:330px;aspect-ratio:9/16;border-radius:24px;overflow:hidden;background:#000;box-shadow:0 24px 50px rgba(0,0,0,.45)}
+  .vsl.ligado{display:block}
+  .vsl video,.vsl iframe{width:100%;height:100%;border:0;display:block}
+  /* Passo a passo (Camada 04) */
+  .passos{display:grid;gap:14px;margin-top:20px}
+  .passo{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:center}
+  .passo img{border-radius:12px;border:1px solid #94A3B8;aspect-ratio:390/600;object-fit:cover;object-position:top;background:#E6E3DD}
+  .passo .n{font:700 13px/1 'JetBrains Mono',monospace;color:var(--aco);letter-spacing:.06em}
+  .passo h3{font-size:19px;margin-top:4px}
+  .passo p{margin-top:4px;font-size:16px;color:var(--rotulo)}
+  /* Muletas (Camada 05) */
+  .muleta{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:start;padding:14px 0;border-top:1px solid var(--linha)}
+  .muleta:first-of-type{border-top:0}
+  .muleta .num{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#FEE2E2;border:1.5px solid #B91C1C;color:#7F1D1D;font:700 17px/1 'JetBrains Mono',monospace}
+  .muleta b{display:block;font-size:19px;color:var(--marinho2)}
+  .muleta span{display:block;margin-top:2px;font-size:16px;color:var(--rotulo)}
+  /* Grande ideia (Camada 06) */
+  .compara{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+  .compara div{border-radius:14px;padding:14px;text-align:center}
+  .compara .eua{background:rgba(255,255,255,.06);border:1px solid rgba(165,243,252,.3)}
+  .compara .br{background:linear-gradient(180deg,#FFFFFF 0%,#DDF3F9 100%);border:2px solid var(--ambar);color:var(--marinho2)}
+  .compara small{display:block;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+  .compara strong{display:block;margin-top:6px;font:700 22px/1.1 'JetBrains Mono',monospace}
+  .compara em{display:block;margin-top:6px;font-style:normal;font-size:15px}
+  .tecla{margin-top:16px;padding:16px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(165,243,252,.22)}
+  .tecla .t{display:flex;align-items:center;gap:10px}
+  .tecla .t i{flex:none;font:700 14px/1 'JetBrains Mono',monospace;font-style:normal;color:var(--marinho2);background:var(--ciano);border-radius:8px;padding:6px 8px}
+  .tecla .t b{font-size:20px}
+  .tecla p{color:#DCE7F5;font-size:17px}
+  .tecla p strong{color:#FFFFFF}
+  /* Bônus (Camada 07) */
+  .bonus{display:grid;grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:start;margin-top:14px}
+  .bonus img{border-radius:12px;border:1px solid #94A3B8;aspect-ratio:390/560;object-fit:cover;object-position:top;background:#E6E3DD}
+  .bonus .rot{color:var(--aco)}
+  .bonus h3{font-size:19px;margin-top:4px;color:var(--marinho2)}
+  .bonus p{margin-top:4px;font-size:16px}
+  /* Planos (Camada 08) */
+  .planos{display:grid;gap:18px;margin-top:22px}
+  .plano{position:relative;border-radius:18px;padding:22px 18px 20px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14)}
+  .plano.pro{border:3px solid var(--ambar);box-shadow:0 16px 40px rgba(12,39,71,.22)}
+  .plano .fita{position:absolute;top:-14px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--marinho2);color:var(--ambar);font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 14px;border-radius:999px}
+  .plano h3{font-size:24px;color:var(--marinho2)}
+  .preco{display:flex;align-items:baseline;gap:6px;margin-top:10px;color:var(--marinho2)}
+  .preco small{font-size:17px;font-weight:700}
+  .preco strong{font:800 52px/1 'Barlow Semi Condensed',sans-serif;letter-spacing:-.01em}
+  .preco span{font-size:15px;color:var(--rotulo);font-weight:600}
+  .plano .lista{font-size:16px}
+  .plano .lista li.fora{color:#64748B}
+  .plano .lista li.fora::before{background:#CBD5E1 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 12h12'/%3E%3C/svg%3E") center/13px no-repeat}
+  .bumps{margin-top:16px;font-size:15px;color:var(--rotulo)}
+  /* Conta de 1 chamado (Camada 10) */
+  .conta{margin-top:20px;display:grid;gap:10px}
+  .linha{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(165,243,252,.22)}
+  .linha span{font-size:16px;color:#DCE7F5}
+  .linha b{font:700 18px/1 'JetBrains Mono',monospace;white-space:nowrap}
+  .linha.total{background:linear-gradient(180deg,#F1EAD8 0%,#E6D9B5 100%);border:1px solid #A6945F;color:#3F3210}
+  .linha.total span{color:#3F3210;font-weight:700}
+  .linha.total b{font-size:24px}
+  .quadro{margin-top:20px;padding:18px;border-left:4px solid var(--ambar);background:rgba(255,176,32,.08);border-radius:0 14px 14px 0;font-size:19px;line-height:1.4}
+  /* Garantia + FAQ (Camada 11) */
+  .garantia{display:grid;grid-template-columns:84px minmax(0,1fr);gap:16px;align-items:center}
+  .medalha{width:84px;height:84px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 30%,#FFE7A8 0%,#FFC044 55%,#E08F00 100%);border:3px solid #7A4E00;color:#1A1203;box-shadow:0 8px 20px rgba(224,143,0,.35)}
+  .medalha b{font:800 32px/1 'Barlow Semi Condensed',sans-serif}
+  .medalha span{font-size:11px;font-weight:800;letter-spacing:.14em}
+  details{border-top:1px solid var(--linha)}
+  details:last-of-type{border-bottom:1px solid var(--linha)}
+  summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:56px;padding:12px 0;font-size:18px;font-weight:700;color:var(--marinho2)}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:'+';flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#E2E8F0;color:var(--marinho2);font:700 20px/1 'JetBrains Mono',monospace}
+  details[open] summary::after{content:'−'}
+  details p{margin:0 0 16px;font-size:17px;color:var(--rotulo)}
+  /* Rodapé (Camada 12) */
+  footer{background:var(--marinho);color:#94A3B8;font-size:14px;line-height:1.5;padding:30px 0 110px;text-align:center}
+  footer b{color:#E2E8F0}
+  /* CTA fixo */
+  .fixo{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(8,27,51,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid rgba(165,243,252,.2);transform:translateY(110%);transition:transform .25s ease}
+  .fixo.on{transform:none}
+  .fixo .cta{margin:0 auto;max-width:520px;min-height:56px;font-size:17px}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fixo{transition:none}}
+  @media (min-width:700px){.planos{grid-template-columns:1fr 1fr;align-items:stretch}.w.largo{max-width:900px}}
+</style>
+</head>
+<body>
+
+<div class="topbar" role="note">Para técnicos de ar-condicionado <b>Split e Inverter</b> · Pagamento único, sem mensalidade</div>
+
+<main>
+<header class="escuro" style="padding:28px 0 40px">
+  <div class="w">
+    <div class="marca" aria-label="Bancada GeloPRO"><img src="../bancada/marca/gelopro-urso.png" alt="" width="44" height="44" style="border-radius:10px"><div><span>Bancada</span><br><b>GELO<i>PRO</i></b></div></div>
+    <span class="selo claro">Bancada de Diagnóstico no Celular</span>
+    <h1 style="margin-top:14px">Ache o defeito do Split na <span class="destaque">primeira tentativa</span>, sem trocar peça no chute — e feche o serviço com laudo e Pix na hora.</h1>
+    <p class="sub">A <b>Bancada de Diagnóstico no Celular GeloPRO</b> leva você do sintoma à aferição viva, decodifica o código de erro e entrega o <b>Laudo Executivo Nº 1001 com QR Pix</b> para o cliente aprovar sem pechinchar. Roda 100% sem sinal, na obra ou no subsolo.</p>
+
+    <div class="vitrine" id="vitrine">
+      <div class="vsl" id="vsl" aria-label="Vídeo da Bancada GeloPRO em uso"></div>
+      <div class="abas" role="tablist" aria-label="Telas reais da Bancada GeloPRO">
+        <button class="aba" role="tab" aria-selected="true" data-tela="0">Sintomas</button>
+        <button class="aba" role="tab" aria-selected="false" data-tela="1">Diagnóstico</button>
+        <button class="aba" role="tab" aria-selected="false" data-tela="2">Sensor NTC</button>
+        <button class="aba" role="tab" aria-selected="false" data-tela="3">Gás &amp; SH</button>
+        <button class="aba" role="tab" aria-selected="false" data-tela="4">Códigos &amp; LED</button>
+        <button class="aba" role="tab" aria-selected="false" data-tela="5">Ganhos &amp; Laudo</button>
+        <button class="aba" role="tab" aria-selected="false" data-tela="6">Laudo + Pix</button>
+      </div>
+      <div class="tela" id="tela-vitrine" role="tabpanel" aria-live="polite"><img id="img-vitrine" src="img/tela-01-home.webp" width="390" height="844" alt="Tela inicial da Bancada GeloPRO com os 8 blocos de sintomas: Não gela, Não liga, Elétrica, Água e gelo, Ruídos, Comando, Códigos e Inverter" fetchpriority="high"></div>
+      <p class="legenda" id="leg-vitrine"><b>8 blocos de sintoma.</b> Toque no que o cliente reclamou e o caminho já abre, sem questionário antes da resposta.</p>
+    </div>
+    <a class="cta" href="#planos" data-rolar>Quero a minha Bancada<small>Ver os 2 planos · a partir de R$ 19,90, pagamento único</small></a>
+    <div class="confia"><span>Roda sem sinal</span><span>14 marcas</span><span>Garantia de 7 dias</span></div>
+  </div>
+</header>
+
+<section class="titanio" aria-labelledby="t-dor">
+  <div class="w">
+    <span class="selo aco">Você conhece esta cena</span>
+    <h2 id="t-dor" style="margin-top:12px;color:var(--marinho2)">O Split não gela, o cliente está olhando por cima do seu ombro e a peça cara já está na sua mão.</h2>
+    <p>Você mediu, desconfiou da placa, e a dúvida bate: <b>é ela mesmo ou é um sensor de R$ 19,81 enganando a leitura?</b> Condenar a placa errada custa a garantia, o cliente e o seu fim de semana. Chutar barato e voltar no dia seguinte custa a sua reputação.</p>
+    <p>Na Bancada GeloPRO o atendimento inteiro cabe em 4 toques, com a prova na tela:</p>
+    <div class="passos">
+      <div class="passo"><img src="img/tela-02-diagnostico.webp" width="390" height="844" loading="lazy" decoding="async" alt="Ficha de diagnóstico com a ilustração ampliada no ponto de medição 02 e as causas prováveis 70%, 20% e 10%"><div><span class="n">TOQUE 1 · SINTOMAS</span><h3>O defeito mais provável primeiro</h3><p>Ilustração com 5 pontos de prova, zoom de 1,85× onde encostar o instrumento e a escada 70% / 20% / 10%.</p></div></div>
+      <div class="passo"><img src="img/tela-03-ntc-multimetro.webp" width="390" height="844" loading="lazy" decoding="async" alt="Aferir Vivo com o multímetro mostrando a leitura do sensor NTC comparada com a curva oficial da marca"><div><span class="n">TOQUE 2 · AFERIR VIVO</span><h3>Confirma no dedo, não no achismo</h3><p>Multímetro, botija de gás e placa Inverter vivos: a leitura vira verde, âmbar ou vermelho na hora.</p></div></div>
+      <div class="passo"><img src="img/tela-05-codigos-cores.webp" width="390" height="844" loading="lazy" decoding="async" alt="Códigos & LED com o simulador de piscadas e o selo do código CH01 da LG"><div><span class="n">TOQUE 3 · CÓDIGOS &amp; LED</span><h3>O código traduzido com selo de gravidade</h3><p>411 códigos e 152 piscadas de LED nas 14 marcas, com o que fazer na bancada.</p></div></div>
+      <div class="passo"><img src="img/tela-07-pdf-pix.webp" width="780" height="1163" loading="lazy" decoding="async" alt="Laudo Executivo Nº 1001 em PDF com os serviços, a referência regional auditada 2026, o valor total e o QR Pix" style="object-fit:contain;background:#FFFFFF"><div><span class="n">TOQUE 4 · GANHOS &amp; LAUDO</span><h3>Laudo com QR Pix no WhatsApp</h3><p>O PDF Executivo Nº 1001 sai com a referência regional 2026 e o Pix no valor exato. O cliente responde APROVADO.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="neve" aria-labelledby="t-muletas">
+  <div class="w">
+    <span class="selo aco">Não é falta de experiência</span>
+    <h2 id="t-muletas" style="margin-top:12px;color:var(--marinho2)">O mercado deu para você 5 muletas de improviso. Nenhuma foi feita para a hora do chamado.</h2>
+    <div class="cartao" style="margin-top:20px">
+      <div class="muleta"><span class="num">1</span><div><b>Google, Scribd e prints na galeria</b><span>Manual trancado, arquivo pela metade e print perdido entre as fotos da família.</span></div></div>
+      <div class="muleta"><span class="num">2</span><div><b>Vídeo de 15 minutos no YouTube</b><span>Você precisa de 1 frase e tem de assistir a introdução inteira com o cliente esperando.</span></div></div>
+      <div class="muleta"><span class="num">3</span><div><b>Grupo de WhatsApp atrasado</b><span>A resposta chega horas depois, quando chega, e ninguém viu o seu aparelho.</span></div></div>
+      <div class="muleta"><span class="num">4</span><div><b>App lento de mensalidade, nota 3,2</b><span>Cobra todo mês e cai justamente onde não tem sinal: na casa de máquinas e no subsolo.</span></div></div>
+      <div class="muleta"><span class="num">5</span><div><b>Tabela estática cega</b><span>Valor cravado numa temperatura só, sem saber o que o seu multímetro está lendo agora.</span></div></div>
+    </div>
+    <p style="font-size:19px"><b>A Bancada GeloPRO substitui as 5 de uma vez:</b> resposta por sintoma, aferição viva, códigos das 14 marcas e o laudo que fecha o serviço, tudo no celular e sem depender de sinal.</p>
+  </div>
+</section>
+
+<section class="escuro" aria-labelledby="t-ideia">
+  <div class="w">
+    <span class="selo claro">A Grande Ideia</span>
+    <h2 id="t-ideia" style="margin-top:12px">Nos EUA, técnico de ponta já diagnostica com bancada digital no bolso. Lá ela custa por mês.</h2>
+    <p class="sub">Plataformas como Bluon e measureQuick cobram até US$ 49 por mês do técnico americano para ter diagnóstico guiado e aferição no celular. A GeloPRO trouxe a mesma lógica para o Split brasileiro, com pagamento único.</p>
+    <div class="compara">
+      <div class="eua"><small>Bancadas americanas</small><strong>US$ 49</strong><em>por mês, para sempre</em></div>
+      <div class="br"><small>Bancada GeloPRO</small><strong>R$ 29,90</strong><em>uma vez só, vitalício</em></div>
+    </div>
+    <div class="tecla"><div class="t"><i>1</i><b>Sintomas</b></div><p><strong>8 blocos de sintoma com ilustração e 5 pontos de prova</strong> — você abre o caso certo em 2 toques e sabe onde encostar o instrumento antes de abrir o gabinete, sem passar insegurança na frente do cliente.</p></div>
+    <div class="tecla"><div class="t"><i>2</i><b>Aferir Vivo</b></div><p><strong>Multímetro, botija de gás e 7 testes da placa Inverter comparando a sua leitura com a curva da marca</strong> — um sensor NTC que marca 10 kΩ na tabela de 25 °C pode cair de 30% a 35% num dia quente e parecer defeituoso; a Bancada corrige pela temperatura real e acende verde, âmbar ou vermelho, para você nunca condenar peça boa.</p></div>
+    <div class="tecla"><div class="t"><i>3</i><b>Códigos &amp; LED</b></div><p><strong>Decodificador instantâneo de 411 códigos de erro e 152 piscadas de LED nas 14 marcas</strong> — você sabe onde encostar o multímetro em 10 segundos e nunca mais sua frio com o cliente olhando por cima do ombro.</p></div>
+    <div class="tecla"><div class="t"><i>4</i><b>Ganhos &amp; Laudo</b></div><p><strong>22 serviços com a Referência Regional Auditada 2026, o seu preço livre e o lucro limpo calculado na hora</strong> — o Laudo Executivo Nº 1001 com QR Pix sai no WhatsApp, o cliente vê a faixa de mercado e aprova sem chorar desconto.</p></div>
+    <a class="cta" href="#planos" data-rolar>Quero diagnosticar com prova<small>Ver os 2 planos</small></a>
+  </div>
+</section>
+
+<section class="titanio" aria-labelledby="t-bonus">
+  <div class="w">
+    <span class="selo aco">Plano Completo PRO</span>
+    <h2 id="t-bonus" style="margin-top:12px;color:var(--marinho2)">Os 6 Bônus Vivos que acompanham o Completo PRO</h2>
+    <p>Não são arquivos para baixar. Cada bônus é uma função viva dentro da Bancada, pronta no chamado.</p>
+    <div class="bonus"><img src="img/tela-08-inverter-trava.webp" width="390" height="844" loading="lazy" decoding="async" alt="Inverter &amp; 30s com a Trava de 30 segundos: rede, capacitor e sensor antes da placa"><div><span class="rot">Bônus 1</span><h3>Bancada Anti-Queima de Placa Inverter</h3><p>7 testes guiados (IPM de 0,45 a 0,65 V, UVW e barramento de 310 V CC) — você descarta a placa com prova antes de gastar com ela.</p></div></div>
+    <div class="bonus"><img src="img/tela-05-codigos-cores.webp" width="390" height="844" loading="lazy" decoding="async" alt="Decodificador de códigos e piscadas"><div><span class="rot">Bônus 2</span><h3>Decodificador de 411 Códigos e 152 Piscadas</h3><p>14 marcas com selo semântico e o aviso “NÃO É DEFEITO” — você para de correr atrás de código que é só aviso de operação.</p></div></div>
+    <div class="bonus"><img src="img/tela-02-diagnostico.webp" width="390" height="844" loading="lazy" decoding="async" alt="Ilustração com pontos de medição"><div><span class="rot">Bônus 3</span><h3>Guia Visual de Pontos de Medição Sem Curto</h3><p>Ilustração numerada com zoom de 1,85× no ponto — você mede no lugar certo, sem arriscar o instrumento nem a placa.</p></div></div>
+    <div class="bonus"><img src="img/tela-04-gas-botija.webp" width="390" height="844" loading="lazy" decoding="async" alt="Confirmador de carga de gás com a botija viva"><div><span class="rot">Bônus 4</span><h3>Confirmador Vivo de Carga de Gás</h3><p>R32, R410A e R22 com superaquecimento no alvo de 7 a 11 °C e tubulação excedente — você completa a carga certa e não volta no dia seguinte.</p></div></div>
+    <div class="bonus"><img src="img/tela-08-inverter-trava.webp" width="390" height="844" loading="lazy" decoding="async" alt="Trava eliminatória de 30 segundos antes de condenar a peça cara" style="object-position:0 18%"><div><span class="rot">Bônus 5</span><h3>Protocolo “Antes de Condenar a Peça Cara”</h3><p>Trava eliminatória de 30 segundos — 3 conferências rápidas antes de mandar trocar compressor ou placa.</p></div></div>
+    <div class="bonus"><img src="img/tela-06-ganhos-laudo.webp" width="390" height="844" loading="lazy" decoding="async" alt="Painel de ganhos com valor total, faixa regional e lucro limpo"><div><span class="rot">Bônus 6</span><h3>Painel de Ganhos &amp; Tabela Pronta 2026</h3><p>22 serviços, preço livre, serviço próprio, Cofre multi-aparelho e o PDF Nº 1001 com QR Pix — você sabe quanto entra limpo no bolso antes de passar o preço.</p></div></div>
+  </div>
+</section>
+
+<section class="neve" id="planos" aria-labelledby="t-planos">
+  <div class="w largo">
+    <span class="selo aco">Pagamento único · sem mensalidade</span>
+    <h2 id="t-planos" style="margin-top:12px;color:var(--marinho2)">Escolha a sua Bancada</h2>
+    <div class="planos">
+      <article class="plano" aria-labelledby="p-ess">
+        <h3 id="p-ess">Plano Essencial</h3>
+        <div class="preco"><small>R$</small><strong>19,90</strong><span>pagamento único</span></div>
+        <ul class="lista">
+          <li>Split convencional On/Off pelos 8 blocos de sintoma</li>
+          <li>Aferição de sensores 5K e 10K</li>
+          <li>Gás R22 e R410A com superaquecimento</li>
+          <li>Laudo com QR Pix e Tabela 2026 de referência</li>
+          <li class="fora">Inverter, R32, sensores acima de 10K, Códigos &amp; LED, Lucro e Cofre</li>
+        </ul>
+        <a class="cta secundaria" data-checkout="essencial" href="#planos">Quero o Essencial<small>R$ 19,90 · acesso imediato</small></a>
+      </article>
+      <article class="plano pro" aria-labelledby="p-pro">
+        <span class="fita">Arsenal completo</span>
+        <h3 id="p-pro">Plano Completo PRO</h3>
+        <div class="preco"><small>R$</small><strong>29,90</strong><span>vitalício + atualizações</span></div>
+        <ul class="lista">
+          <li><b>Tudo do Essencial</b>, mais o arsenal Inverter completo</li>
+          <li>Gás R32 e curvas oficiais das 14 marcas (5K a 200K)</li>
+          <li>Os 6 Bônus Vivos: Anti-Queima de Placa, 411 Códigos e 152 Piscadas, Pontos de Medição, Carga de Gás, Antes de Condenar a Peça e Painel de Ganhos</li>
+          <li>22 serviços com preço livre, serviço próprio e lucro limpo</li>
+          <li>Cofre de Laudos multi-aparelho e Orçamento Consolidado</li>
+        </ul>
+        <a class="cta" data-checkout="pro" href="#planos">Quero o Completo PRO<small>R$ 29,90 · pagamento único, acesso imediato</small></a>
+      </article>
+    </div>
+    <p class="bumps">No checkout você pode somar, se quiser: <b>Contratos Mensais PMOC</b> (R$ 14,90) e <b>Desmontagem Sem Quebrar Travas + 2º Aparelho</b> (R$ 9,90).</p>
+  </div>
+</section>
+
+<section class="escuro" aria-labelledby="t-conta">
+  <div class="w">
+    <span class="selo claro">A conta de 1 chamado</span>
+    <h2 id="t-conta" style="margin-top:12px">O primeiro atendimento paga a Bancada mais de 10 vezes.</h2>
+    <div class="conta">
+      <div class="linha"><span>Troca de sensor NTC com aferição (Tabela 2026)</span><b>R$ 240,00</b></div>
+      <div class="linha"><span>Visita técnica com diagnóstico instrumentado</span><b>R$ 120,00</b></div>
+      <div class="linha"><span>Custo do sensor</span><b>− R$ 19,81</b></div>
+      <div class="linha total"><span>Fica no seu bolso</span><b>R$ 340,19</b></div>
+    </div>
+    <p class="quadro">Se tudo o que esta Bancada fizesse fosse impedir você de condenar <b>uma única placa de R$ 550 a R$ 1.150</b> no chute por culpa de um sensor de R$ 19,81, ela já teria se pagado <b class="destaque">mais de 10 vezes no primeiro atendimento</b>.</p>
+    <a class="cta" href="#planos" data-rolar>Quero fechar o próximo chamado com laudo<small>Completo PRO por R$ 29,90 · pagamento único</small></a>
+  </div>
+</section>
+
+<section class="titanio" aria-labelledby="t-garantia">
+  <div class="w">
+    <div class="cartao garantia">
+      <div class="medalha" aria-hidden="true"><b>7</b><span>DIAS</span></div>
+      <div><h2 id="t-garantia" style="font-size:24px;color:var(--marinho2)">Garantia Blindada de Primeiro Chamado</h2><p style="margin-top:6px">Use a Bancada nos seus chamados por 7 dias. Se ela não fizer você diagnosticar com mais segurança e fechar com laudo, peça o dinheiro de volta com 1 clique na Kiwify. Sem pergunta.</p></div>
+    </div>
+    <h2 style="margin-top:36px;color:var(--marinho2)">Perguntas frequentes</h2>
+    <div style="margin-top:12px">
+      <details><summary>É mensalidade?</summary><p>Não. Os dois planos são pagamento único. O Completo PRO é vitalício e recebe as atualizações da Bancada.</p></details>
+      <details><summary>Funciona sem sinal no celular?</summary><p>Sim. Depois da 1ª abertura a Bancada fica guardada no aparelho e roda em modo avião: na casa de máquinas, no subsolo ou no telhado.</p></details>
+      <details><summary>Como eu recebo e ativo?</summary><p>Logo após o pagamento você recebe o acesso no e-mail. Abre no navegador do celular, digita o CPF ou CNPJ da compra e pronto: dá para fixar na tela inicial como um aplicativo.</p></details>
+      <details><summary>Funciona no iPhone e no Android?</summary><p>Sim. Roda no navegador do Android e do iPhone, sem instalar nada da loja.</p></details>
+      <details><summary>Quais marcas estão na Bancada?</summary><p>LG, Samsung, Midea, Springer, Carrier, Gree, Daikin, Elgin, Fujitsu, Consul, Electrolux, Philco, TCL e Agratto, com códigos de erro, piscadas de LED e curvas de sensor.</p></details>
+      <details><summary>Posso cobrar o meu preço?</summary><p>Pode. A Tabela 2026 aparece como referência regional, mas você digita o valor que quiser, cria serviço próprio e vê o lucro limpo na hora. O cliente nunca vê o seu custo.</p></details>
+      <details><summary>Como o cliente me paga?</summary><p>O Laudo Nº 1001 sai em PDF com o QR Pix da sua chave no valor exato. Vai pelo WhatsApp e o cliente responde APROVADO.</p></details>
+      <details><summary>Qual a diferença entre o Essencial e o Completo PRO?</summary><p>O Essencial cobre o Split convencional com sensores 5K e 10K e gás R22/R410A. O Completo PRO soma Inverter, R32, as curvas das 14 marcas, os 411 códigos e 152 piscadas, o Painel de Ganhos, o Cofre e os 6 Bônus Vivos. Dá para subir do Essencial para o PRO depois por + R$ 10,00.</p></details>
+    </div>
+    <a class="cta" href="#planos" data-rolar>Quero a minha Bancada GeloPRO<small>Garantia Blindada de 7 dias</small></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="w">
+    <p style="margin:0"><b>Bancada de Diagnóstico no Celular GeloPRO</b> © 2026. Pagamento processado pela Kiwify.</p>
+    <p>As marcas de fabricantes citadas pertencem aos seus donos e aparecem só para indicar compatibilidade dos códigos e curvas.</p>
+    <p>Este site não faz parte do site do Facebook nem da Meta Platforms, Inc.</p>
+  </div>
+</footer>
+<div class="fixo" id="fixo" aria-hidden="true"><a class="cta" data-checkout="pro" href="#planos" tabindex="-1">Completo PRO · R$ 29,90<small>pagamento único · garantia de 7 dias</small></a></div>
+
+<script>
+'use strict';
+// ═════ CONFIG_VENDA (cole aqui os dados da Kiwify, do Meta Pixel, do GA4 e da UTMify; campo vazio = recurso desligado) ═════
+const CONFIG_VENDA = {
+  checkoutEssencial: '',     // link do checkout Kiwify do Plano Essencial (R$ 19,90)
+  checkoutCompletoPro: '',   // link do checkout Kiwify do Plano Completo PRO (R$ 29,90)
+  metaPixelId: '',           // ID numérico do Pixel da Meta exclusivo desta vertical
+  ga4Id: '',                 // ID de medição do GA4 (G-XXXXXXXXXX)
+  utmifyScriptUrl: '',       // URL do script de UTMs da UTMify
+  vslUrl: '',                // vídeo vertical 9:16 (.mp4 ou link embed); vazio = vitrine só com as telas reais
+  popup: false               // Camada 09: sem interceptação pré-checkout no lançamento
+};
+// Repasse integral das UTMs e dos IDs de clique para os botões de checkout.
+const UTM_CHAVES = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'src', 'sck'];
+const lerUtms = () => { const q = new URLSearchParams(location.search), salvo = (() => { try { return JSON.parse(sessionStorage.getItem('gelopro.utms') || '{}'); } catch (e) { return {}; } })(), u = {};
+  UTM_CHAVES.forEach(k => { const v = q.get(k) || salvo[k]; if (v) u[k] = String(v).slice(0, 200); });
+  try { sessionStorage.setItem('gelopro.utms', JSON.stringify(u)); } catch (e) { } return u; };
+const UTMS = lerUtms();
+const comUtms = (base) => { try { const url = new URL(base, location.href); Object.entries(UTMS).forEach(([k, v]) => { if (!url.searchParams.has(k)) url.searchParams.set(k, v); }); return url.href; } catch (e) { return base; } };
+const linkCheckout = (plano) => (plano === 'essencial' ? CONFIG_VENDA.checkoutEssencial : CONFIG_VENDA.checkoutCompletoPro);
+document.querySelectorAll('[data-checkout]').forEach(a => { const base = linkCheckout(a.dataset.checkout); if (base) { a.href = comUtms(base); a.rel = 'noopener'; } });
+document.addEventListener('click', (e) => { const a = e.target.closest && e.target.closest('[data-checkout]'); if (!a) return;
+  const plano = a.dataset.checkout, valor = plano === 'essencial' ? 19.90 : 29.90;
+  try { if (window.fbq) window.fbq('track', 'InitiateCheckout', { value: valor, currency: 'BRL', content_name: plano === 'essencial' ? 'Plano Essencial' : 'Plano Completo PRO' }); } catch (x) { }
+  try { if (window.gtag) window.gtag('event', 'begin_checkout', { value: valor, currency: 'BRL', items: [{ item_name: plano === 'essencial' ? 'Plano Essencial' : 'Plano Completo PRO', price: valor }] }); } catch (x) { }
+  if (!linkCheckout(plano)) { e.preventDefault(); document.getElementById('planos').scrollIntoView({ behavior: 'smooth' }); } });
+// Meta Pixel, GA4 e UTMify: só carregam com o ID preenchido.
+if (/^\d{6,20}$/.test(CONFIG_VENDA.metaPixelId)) { (function (f, b, e, v, n, t, s) { if (f.fbq) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s); })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+  window.fbq('init', CONFIG_VENDA.metaPixelId); window.fbq('track', 'PageView'); window.fbq('track', 'ViewContent', { content_name: 'Bancada GeloPRO', currency: 'BRL', value: 29.90 }); }
+if (/^G-[A-Z0-9]{4,20}$/.test(CONFIG_VENDA.ga4Id)) { const s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(CONFIG_VENDA.ga4Id); document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || []; window.gtag = function () { window.dataLayer.push(arguments); }; window.gtag('js', new Date()); window.gtag('config', CONFIG_VENDA.ga4Id); }
+if (/^https:\/\/[^\s"'<>]+$/.test(CONFIG_VENDA.utmifyScriptUrl)) { const s = document.createElement('script'); s.async = true; s.defer = true; s.src = CONFIG_VENDA.utmifyScriptUrl; s.setAttribute('data-utmify-prevent-subids', ''); document.head.appendChild(s); }
+
+// Camada 03: vitrine por abas com as telas reais da Bancada.
+const TELAS = [
+  ['img/tela-01-home.webp', 390, 844, 'Tela inicial da Bancada GeloPRO com os 8 blocos de sintomas', '<b>8 blocos de sintoma.</b> Toque no que o cliente reclamou e o caminho já abre, sem questionário antes da resposta.'],
+  ['img/tela-02-diagnostico.webp', 390, 844, 'Ficha de diagnóstico com zoom de 1,85× no ponto de medição e as causas 70%, 20% e 10%', '<b>Zoom de 1,85× no ponto de prova</b> e a escada 70% / 20% / 10% das causas mais prováveis.'],
+  ['img/tela-03-ntc-multimetro.webp', 390, 844, 'Multímetro vivo aferindo o sensor NTC contra a curva da marca', '<b>Multímetro vivo:</b> a leitura do sensor comparada com a curva da marca na temperatura real.'],
+  ['img/tela-04-gas-botija.webp', 390, 844, 'Botija de gás viva com o superaquecimento e o alvo de 7 a 11 °C', '<b>Botija viva de R32, R410A e R22:</b> superaquecimento no alvo e tubulação excedente.'],
+  ['img/tela-05-codigos-cores.webp', 390, 844, 'Códigos de erro e piscadas de LED com selos de gravidade', '<b>411 códigos e 152 piscadas</b> nas 14 marcas, com selo verde, âmbar ou vermelho.'],
+  ['img/tela-06-ganhos-laudo.webp', 390, 844, 'Ganhos & Laudo com valor total, faixa regional e lucro limpo no bolso', '<b>Ganhos &amp; Laudo:</b> valor total, faixa regional 2026 e o lucro limpo no seu bolso.'],
+  ['img/tela-07-pdf-pix.webp', 780, 1163, 'Laudo Executivo Nº 1001 em PDF com QR Pix', '<b>Laudo Executivo Nº 1001</b> em PDF com o QR Pix no valor exato, pronto para o WhatsApp.']
+];
+const img = document.getElementById('img-vitrine'), leg = document.getElementById('leg-vitrine'), moldura = document.getElementById('tela-vitrine'), abas = [...document.querySelectorAll('.aba')];
+const mostrar = (i) => { const [src, w, h, alt, tx] = TELAS[i]; img.src = src; img.width = w; img.height = h; img.alt = alt; leg.innerHTML = tx; moldura.classList.toggle('pdf', i === 6);
+  abas.forEach((a, k) => { a.setAttribute('aria-selected', String(k === i)); a.tabIndex = k === i ? 0 : -1; }); };
+abas.forEach((a, i) => a.addEventListener('click', () => { mostrar(i); a.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' }); }));
+document.querySelector('[role="tablist"]').addEventListener('keydown', (e) => { const i = abas.findIndex(a => a.getAttribute('aria-selected') === 'true'); const n = e.key === 'ArrowRight' ? (i + 1) % abas.length : e.key === 'ArrowLeft' ? (i - 1 + abas.length) % abas.length : -1; if (n >= 0) { e.preventDefault(); mostrar(n); abas[n].focus(); } });
+// Pré-carrega as telas da vitrine depois da 1ª pintura (troca de aba sem espera).
+addEventListener('load', () => setTimeout(() => TELAS.slice(1).forEach(([src]) => { const i = new Image(); i.decoding = 'async'; i.src = src; }), 600));
+// Slot de VSL 9:16: aparece só com o vídeo configurado.
+if (CONFIG_VENDA.vslUrl) { const v = document.getElementById('vsl'), u = CONFIG_VENDA.vslUrl; v.classList.add('ligado');
+  if (/\.(mp4|webm)(\?|$)/i.test(u)) { const el = document.createElement('video'); el.src = u; el.controls = true; el.playsInline = true; el.preload = 'metadata'; el.poster = 'img/tela-01-home.webp'; v.appendChild(el); }
+  else if (/^https:\/\//.test(u)) { const el = document.createElement('iframe'); el.src = u; el.allow = 'autoplay; fullscreen; picture-in-picture'; el.loading = 'lazy'; el.title = 'Vídeo da Bancada GeloPRO'; v.appendChild(el); } }
+// CTA fixo no rodapé depois do herói (some quando os planos estão na tela).
+const fixo = document.getElementById('fixo'), heroi = document.querySelector('header'), planos = document.getElementById('planos');
+if ('IntersectionObserver' in window) { let foraHeroi = false, vePlanos = false; const atual = () => { const on = foraHeroi && !vePlanos; fixo.classList.toggle('on', on); fixo.setAttribute('aria-hidden', String(!on)); fixo.querySelector('a').tabIndex = on ? 0 : -1; };
+  new IntersectionObserver(([e]) => { foraHeroi = !e.isIntersecting; atual(); }).observe(heroi);
+  new IntersectionObserver(([e]) => { vePlanos = e.isIntersecting; atual(); }, { threshold: 0.15 }).observe(planos); }
+</script>
+</body>
+</html>
