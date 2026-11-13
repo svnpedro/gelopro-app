@@ -1,22 +1,22 @@
 // GeloPro · Bancada GeloPRO em modo avião — 12/11/2026 — versão oficial e única em /bancada/ (escopo ./, Design System v4 transplantado 1:1).
-// Cache bancada-offline-v15 (13/11/2026; regra de rede do v14 de 12/11/2026, fim do cache fantasma): a página e os scripts do núcleo vão à rede primeiro (cache: 'no-cache',
+// Cache bancada-offline-v16 (13/11/2026, marca oficial final; v15 de 13/11/2026; regra de rede do v14 de 12/11/2026, fim do cache fantasma): a página e os scripts do núcleo vão à rede primeiro (cache: 'no-cache',
 // prazo de 1,2 s) e atualizam o cache na hora; rede caída ou lenta abre o cache na mesma hora, então o celular nunca fica preso numa
 // versão antiga depois de um deploy e o modo avião segue instantâneo. O install guarda SÓ o núcleo leve (página, motor próprio em ./motor/ com a base
-// embutida base-inline.js, PDF v4, estilos e gerador do Design System, fontes e mascote), 2 downloads por vez, sem disputar a antena.
+// embutida base-inline.js, PDF v4, estilos e gerador do Design System, fontes e o urso oficial da marca), 2 downloads por vez, sem disputar a antena.
 // As 126 artes de ../guia-pro/imagens/, os 48 tiles de ./tiles/, os 19 CSVs e os arquivos literais de ./ds/ entram depois, aquecidos
 // 1 por vez quando a página pede (mensagem aquecer-artes, 4 s após carregar e ociosa). CSVs e .json/.html do Design System: cache
 // primeiro com atualização silenciosa; artes, tiles, fontes e imagens saem do cache e só vão à rede se faltarem. Nenhuma espera de rede ao tocar. O activate apaga os caches antigos da Bancada (bancada-offline-* diferente,
 // bancada-v2-offline-* e bancada-v3-offline-*); o install reaproveita as artes que já estavam no cache anterior (sem baixar de novo).
 'use strict';
-const CACHE = 'bancada-offline-v15'; // v15 (13/11/2026): faixa única do equipamento em toda a Bancada, Tecla 4 Lucro & Laudo e Cofre multi-aparelho. v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
+const CACHE = 'bancada-offline-v16'; // v16 (13/11/2026): marca oficial final (urso na plaqueta, BANCADA / GeloPRO / SPLIT & INVERTER), Tecla 4 Ganhos & Laudo com camuflagem no Modo: Laudo, − e + vivos e faxina do Laudo. v15 (13/11/2026): faixa única do equipamento em toda a Bancada, Tecla 4 Lucro & Laudo e Cofre multi-aparelho. v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
 const PRAZO_REDE_MS = 1200;
 const PAGINA = './';
 const MOTOR = [
   './motor/base-inline.js', './motor/vendor/qrcode-generator-1.4.4.js', './motor/gelopro-pix.js', './motor/marca-gelopro.js', './motor/pdf-gelopro.js', './motor/licenca-gelopro.js',
   './pdf-bancada-v4.js', './ds/estilos.js', './ds/gerador-copias.js',
   './fontes/barlow-semi-condensed-latin-500-normal.woff2', './fontes/barlow-semi-condensed-latin-600-normal.woff2', './fontes/barlow-semi-condensed-latin-700-normal.woff2',
-  './fontes/barlow-semi-condensed-latin-800-normal.woff2', './fontes/jetbrains-mono-latin-500-normal.woff2', './fontes/jetbrains-mono-latin-700-normal.woff2',
-  './marca/gelopro-mascote.png'
+  './fontes/barlow-semi-condensed-latin-800-normal.woff2', './fontes/barlow-semi-condensed-latin-800-italic.woff2', './fontes/jetbrains-mono-latin-500-normal.woff2', './fontes/jetbrains-mono-latin-700-normal.woff2',
+  './marca/gelopro-urso.png'
 ];
 // Arquivos literais do Design System: a página lê a cópia embutida em base-inline.js; o original fica guardado para conferência offline.
 const DS = ['./ds/icones.json', './ds/InstrumentosVivos.dc.html', './ds/InstrumentosVivosEscuro.dc.html', './ds/LogoMarca.dc.html'];

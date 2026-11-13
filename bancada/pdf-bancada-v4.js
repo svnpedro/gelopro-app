@@ -75,19 +75,26 @@
   const f1 = (v, d) => Number(v).toFixed(d == null ? 1 : d).replace('.', ',');
   const ROT = (x, y, s, cor) => texto(x, y, s, 'B', 7.5, cor || C.rotulo, null, 0.9); // rótulo em caixa alta com espaçamento (padrão do pacote)
 
+  // Marca oficial embutida (motor/marca-gelopro.js): cor RGB e alfa no preditor PNG, vão para o PDF sem recompressão (FlateDecode + /SMask).
+  const logoMarca = () => { try { const L = window.GeloProMarca && window.GeloProMarca.logoPdf; return L && L.w && L.h && L.cor && L.alfa ? { w: L.w, h: L.h, cor: atob(L.cor), alfa: atob(L.alfa) } : null; } catch (e) { return null; } };
   // ── Peças do laudo: cada uma é { h, draw(y) } e nunca parte no meio da página. ──
   function pecas(d) {
     const P = [], t = d.titular || {}, W = LARG;
-    // 1. Cabeçalho executivo marinho: prestadora à esquerda; selo BANCADA · GELOPRO 2026, LAUDO DE APROVAÇÃO e Nº à direita.
+    // 1. Cabeçalho executivo marinho: prestadora à esquerda; à direita a marca oficial final (matriz limpa marinho do pacote da marca,
+    //    window.GeloProMarca.logoPdf: urso na plaqueta + BANCADA / GeloPRO / SPLIT & INVERTER, 133 × 44 na proporção), LAUDO DE APROVAÇÃO e Nº.
+    //    Sem a marca embutida, volta o selo de texto BANCADA · GELOPRO 2026.
     { const linhasT = [t.doc ? `${t.docTipo || 'CPF/CNPJ'} ${t.doc}` : '', t.cidade || '', t.pix ? `Chave Pix ${t.pix}` : ''].filter(Boolean);
-      const nomeL = quebrar(t.nome || 'Prestadora do serviço', 'B', 15, W * 0.56), h = Math.max(92, 30 + nomeL.length * 18 + linhasT.length * 12);
+      const nomeL = quebrar(t.nome || 'Prestadora do serviço', 'B', 15, W * 0.56), lg = logoMarca(), h = Math.max(lg ? 104 : 92, 30 + nomeL.length * 18 + linhasT.length * 12);
       P.push({ h: h + 14, draw: (y) => { const o = [caixa(MX, y, W, h, C.marinho, null, 10)];
         o.push(ROT(MX + 16, y + 20, 'PRESTADORA DO SERVIÇO', C.gelo));
         nomeL.forEach((s, i) => o.push(texto(MX + 16, y + 40 + i * 18, s, 'B', 15, C.branco)));
         linhasT.forEach((s, i) => o.push(texto(MX + 16, y + 40 + (nomeL.length - 1) * 18 + 16 + i * 12, s, 'R', 9, C.gelo)));
-        const sw = largura('BANCADA · GELOPRO 2026', 'B', 7.5, 0.9) + 18, xR = MX + W - 16;
-        o.push(caixa(xR - sw, y + 12, sw, 18, C.destaque, null, 9), texto(xR - sw / 2, y + 24.5, 'BANCADA · GELOPRO 2026', 'B', 7.5, C.branco, 'c', 0.9));
-        o.push(texto(xR, y + 50, d.titulo || 'LAUDO DE APROVAÇÃO', 'B', 11, C.branco, 'd', 1.2), texto(xR, y + 74, `Nº ${d.numero}`, 'M', 20, C.branco, 'd'));
+        const xR = MX + W - 16;
+        if (lg) { const wL = 120, hL = wL * lg.h / lg.w; o.push(`q ${n2(wL)} 0 0 ${n2(hL)} ${n2(xR - wL)} ${n2(PH - (y + 12) - hL)} cm /Logo Do Q`);
+          o.push(texto(xR, y + 64, d.titulo || 'LAUDO DE APROVAÇÃO', 'B', 11, C.branco, 'd', 1.2), texto(xR, y + 88, `Nº ${d.numero}`, 'M', 20, C.branco, 'd')); }
+        else { const sw = largura('BANCADA · GELOPRO 2026', 'B', 7.5, 0.9) + 18;
+          o.push(caixa(xR - sw, y + 12, sw, 18, C.destaque, null, 9), texto(xR - sw / 2, y + 24.5, 'BANCADA · GELOPRO 2026', 'B', 7.5, C.branco, 'c', 0.9));
+          o.push(texto(xR, y + 50, d.titulo || 'LAUDO DE APROVAÇÃO', 'B', 11, C.branco, 'd', 1.2), texto(xR, y + 74, `Nº ${d.numero}`, 'M', 20, C.branco, 'd')); }
         return o; } }); }
     // 2. Quadros DATA · CLIENTE · EQUIPAMENTO e SINTOMA · CAUSA CONFIRMADA.
     const quadro = (cols) => { const larg = cols.map(c => c[2] * (W - 24)), L = cols.map((c, i) => quebrar(c[1] || '—', c[3] || 'B', 10.5, larg[i] - 12)), h = 26 + Math.max(...L.map(l => l.length)) * 14;
@@ -172,7 +179,10 @@
     const objs = [], add = (c) => (objs.push(c), objs.length);
     const cat = add(null), raiz = add(null);
     const f = ['Helvetica', 'Helvetica-Bold', 'Symbol', 'Courier-Bold', 'ZapfDingbats'].map((b, i) => add(`<< /Type /Font /Subtype /Type1 /BaseFont /${b}${i === 2 || i === 4 ? '' : ' /Encoding /WinAnsiEncoding'} >>`));
-    const rec = `<< /Font << ${f.map((n, i) => `/F${i + 1} ${n} 0 R`).join(' ')} >> /ProcSet [/PDF /Text] >>`;
+    const lg = pags.some(o => o.some(x => typeof x === 'string' && x.includes('/Logo Do'))) ? logoMarca() : null, fl = (c, w) => `/Filter /FlateDecode /DecodeParms << /Predictor 15 /Colors ${c} /BitsPerComponent 8 /Columns ${w} >>`;
+    const sm = lg ? add(`<< /Type /XObject /Subtype /Image /Width ${lg.w} /Height ${lg.h} /ColorSpace /DeviceGray /BitsPerComponent 8 ${fl(1, lg.w)} /Length ${lg.alfa.length} >>\nstream\n${lg.alfa}\nendstream`) : 0;
+    const im = lg ? add(`<< /Type /XObject /Subtype /Image /Width ${lg.w} /Height ${lg.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 ${fl(3, lg.w)} /SMask ${sm} 0 R /Length ${lg.cor.length} >>\nstream\n${lg.cor}\nendstream`) : 0;
+    const rec = `<< /Font << ${f.map((n, i) => `/F${i + 1} ${n} 0 R`).join(' ')} >>${im ? ` /XObject << /Logo ${im} 0 R >>` : ''} /ProcSet [/PDF /Text${im ? ' /ImageC /ImageB' : ''}] >>`;
     const kids = pags.map(o => { const s = o.filter(Boolean).join('\n'), cs = add(`<< /Length ${s.length} >>\nstream\n${s}\nendstream`); return add(`<< /Type /Page /Parent ${raiz} 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources ${rec} /Contents ${cs} 0 R >>`); });
     objs[raiz - 1] = `<< /Type /Pages /Kids [${kids.map(k => `${k} 0 R`).join(' ')}] /Count ${kids.length} >>`;
     objs[cat - 1] = `<< /Type /Catalog /Pages ${raiz} 0 R /ViewerPreferences << /DisplayDocTitle true >> >>`;
