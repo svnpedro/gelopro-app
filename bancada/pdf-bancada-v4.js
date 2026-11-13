@@ -87,7 +87,7 @@
         linhasT.forEach((s, i) => o.push(texto(MX + 16, y + 40 + (nomeL.length - 1) * 18 + 16 + i * 12, s, 'R', 9, C.gelo)));
         const sw = largura('BANCADA · GELOPRO 2026', 'B', 7.5, 0.9) + 18, xR = MX + W - 16;
         o.push(caixa(xR - sw, y + 12, sw, 18, C.destaque, null, 9), texto(xR - sw / 2, y + 24.5, 'BANCADA · GELOPRO 2026', 'B', 7.5, C.branco, 'c', 0.9));
-        o.push(texto(xR, y + 50, 'LAUDO DE APROVAÇÃO', 'B', 11, C.branco, 'd', 1.2), texto(xR, y + 74, `Nº ${d.numero}`, 'M', 20, C.branco, 'd'));
+        o.push(texto(xR, y + 50, d.titulo || 'LAUDO DE APROVAÇÃO', 'B', 11, C.branco, 'd', 1.2), texto(xR, y + 74, `Nº ${d.numero}`, 'M', 20, C.branco, 'd'));
         return o; } }); }
     // 2. Quadros DATA · CLIENTE · EQUIPAMENTO e SINTOMA · CAUSA CONFIRMADA.
     const quadro = (cols) => { const larg = cols.map(c => c[2] * (W - 24)), L = cols.map((c, i) => quebrar(c[1] || '—', c[3] || 'B', 10.5, larg[i] - 12)), h = 26 + Math.max(...L.map(l => l.length)) * 14;
@@ -165,7 +165,7 @@
     for (const p of P) { if (y + p.h > FIM && ops.length) { pags.push(ops); ops = []; y = TOPO; } ops.push(...p.draw(y)); y += p.h; }
     pags.push(ops);
     return pags.map((o, i) => [...o, linha(MX, PH - 34, MX + LARG, PH - 34, C.borda, 0.6),
-      texto(MX, PH - 22, `Bancada GeloPRO · Laudo de Aprovação Nº ${d.numero}`, 'R', 7.5, C.rotulo), texto(MX + LARG, PH - 22, `Página ${i + 1} de ${pags.length}`, 'R', 7.5, C.rotulo, 'd')]);
+      texto(MX, PH - 22, `Bancada GeloPRO · ${d.tituloRodape || 'Laudo de Aprovação'} Nº ${d.numero}`, 'R', 7.5, C.rotulo), texto(MX + LARG, PH - 22, `Página ${i + 1} de ${pags.length}`, 'R', 7.5, C.rotulo, 'd')]);
   }
   const hex16 = (s) => { let h = 'FEFF'; for (const ch of String(s)) { const c = ch.codePointAt(0); if (c > 0xFFFF) continue; h += c.toString(16).toUpperCase().padStart(4, '0'); } return `<${h}>`; };
   function serializar(pags, info) {
@@ -186,9 +186,10 @@
   }
   const limpo = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   // dados: { numero, data, titular { nome, doc, docTipo, cidade, pix }, cliente { nome }, equip, sintoma, causa, leituras [{ txt, med }],
-  //          servicos [{ nome, valor, min, max, proc, prev }], total, faixa { min, max }, garantia, pix { chave, nome, copia, qr }, aceite }
+  //          servicos [{ nome, valor, min, max, proc, prev }], total, faixa { min, max }, garantia, pix { chave, nome, copia, qr }, aceite,
+  //          titulo e tituloRodape opcionais (Orçamento Consolidado multi-aparelho do Cofre; sem eles, Laudo de Aprovação) }
   function gerar(dados) {
-    const d = dados || {}, pags = diagramar(d), nome = `Laudo-${limpo(d.numero) || 'SN'}-${limpo(d.cliente && d.cliente.nome).slice(0, 48) || 'Cliente'}.pdf`;
+    const d = dados || {}, pags = diagramar(d), nome = `${d.titulo ? 'Orcamento' : 'Laudo'}-${limpo(d.numero) || 'SN'}-${limpo(d.cliente && d.cliente.nome).slice(0, 48) || 'Cliente'}.pdf`;
     const bytes = serializar(pags, { titulo: nome.replace(/\.pdf$/, ''), autor: (d.titular && d.titular.nome) || '' });
     return { bytes, blob: new Blob([bytes], { type: 'application/pdf' }), nome, paginas: pags.length };
   }

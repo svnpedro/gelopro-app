@@ -1,5 +1,5 @@
 // GeloPro · Bancada GeloPRO em modo avião — 12/11/2026 — versão oficial e única em /bancada/ (escopo ./, Design System v4 transplantado 1:1).
-// Cache bancada-offline-v14 (12/11/2026, fim do cache fantasma): a página e os scripts do núcleo vão à rede primeiro (cache: 'no-cache',
+// Cache bancada-offline-v15 (13/11/2026; regra de rede do v14 de 12/11/2026, fim do cache fantasma): a página e os scripts do núcleo vão à rede primeiro (cache: 'no-cache',
 // prazo de 1,2 s) e atualizam o cache na hora; rede caída ou lenta abre o cache na mesma hora, então o celular nunca fica preso numa
 // versão antiga depois de um deploy e o modo avião segue instantâneo. O install guarda SÓ o núcleo leve (página, motor próprio em ./motor/ com a base
 // embutida base-inline.js, PDF v4, estilos e gerador do Design System, fontes e mascote), 2 downloads por vez, sem disputar a antena.
@@ -8,7 +8,7 @@
 // primeiro com atualização silenciosa; artes, tiles, fontes e imagens saem do cache e só vão à rede se faltarem. Nenhuma espera de rede ao tocar. O activate apaga os caches antigos da Bancada (bancada-offline-* diferente,
 // bancada-v2-offline-* e bancada-v3-offline-*); o install reaproveita as artes que já estavam no cache anterior (sem baixar de novo).
 'use strict';
-const CACHE = 'bancada-offline-v14'; // v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
+const CACHE = 'bancada-offline-v15'; // v15 (13/11/2026): faixa única do equipamento em toda a Bancada, Tecla 4 Lucro & Laudo e Cofre multi-aparelho. v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
 const PRAZO_REDE_MS = 1200;
 const PAGINA = './';
 const MOTOR = [
