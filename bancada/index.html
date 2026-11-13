@@ -446,6 +446,29 @@ const tileInstrumento = (v) => { const t = norm(v); return /manifold/.test(t) ? 
 const tileChip = (f, k) => tile([tileSistema, tileAplicacao, tileInstrumento][k](f.chips[k]));
 
 const ICO = (f, n) => `${ARTES}icones/${f.img}_${n}.webp`;
+// Artes em RAM (Pedro, 13/11/2026, vídeo de vendas: 0 ms): as 14 ilustrações principais (d001 a s07) são baixadas e decodificadas logo após
+// o 1º quadro da Home (requestAnimationFrame + 150 ms), em lotes de 6, e os objetos Image ficam vivos em CACHE_IMG_RAM: o bitmap nunca é
+// descartado e a ficha abre com a arte pronta no 1º quadro (opacidade 1, sem fade). No toque (pointerdown/touchstart) num bloco da Home, num
+// cartão da lista, no Próximo Passo ou em ‹ Anterior / Próximo ›, a arte da ficha e os ícones p1..p5 (com sistema, aplicação e instrumento)
+// entram na frente da fila com prioridade alta, antes do click completar.
+const CACHE_IMG_RAM = window.CACHE_IMG_RAM = new Map();
+const urlAbs = (u) => { try { return new URL(u, location.href).href; } catch (e) { return u; } };
+const naRam = (u) => { const im = CACHE_IMG_RAM.get(urlAbs(u)); return !!(im && im.complete && im.naturalWidth > 0); };
+const preDecodificar = (u, alta) => { const k = urlAbs(u); let im = CACHE_IMG_RAM.get(k);
+  if (!im) { im = new Image(); im.decoding = 'async'; if (alta) im.fetchPriority = 'high'; im.src = k; CACHE_IMG_RAM.set(k, im);
+    im._pronta = (typeof im.decode === 'function' ? im.decode() : new Promise((ok, no) => { im.onload = ok; im.onerror = no; })).catch(() => {}); }
+  return im._pronta; };
+const ARTES_RAM = () => [...new Set(F.map(f => f.img))].map(i => `${ARTES}${i}.webp`);
+// Cada lote de 6 só sai com a thread livre (requestIdleCallback): o toque do técnico nunca espera a chegada das artes.
+const ociosoRam = () => new Promise(ok => (window.requestIdleCallback ? requestIdleCallback(ok, { timeout: 1500 }) : setTimeout(ok, 50)));
+async function aquecerArtesRam() { const L = ARTES_RAM(); for (let k = 0; k < L.length; k += 6) { await ociosoRam(); await Promise.all(L.slice(k, k + 6).map(u => preDecodificar(u))); } window.__artesRam = L.filter(naRam).length; }
+const ICONES_FICHA = ['p1', 'p2', 'p3', 'p4', 'p5', 'sistema', 'aplicacao', 'ferramenta'];
+const fichaNaFrente = (f) => { if (!f) return; preDecodificar(IMG(f), true); ICONES_FICHA.forEach(n => preDecodificar(ICO(f, n), true)); };
+const aoEncostar = (e) => { const b = e.target && e.target.closest && e.target.closest('[data-a="caso"],[data-a="bloco"],[data-a="prox"]'); if (!b || !app.contains(b)) return;
+  if (b.dataset.a === 'caso') return fichaNaFrente(F[+b.dataset.v]);
+  if (b.dataset.a === 'bloco') return casosDoBloco(b.dataset.v).slice(0, 6).forEach(fichaNaFrente);
+  const f = S.caso >= 0 ? F[S.caso] : null, p = f && f.proximo[+b.dataset.v], ir = p && p[3]; if (ir) fichaNaFrente(F.find(x => x.id === ir)); };
+document.addEventListener('pointerdown', aoEncostar, { passive: true, capture: true }); document.addEventListener('touchstart', aoEncostar, { passive: true, capture: true });
 const ICOc = (f, k) => { const v = f.vc.indexOf(k + 1) + 1; return ICO(f, v ? 'p' + v : 'aplicacao'); };
 const Z = 1.75; // zoom da Lupa: a peça inteira no quadro, sem estourar (era 2,6)
 // Prancha 1672 × 941 num quadro 16:10: a razão vertical difere da horizontal, então cada eixo centra com a sua.
@@ -941,8 +964,14 @@ const rotDock = () => (clienteVe() ? DK.map(d => (d[0] === 'laudo' ? ['laudo', '
 // Ganhos & Laudo no dock de 390 px (decisão do Pedro, 13/11/2026): só este rótulo aperta o espaçamento de −.02em (S10) para −.035em, para o
 // respiro interno de 8 px da tecla caber sem trocar o nome nem a medida do dock.
 const tituloLaudo = () => (clienteVe() ? 'LAUDO TÉCNICO' : 'GANHOS &amp; LAUDO');
+// Contador vivo da Tecla 4 (Pedro, 13/11/2026, teste no celular): cada + Mandar para o Laudo, leitura ou serviço do laudo atual soma 1 na
+// pílula âmbar dentro da própria tecla (canto superior direito do ícone, 6 px do contorno, 11 px mono 700, #FFB020 com #1A1203, raio pílula).
+// Some com o laudo vazio, no Modo: Laudo (celular na mão do cliente) e na prancha (?prancha=1).
+const nLaudo = () => { const srv = new Set(S.leituras.map(a => a.srv).filter(Boolean)); return S.leituras.length + (S.laudo && Array.isArray(S.laudo.itens) ? S.laudo.itens.filter(i => !srv.has(i.sid)).length : 0); };
+const BADGE_LAUDO = "position:absolute;top:6px;right:6px;min-width:24px;height:24px;padding:4px 8px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#FFB020;color:#1A1203;font:700 11px/1 'JetBrains Mono',monospace;letter-spacing:0";
+const badgeLaudo = () => { const n = PRANCHA || clienteVe() ? 0 : nLaudo(); return n > 0 ? `<span data-badge-laudo="${n}" aria-hidden="true" style="${BADGE_LAUDO}">${n > 99 ? '99+' : n}</span>` : ''; };
 const dock = (at) => `<div class="dock-fixo" style="position:sticky;bottom:0;z-index:5;margin-top:auto;flex:none;background-color:#DBD8D1;background-image:radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.65) 0%,rgba(255,255,255,0) 58%),linear-gradient(180deg,#E6E3DD 0%,#CCC8BF 100%)"><nav data-dock aria-label="Teclas da bancada" style="${DOCK_EST}">${rotDock().map(([k, tx, curto, i]) => { const on = k === at;
-  return `<button type="button" data-a="tecla" data-v="${k}" data-tecla="marinho" data-tecla-dock="${k}" aria-label="${tx}${k === 'sintomas' ? ' · Início' : ''}"${on ? ' aria-current="page"' : ''} style="${E.S10.replace('{{ k.f5a }}', '#FFFFFF')}"><span data-barra-dock="${on ? 32 : 16}" style="${E.S11.replace('{{ k.b5 }}', on ? '32px' : '16px').replace('{{ k.l5a }}', on ? '#FFB020' : '#081B33').replace('{{ k.g5a }}', on ? '0 0 8px rgba(255,176,32,.9)' : 'none')}"></span>${svg(i, '#FFFFFF')}<span class="dk-longo"${k === 'laudo' && tx !== 'Laudo' ? ' style="letter-spacing:-.035em"' : ''}>${tx}</span><span class="dk-curto" aria-hidden="true">${curto}</span></button>`; }).join('')}</nav></div>`;
+  return `<button type="button" data-a="tecla" data-v="${k}" data-tecla="marinho" data-tecla-dock="${k}" aria-label="${tx}${k === 'sintomas' ? ' · Início' : ''}"${on ? ' aria-current="page"' : ''} style="${E.S10.replace('{{ k.f5a }}', '#FFFFFF')}${k === 'laudo' ? ';position:relative' : ''}"><span data-barra-dock="${on ? 32 : 16}" style="${E.S11.replace('{{ k.b5 }}', on ? '32px' : '16px').replace('{{ k.l5a }}', on ? '#FFB020' : '#081B33').replace('{{ k.g5a }}', on ? '0 0 8px rgba(255,176,32,.9)' : 'none')}"></span>${svg(i, '#FFFFFF')}<span class="dk-longo"${k === 'laudo' && tx !== 'Laudo' ? ' style="letter-spacing:-.035em"' : ''}>${tx}</span><span class="dk-curto" aria-hidden="true">${curto}</span>${k === 'laudo' ? badgeLaudo() : ''}</button>`; }).join('')}</nav></div>`;
 // Cabeçalho de tela interna (decisão do Pedro, 12/11/2026: igual ao Design System): tecla ‹ de 44 px, título e o selo do equipamento.
 const cab = (titulo, selo) => `<div style="${E.S13}"><button type="button" data-a="voltar" data-voltar data-tecla="marinho" aria-label="‹ Voltar · ${escH(voltaTx())} · Início pelo dock Sintomas" style="${E.S21}">‹</button><b data-titulo style="${E.S14}">${escH(titulo)}</b><span style="${E.S22}">${escH(selo)}</span></div>`;
 // Faixa do equipamento (peça da Tela 01, E.S137 / E.S70 / E.S33 literais): 1 atendimento = 1 equipamento (Pedro, 13/11/2026). A mesma
@@ -990,7 +1019,7 @@ function abrirCaso(i) {
   if (i < 0 || i >= F.length) i = 0;
   if (!LIVRE && F[i].id !== AMOSTRA) return abrirUpgrade(`O Diagnóstico ${F[i].id} (${limpa(F[i].titulo)}) faz parte do Plano Completo.`);
   if (ehEssencial() && F[i].blocos.includes('b8')) return abrirUpgrade(`O Diagnóstico ${F[i].id} (${limpa(F[i].titulo)}) é da Placa 8 (Split Inverter e Placas Eletrônicas), do Plano Completo PRO.`);
-  empilhar(); S.tecla = 'sintomas'; S.caso = i; S.ponto = 1; S.zoom = false; render(); window.scrollTo(0, 0);
+  fichaNaFrente(F[i]); empilhar(); S.tecla = 'sintomas'; S.caso = i; S.ponto = 1; S.zoom = false; render(); window.scrollTo(0, 0); fichaNaFrente(F[i - 1]); fichaNaFrente(F[i + 1]);
   try { history.replaceState(null, '', location.pathname + location.search + '#' + F[i].id); } catch (e) {}
 }
 // Leitura enviada ao laudo: cada uma pode sugerir o serviço e a causa principal da visita (1 por visita, a da última ferramenta).
@@ -1015,7 +1044,13 @@ const TRAVAS_PRO = [
 ];
 
 // ───────────── Telas ─────────────
-const busca = (valor, cor) => `<div style="flex:none;margin:${S.caso < 0 && !listaAtiva() ? '8px 16px 0' : '0 16px'};height:50px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#FFFFFF;border:1px solid #5A6A7E;${S.caso < 0 && !listaAtiva() ? 'border-radius:10px;box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7)' : 'box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7);border-radius:10px'}">${svg('busca', '#334155', 20, ' style="flex:none"')}<input type="search" data-in="busca" value="${escH(valor)}" placeholder="Buscar sintoma, peça ou D-033" aria-label="Buscar sintoma, peça ou D-033" autocomplete="off" enterkeyhint="search" style="flex:1;min-width:0;height:44px;border:0;outline:0;background:transparent;font-size:17px;font-weight:500;color:#0C2747"></div>`;
+// Busca humana (Pedro, 13/11/2026, teste no celular físico): zero código interno no campo. O texto longo de campo só entra se couber
+// inteiro na largura real do campo (tela − 92 px); em 360 px vale o curto, nunca cortado.
+const PH_BUSCA = ['Buscar sintoma, peça ou erro (ex: não gela, E1, sensor)...', 'Sintoma, peça ou código (ex: E1)...', 'Sintoma, peça ou código...'];
+let PH_MED = null;
+const phBusca = () => { const w = Math.min(Math.round(innerWidth), 430) - 92; try { const c = PH_MED || (PH_MED = document.createElement('canvas').getContext('2d')); c.font = "500 17px 'Barlow Semi Condensed', sans-serif";
+  return PH_BUSCA.find(t => c.measureText(t).width <= w) || PH_BUSCA[PH_BUSCA.length - 1]; } catch (e) { return PH_BUSCA[1]; } };
+const busca = (valor, cor) => `<div style="flex:none;margin:${S.caso < 0 && !listaAtiva() ? '8px 16px 0' : '0 16px'};height:50px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#FFFFFF;border:1px solid #5A6A7E;${S.caso < 0 && !listaAtiva() ? 'border-radius:10px;box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7)' : 'box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7);border-radius:10px'}">${svg('busca', '#334155', 20, ' style="flex:none"')}<input type="search" data-in="busca" value="${escH(valor)}" placeholder="${escH(phBusca())}" aria-label="Buscar sintoma, peça ou código de erro" autocomplete="off" enterkeyhint="search" style="flex:1;min-width:0;height:44px;border:0;outline:0;background:transparent;font-size:17px;font-weight:500;color:#0C2747"></div>`;
 // Tecla Sol/Lua (Modo Normal × Modo Preto) no canto direito do cabeçalho da Home: tecla clara Domo de 44 × 44 px (S37) com os ícones
 // sol e lua de 20 px de ds/icones.json; troca o app inteiro em 1 toque.
 const teclaTema = () => { const esc = escuro(); return `<button type="button" data-a="tema" data-tema-tecla="${esc ? 'escuro' : 'claro'}" data-tecla="clara" aria-pressed="${esc}" aria-label="Modo escuro (preto)" style="${E.S37};flex:none;width:44px;height:44px;padding:0">${svg(esc ? 'sol' : 'lua', '#0C2747', 20)}</button>`; };
@@ -1050,7 +1085,7 @@ function telaLista() {
   if (exato) L = [exato, ...L.filter(f => f !== exato)];
   const titulo = q ? `RESULTADOS PARA “${escH(S.termo.trim().toUpperCase())}”` : S.bloco ? escH(BLOCOS.find(b => b[0] === S.bloco)[3].toUpperCase()) : 'TODOS OS SINTOMAS';
   const corpo = L.length ? `<div style="flex:1;min-height:0;margin:0 16px;display:flex;flex-direction:column;gap:8px" data-resultado>${L.slice(0, S.lim).map(f => `<div role="button" tabindex="0" data-a="caso" data-v="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}" style="${E.S145};cursor:pointer"><div style="display:flex;align-items:center;gap:8px;width:100%"><img src="${iconePecaCaso(f)}" alt="" style="${E.S146}"><span style="${E.S77}"><b style="font-size:17px;font-weight:600;line-height:1.1">${tx(f.titulo)}</b><span style="${E.S147}">${tx(f.sub)}</span></span><span style="${E.S148}">${f.id}</span></div><div style="display:flex;flex-wrap:wrap;gap:8px">${f.chips.map(c => `<span style="${E.S48}">${tx(c)}</span>`).join('')}</div></div>`).join('')}</div>${L.length > S.lim ? `<div style="${E.S115}">${tecla('MOSTRAR MAIS DIAGNÓSTICOS', 'maisLista', undefined, E.S28, ' data-tecla="marinho"')}</div>` : '<div style="flex:none;height:12px"></div>'}`
-    : `<div style="flex:1;min-height:0;margin:0 16px 12px;padding:16px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center" data-erro>${svg('busca', '#334155', 40, ' style="flex:none"')}<span style="font-size:17px;font-weight:500;line-height:1.3;color:#1E293B;max-width:280px">Nada com esse termo. Abra o diagnóstico geral e meça, ou feche o laudo de visita.</span><div style="align-self:stretch;display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" data-a="caso" data-v="${F.findIndex(f => f.id === 'D-099')}" data-saida data-tecla="ambar" data-confirma="abre o D-099" style="min-height:52px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#FFD477 0%,#FFC044 45%,#E08F00 100%);border:1px solid #7A4E00;box-shadow:inset 0 1px 1px rgba(255,255,255,.65),inset 0 -2px 0 #5C3A00;color:#1A1203;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;">ABRIR D-099</button><button type="button" data-a="laudoVisita" data-tecla="marinho" style="min-height:52px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 1px rgba(190,235,255,.55),inset 0 -2px 0 #081B33;color:#FFFFFF;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;">GANHOS &amp; LAUDO</button></div></div>`;
+    : `<div style="flex:1;min-height:0;margin:0 16px 12px;padding:16px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center" data-erro>${svg('busca', '#334155', 40, ' style="flex:none"')}<span style="font-size:17px;font-weight:500;line-height:1.3;color:#1E293B;max-width:280px">Nada com esse termo. Abra o diagnóstico geral e meça, ou feche o laudo de visita.</span><div style="align-self:stretch;display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" data-a="caso" data-v="${F.findIndex(f => f.id === 'D-099')}" data-saida data-tecla="ambar" data-confirma="abre o diagnóstico geral" aria-label="Abrir o diagnóstico geral" style="min-height:52px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#FFD477 0%,#FFC044 45%,#E08F00 100%);border:1px solid #7A4E00;box-shadow:inset 0 1px 1px rgba(255,255,255,.65),inset 0 -2px 0 #5C3A00;color:#1A1203;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;">DIAG. GERAL</button><button type="button" data-a="laudoVisita" data-tecla="marinho" style="min-height:52px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 1px rgba(190,235,255,.55),inset 0 -2px 0 #081B33;color:#FFFFFF;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;">GANHOS &amp; LAUDO</button></div></div>`;
   return { nome: 'lista', label: L.length ? '06 Lista de sintomas' : '07 Busca sem resultado', html: `${BARRA}${cab('SINTOMAS', fl(S.equip.fluido))}${busca(S.termo)}<div style="flex:none;margin:12px 16px 8px;font-size:14px;font-weight:700;line-height:1;letter-spacing:.1em">${titulo}</div>${corpo}${dock('sintomas')}` };
 }
 // Escada de probabilidade em 1 tom (C45, C49): número grande, barra de comprimento e o rótulo literal da escada.
@@ -1064,7 +1099,7 @@ function telaCaso() {
   const pontos = f.alvos.map(([x, y], k) => { const on = k === j; return `<button type="button" data-a="ponto" data-v="${f.verifs.findIndex((_, q) => pontoRealNaArte(f, q) === k) + 1 || k + 1}" aria-label="Ponto ${nn(k + 1)} da ilustração" style="position:absolute;left:clamp(25px,${x}%,calc(100% - 25px));top:clamp(25px,${y}%,calc(100% - 25px));width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px/1 'JetBrains Mono',monospace;${on ? 'background:#FFB020;color:#1A1203;border:2px solid #5C3A00;box-shadow:0 0 0 3px rgba(255,176,32,.45)' : 'background:#0C2747;color:#FFFFFF;border:2px solid #FFFFFF'}">${nn(k + 1)}</button>`; }).join('');
   const [fx, fy] = f.foco[j];
   const causas = f.causas.map(([nm, sid], k) => `<div style="${k ? E.S107 : 'display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:baseline;'}"><b style="font:700 20px/1.4 'JetBrains Mono',monospace;color:${k < 3 ? '#0C2747' : '#334155'}">${k < 3 ? PCT[k] + '%' : (k + 1) + 'º'}</b><div style="display:flex;flex-direction:column;gap:8px;min-width:0"><b style="font-size:17px;font-weight:600;line-height:1.2">${tx(nm)}</b>${k < 3 ? `<div style="${E.S159}"><div style="width:${PCT[k]}%;height:8px;background:#0C2747"></div></div>` : ''}<span style="${E.S52}">${PIL[k][1]}</span><span style="${E.S0}">${escH(servNome(sid))}</span></div></div>`).join('');
-  const prox = f.proximo.map(([se, entao, srv, ir], k) => `<div role="button" tabindex="0" data-a="prox" data-v="${k}" style="${E.S160};cursor:pointer"><b style="min-width:0;font-size:15px;font-weight:600;line-height:1.3">${tx(se.charAt(0).toUpperCase() + se.slice(1))}</b>${svg('avancar', '#334155', 20, ' style="flex:none"')}<span style="${E.S0}">${tx(entao)}${ir ? ` · Abrir o ${ir}` : ''}</span></div>`).join('');
+  const prox = f.proximo.map(([se, entao, srv, ir], k) => `<div role="button" tabindex="0" data-a="prox" data-v="${k}" style="${E.S160};cursor:pointer"><b style="min-width:0;font-size:15px;font-weight:600;line-height:1.3">${tx(se.charAt(0).toUpperCase() + se.slice(1))}</b>${svg('avancar', '#334155', 20, ' style="flex:none"')}<span style="${E.S0}">${ir && F.some(x => x.id === ir) ? `Abra o diagnóstico: ${tx(F.find(x => x.id === ir).titulo)}` : tx(entao)}</span></div>`).join('');
   return { nome: 'diagnostico', label: '08 Diagnostico', html: `${BARRA}${cab('DIAGNÓSTICO', f.id)}
     <div style="flex:none;margin:0 16px;padding:12px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;gap:8px"><b style="font-size:24px;font-weight:700;line-height:1.1">${tx(f.titulo)}</b><span style="font-size:15px;font-weight:500;color:#1E293B">${tx(f.sub)}</span><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${['SISTEMA', 'APLICAÇÃO', 'INSTRUMENTO'].map((r, k) => `<div style="${E.S155}"><img src="${ICO(f, ['sistema', 'aplicacao', 'ferramenta'][k])}" alt="" style="width:44px;height:44px;object-fit:contain"><span style="${E.S156}">${r}</span><b style="${E.S157}">${tx(f.chips[k])}</b></div>`).join('')}</div></div>
     <div style="flex:none;margin:8px 16px 0;padding:12px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;gap:8px;"><div data-ilustracao="arte" style="position:relative;aspect-ratio:1672 / 941;border-radius:10px;overflow:hidden;border:1px solid #94A3B8;background:#F8FAFC"><div data-ilustra style="position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:${fx}% ${fy}%;transform:scale(${S.zoom ? 1.85 : 1});transition:transform .3s ease"><img src="${IMG(f)}" alt="Ilustração do diagnóstico ${f.id}" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:fill">${pontos}</div></div>
@@ -1182,7 +1217,7 @@ function telaCodigos() {
   return { nome: 'codigos', label: nP ? '19 Codigos LG 1 piscada' : '18 Codigos antes de escolher', raizDock: true, html: `${BARRA}${cab('CÓDIGOS & LED', S.equip.marca)}
     ${faixaEquip()}
     <div style="${E.S111}"><div style="${E.S63}">${svg('led', '#0C2747', 20, ' style="flex:none"')}<span style="${E.S3}">PISCADAS DO LED</span></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">${pisc}</div><button type="button" data-a="piscTodos" aria-pressed="${st.pisc === 'led'}"${nLed ? '' : ' disabled'} data-tecla="clara" style="min-height:44px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#FFFFFF 0%,#F3F5F7 40%,#E8EBEF 75%,#D5DBE3 100%);border:1px solid #5A6A7E;box-shadow:inset 0 1px 1px #FFFFFF,inset 0 -2px 0 #5A6A7E;color:#0C2747;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;font-size:12px;letter-spacing:.03em;text-transform:uppercase${nLed ? '' : ';opacity:.45'}">Ver todos os padrões de LED desta marca (${nLed})</button></div>
-    ${sim}<div data-cod-lista style="display:flex;flex-direction:column">${R.length ? R.slice(0, S.codLim).map((r, k) => ficha(r, k === 0)).join('') : `<div style="${E.S158}" data-erro><span style="${E.S0}">Código fora da base desta marca: abra o Diagnóstico D-099, meça sensores e o cabo de interligação e feche o laudo de diagnóstico.</span><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" data-saida data-a="caso" data-v="${F.findIndex(f => f.id === 'D-099')}" data-tecla="marinho" style="${E.S28}">ABRIR D-099</button><button type="button" data-a="laudoVisita" data-tecla="marinho" style="${E.S28}">GANHOS &amp; LAUDO</button></div></div>`}</div>
+    ${sim}<div data-cod-lista style="display:flex;flex-direction:column">${R.length ? R.slice(0, S.codLim).map((r, k) => ficha(r, k === 0)).join('') : `<div style="${E.S158}" data-erro><span style="${E.S0}">Código fora da base desta marca: abra o Diagnóstico D-099, meça sensores e o cabo de interligação e feche o laudo de diagnóstico.</span><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" data-saida data-a="caso" data-v="${F.findIndex(f => f.id === 'D-099')}" data-tecla="marinho" aria-label="Abrir o diagnóstico geral" style="${E.S28}">DIAG. GERAL</button><button type="button" data-a="laudoVisita" data-tecla="marinho" style="${E.S28}">GANHOS &amp; LAUDO</button></div></div>`}</div>
     ${R.length > S.codLim ? `<div style="${E.S115}">${tecla('MOSTRAR MAIS PADRÕES', 'maisCod', undefined, E.S37, ' data-tecla="clara"')}</div>` : '<div style="flex:none;height:12px"></div>'}${dock('codigos')}` };
 }
 // LED do simulador: o mesmo compasso do motor do painel vivo (rodarLed): 250 ms aceso, 250 ms apagado, 2.000 ms de pausa.
@@ -1274,18 +1309,20 @@ function telaLaudo() {
         <span aria-hidden="true" style="${E.S95}"></span>
         <div style="${E.S96}"><span data-l="rot-lucro" style="${E.S97}">LUCRO LIMPO NO BOLSO</span><span style="${E.S98}">${pct}% DE MARGEM</span></div>
         <div style="${E.S99}" data-l="limpo" aria-label="${lucro < 0 ? '−' : '+'}${brl(Math.abs(lucro))}"><span style="font-size:15px;font-weight:700;line-height:1">${lucro < 0 ? '−' : '+'}R$</span><span style="${E.S100}">${li}</span><span style="font-size:17px;font-weight:700;line-height:1">${lc}</span></div>
-        <div style="${E.S101}"><div style="${E.S117.replace('13fr 87fr', `${wP}fr ${100 - wP}fr`)}"><span style="${E.S102}"></span><span style="background:#0C2747"></span></div><div style="${E.S103}"><span>PEÇA ${brl(ce)}</span><span>TOTAL ${brl(tot).replace(/,00$/, '')}</span></div></div>
+        <div style="${E.S101}"><div style="${E.S117.replace('13fr 87fr', `${wP}fr ${100 - wP}fr`)}"><span style="${E.S102}"></span><span style="background:#0C2747"></span></div><div style="${E.S103}"><span data-l="rot-peca">${L.mala ? 'PEÇA NA MALA (CUSTO R$ 0)' : `PEÇA ${brl(ce)}`}</span><span>TOTAL ${brl(tot).replace(/,00$/, '')}</span></div></div>
       </div></div>`) : '';
   // Bloco 2 (faxina de 13/11/2026): Custo Médio da Peça e a alavanca Peça na Mala = R$ 0 dentro do próprio cartão dos serviços (E.S120 literais),
   // sem a caixa órfã embaixo da placa champanhe.
-  const malaHtml = tec && I.length && !ess ? `<div style="${E.S120}"><span data-l="rot-custo" style="font-size:15px;font-weight:500;color:#1E293B">Custo Médio da Peça</span>${L.mala && cb > 0 ? `<span style="display:flex;align-items:baseline;gap:8px"><s style="font:600 14px/1 'JetBrains Mono',monospace;color:#334155">${brl(cb)}</s><b data-l="custo" style="font:700 17px/1 'JetBrains Mono',monospace">${brl(0)}</b></span>` : `<b data-l="custo" style="font:700 17px/1 'JetBrains Mono',monospace">${brl(cb)}</b>`}</div><div style="${E.S120}"><span style="font-size:15px;font-weight:500;color:#1E293B">Peça na Mala = R$ 0</span><button type="button" data-a="mala" data-l="mala" data-alavanca role="switch" aria-checked="${!!L.mala}" aria-label="Peça na Mala = R$ 0" style="${L.mala ? 'flex:none;width:76px;height:44px;position:relative;background:#FFB020;border:1px solid #7A4E00;box-shadow:inset 0 2px 4px rgba(92,58,0,.35);border-radius:8px' : E.S172}"><span style="${L.mala ? 'position:absolute;top:3px;left:37px;width:34px;height:36px;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;border-radius:6px' : E.S121}"></span></button></div><span style="${E.S122}">Conta direta de bancada: valor total menos o Custo Médio da Peça${I.length > 1 ? ` de ${I.length} serviços` : ''} na Tabela 2026${L.mala ? ', com Peça na Mala = R$ 0' : ''}.</span>` : '';
+  const malaHtml = tec && I.length && !ess ? `<div style="${E.S120}"><span data-l="rot-custo" style="font-size:15px;font-weight:500;color:#1E293B">${L.mala ? 'Peça na Mala (Custo R$ 0)' : 'Custo Médio da Peça'}</span>${L.mala && cb > 0 ? `<span style="display:flex;align-items:baseline;gap:8px"><s style="font:600 14px/1 'JetBrains Mono',monospace;color:#334155">${brl(cb)}</s><b data-l="custo" style="font:700 17px/1 'JetBrains Mono',monospace">${brl(0)}</b></span>` : `<b data-l="custo" style="font:700 17px/1 'JetBrains Mono',monospace">${brl(cb)}</b>`}</div><div style="${E.S120}"><span style="font-size:15px;font-weight:500;color:#1E293B">Peça na Mala = R$ 0</span><button type="button" data-a="mala" data-l="mala" data-alavanca role="switch" aria-checked="${!!L.mala}" aria-label="Peça na Mala = R$ 0" style="${L.mala ? 'flex:none;width:76px;height:44px;position:relative;background:#FFB020;border:1px solid #7A4E00;box-shadow:inset 0 2px 4px rgba(92,58,0,.35);border-radius:8px' : E.S172}"><span style="${L.mala ? 'position:absolute;top:3px;left:37px;width:34px;height:36px;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;border-radius:6px' : E.S121}"></span></button></div><span data-l="conta" style="${E.S122}">${L.mala ? 'Peça na Mala (Custo R$ 0): 100% do valor cobrado do cliente virou lucro limpo no bolso.' : `Conta direta de bancada: o que você cobra do cliente menos o seu custo da peça${I.length > 1 ? ` de ${I.length} serviços` : ''} (Custo Médio da Peça na Tabela 2026).`}</span>` : '';
   const cheio = L.itens.length >= MAX_SERV;
   // Modo Esperteza (Pedro, 13/11/2026): no Modo: Técnico cada serviço ganha os 2 campos champanhe do visor (E.S56): COBRAR (qualquer valor
   // em R$ para este cliente) e PEÇA (custo cravado do item). Total, LUCRO LIMPO NO BOLSO e Cofre recalculam no mesmo toque.
-  const campoR = (k, campo, rot, val, aria) => `<label style="display:flex;flex-direction:column;gap:8px;min-width:0"><span style="${E.S33}">${rot}</span><span style="${E.S56};padding:0 8px"><input type="text" inputmode="decimal" data-numero data-in="${campo}" data-k="${k}" value="${reaisCampo(val)}" aria-label="${aria}" autocomplete="off" enterkeyhint="done" style="flex:1;min-width:0;width:100%;height:40px;border:0;outline:0;background:transparent;text-align:center;font:700 17px/1 'JetBrains Mono',monospace;color:#0C2747"></span></label>`;
+  // Rótulos à prova de dúvida (Pedro, 13/11/2026, teste no celular): COBRAR DO CLIENTE soma no Valor Total e no lucro a cada dígito; MEU CUSTO
+  // DA PEÇA é gasto interno do técnico (subtrai do lucro, nunca vai ao cliente) e, com Peça na Mala ligada, mostra R$ 0 travado.
+  const campoR = (k, campo, rot, val, aria, trava) => `<label style="display:flex;flex-direction:column;gap:8px;min-width:0"><span style="${E.S33}">${rot}</span><span style="${E.S56};padding:0 8px"><input type="text" inputmode="decimal" data-numero data-in="${campo}" data-k="${k}" value="${reaisCampo(val)}" aria-label="${aria}"${trava ? ' disabled data-mala-zero' : ''} autocomplete="off" enterkeyhint="done" style="flex:1;min-width:0;width:100%;height:40px;border:0;outline:0;background:transparent;text-align:center;font:700 17px/1 'JetBrains Mono',monospace;color:#0C2747"></span></label>`;
   const nomeSrv = (i) => (i.s.proprio ? i.s.servico : NOME_DS[i.sid] || i.s.servico);
   const linhaSrv = (i, k) => `<button type="button" data-a="srvRow" data-v="${k}" data-srv-linha="${escH(i.sid)}" aria-label="${escH(i.s.servico)}: ${brl(LD.valor(i))}. Trocar ou tirar na Tabela 2026" style="${E.S23}"><img src="${tile(i.s.proprio ? 't02_multimetro' : TILE_DS[i.sid] || 't23_evaporadora_split')}" alt="" style="${E.S24}"><b style="${E.S25};text-align:left">${escH(nomeSrv(i))}</b>${tec ? '' : `<span data-srv-valor style="flex:none;font:700 15px/1 'JetBrains Mono',monospace">${brl(LD.valor(i))}</span>`}<span style="font-size:15px">▾</span></button>`
-    + (tec ? `<div data-srv-preco="${k}" style="display:grid;grid-template-columns:${ess ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)'};gap:8px">${campoR(k, 'srv-v', 'COBRAR · R$', LD.valor(i), `Valor a cobrar em reais: ${escH(nomeSrv(i))}`)}${ess ? '' : campoR(k, 'srv-p', 'PEÇA · R$', LD.peca(i), `Custo da peça em reais: ${escH(nomeSrv(i))}`)}</div>` : '');
+    + (tec ? `<div data-srv-preco="${k}" style="display:grid;grid-template-columns:${ess ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)'};gap:8px;align-items:end">${campoR(k, 'srv-v', 'COBRAR DO CLIENTE · R$', LD.valor(i), `Cobrar do cliente em reais (soma no valor total): ${escH(nomeSrv(i))}`)}${ess ? '' : L.mala ? campoR(k, 'srv-p', 'MEU CUSTO DA PEÇA · R$', 0, `Peça na Mala (Custo R$ 0): ${escH(nomeSrv(i))}`, true) : campoR(k, 'srv-p', 'MEU CUSTO DA PEÇA · R$', LD.peca(i), `Meu custo da peça em reais (gasto interno, sai do lucro): ${escH(nomeSrv(i))}`)}</div>` : '');
   // Adicional sugerido (Modo: Técnico): até 3 teclas com o ganho limpo na hora; no Modo: Laudo nenhum adicional aparece para o cliente.
   const ads = tec && !cheio ? LD.adicionais() : [];
   const adHtml = ads.length ? `<span data-l="adicionais" style="${E.S35};border-top:1px solid #E2E8F0;padding-top:8px">ADICIONAL SUGERIDO · ${ess ? 'TABELA 2026' : 'GANHO NA HORA'}</span>${ads.map(a => { const nm = escH(NOME_DS[a.servico_id] || a.servico), g = ess ? brl0(precoDe(a, porte)) : `+ ${brl0(LD.ganho(a))} limpo`;
@@ -1412,7 +1449,7 @@ function animarDobra(k, h0, corpo) { const box = app.querySelector(`[data-dobra=
 function revelarImgs() {
   const mov = mover();
   app.querySelectorAll('img:not([data-img])').forEach(im => { if (im.closest('.gp-marca,[data-dc-host]')) return;
-    if (!mov || (im.complete && im.naturalWidth > 0)) { im.dataset.img = 'pronta'; return; }
+    if (!mov || (im.complete && im.naturalWidth > 0) || naRam(im.src)) { im.dataset.img = 'pronta'; return; }
     im.dataset.img = 'carrega';
     const fim = () => { if (!im.isConnected || im.dataset.img !== 'carrega') return; im.dataset.img = 'entra'; doisQuadros(() => { if (im.dataset.img === 'entra') im.dataset.img = 'ok'; }); };
     const falha = () => { if (im.isConnected) im.dataset.img = 'pronta'; };
@@ -1626,12 +1663,33 @@ const arquivar = (numero) => { const L = S.laudo, I = LD.itens(), porte = LD.por
     srv: I.map(i => { const f = LD.faixaCli(i); return { sid: i.sid, nome: i.s.servico, valor: LD.valor(i), min: f.min, max: f.max, proc: i.s.justificativa_tecnica || '', prev: i.s.economia_preventiva || '', ...(i.s.proprio ? { proprio: true } : {}) }; }),
     cli: L.cli, amb: L.amb || '', tel: L.tel, leituras: S.leituras.slice(), caso: S.casoLaudo };
   const k = S.cofre.findIndex(x => x.id === it.id); if (k >= 0) S.cofre[k] = it; else S.cofre.unshift(it); guardar('bancada.cofre', JSON.stringify(S.cofre)); };
+// PDF real no WhatsApp (Pedro, 13/11/2026, Web Share API Level 2): o toque em Enviar no WhatsApp gera na hora os bytes do PDF Executivo v4 e,
+// no celular que compartilha arquivo (Chrome Android e Safari iOS em HTTPS), abre o menu nativo já com o PDF anexado (WhatsApp em 1 toque).
+// Sem compartilhamento de arquivo (computador ou WebView restrito): o PDF baixa no aparelho e o wa.me abre com o texto. Cancelar não dá erro.
+// Nenhum await antes do navigator.share: o toque do técnico ainda vale como gesto do usuário.
+async function compartilharPdf(r, nome, titulo, texto, url) {
+  let arq = null; try { if (r) arq = new File([r.bytes], nome, { type: 'application/pdf' }); } catch (e) {}
+  const reg = window.__ultimoShare = { via: '', arquivo: arq ? { nome: arq.name, tipo: arq.type, bytes: arq.size } : null, titulo, texto, canShare: false };
+  if (arq && navigator.share && typeof navigator.canShare === 'function') { try { reg.canShare = !!navigator.canShare({ files: [arq] }); } catch (e) {}
+    if (reg.canShare) { try { await navigator.share({ files: [arq], title: titulo, text: texto }); return (reg.via = 'share'); } catch (e) { if (e && e.name === 'AbortError') return (reg.via = 'cancelado'); } } }
+  if (r) try { (window.GeloProBancadaPDF || window.GeloProPDF).baixar(r.blob, nome); } catch (e) {}
+  window.open(url, '_blank', 'noopener'); return (reg.via = 'zap');
+}
+// Texto curto que acompanha o PDF anexado: a garantia de 90 dias e o aceite completos vão dentro do PDF.
+const ACEITE_PDF = 'Laudo completo com a garantia de 90 dias no PDF anexo. Para autorizar o serviço, responda APROVADO nesta mensagem.';
+const zapUrl = (tel, txt) => { const fone = String(tel || '').replace(/\D/g, ''); return `https://wa.me/${fone.length >= 10 ? '55' + fone.replace(/^55/, '') : ''}?text=${encodeURIComponent(txt)}`; };
 async function enviarZap() {
   if (!S.laudo.itens.length) return; S.laudo.tecnico = false; if (semPix()) return;
   const numero = numeroLaudo(true), txt = montarTexto(numero); arquivar(numero); window.__ultimoLaudoZap = txt;
-  const fone = String(S.laudo.tel || '').replace(/\D/g, ''), url = `https://wa.me/${fone.length >= 10 ? '55' + fone.replace(/^55/, '') : ''}?text=${encodeURIComponent(txt)}`; window.__ultimoZapUrl = url; window.open(url, '_blank', 'noopener');
+  const url = zapUrl(S.laudo.tel, txt); window.__ultimoZapUrl = url;
+  let r = null; try { r = pdfDoLaudo(numero); } catch (e) {}
+  const t = titular(), total = LD.total(), pl = pixPayload(t, total, numero), nome = `Laudo-GeloPRO-${numero}.pdf`;
+  const curto = limpa([`Laudo Técnico Nº ${numero} · ${equipTx()}`, `Valor total: ${brl(total)}`, ...(pl ? [`Pix copia e cola: ${pl}`] : []), ACEITE_PDF].join('\n'));
   try { navigator.clipboard.writeText(txt).then(pulso, () => {}); } catch (e) {}
-  S.msg = [`Laudo Nº ${numero} disparado para o WhatsApp. O cliente aprova respondendo APROVADO.`, 'ok']; render();
+  const via = await compartilharPdf(r, nome, `Laudo Técnico Nº ${numero}`, curto, url);
+  S.msg = [via === 'share' ? `Laudo Nº ${numero} com o PDF anexado no menu do celular: escolha o WhatsApp do cliente. Ele aprova respondendo APROVADO.`
+    : via === 'cancelado' ? `PDF do Laudo Nº ${numero} pronto. Toque de novo em Enviar no WhatsApp para mandar ao cliente.`
+    : `Laudo Nº ${numero} disparado para o WhatsApp${r ? ` e o PDF ${nome} baixado no aparelho: anexe na conversa` : ''}. O cliente aprova respondendo APROVADO.`, 'ok']; render();
 }
 const baseDoc = (numero, t, total, pl) => ({ numero, atend: '', data: dataBR(Date.now()), base: 'Tabela Oficial 2026', via2: '', titular: { nome: t.nome, doc: t.doc, docTipo: String(t.doc || '').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: t.cidade, pix: t.pix },
   cliente: { nome: S.laudo.cli || 'Cliente', tel: S.laudo.tel, equip: equipTx() }, equipDet: null, limpo: true, bancada: null, matriz: [], foto: null, assinatura: null, assinaturaLegenda: '', assinaturaNota: '', preventiva: '',
@@ -1645,19 +1703,24 @@ async function gerarDoc(montarDoc, rot) {
 }
 // PDF Executivo v4 da Bancada (pdf-bancada-v4.js): identidade do Design System v4, réguas lineares de Gás & SH e NTC, linhas da Trava 30s,
 // serviços com a barra na Referência Regional Auditada 2026, caixa champanhe, QR Pix real e o aceite. Sem custo, lucro ou margem.
+// Bytes do PDF Executivo v4 do laudo atual (os mesmos do botão PDF e do Enviar no WhatsApp); null sem o motor de PDF.
+function pdfDoLaudo(numero) {
+  if (!window.GeloProBancadaPDF) return null;
+  const t = titular(), total = LD.total(), pl = pixPayload(t, total, numero), I = LD.itens(), fx = LD.faixaCliTotal();
+  const dados = limparDoc({ numero, data: dataBR(Date.now()), titular: { nome: t.nome, doc: t.doc, docTipo: String(t.doc || '').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: t.cidade, pix: t.pix },
+    cliente: { nome: S.laudo.cli || 'Cliente' }, equip: `${S.equip.marca} · ${S.equip.btu} BTU/h · ${fl(S.equip.fluido)}`, sintoma: sintomaTx(), causa: S.laudo.causa || '—',
+    leituras: S.leituras.map(a => ({ txt: a.txt, med: a.med || null })),
+    servicos: I.map(i => { const f = LD.faixaCli(i); return { nome: i.s.servico, valor: LD.valor(i), min: f.min, max: f.max, proc: i.s.justificativa_tecnica || '', prev: i.s.economia_preventiva || '', ...(i.s.proprio ? { proprio: true } : {}) }; }),
+    total, faixa: LD.ancora() ? { min: fx.min, max: fx.max } : null, garantia: CLAUSULA, aceite: ACEITE,
+    pix: pl ? { chave: t.pix, nome: t.nome, copia: pl, qr: qrMatriz(pl) } : null });
+  const r = window.GeloProBancadaPDF.gerar(dados); let texto = ''; try { texto = new TextDecoder('latin1').decode(r.bytes); } catch (e) {}
+  window.__ultimoPdf = { nome: r.nome, paginas: r.paginas, bytes: r.bytes.length, tipo: 'laudo', numero, qr: !!(dados.pix && dados.pix.qr), texto, doc: dados, motor: 'v4' };
+  return r;
+}
 async function gerarPdfLaudo() {
   if (!S.laudo.itens.length) return; S.laudo.tecnico = false;
   if (!window.GeloProBancadaPDF) { S.msg = ['O motor de PDF não carregou. Abra a bancada com sinal uma vez.', 'def']; return render(); } if (semPix()) return;
-  try {
-    const numero = numeroLaudo(true), t = titular(), total = LD.total(), pl = pixPayload(t, total, numero), I = LD.itens(), fx = LD.faixaCliTotal(); arquivar(numero);
-    const dados = limparDoc({ numero, data: dataBR(Date.now()), titular: { nome: t.nome, doc: t.doc, docTipo: String(t.doc || '').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: t.cidade, pix: t.pix },
-      cliente: { nome: S.laudo.cli || 'Cliente' }, equip: `${S.equip.marca} · ${S.equip.btu} BTU/h · ${fl(S.equip.fluido)}`, sintoma: sintomaTx(), causa: S.laudo.causa || '—',
-      leituras: S.leituras.map(a => ({ txt: a.txt, med: a.med || null })),
-      servicos: I.map(i => { const f = LD.faixaCli(i); return { nome: i.s.servico, valor: LD.valor(i), min: f.min, max: f.max, proc: i.s.justificativa_tecnica || '', prev: i.s.economia_preventiva || '', ...(i.s.proprio ? { proprio: true } : {}) }; }),
-      total, faixa: LD.ancora() ? { min: fx.min, max: fx.max } : null, garantia: CLAUSULA, aceite: ACEITE,
-      pix: pl ? { chave: t.pix, nome: t.nome, copia: pl, qr: qrMatriz(pl) } : null });
-    const r = window.GeloProBancadaPDF.gerar(dados); let texto = ''; try { texto = new TextDecoder('latin1').decode(r.bytes); } catch (e) {}
-    window.__ultimoPdf = { nome: r.nome, paginas: r.paginas, bytes: r.bytes.length, tipo: 'laudo', numero, qr: !!(dados.pix && dados.pix.qr), texto, doc: dados, motor: 'v4' };
+  try { const numero = numeroLaudo(true); arquivar(numero); const r = pdfDoLaudo(numero);
     window.GeloProBancadaPDF.baixar(r.blob, r.nome); S.msg = [`PDF Nº ${numero} gerado: ${r.nome}`, 'ok'];
   } catch (e) { S.msg = ['Não consegui gerar o PDF: ' + e.message, 'def']; }
   render();
@@ -1671,27 +1734,37 @@ function montarTextoOrc(L2) {
       ...(Array.isArray(x.srv) && x.srv.length ? x.srv.map(sv => `• ${sv.nome}: ${brl(sv.valor)}`) : [`• ${x.servico}: ${brl(x.valor)}`]), `Subtotal do aparelho ${k + 1}: ${brl(x.valor)}`, '']),
     `*Total geral (${L2.length} aparelhos):* ${brl(tot)}`, '', `*Garantia de 90 dias:* _${CLAUSULA}_`, '', `*Pix (chave ${t.pix}${t.nome ? ' · ' + t.nome : ''}):*`, ...(pl ? [`Pix copia e cola: ${pl}`] : []), '', `*${ACEITE}*`].join('\n'));
 }
+// Orçamento consolidado no WhatsApp com o PDF Executivo v4 real anexado (mesma regra do laudo: menu nativo ou PDF baixado + wa.me).
 async function enviarOrcZap() {
   const L2 = consolidados(); if (L2.length < 2) return; if (semPix()) return;
-  const txt = montarTextoOrc(L2); window.__ultimoOrcZap = txt; const fone = String(L2.find(x => x.tel)?.tel || S.laudo.tel || '').replace(/\D/g, '');
-  const url = `https://wa.me/${fone.length >= 10 ? '55' + fone.replace(/^55/, '') : ''}?text=${encodeURIComponent(txt)}`; window.__ultimoZapUrl = url; window.open(url, '_blank', 'noopener');
+  const txt = montarTextoOrc(L2); window.__ultimoOrcZap = txt; const url = zapUrl(L2.find(x => x.tel)?.tel || S.laudo.tel, txt); window.__ultimoZapUrl = url;
+  let r = null; try { r = pdfDoOrc(L2); } catch (e) {}
+  const t = titular(), tot = totalOrc(L2), numero = numOrc(L2), pl = pixPayload(t, tot, 'ORC' + L2.map(x => x.num).join('').slice(0, 20)), nome = `Orcamento-GeloPRO-${numero}.pdf`;
+  const curto = limpa([`Orçamento Consolidado Nº ${numero} · ${L2.length} aparelhos`, `Total geral: ${brl(tot)}`, ...(pl ? [`Pix copia e cola: ${pl}`] : []), ACEITE_PDF].join('\n'));
   try { navigator.clipboard.writeText(txt).then(pulso, () => {}); } catch (e) {}
-  S.msg = [`Orçamento de ${L2.length} aparelhos (${brl(totalOrc(L2))}) disparado para o WhatsApp.`, 'ok']; render();
+  const via = await compartilharPdf(r, nome, `Orçamento Consolidado Nº ${numero}`, curto, url);
+  S.msg = [via === 'share' ? `Orçamento de ${L2.length} aparelhos (${brl(tot)}) com o PDF anexado no menu do celular: escolha o WhatsApp do cliente.`
+    : via === 'cancelado' ? `PDF do orçamento de ${L2.length} aparelhos pronto. Toque de novo em Orçamento no WhatsApp para mandar ao cliente.`
+    : `Orçamento de ${L2.length} aparelhos (${brl(tot)}) disparado para o WhatsApp${r ? ` e o PDF ${nome} baixado no aparelho: anexe na conversa` : ''}.`, 'ok']; render();
+}
+// Bytes do PDF Executivo v4 do orçamento consolidado (os mesmos do botão PDF e do Orçamento no WhatsApp); null sem o motor de PDF.
+function pdfDoOrc(L2) {
+  if (!window.GeloProBancadaPDF) return null;
+  const t = titular(), total = totalOrc(L2), numero = numOrc(L2), pl = pixPayload(t, total, 'ORC' + L2.map(x => x.num).join('').slice(0, 20)), ap = (x, k) => `Aparelho ${k + 1}${x.amb ? ' · ' + x.amb : ''}`;
+  const servicos = L2.flatMap((x, k) => (Array.isArray(x.srv) && x.srv.length ? x.srv : [{ nome: x.servico, valor: x.valor, min: x.valor, max: x.valor, proc: '', prev: '' }]).map(sv => ({ nome: `${ap(x, k)} · Nº ${x.num} — ${sv.nome}`, valor: sv.valor, min: sv.min, max: sv.max, proc: sv.proc, prev: sv.prev, ...(sv.proprio ? { proprio: true } : {}) })));
+  const dados = limparDoc({ numero, titulo: 'ORÇAMENTO CONSOLIDADO', tituloRodape: 'Orçamento Consolidado', data: dataBR(Date.now()), titular: { nome: t.nome, doc: t.doc, docTipo: String(t.doc || '').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: t.cidade, pix: t.pix },
+    cliente: { nome: L2[0].cli || 'Cliente' }, equip: `${L2.length} aparelhos: ${L2.map((x, k) => `${k + 1}) ${x.equip}`).join('; ')}`, sintoma: L2.map((x, k) => `${ap(x, k)}: ${x.sintoma || x.servico}`).join(' | '), causa: L2.map((x, k) => `${ap(x, k)}: ${x.causa || '—'}`).join(' | '),
+    leituras: L2.flatMap((x, k) => (x.leituras || []).map(a => ({ txt: `${ap(x, k)} · ${a.txt}`, med: a.med || null }))), servicos, total,
+    faixa: { min: servicos.reduce((a, v) => a + (Number(v.min) || 0), 0), max: servicos.reduce((a, v) => a + (Number(v.max) || 0), 0) }, garantia: CLAUSULA, aceite: ACEITE,
+    pix: pl ? { chave: t.pix, nome: t.nome, copia: pl, qr: qrMatriz(pl) } : null });
+  const r = window.GeloProBancadaPDF.gerar(dados); let texto = ''; try { texto = new TextDecoder('latin1').decode(r.bytes); } catch (e) {}
+  window.__ultimoPdfOrc = { nome: r.nome, paginas: r.paginas, bytes: r.bytes.length, numero, qr: !!(dados.pix && dados.pix.qr), texto, doc: dados, aparelhos: L2.length, total };
+  return r;
 }
 async function gerarPdfOrc() {
   const L2 = consolidados(); if (L2.length < 2) return;
   if (!window.GeloProBancadaPDF) { S.msg = ['O motor de PDF não carregou. Abra a bancada com sinal uma vez.', 'def']; return render(); } if (semPix()) return;
-  try {
-    const t = titular(), total = totalOrc(L2), numero = numOrc(L2), pl = pixPayload(t, total, 'ORC' + L2.map(x => x.num).join('').slice(0, 20)), ap = (x, k) => `Aparelho ${k + 1}${x.amb ? ' · ' + x.amb : ''}`;
-    const servicos = L2.flatMap((x, k) => (Array.isArray(x.srv) && x.srv.length ? x.srv : [{ nome: x.servico, valor: x.valor, min: x.valor, max: x.valor, proc: '', prev: '' }]).map(sv => ({ nome: `${ap(x, k)} · Nº ${x.num} — ${sv.nome}`, valor: sv.valor, min: sv.min, max: sv.max, proc: sv.proc, prev: sv.prev, ...(sv.proprio ? { proprio: true } : {}) })));
-    const dados = limparDoc({ numero, titulo: 'ORÇAMENTO CONSOLIDADO', tituloRodape: 'Orçamento Consolidado', data: dataBR(Date.now()), titular: { nome: t.nome, doc: t.doc, docTipo: String(t.doc || '').replace(/\D/g, '').length > 11 ? 'CNPJ' : 'CPF', cidade: t.cidade, pix: t.pix },
-      cliente: { nome: L2[0].cli || 'Cliente' }, equip: `${L2.length} aparelhos: ${L2.map((x, k) => `${k + 1}) ${x.equip}`).join('; ')}`, sintoma: L2.map((x, k) => `${ap(x, k)}: ${x.sintoma || x.servico}`).join(' | '), causa: L2.map((x, k) => `${ap(x, k)}: ${x.causa || '—'}`).join(' | '),
-      leituras: L2.flatMap((x, k) => (x.leituras || []).map(a => ({ txt: `${ap(x, k)} · ${a.txt}`, med: a.med || null }))), servicos, total,
-      faixa: { min: servicos.reduce((a, v) => a + (Number(v.min) || 0), 0), max: servicos.reduce((a, v) => a + (Number(v.max) || 0), 0) }, garantia: CLAUSULA, aceite: ACEITE,
-      pix: pl ? { chave: t.pix, nome: t.nome, copia: pl, qr: qrMatriz(pl) } : null });
-    const r = window.GeloProBancadaPDF.gerar(dados); let texto = ''; try { texto = new TextDecoder('latin1').decode(r.bytes); } catch (e) {}
-    window.__ultimoPdfOrc = { nome: r.nome, paginas: r.paginas, bytes: r.bytes.length, numero, qr: !!(dados.pix && dados.pix.qr), texto, doc: dados, aparelhos: L2.length, total };
-    window.GeloProBancadaPDF.baixar(r.blob, r.nome); S.msg = [`PDF do orçamento de ${L2.length} aparelhos gerado: ${r.nome}`, 'ok'];
+  try { const r = pdfDoOrc(L2); window.GeloProBancadaPDF.baixar(r.blob, r.nome); S.msg = [`PDF do orçamento de ${L2.length} aparelhos gerado: ${r.nome}`, 'ok'];
   } catch (e) { S.msg = ['Não consegui gerar o PDF: ' + e.message, 'def']; }
   render();
 }
@@ -1730,12 +1803,14 @@ async function iniciar() {
 }
 window.addEventListener('hashchange', () => { const m = location.hash.match(/D-\d{3}/), i = m ? F.findIndex(f => f.id === m[0]) : -1; if (i >= 0 && !(S.tecla === 'sintomas' && S.caso === i)) abrirCaso(i); });
 iniciar();
+// Artes em RAM logo após o 1º quadro da Home (requestAnimationFrame + 150 ms, fora da thread do toque).
+requestAnimationFrame(() => setTimeout(aquecerArtesRam, 150));
 // Service worker só depois da página carregada (o install do núcleo não disputa a antena com a abertura) e o aquecimento das artes,
-// tiles e CSVs 4 s depois, com a página ociosa (requestIdleCallback): o sw.js baixa 1 arquivo por vez, nunca durante o toque.
+// tiles e CSVs 800 ms depois, com a página ociosa (requestIdleCallback): o sw.js baixa em 3 filas, as 14 ilustrações principais primeiro.
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   const ocioso = (f) => (window.requestIdleCallback ? requestIdleCallback(f, { timeout: 3000 }) : setTimeout(f, 200));
   const aquecer = () => navigator.serviceWorker.ready.then(r => { const a = r.active || navigator.serviceWorker.controller; if (a) a.postMessage({ tipo: 'aquecer-artes' }); }).catch(() => {});
-  const aoCarregar = () => { navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {}); setTimeout(() => ocioso(aquecer), 4000); };
+  const aoCarregar = () => { navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).catch(() => {}); setTimeout(() => ocioso(aquecer), 800); };
   if (document.readyState === 'complete') aoCarregar(); else addEventListener('load', aoCarregar, { once: true });
 }
 

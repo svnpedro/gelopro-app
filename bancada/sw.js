@@ -1,14 +1,14 @@
 // GeloPro · Bancada GeloPRO em modo avião — 12/11/2026 — versão oficial e única em /bancada/ (escopo ./, Design System v4 transplantado 1:1).
-// Cache bancada-offline-v16 (13/11/2026, marca oficial final; v15 de 13/11/2026; regra de rede do v14 de 12/11/2026, fim do cache fantasma): a página e os scripts do núcleo vão à rede primeiro (cache: 'no-cache',
+// Cache bancada-offline-v19 (13/11/2026, artes em 3 filas com as 14 ilustrações principais primeiro; v16 marca oficial final; v15 de 13/11/2026; regra de rede do v14 de 12/11/2026, fim do cache fantasma): a página e os scripts do núcleo vão à rede primeiro (cache: 'no-cache',
 // prazo de 1,2 s) e atualizam o cache na hora; rede caída ou lenta abre o cache na mesma hora, então o celular nunca fica preso numa
 // versão antiga depois de um deploy e o modo avião segue instantâneo. O install guarda SÓ o núcleo leve (página, motor próprio em ./motor/ com a base
 // embutida base-inline.js, PDF v4, estilos e gerador do Design System, fontes e o urso oficial da marca), 2 downloads por vez, sem disputar a antena.
 // As 126 artes de ../guia-pro/imagens/, os 48 tiles de ./tiles/, os 19 CSVs e os arquivos literais de ./ds/ entram depois, aquecidos
-// 1 por vez quando a página pede (mensagem aquecer-artes, 4 s após carregar e ociosa). CSVs e .json/.html do Design System: cache
+// em 3 filas paralelas quando a página pede (mensagem aquecer-artes, 800 ms após carregar e ociosa), as 14 ilustrações principais primeiro. CSVs e .json/.html do Design System: cache
 // primeiro com atualização silenciosa; artes, tiles, fontes e imagens saem do cache e só vão à rede se faltarem. Nenhuma espera de rede ao tocar. O activate apaga os caches antigos da Bancada (bancada-offline-* diferente,
 // bancada-v2-offline-* e bancada-v3-offline-*); o install reaproveita as artes que já estavam no cache anterior (sem baixar de novo).
 'use strict';
-const CACHE = 'bancada-offline-v18'; // v18 (13/11/2026): Modo Esperteza (preço livre, peça cravada, serviço próprio salvo), 22 serviços, Cliente & WhatsApp acima do envio, Códigos com selos C50 e revelação suave das artes. v17 (13/11/2026): LOGO FINAL alinhada (versão 3 do pacote da marca: GELOPRO em maiúsculas, régua de letra maiúscula, gap .944em, 141 × 44). v16 (13/11/2026): marca oficial final (urso na plaqueta, BANCADA / GeloPRO / SPLIT & INVERTER), Tecla 4 Ganhos & Laudo com camuflagem no Modo: Laudo, − e + vivos e faxina do Laudo. v15 (13/11/2026): faixa única do equipamento em toda a Bancada, Tecla 4 Lucro & Laudo e Cofre multi-aparelho. v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
+const CACHE = 'bancada-offline-v19'; // v19 (13/11/2026): busca sem código interno, artes em RAM (0 ms) e aquecimento em 3 filas a 800 ms, contador vivo na Tecla 4, COBRAR DO CLIENTE / MEU CUSTO DA PEÇA com Peça na Mala (Custo R$ 0) e o PDF real anexado no WhatsApp (Web Share API). v18 (13/11/2026): Modo Esperteza (preço livre, peça cravada, serviço próprio salvo), 22 serviços, Cliente & WhatsApp acima do envio, Códigos com selos C50 e revelação suave das artes. v17 (13/11/2026): LOGO FINAL alinhada (versão 3 do pacote da marca: GELOPRO em maiúsculas, régua de letra maiúscula, gap .944em, 141 × 44). v16 (13/11/2026): marca oficial final (urso na plaqueta, BANCADA / GeloPRO / SPLIT & INVERTER), Tecla 4 Ganhos & Laudo com camuflagem no Modo: Laudo, − e + vivos e faxina do Laudo. v15 (13/11/2026): faixa única do equipamento em toda a Bancada, Tecla 4 Lucro & Laudo e Cofre multi-aparelho. v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
 const PRAZO_REDE_MS = 1200;
 const PAGINA = './';
 const MOTOR = [
@@ -123,10 +123,15 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => /^bancada(-v2|-v3)?-offline-/.test(k) && k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
-// Aquecimento em fila suave: 1 arquivo por vez, só o que falta, quando a página avisa que está ociosa (aquecer-artes).
+// Aquecimento em 3 filas paralelas (Pedro, 13/11/2026, vídeo de vendas): as 14 ilustrações principais (d001 a s07) entram primeiro,
+// depois Design System, CSVs, ícones e tiles; só o que falta, quando a página avisa que está ociosa (aquecer-artes, 800 ms após carregar).
+const PRINCIPAIS = ARTES.filter(u => /\/imagens\/[ds]\d+\.webp$/.test(u));
+const FILA_AQUECER = [...PRINCIPAIS, ...AQUECER.filter(u => !PRINCIPAIS.includes(u))];
 let AQUECENDO = null;
 const aquecer = () => AQUECENDO || (AQUECENDO = caches.open(CACHE).then(async (c) => {
-  for (const u of AQUECER.map(abs)) if (!(await c.match(u))) await baixar(c, u);
+  const fila = FILA_AQUECER.map(abs); let i = 0;
+  const fio = async () => { while (i < fila.length) { const u = fila[i++]; if (!(await c.match(u))) await baixar(c, u); } };
+  await Promise.all([fio(), fio(), fio()]);
 }).finally(() => { AQUECENDO = null; }));
 // A página (e a sonda de modo avião) pergunta se o cache já está completo.
 self.addEventListener('message', (e) => {
