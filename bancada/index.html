@@ -19,7 +19,7 @@
   · O motor entra no painel vivo só pelas props (lista LIGACOES). Painéis e bases pré-carregados na abertura: todo instrumento
     responde ao primeiro toque em menos de 50 ms.
   Base embutida: ./motor/base-inline.js (19 CSVs e os arquivos do Design System lidos em tempo de execução, gerados por
-  scripts/gerar-base-inline.js): zero fetch() ao tocar. Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v18, página e núcleo pela rede primeiro (1,2 s) com o cache de reserva, núcleo leve no install e artes aquecidas
+  scripts/gerar-base-inline.js): zero fetch() ao tocar. Modo avião: sw.js próprio (escopo ./, cache bancada-offline-v20, página e núcleo pela rede primeiro (1,2 s) com o cache de reserva, núcleo leve no install e artes aquecidas
   1 por vez depois de 4 s de página ociosa). PDF do laudo: ./pdf-bancada-v4.js (Executivo v4). Os 48 tiles ficam em ./tiles/.
 -->
 <style>
@@ -55,6 +55,8 @@ body[data-teclado] .dock-fixo{display:none}
 /* Rolagem de instrumento (Pedro, 13/11/2026): sem o puxão elástico do arrasto vertical (o rastro fantasma atrás do dock e do cabeçalho);
    o dock de chapa opaca vai numa camada própria de GPU, então nunca repinta atrasado nem deixa vazar conteúdo por trás durante o scroll nativo. */
 html,body{overscroll-behavior-y:none}
+/* Dock nunca cobre botão (auditoria de campo, 13/11/2026): foco, teclado e rolagem automática param 116 px acima da borda de baixo (dock de 72 px + folga). */
+html{scroll-padding-bottom:116px}
 .dock-fixo{transform:translateZ(0);-webkit-backface-visibility:hidden;backface-visibility:hidden}
 /* Fluidez manteiga dentro da L30 (só 200 ms e 300 ms ease): entrada da tela nova (opacidade + 8 px na GPU, o dock e a área segura não se
    movem), folha da gaveta subindo com o fundo escurecendo e dobra abrindo e fechando pela altura. As classes só existem durante o movimento
@@ -66,6 +68,7 @@ html,body{overscroll-behavior-y:none}
 .mv-gav{transition:opacity 300ms ease}
 .mv-gav>:first-child{transition:transform 300ms ease}
 @media (prefers-reduced-motion:reduce){.mv-anda>*,.mv-gav,.mv-gav>*,[data-dobra]{transition:none!important}}
+@media (prefers-reduced-motion:reduce){[data-ilustra],[data-ilustracao]>[data-a="ponto"]{transition:none!important}}
 /* Marca oficial final (design_handoff_marca_gelopro, VERSÃO FINAL · ESCOLHA DO PEDRO): marca.css do pacote, literal. 1em = altura da marca ÷ 10;
    no cabeçalho, 44 px (font-size 4.4px). Chapa titânio no Claro (#DBD8D1) e chapa grafite no Escuro (#171B20), gravadas pelo filtro SVG do pacote. */
 .gp-marca{display:inline-flex;align-items:center;gap:.944em;line-height:1;white-space:nowrap;font-size:4.4px;color:var(--gp-gelo,#0C2747);filter:var(--gp-fx,none)}
@@ -94,6 +97,14 @@ html[data-tema="escuro"] #app img[data-img="carrega"]{background-color:#262C34}
 #app img[data-img="entra"]{opacity:0}
 #app img[data-img="ok"]{opacity:1;transition:opacity 200ms ease}
 @media (prefers-reduced-motion:reduce){#app img[data-img]{opacity:1!important;transition:none!important}}
+/* Tela baixa (360 × 640, auditoria de campo de 13/11/2026), fora da prancha: a ficha de diagnóstico compacta a moldura da ilustração (mesma
+   proporção 1672 × 941, centrada), os ícones das 3 fichas e o da verificação, para ✓ NORMAL e ✕ DEFEITO nascerem acima do dock sem rolar. */
+@media (max-height:680px){
+  html:not([data-prancha]) #tela[data-tela="diagnostico"] [data-ilustracao]{max-height:21vh;max-width:calc(21vh * 1672 / 941);width:100%;margin:0 auto}
+  html:not([data-prancha]) #tela[data-tela="diagnostico"] [data-chip-ico]{width:28px!important;height:28px!important}
+  html:not([data-prancha]) #tela[data-tela="diagnostico"] [data-verif-ico]{width:48px!important;height:48px!important}
+  html:not([data-prancha]) #tela[data-tela="diagnostico"] [data-caso-cab]{padding:8px 12px!important}
+}
 #toast{position:fixed;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -552,7 +563,12 @@ const CAUSA_PADRAO = {
 const CAUSA_EXCESSO = 'Excesso de fluido refrigerante (superaquecimento abaixo de 7 °C)';
 // ═════ motor · jaNoLaudo ═════
 const ASSIN = {};
-const jaNoLaudo = (k) => S.leituras.some(a => a.k === k);
+// Medição nova depois do + Mandar para o Laudo (auditoria de campo, 13/11/2026): a leitura guarda a assinatura dos campos da tela; mudou
+// temperatura, kΩ, pressão, SH, fluido, marca ou sensor, o ✓ Leitura no laudo volta a ser o + Mandar para o Laudo verde (a antiga fica no laudo até ser trocada).
+const sigLeitura = (k) => { try { if (k === 'ntc' && S.ntc) { const c = typeof curvaAtual === 'function' ? curvaAtual() : null; return JSON.stringify([S.ntc.t, S.ntc.r, S.ntc.nom, c && c.rot, S.equip.marca]); }
+  if (k === 'gas' && S.gas) return JSON.stringify([S.gas.p, S.gas.sh, S.equip.fluido, S.gas.lin, S.gas.gpm]); } catch (e) {} return ''; };
+const jaNoLaudo = (k) => S.leituras.some(a => a.k === k && (a.sig === undefined || a.sig === sigLeitura(k)));
+const revalidarMandar = () => { if (app.querySelector('[data-confirmado]') && ['ntc', 'gas'].some(k => S.leituras.some(a => a.k === k) && !jaNoLaudo(k))) renderQuadro(); };
 // ═════ motor · caso ═════
 const servicoDoCaso = (f) => { const c = S.defeito[f.id]; return f.causas[(c || 1) - 1][1]; };
 const causaDe = (f, srv) => { const c = S.defeito[f.id]; if (c && f.causas[c - 1][1] === srv) return f.causas[c - 1][0]; const x = f.causas.find(z => z[1] === srv); return x ? x[0] : ''; };
@@ -628,6 +644,8 @@ const diagPorImg = (img) => F.find(f => f.id === IMGS[img].diag);
 // ═════ motor · codigos ═════
 const NORMAL = /n[aã]o [eé] defeito|estado normal|estado de opera[cç][aã]o|n[aã]o falha|lembrete|aviso de troca dos filtros|limpeza autom[aá]tica|degelo em opera|^degelo|descongelamento da unidade|condi[cç][aã]o de opera|temperatura externa (muito )?baixa|temperatura externa baixa ou elevada|prote[cç][aã]o contra congelamento|congelamento da unidade interna|sobretens[aã]o (e|ou) (subtens|baixa tens|tens[aã]o muito baixa)|tens[aã]o (ac )?de entrada anormal|prote[cç][aã]o de tens[aã]o\.?$/i;
 const NAO_NORMAL = /sensor|motor|m[oó]dulo|ipm|liga[cç][aã]o cc|link dc|compressor/i;
+// Estado de operação dito pela própria fonte (ex.: Agratto L1+L2+L3 PISC "Compressor em funcionamento; estado normal e não falha"): verde mesmo citando o compressor.
+const NORMAL_FORTE = /estado normal e n[aã]o falha|em funcionamento normal|opera[cç][aã]o normal|stand-?by/i;
 const SELO_OK = '✓ NÃO É DEFEITO — OPERAÇÃO NORMAL', SELO_PROT = '✓ PROTEÇÃO ATIVA — NÃO É DEFEITO DA PLACA';
 // Código "normal" que descreve proteção (tensão, temperatura, corrente, desarme) leva o selo de proteção; ciclo normal (degelo) segue operação normal.
 const PROTECAO = /protec|tensao anormal|tensao (ac |cc |dc )?(de entrada )?anormal|anormal.{0,20}tensao|subtensao|sobretensao|baixa tensao|alta temperatura|corrente alta|sobrecorrente|desarme/;
@@ -638,7 +656,13 @@ const seloDe = (r) => (ehProtecao(r) ? SELO_PROT : SELO_OK);
 // (IPM, módulo de potência, sobrecorrente, compressor travado, curto, PFC, 310 V, link DC) e âmbar ! SENSOR / GÁS / FLUXO (o resto:
 // sensor NTC, falta de fluido, ventilador, comunicação, dreno).
 const CRITICO = /\bipm\b|modulo (de potencia|inverter|ipm)|sobrecorrente|corrente (alta|excessiva|anormal|de pico)|compressor (travad|bloquead|nao parte)|rotor travad|\bcurto|\bpfc\b|310 ?v|link dc|ligacao cc|barramento cc|tensao (cc|dc)/;
-const classeCodigo = (r) => (r.ok ? 'ok' : CRITICO.test(norm(`${r.d} ${r.fa || ''}`)) ? 'crit' : 'aten');
+// Auditoria de campo (Pedro, 13/11/2026): falha de sensor NTC (aberto ou em curto, inclusive o de descarga do compressor, do dissipador e o OLP)
+// é âmbar ! SENSOR / GÁS / FLUXO; o vermelho fica só para o sensor que é a própria placa (corrente, tensão CC, CT e o do IPM).
+const SENSOR_NTC = /\bsensor|termistor|\bntc\b/, SENSOR_PLACA = /sensor (de |do )?(corrente|tensao|ct\b)|\bipm\b/;
+const classeBase = (r) => { if (r.ok) return 'ok'; const t = norm(`${r.d} ${r.fa || ''}`), d = norm(r.d); if (SENSOR_NTC.test(d) && !SENSOR_PLACA.test(d)) return 'aten'; return CRITICO.test(t) ? 'crit' : 'aten'; };
+const classeCodigo = (r) => r.cls || classeBase(r);
+// Código do fabricante da linha (Código: a coluna; Piscada de LED: o prefixo "CH05:" da descrição).
+const codDe = (r) => { const m = String(r.d).match(/^([A-Z0-9]{1,5}):/); return r.tp === 'Código' ? String(r.c).trim() : m ? m[1] : ''; };
 const SELO_COD = {
   ok: ['✓ NÃO É DEFEITO', 'flex:none;height:32px;padding:0 8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#DCFCE7;border:1.5px solid #15803D;color:#14532D;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:.08em;white-space:nowrap'],
   crit: ['✕ PLACA / CURTO / IPM', 'flex:none;height:32px;padding:0 8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#FEE2E2;border:1.5px solid #B91C1C;color:#7F1D1D;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:.08em;white-space:nowrap'],
@@ -678,8 +702,12 @@ const carregarCodigos = () => CODIGOS || (CODIGOS = Promise.all([csv('codigos_er
     ...C.map(r => ({ m: r.marca, l: r.linha, c: `${r.led}: ${r.padrao}`, d: r.descricao, fa: r.faca || '', f: r.fonte_id, tp: 'Piscada de LED', pd: r.padrao, led: r.led, padrao: r.padrao }))];
   const vistos = new Set();
   return T.filter(r => { const k = norm(`${r.m}|${r.c}|${r.d}`); if (vistos.has(k)) return false; vistos.add(k); return true; })
-    .map((r, i) => ({ ...r, i, ok: NORMAL.test(r.d.trim()) && !NAO_NORMAL.test(r.d), naoConf: /n[aã]o confirma/i.test(r.d), txt: norm(`${r.c} ${r.d} ${r.l} ${r.fa} ${r.m}`), np: r.pd ? piscadasDe(r.pd) : [] }))
-    .map(r => (r.pd ? { ...r, cd: idLed(r.d, r.np, r.pd, r.led) } : r));
+    .map((r, i) => ({ ...r, i, ok: NORMAL.test(r.d.trim()) && (!NAO_NORMAL.test(r.d) || (NORMAL_FORTE.test(r.d) && !/anormal|aberto|curto|\berro\b/i.test(r.d))), naoConf: /n[aã]o confirma/i.test(r.d), txt: norm(`${r.c} ${r.d} ${r.l} ${r.fa} ${r.m}`), np: r.pd ? piscadasDe(r.pd) : [] }))
+    .map(r => (r.pd ? { ...r, cd: idLed(r.d, r.np, r.pd, r.led) } : r))
+    // Mesmo código, mesmo selo nas fichas de código e de piscada (a da piscada segue a do código da mesma marca, salvo quando a própria fonte
+    // descreve ali outro defeito de sensor NTC, ex.: Elgin L1 variante do sensor de degelo × código L1 sobrecorrente); busca casa o código exato.
+    .map((r, _, U) => { const cod = codDe(r), irmao = r.tp !== 'Código' && cod ? U.find(x => x.tp === 'Código' && codDe(x) === cod && marcaCasa(x.m, r.m)) : null, proprio = classeBase(r), cls = irmao && !(proprio === 'aten' && SENSOR_NTC.test(norm(r.d)) && !SENSOR_PLACA.test(norm(r.d))) ? classeBase(irmao) : proprio;
+      return { ...r, cod, codN: norm(cod), cls, ok: cls === 'ok' }; });
 }));
 // Instrumento 4 · Simulador de Pulso LED no visor champanhe: LED Ø 32 px com halo radial, n piscadas de 250 ms aceso / 250 ms apagado e
 // pausa de 2.000 ms (compasso de interface, sem tempo no manual). Cor do LED pelo nome da base (verde, vermelho, azul, laranja, amarelo);
@@ -949,6 +977,7 @@ const zap = () => `<svg aria-hidden="true" width="24" height="24" viewBox="0 0 2
 // (34 px): o topo e o pé usam env(safe-area-inset-*). Com ?prancha=1 (só a sonda, para medir a geometria das pranchas do pacote)
 // entram os 40 px e os 34 px literais do Design System.
 const PRANCHA = /[?&]prancha=1\b/.test(location.search);
+document.documentElement.toggleAttribute('data-prancha', PRANCHA);
 const BARRA = PRANCHA ? `<div data-area-segura="topo" style="${E.S5}" aria-hidden="true"></div>` : '<div data-area-segura="topo" aria-hidden="true" style="flex:none;height:env(safe-area-inset-top,0px)"></div>';
 const DOCK_EST = PRANCHA ? E.S9 : E.S9.replace('height:98px;padding:8px 16px 34px;background:linear-gradient(rgba(12,39,71,.85),rgba(12,39,71,.85)) no-repeat center bottom 9px / 134px 5px;', 'height:calc(64px + max(8px, env(safe-area-inset-bottom,0px)));padding:8px 16px max(8px, env(safe-area-inset-bottom,0px));');
 const PE_GAVETA = PRANCHA ? E.S130 : 'flex:none;height:max(8px, env(safe-area-inset-bottom,0px))';
@@ -1014,17 +1043,17 @@ function voltar() {
 const irInicio = () => { S.gav = null; S.hist = []; S.tecla = 'sintomas'; S.caso = -1; S.bloco = null; S.termo = ''; S.todos = false; render(); window.scrollTo(0, 0); };
 // Tecla 4 (Pedro, 12/11/2026): Ganhos & Laudo abre SEMPRE no Modo: Técnico (lucro, faixa, Peça na Mala, Cofre), inclusive vindo de
 // + Mandar para o Laudo; o Modo: Laudo (visão do cliente) só pela chave de 2 ícones.
-function irTecla(t, op) { if (t !== S.tecla || S.caso >= 0) empilhar(); S.gav = null; S.tecla = t; if (t === 'sintomas') { S.caso = -1; } if (t === 'laudo' && S.laudo) S.laudo.tecnico = true; if (t === 'laudo' && op && op.servico && S.laudo) pontearServico(S.laudo, op.servico, op.causa || CAUSA_PADRAO[op.servico]); if (t === 'laudo' && op && op.servico && !S.laudo) { S.laudo = novoLaudo(); pontearServico(S.laudo, op.servico, op.causa || CAUSA_PADRAO[op.servico]); } if (t === 'laudo' && S.laudo) S.laudo.tecnico = true; render(); window.scrollTo(0, 0); }
+function irTecla(t, op) { if (t !== S.tecla || S.caso >= 0 || listaAtiva()) empilhar(); S.gav = null; S.tecla = t; if (t === 'sintomas') { S.caso = -1; S.bloco = null; S.todos = false; S.termo = ''; } if (t === 'laudo' && S.laudo) S.laudo.tecnico = true; if (t === 'laudo' && op && op.servico && S.laudo) pontearServico(S.laudo, op.servico, op.causa || CAUSA_PADRAO[op.servico]); if (t === 'laudo' && op && op.servico && !S.laudo) { S.laudo = novoLaudo(); pontearServico(S.laudo, op.servico, op.causa || CAUSA_PADRAO[op.servico]); } if (t === 'laudo' && S.laudo) S.laudo.tecnico = true; render(); window.scrollTo(0, 0); }
 function abrirCaso(i) {
   if (i < 0 || i >= F.length) i = 0;
   if (!LIVRE && F[i].id !== AMOSTRA) return abrirUpgrade(`O Diagnóstico ${F[i].id} (${limpa(F[i].titulo)}) faz parte do Plano Completo.`);
   if (ehEssencial() && F[i].blocos.includes('b8')) return abrirUpgrade(`O Diagnóstico ${F[i].id} (${limpa(F[i].titulo)}) é da Placa 8 (Split Inverter e Placas Eletrônicas), do Plano Completo PRO.`);
-  fichaNaFrente(F[i]); empilhar(); S.tecla = 'sintomas'; S.caso = i; S.ponto = 1; S.zoom = false; render(); window.scrollTo(0, 0); fichaNaFrente(F[i - 1]); fichaNaFrente(F[i + 1]);
+  fichaNaFrente(F[i]); empilhar(); S.tecla = 'sintomas'; S.caso = i; S.ponto = 1; S.pontoArte = null; S.zoom = false; render(); window.scrollTo(0, 0); fichaNaFrente(F[i - 1]); fichaNaFrente(F[i + 1]);
   try { history.replaceState(null, '', location.pathname + location.search + '#' + F[i].id); } catch (e) {}
 }
 // Leitura enviada ao laudo: cada uma pode sugerir o serviço e a causa principal da visita (1 por visita, a da última ferramenta).
 function mandar(k, texto, x = {}) {
-  S.leituras = S.leituras.filter(a => a.k !== k); S.leituras.push({ k, txt: limpa(texto), ...x });
+  const sig = sigLeitura(k); S.leituras = S.leituras.filter(a => a.k !== k); S.leituras.push({ k, txt: limpa(texto), ...x, ...(sig ? { sig } : {}) });
   if (S.tecla === 'sintomas' && S.caso >= 0) S.casoLaudo = S.caso;
   if (x.srv) { S.srvSug = x.srv; S.causaSug = limpa(x.causa || CAUSA_PADRAO[x.srv] || ''); if (!S.laudo) S.laudo = novoLaudo(); pontearServico(S.laudo, x.srv, S.causaSug); }
   toast('✓ Leitura no laudo'); pulso(); salvarSessao(); render();
@@ -1034,7 +1063,7 @@ function mandar(k, texto, x = {}) {
 const PRO_TX2 = 'O Plano Completo PRO destrava Inverter & 30s, o fluido R32, sensores de 15K a 200K, Códigos & LED com 411 códigos e 152 piscadas nas 14 marcas, o Painel de Lucro e o Cofre de Laudos.';
 function abrirUpgrade(motivo, pmoc) { S.gav = pmoc ? 'pmoc' : 'upgrade'; S.upMotivo = motivo || ''; window.scrollTo(0, 0); render(); }
 const TRAVAS_PRO = [
-  [b => b.dataset.a === 'tecla' && b.dataset.v === 'codigos', 'A Tecla Códigos & LED (decodificador das 14 marcas) faz parte do Plano Completo PRO.'],
+  [b => (b.dataset.a === 'tecla' && b.dataset.v === 'codigos') || b.dataset.a === 'verCod', 'A Tecla Códigos & LED (decodificador das 14 marcas) faz parte do Plano Completo PRO.'],
   [b => b.dataset.a === 'bloco' && b.dataset.v === 'b8', 'A Placa 8 (Split Inverter e Placas Eletrônicas) faz parte do Plano Completo PRO.'],
   [b => b.dataset.a === 'sub' && b.dataset.v === 'inv', 'A aferição Inverter & 30s (7 testes da placa e Trava Eliminatória) faz parte do Plano Completo PRO.'],
   [b => b.dataset.a === 'eq' && b.dataset.k === 'fluido' && b.dataset.v === 'R32', 'O fluido R32 faz parte do Plano Completo PRO. No Essencial você afere R22 e R410A.'],
@@ -1048,6 +1077,10 @@ const TRAVAS_PRO = [
 // inteiro na largura real do campo (tela − 92 px); em 360 px vale o curto, nunca cortado.
 const PH_BUSCA = ['Buscar sintoma, peça ou erro (ex: não gela, E1, sensor)...', 'Sintoma, peça ou código (ex: E1)...', 'Sintoma, peça ou código...'];
 let PH_MED = null;
+// Placeholder da busca da Tecla 3: o literal inteiro quando cabe na largura real do campo; senão, a versão curta (nunca cortado em 360 px).
+const PH_COD = ['Filtrar código ou sintoma na marca (ex: U4, CH05, sensor)...', 'Código ou sintoma (ex: U4, CH05, sensor)...', 'Código ou sintoma (ex: U4)...', 'Código ou sintoma...'];
+const phCod = () => { const w = Math.min(Math.round(innerWidth), 430) - 92; try { const c = PH_MED || (PH_MED = document.createElement('canvas').getContext('2d')); c.font = "500 17px 'Barlow Semi Condensed', sans-serif";
+  return PH_COD.find(t => c.measureText(t).width <= w) || PH_COD[PH_COD.length - 1]; } catch (e) { return PH_COD[1]; } };
 const phBusca = () => { const w = Math.min(Math.round(innerWidth), 430) - 92; try { const c = PH_MED || (PH_MED = document.createElement('canvas').getContext('2d')); c.font = "500 17px 'Barlow Semi Condensed', sans-serif";
   return PH_BUSCA.find(t => c.measureText(t).width <= w) || PH_BUSCA[PH_BUSCA.length - 1]; } catch (e) { return PH_BUSCA[1]; } };
 const busca = (valor, cor) => `<div style="flex:none;margin:${S.caso < 0 && !listaAtiva() ? '8px 16px 0' : '0 16px'};height:50px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#FFFFFF;border:1px solid #5A6A7E;${S.caso < 0 && !listaAtiva() ? 'border-radius:10px;box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7)' : 'box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7);border-radius:10px'}">${svg('busca', '#334155', 20, ' style="flex:none"')}<input type="search" data-in="busca" value="${escH(valor)}" placeholder="${escH(phBusca())}" aria-label="Buscar sintoma, peça ou código de erro" autocomplete="off" enterkeyhint="search" style="flex:1;min-width:0;height:44px;border:0;outline:0;background:transparent;font-size:17px;font-weight:500;color:#0C2747"></div>`;
@@ -1066,6 +1099,11 @@ function telaHome() {
     <button type="button" data-a="todos" data-tecla="ambar" data-confirma="a lista de todos os sintomas" aria-label="Ver Todos os Sintomas" style="${E.S144}">VER TODOS OS SINTOMAS</button>
     ${dock('sintomas')}` };
 }
+// Cordão umbilical de avisos (Pedro, 13/11/2026): gaveta oficial do Design System (folha E.S177 com E.S178/E.S179, cartão E.S15, tecla âmbar
+// E.S108), com o título, a mensagem, o link externo opcional e Fechar; cada id do servidor aparece 1 vez só (gelopro.avisosVistos).
+function gavetaAviso() { const a = S.aviso;
+  return `<div data-gaveta data-aviso="${escH(a.id)}" style="${E.S176}"><div style="${FOLHA.replace('overflow:hidden', 'overflow:auto')}"><div style="${E.S178}"><b data-aviso-titulo style="min-width:0;font-size:15px;font-weight:700;line-height:1.2;letter-spacing:.1em;text-transform:uppercase;overflow-wrap:anywhere">${escH(a.titulo)}</b><button type="button" data-a="fecharAviso" data-fechar data-tecla="marinho" style="${E.S179}">FECHAR</button></div><div style="${E.S15};margin:0;padding:12px"><span data-aviso-texto style="${E.S0};white-space:pre-line">${escH(a.texto)}</span></div>${a.ctaUrl ? `<button type="button" data-a="avisoCta" data-tecla="ambar" data-confirma="abre o link do aviso" style="${E.S108}">${escH(a.ctaTexto)}</button>` : ''}</div></div>`; }
+const fecharAviso = () => { const a = S.aviso; if (a && LICENCA && LICENCA.marcarAvisoVisto) LICENCA.marcarAvisoVisto(a.id); S.aviso = null; if (S.gav === 'aviso') S.gav = null; render(); };
 function gavetaEquip() {
   const k = S.gav, op = k === 'marca' ? MARCAS : k === 'btu' ? BTUS : FLS, at = S.equip[k];
   const rot = { marca: 'MARCA DO EQUIPAMENTO', btu: 'CAPACIDADE', fluido: 'FLUIDO' }[k];
@@ -1077,16 +1115,29 @@ function gavetaEquip() {
   return `<div data-gaveta style="${E.S176}"><div style="${FOLHA.replace('overflow:hidden', 'overflow:auto')}"><div style="${E.S178}"><b style="font-size:15px;font-weight:700;letter-spacing:.1em">${rot}</b><button type="button" data-a="fecharGav" data-fechar data-tecla="marinho" style="${E.S179}">FECHAR</button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${op.map(item).join('')}</div></div></div>`;
 }
 const casosDoBloco = (id) => F.filter(f => f.blocos.includes(id));
+// Trecho que casou com a busca, para o técnico entender em 1 s por que o diagnóstico apareceu (ex.: "placa" → D-001 · Teste capacitor, bornes e placa).
+function trechoBusca(f, q) { const W = q.split(/\s+/).filter(Boolean), conta = (t) => { const n = norm(limpa(t)); return W.filter(w => n.includes(w)).length; };
+  if (conta(`${f.titulo} ${f.sub}`) === W.length) return tx(f.sub);
+  const C = [...f.causas.map(c => `Causa: ${c[0]}`), ...f.verifs.map(([tt, ln]) => `${tt}: ${ln}`), ...f.proximo.map(p => `${p[0]} → ${p[1]}`), f.antes, ...f.chips].filter(Boolean);
+  let m = null, nm = 0; for (const c of C) { const n = conta(c); if (n > nm) { m = c; nm = n; } }
+  return m ? `<span data-trecho>↳ ${tx(m)}</span>` : tx(f.sub); }
+// Códigos da base iguais ao termo (U4, CH05, E1, P4): até 3 marcas, a da faixa primeiro.
+function atalhosCodigo(q) { if (q.includes(' ') || q.length > 6) return []; const mk = marcaCodigo(S.equip.marca), ms = [...new Set(CODIGOS_PRONTOS.filter(r => r.codN === q).map(r => marcaCasa(mk, r.m) ? mk : r.m))];
+  const cod = (CODIGOS_PRONTOS.find(r => r.codN === q) || {}).cod; return ms.sort((a, b) => (b === mk) - (a === mk)).slice(0, 3).map(m => [cod, m]); }
 function telaLista() {
   const q = norm(limpa(S.termo.trim()));
   let L = q ? F.filter(f => q.split(/\s+/).every(w => f.txt.includes(w))) : S.bloco ? casosDoBloco(S.bloco) : F;
   if (q && S.bloco) L = L.filter(f => f.blocos.includes(S.bloco));
   const mc = S.termo.trim().match(/^d?\s*-?\s*(\d{1,3})$/i), exato = mc ? F.find(f => f.id === 'D-' + mc[1].padStart(3, '0')) : null;
   if (exato) L = [exato, ...L.filter(f => f !== exato)];
+  // Busca integrada aos 411 códigos (auditoria de campo, 13/11/2026): termo que é um código da base vira atalho direto para a ficha exata na
+  // Tecla 3 (marca da faixa primeiro), e cada diagnóstico mostra no subtítulo o trecho que casou com a busca.
+  const atalhos = q && CODIGOS_PRONTOS ? atalhosCodigo(q) : [];
+  const atalhoHtml = atalhos.map(([cod, m]) => `<button type="button" data-a="verCod" data-v="${escH(cod)}" data-k="${escH(m)}" data-l="atalho-cod" data-tecla="ambar" data-confirma="abre o código em Códigos & LED" aria-label="Ver código ${escH(cod)}${m === marcaCodigo(S.equip.marca) ? '' : ' (' + escH(m) + ')'} em Códigos & LED" style="${E.S144};margin:8px 16px 0;min-height:52px">${svg('led', '#1A1203', 20, ' style="flex:none"')}Ver código ${escH(cod)}${m === marcaCodigo(S.equip.marca) ? '' : ` · ${escH(m)}`} em Códigos &amp; LED</button>`).join('');
   const titulo = q ? `RESULTADOS PARA “${escH(S.termo.trim().toUpperCase())}”` : S.bloco ? escH(BLOCOS.find(b => b[0] === S.bloco)[3].toUpperCase()) : 'TODOS OS SINTOMAS';
-  const corpo = L.length ? `<div style="flex:1;min-height:0;margin:0 16px;display:flex;flex-direction:column;gap:8px" data-resultado>${L.slice(0, S.lim).map(f => `<div role="button" tabindex="0" data-a="caso" data-v="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}" style="${E.S145};cursor:pointer"><div style="display:flex;align-items:center;gap:8px;width:100%"><img src="${iconePecaCaso(f)}" alt="" style="${E.S146}"><span style="${E.S77}"><b style="font-size:17px;font-weight:600;line-height:1.1">${tx(f.titulo)}</b><span style="${E.S147}">${tx(f.sub)}</span></span><span style="${E.S148}">${f.id}</span></div><div style="display:flex;flex-wrap:wrap;gap:8px">${f.chips.map(c => `<span style="${E.S48}">${tx(c)}</span>`).join('')}</div></div>`).join('')}</div>${L.length > S.lim ? `<div style="${E.S115}">${tecla('MOSTRAR MAIS DIAGNÓSTICOS', 'maisLista', undefined, E.S28, ' data-tecla="marinho"')}</div>` : '<div style="flex:none;height:12px"></div>'}`
+  const corpo = L.length ? `<div style="flex:1;min-height:0;margin:0 16px;display:flex;flex-direction:column;gap:8px" data-resultado>${L.slice(0, S.lim).map(f => `<div role="button" tabindex="0" data-a="caso" data-v="${f.n}" aria-label="Diagnóstico ${f.id}: ${tx(f.titulo)}" style="${E.S145};cursor:pointer"><div style="display:flex;align-items:center;gap:8px;width:100%"><img src="${iconePecaCaso(f)}" alt="" style="${E.S146}"><span style="${E.S77}"><b style="font-size:17px;font-weight:600;line-height:1.1">${tx(f.titulo)}</b><span style="${E.S147}">${q ? trechoBusca(f, q) : tx(f.sub)}</span></span><span style="${E.S148}">${f.id}</span></div><div style="display:flex;flex-wrap:wrap;gap:8px">${f.chips.map(c => `<span style="${E.S48}">${tx(c)}</span>`).join('')}</div></div>`).join('')}</div>${L.length > S.lim ? `<div style="${E.S115}">${tecla('MOSTRAR MAIS DIAGNÓSTICOS', 'maisLista', undefined, E.S28, ' data-tecla="marinho"')}</div>` : '<div style="flex:none;height:12px"></div>'}`
     : `<div style="flex:1;min-height:0;margin:0 16px 12px;padding:16px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center" data-erro>${svg('busca', '#334155', 40, ' style="flex:none"')}<span style="font-size:17px;font-weight:500;line-height:1.3;color:#1E293B;max-width:280px">Nada com esse termo. Abra o diagnóstico geral e meça, ou feche o laudo de visita.</span><div style="align-self:stretch;display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" data-a="caso" data-v="${F.findIndex(f => f.id === 'D-099')}" data-saida data-tecla="ambar" data-confirma="abre o diagnóstico geral" aria-label="Abrir o diagnóstico geral" style="min-height:52px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#FFD477 0%,#FFC044 45%,#E08F00 100%);border:1px solid #7A4E00;box-shadow:inset 0 1px 1px rgba(255,255,255,.65),inset 0 -2px 0 #5C3A00;color:#1A1203;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;">DIAG. GERAL</button><button type="button" data-a="laudoVisita" data-tecla="marinho" style="min-height:52px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 1px rgba(190,235,255,.55),inset 0 -2px 0 #081B33;color:#FFFFFF;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;">GANHOS &amp; LAUDO</button></div></div>`;
-  return { nome: 'lista', label: L.length ? '06 Lista de sintomas' : '07 Busca sem resultado', html: `${BARRA}${cab('SINTOMAS', fl(S.equip.fluido))}${busca(S.termo)}<div style="flex:none;margin:12px 16px 8px;font-size:14px;font-weight:700;line-height:1;letter-spacing:.1em">${titulo}</div>${corpo}${dock('sintomas')}` };
+  return { nome: 'lista', label: L.length ? '06 Lista de sintomas' : '07 Busca sem resultado', html: `${BARRA}${cab('SINTOMAS', fl(S.equip.fluido))}${busca(S.termo)}${atalhoHtml}<div style="flex:none;margin:12px 16px 8px;font-size:14px;font-weight:700;line-height:1;letter-spacing:.1em">${titulo}</div>${corpo}${dock('sintomas')}` };
 }
 // Escada de probabilidade em 1 tom (C45, C49): número grande, barra de comprimento e o rótulo literal da escada.
 const PCT = [70, 20, 10];
@@ -1096,15 +1147,23 @@ function telaCaso() {
   const VERM = 'background:radial-gradient(140% 130% at 50% -10%,#D43A3A 0%,#D43A3A 45%,#A61919 100%);border:1px solid #7F1D1D;box-shadow:inset 0 1px 1px rgba(255,255,255,.3),inset 0 -2px 0 #7F1D1D;color:#FFFFFF';
   const MAR = 'background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 1px rgba(190,235,255,.55),inset 0 -2px 0 #081B33;color:#FFFFFF';
   const vd = (r, rot) => { const on = st[v] === r; return `<button type="button" data-a="vf" data-v="${r}" aria-pressed="${on}" data-tecla="${on ? (r === 'ok' ? 'verde' : 'vermelha') : 'marinho'}" style="${E.S28.replace(MAR, on ? (r === 'ok' ? VERDE : VERM) : MAR)}">${rot}</button>`; };
-  const pontos = f.alvos.map(([x, y], k) => { const on = k === j; return `<button type="button" data-a="ponto" data-v="${f.verifs.findIndex((_, q) => pontoRealNaArte(f, q) === k) + 1 || k + 1}" aria-label="Ponto ${nn(k + 1)} da ilustração" style="position:absolute;left:clamp(25px,${x}%,calc(100% - 25px));top:clamp(25px,${y}%,calc(100% - 25px));width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px/1 'JetBrains Mono',monospace;${on ? 'background:#FFB020;color:#1A1203;border:2px solid #5C3A00;box-shadow:0 0 0 3px rgba(255,176,32,.45)' : 'background:#0C2747;color:#FFFFFF;border:2px solid #FFFFFF'}">${nn(k + 1)}</button>`; }).join('');
-  const [fx, fy] = f.foco[j];
+  // Zoom 1,85× centrado na bolinha TOCADA (auditoria de campo, 13/11/2026: em 63 bolinhas o foco ia para o ponto da verificação, não o tocado).
+  // As 5 bolinhas ficam numa camada sem escala, na posição já ampliada (o + (x − o) × 1,85), presas na borda quando saem do quadro: sempre tocáveis.
+  const jA = Number.isInteger(S.pontoArte) && S.pontoArte >= 0 && S.pontoArte < f.alvos.length ? S.pontoArte : j, [fx, fy] = f.foco[jA], pz = (a, o) => o + (a - o) * 1.85;
+  // Ampliado: posição em px no quadro real, presa a 25 px da borda e sem 2 bolinhas uma sobre a outra (a tocada fica no lugar; as outras deslizam 38 px).
+  const W = S.zoom ? ((app.querySelector('#tela[data-tela="diagnostico"] [data-ilustracao]') || {}).clientWidth || Math.min(innerWidth, 430) - 58) : 0, H = W * 941 / 1672, PZ = [];
+  if (S.zoom) { const cl = ([a, b]) => [Math.min(W - 25, Math.max(25, a)), Math.min(H - 25, Math.max(25, b))], livre = (p) => PZ.every(q => !q || Math.hypot(p[0] - q[0], p[1] - q[1]) >= 38);
+    for (const k of [jA, ...f.alvos.map((_, i) => i).filter(i => i !== jA)]) { const b0 = cl([pz(f.alvos[k][0], fx) / 100 * W, pz(f.alvos[k][1], fy) / 100 * H]); let pk = b0;
+      for (const [dx, dy] of [[0, 0], [0, 38], [0, -38], [38, 0], [-38, 0], [38, 38], [-38, 38], [38, -38], [-38, -38], [0, 76], [0, -76], [76, 0], [-76, 0]]) { const c = cl([b0[0] + dx, b0[1] + dy]); if (livre(c)) { pk = c; break; } }
+      PZ[k] = pk.map(v => Math.round(v)); } }
+  const pontos = f.alvos.map(([x, y], k) => { const on = k === jA; return `<button type="button" data-a="ponto" data-k="${k}" data-v="${f.verifs.findIndex((_, q) => pontoRealNaArte(f, q) === k) + 1 || k + 1}" aria-label="Ponto ${nn(k + 1)} da ilustração" style="position:absolute;z-index:1;${S.zoom ? `left:${PZ[k][0]}px;top:${PZ[k][1]}px` : `left:clamp(25px,${x}%,calc(100% - 25px));top:clamp(25px,${y}%,calc(100% - 25px))`};transition:left .3s ease,top .3s ease;transition:left .3s ease,top .3s ease;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 12px/1 'JetBrains Mono',monospace;${on ? 'background:#FFB020;color:#1A1203;border:2px solid #5C3A00;box-shadow:0 0 0 3px rgba(255,176,32,.45)' : 'background:#0C2747;color:#FFFFFF;border:2px solid #FFFFFF'}">${nn(k + 1)}</button>`; }).join('');
   const causas = f.causas.map(([nm, sid], k) => `<div style="${k ? E.S107 : 'display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:baseline;'}"><b style="font:700 20px/1.4 'JetBrains Mono',monospace;color:${k < 3 ? '#0C2747' : '#334155'}">${k < 3 ? PCT[k] + '%' : (k + 1) + 'º'}</b><div style="display:flex;flex-direction:column;gap:8px;min-width:0"><b style="font-size:17px;font-weight:600;line-height:1.2">${tx(nm)}</b>${k < 3 ? `<div style="${E.S159}"><div style="width:${PCT[k]}%;height:8px;background:#0C2747"></div></div>` : ''}<span style="${E.S52}">${PIL[k][1]}</span><span style="${E.S0}">${escH(servNome(sid))}</span></div></div>`).join('');
   const prox = f.proximo.map(([se, entao, srv, ir], k) => `<div role="button" tabindex="0" data-a="prox" data-v="${k}" style="${E.S160};cursor:pointer"><b style="min-width:0;font-size:15px;font-weight:600;line-height:1.3">${tx(se.charAt(0).toUpperCase() + se.slice(1))}</b>${svg('avancar', '#334155', 20, ' style="flex:none"')}<span style="${E.S0}">${ir && F.some(x => x.id === ir) ? `Abra o diagnóstico: ${tx(F.find(x => x.id === ir).titulo)}` : tx(entao)}</span></div>`).join('');
   return { nome: 'diagnostico', label: '08 Diagnostico', html: `${BARRA}${cab('DIAGNÓSTICO', f.id)}
-    <div style="flex:none;margin:0 16px;padding:12px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;gap:8px"><b style="font-size:24px;font-weight:700;line-height:1.1">${tx(f.titulo)}</b><span style="font-size:15px;font-weight:500;color:#1E293B">${tx(f.sub)}</span><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${['SISTEMA', 'APLICAÇÃO', 'INSTRUMENTO'].map((r, k) => `<div style="${E.S155}"><img src="${ICO(f, ['sistema', 'aplicacao', 'ferramenta'][k])}" alt="" style="width:44px;height:44px;object-fit:contain"><span style="${E.S156}">${r}</span><b style="${E.S157}">${tx(f.chips[k])}</b></div>`).join('')}</div></div>
-    <div style="flex:none;margin:8px 16px 0;padding:12px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;gap:8px;"><div data-ilustracao="arte" style="position:relative;aspect-ratio:1672 / 941;border-radius:10px;overflow:hidden;border:1px solid #94A3B8;background:#F8FAFC"><div data-ilustra style="position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:${fx}% ${fy}%;transform:scale(${S.zoom ? 1.85 : 1});transition:transform .3s ease"><img src="${IMG(f)}" alt="Ilustração do diagnóstico ${f.id}" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:fill">${pontos}</div></div>
-      ${tecla(S.zoom ? 'VER IMAGEM INTEIRA' : `AMPLIAR 1,85× NO PONTO ${nn(j + 1)}`, 'zoom', undefined, E.S28, ` data-tecla="marinho" aria-pressed="${S.zoom}"`)}
-      <div style="display:flex;align-items:center;gap:12px;border-top:1px solid #E2E8F0;padding-top:8px"><img src="${ICO(f, 'p' + (j + 1))}" alt="" style="flex:none;width:72px;height:72px;object-fit:contain;border-radius:10px"><span style="display:flex;flex-direction:column;gap:4px"><span style="${E.S71}">VERIFICAÇÃO ${nn(v)}</span><b style="font-size:17px;font-weight:600;line-height:1.15">${tx(tt)}</b><span style="font-size:15px;font-weight:500;color:#1E293B">${tx(ln)}</span></span></div>
+    <div data-caso-cab style="flex:none;margin:0 16px;padding:12px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;gap:8px"><b style="font-size:24px;font-weight:700;line-height:1.1">${tx(f.titulo)}</b><span style="font-size:15px;font-weight:500;color:#1E293B">${tx(f.sub)}</span><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">${['SISTEMA', 'APLICAÇÃO', 'INSTRUMENTO'].map((r, k) => `<div style="${E.S155}"><img src="${ICO(f, ['sistema', 'aplicacao', 'ferramenta'][k])}" alt="" data-chip-ico style="width:44px;height:44px;object-fit:contain"><span style="${E.S156}">${r}</span><b style="${E.S157}">${tx(f.chips[k])}</b></div>`).join('')}</div></div>
+    <div data-caso-arte style="flex:none;margin:8px 16px 0;padding:12px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;gap:8px;"><div data-ilustracao="arte" style="position:relative;aspect-ratio:1672 / 941;border-radius:10px;overflow:hidden;border:1px solid #94A3B8;background:#F8FAFC"><div data-ilustra style="position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:${fx}% ${fy}%;transform:scale(${S.zoom ? 1.85 : 1});transition:transform .3s ease"><img src="${IMG(f)}" alt="Ilustração do diagnóstico ${f.id}" style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:fill"></div>${pontos}</div>
+      ${tecla(S.zoom ? 'VER IMAGEM INTEIRA' : `AMPLIAR 1,85× NO PONTO ${nn(jA + 1)}`, 'zoom', undefined, E.S28, ` data-tecla="marinho" aria-pressed="${S.zoom}"`)}
+      <div style="display:flex;align-items:center;gap:12px;border-top:1px solid #E2E8F0;padding-top:8px"><img src="${ICO(f, 'p' + (j + 1))}" alt="" data-verif-ico style="flex:none;width:72px;height:72px;object-fit:contain;border-radius:10px"><span style="display:flex;flex-direction:column;gap:4px"><span style="${E.S71}">VERIFICAÇÃO ${nn(v)}</span><b style="font-size:17px;font-weight:600;line-height:1.15">${tx(tt)}</b><span style="font-size:15px;font-weight:500;color:#1E293B">${tx(ln)}</span></span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${vd('ok', '✓ NORMAL')}${vd('def', '✗ DEFEITO')}</div></div>
     <div style="${E.S158}">${faixaTit('lucide-activity', 'CAUSAS PROVÁVEIS')}${causas}</div>
     <div style="${E.S158}">${faixaTit('avancar', 'PRÓXIMO PASSO')}<div style="display:grid;grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);gap:8px;align-items:center"><span style="${E.S52}">SE</span><span></span><span style="${E.S52}">FAÇA</span></div>${prox}${mandarBt(`${f.id}-v${v}`, E.S108, 'mandarDiag')}</div>
@@ -1193,17 +1252,23 @@ function telaCodigos() {
   const mk = st.marca, base = U.filter(r => marcaCasa(r.m, mk));
   const disp = new Set(base.flatMap(r => r.np.map(n => Math.min(n, 10)))), nLed = base.filter(r => r.tp === 'Piscada de LED').length;
   if (st.pisc === 'led' ? !nLed : st.pisc !== null && !disp.has(st.pisc)) st.pisc = null;
-  const R = base.filter(r => st.pisc === null || (st.pisc === 'led' ? r.tp === 'Piscada de LED' : st.pisc === 10 ? r.np.some(n => n >= 10) : r.np.includes(st.pisc)));
+  // Busca rápida da Tecla 3 (E.S138): código exato primeiro, depois código ou sintoma que contém todas as palavras, só na marca da faixa.
+  const qc = norm(limpa(String(st.q || '').trim())), pal = qc ? qc.split(/\s+/) : [];
+  let R = base.filter(r => st.pisc === null || (st.pisc === 'led' ? r.tp === 'Piscada de LED' : st.pisc === 10 ? r.np.some(n => n >= 10) : r.np.includes(st.pisc)));
+  if (pal.length) { const ex = R.filter(r => r.codN === qc), resto = R.filter(r => r.codN !== qc && pal.every(w => r.txt.includes(w) || r.codN.startsWith(w))); R = [...ex, ...resto]; }
+  const semContagem = disp.size === 0 && nLed > 0; // Samsung, Agratto: padrões por combinação de LEDs, sem 1× a 10+
+  // Pausa do LED como a fonte diz: "a cada N segundos" vira o ciclo; "pausa não especificada" (ou nenhuma) vira "—" (nunca 2.000 ms inventados).
+  const pausaTx = (() => { const P = R.filter(r => r.tp === 'Piscada de LED').map(r => norm(r.padrao || '')); const NE = '<span data-pausa-ne aria-label="pausa não especificada na fonte">—</span>'; if (P.some(t => /pausa nao especificada/.test(t))) return NE; const cs = [...new Set(P.map(t => (t.match(/a cada (\d+) segundos?/) || [])[1]).filter(Boolean))]; return cs.length === 1 ? `${cs[0]}&nbsp;s` : P.length && !cs.length ? NE : '2000&nbsp;ms'; })();
   const nP = typeof st.pisc === 'number' ? st.pisc : 0, nomesLed = [...new Set(R.filter(r => r.tp === 'Piscada de LED').map(r => r.led))], corN = corLed(nomesLed.length === 1 ? nomesLed[0] : '');
   const LEDC = { '#22C55E': ['#15803D', '#14532D', 'rgba(21,128,61,.4)'], '#DC2626': ['#DC2626', '#7F1D1D', 'rgba(220,38,38,.4)'], '#E89A0C': ['#E89A0C', '#7A4E00', 'rgba(232,154,12,.4)'], '#2563EB': ['#2563EB', '#1E3A8A', 'rgba(37,99,235,.4)'], '#F2B705': ['#F2B705', '#7A4E00', 'rgba(242,183,5,.4)'] }[corN] || ['#DC2626', '#7F1D1D', 'rgba(220,38,38,.4)'];
   const aceso = LEDV.fase === 'on' || LEDV.fase === 'fixo', todosOk = R.length > 0 && R.every(r => r.ok) && nP > 0;
   const bulbo = (on) => `<span style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,${on ? LEDC[2] : 'rgba(0,0,0,0)'} 0%,rgba(0,0,0,0) 70%)"><span style="width:28px;height:28px;border-radius:50%;box-shadow:inset 0 2px 4px rgba(0,0,0,.35);background:${on ? LEDC[0] : '#F8FAFC'};border:2px solid ${on ? LEDC[1] : LEDC[0]}"></span></span>`;
-  const fases = [['Aceso', '250&nbsp;ms', LEDV.fase === 'on' || LEDV.fase === 'fixo', true], ['Apagado', '250&nbsp;ms', LEDV.fase === 'off', false], ['Pausa', '2000&nbsp;ms', LEDV.fase === 'pausa', false]];
+  const fases = [['Aceso', '250&nbsp;ms', LEDV.fase === 'on' || LEDV.fase === 'fixo', true], ['Apagado', '250&nbsp;ms', LEDV.fase === 'off', false], ['Pausa', pausaTx, LEDV.fase === 'pausa', false]];
   const pisc = PISC.map(n => { const on = st.pisc === n, ok2 = disp.has(n); return `<button type="button" data-a="pisc" data-v="${n}" aria-pressed="${on}" data-tecla="${on ? 'selecionada' : 'marinho'}"${ok2 ? '' : ' disabled'} style="${on ? E.S76 : ok2 ? E.S17 : E.S41}">${n === 10 ? '10+' : n}</button>`; }).join('');
   const sim = `<div style="${E.S161}" data-instrumento aria-live="polite"><div style="align-self:stretch;display:flex;align-items:center;gap:16px;padding-bottom:4px"><span style="flex:none;display:flex;gap:8px"><span style="${E.S64}">${bulbo(aceso && nP > 0)}<span style="font:700 11px/1 'JetBrains Mono',monospace;color:#3F3210">${escH((nomesLed[0] || 'LED').split(' ')[0].toUpperCase())}</span></span></span><div style="${E.S77}"><span style="${E.S42}">SIMULADOR DE LED</span><div style="${E.S162}"><b data-leitura-principal aria-label="${nP ? `${LEDV.blink} de ${nP} piscadas` : 'escolha o número de piscadas'}" style="font:700 48px/1.1 'JetBrains Mono',monospace">${nP ? `${LEDV.blink}/${nP}` : '—'}</b><span style="font:700 17px/1.1 'JetBrains Mono',monospace;color:#3F3210">piscadas</span></div><span style="${E.S114}">${nP ? (aceso ? 'LED aceso' : LEDV.fase === 'off' ? 'LED apagado' : 'Pausa') : 'Toque no número de piscadas do LED'}</span></div></div>
     <div style="${E.S163}"><span style="${E.S164}"></span><span style="${E.S165}"></span>${fases.map(([nm, ms, at, cheio]) => `<div style="${E.S57}"><span style="${at ? E.S166 : E.S78}"><span style="${cheio ? `flex:none;width:10px;height:10px;border-radius:50%;background:${LEDC[0]};border:1px solid ${LEDC[1]}` : `flex:none;width:10px;height:10px;border-radius:50%;background:transparent;border:2px solid ${LEDC[0]}`}"></span>${at ? '▸ ' : ''}${nm}</span><b style="font:700 12px/1.2 'JetBrains Mono',monospace;color:#0C2747">${ms}</b><span style="${at ? E.S168 : E.S80}"></span></div>`).join('')}</div>
     ${todosOk ? '<span data-estado style="align-self:flex-start;font:700 12px/1.2 \'Barlow Semi Condensed\',sans-serif;display:inline-flex;align-items:center;height:32px;box-sizing:border-box;padding:0 8px;border-radius:999px;background:#15803D;color:#FFFFFF;white-space:nowrap">✓ NÃO É DEFEITO</span>' : ''}</div>`;
-  const ficha = (r, pri) => { const passos = String(r.fa || 'meça o componente apontado na tecla Aferir Vivo antes de orçar a troca').split(/;\s*|\.\s+(?=[A-ZÁÉÍÓÚ])/).map(x => x.trim().replace(/\.$/, '')).filter(Boolean);
+  const ficha = (r, pri) => { const passos = String(r.fa || (r.ok ? 'oriente o cliente que é operação normal do equipamento, sem peça condenada, e feche a visita técnica no laudo' : 'meça o componente apontado na tecla Aferir Vivo antes de orçar a troca')).split(/;\s*|\.\s+(?=[A-ZÁÉÍÓÚ])/).map(x => x.trim().replace(/\.$/, '')).filter(Boolean);
     const mc = String(r.d).match(/^([A-Z0-9]{1,5}):\s*/), cod = mc ? mc[1] : r.pd ? r.cd : r.c, dd = mc ? r.d.slice(mc[0].length) : r.d, k1 = dd.search(/\.\s+[A-ZÁÉÍÓÚ]/), tt = k1 > 0 ? dd.slice(0, k1) : dd.replace(/\.$/, ''), resto = k1 > 0 ? dd.slice(k1 + 1).trim() : '';
     const [seloTx, seloEst] = SELO_COD[classeCodigo(r)];
     // Faixa titânio de ponta a ponta (peça da faixa de título, E.S63): crachá marinho do código e o selo semântico de 32 px à direita.
@@ -1214,10 +1279,11 @@ function telaCodigos() {
       ${r.ok ? `<span data-selo-ok data-estado style="${E.S51};align-self:flex-start">${escH(seloDe(r))}</span>` : ''}
       <div style="${E.S1}">${svg('prancheta', '#0C2747', 20, ' style="flex:none"')}<span style="${E.S27}">✓ FAÇA NA BANCADA</span></div>${passos.map((p, k) => { const [v1, ...rs] = p.split(' '); return `<div style="${E.S58}"><span style="${E.S59}">${k + 1}</span><div style="padding-top:4px;min-width:0"><span style="${E.S0}"><b style="font-weight:700;color:#0C2747">${tx(v1.charAt(0).toUpperCase() + v1.slice(1))}</b> ${tx(rs.join(' '))}</span></div></div>`; }).join('')}
       <div style="${E.S170}"><span style="${E.S52}">FONTE</span><span style="${E.S171}">${escH(r.f)}</span></div>${mandarBt('cod-' + r.i, E.S108, 'mandarCod', !pri)}</div>`; };
+  const buscaCod = `<div data-busca-cod style="${E.S138}">${svg('busca', '#334155', 20, ' style="flex:none"')}<input type="search" data-in="busca-cod" value="${escH(st.q || '')}" placeholder="${escH(phCod())}" aria-label="Filtrar código ou sintoma na marca ${escH(mk)}" autocomplete="off" enterkeyhint="search" style="flex:1;min-width:0;height:44px;border:0;outline:0;background:transparent;font-size:17px;font-weight:500;color:#0C2747"></div>`;
   return { nome: 'codigos', label: nP ? '19 Codigos LG 1 piscada' : '18 Codigos antes de escolher', raizDock: true, html: `${BARRA}${cab('CÓDIGOS & LED', S.equip.marca)}
-    ${faixaEquip()}
-    <div style="${E.S111}"><div style="${E.S63}">${svg('led', '#0C2747', 20, ' style="flex:none"')}<span style="${E.S3}">PISCADAS DO LED</span></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">${pisc}</div><button type="button" data-a="piscTodos" aria-pressed="${st.pisc === 'led'}"${nLed ? '' : ' disabled'} data-tecla="clara" style="min-height:44px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#FFFFFF 0%,#F3F5F7 40%,#E8EBEF 75%,#D5DBE3 100%);border:1px solid #5A6A7E;box-shadow:inset 0 1px 1px #FFFFFF,inset 0 -2px 0 #5A6A7E;color:#0C2747;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;font-size:12px;letter-spacing:.03em;text-transform:uppercase${nLed ? '' : ';opacity:.45'}">Ver todos os padrões de LED desta marca (${nLed})</button></div>
-    ${sim}<div data-cod-lista style="display:flex;flex-direction:column">${R.length ? R.slice(0, S.codLim).map((r, k) => ficha(r, k === 0)).join('') : `<div style="${E.S158}" data-erro><span style="${E.S0}">Código fora da base desta marca: abra o Diagnóstico D-099, meça sensores e o cabo de interligação e feche o laudo de diagnóstico.</span><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" data-saida data-a="caso" data-v="${F.findIndex(f => f.id === 'D-099')}" data-tecla="marinho" aria-label="Abrir o diagnóstico geral" style="${E.S28}">DIAG. GERAL</button><button type="button" data-a="laudoVisita" data-tecla="marinho" style="${E.S28}">GANHOS &amp; LAUDO</button></div></div>`}</div>
+    ${faixaEquip()}${buscaCod}
+    <div style="${E.S111}"${semContagem ? ' data-sem-contagem' : ''}>${semContagem ? '' : `<div style="${E.S63}">${svg('led', '#0C2747', 20, ' style="flex:none"')}<span style="${E.S3}">PISCADAS DO LED</span></div><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px">${pisc}</div>`}<button type="button" data-a="piscTodos" aria-pressed="${st.pisc === 'led'}"${nLed ? '' : ' disabled'} data-tecla="clara" style="min-height:44px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#FFFFFF 0%,#F3F5F7 40%,#E8EBEF 75%,#D5DBE3 100%);border:1px solid #5A6A7E;box-shadow:inset 0 1px 1px #FFFFFF,inset 0 -2px 0 #5A6A7E;color:#0C2747;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;font-size:12px;letter-spacing:.03em;text-transform:uppercase${nLed ? '' : ';opacity:.45'}">Ver todos os padrões de LED desta marca (${nLed})</button></div>
+    ${semContagem ? '' : sim}<div data-cod-lista style="display:flex;flex-direction:column">${R.length ? R.slice(0, S.codLim).map((r, k) => ficha(r, k === 0)).join('') : `<div style="${E.S158}" data-erro><span style="${E.S0}">Código fora da base desta marca: abra o Diagnóstico D-099, meça sensores e o cabo de interligação e feche o laudo de diagnóstico.</span><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button type="button" data-saida data-a="caso" data-v="${F.findIndex(f => f.id === 'D-099')}" data-tecla="marinho" aria-label="Abrir o diagnóstico geral" style="${E.S28}">DIAG. GERAL</button><button type="button" data-a="laudoVisita" data-tecla="marinho" style="${E.S28}">GANHOS &amp; LAUDO</button></div></div>`}</div>
     ${R.length > S.codLim ? `<div style="${E.S115}">${tecla('MOSTRAR MAIS PADRÕES', 'maisCod', undefined, E.S37, ' data-tecla="clara"')}</div>` : '<div style="flex:none;height:12px"></div>'}${dock('codigos')}` };
 }
 // LED do simulador: o mesmo compasso do motor do painel vivo (rodarLed): 250 ms aceso, 250 ms apagado, 2.000 ms de pausa.
@@ -1290,7 +1356,8 @@ function cofreHtml() {
 // Valor total de 4 dígitos (preço livre, Modo Esperteza): o R$ desce para 24 px (como o +R$ da placa do lucro, E.S99) e o número segue em 48 px
 // numa linha só, inclusive em 360 px; até R$ 999,99 o visor fica literal do Design System.
 const totalVisor = (v) => { const t = brl(v); return t.length > 10 ? `<span style="font-size:24px">R$</span> ${t.slice(3)}` : t; };
-const chave = (tec) => `<button type="button" data-a="modo" data-chave role="switch" aria-checked="${tec}" aria-label="${tec ? 'Modo: Técnico' : 'Modo: Laudo'}" style="${E.S53}"><span style="${tec ? E.S91 : E.S104}"></span><span style="${E.S20}">${svg('documento', tec ? '#334155' : '#A5F3FC', 24)}</span><span style="${E.S20}">${svg('lucide-calculator', tec ? '#A5F3FC' : '#334155', 24)}</span></button>`;
+const chaveArmada = () => !!(clienteVe() && S.modoArmado && Date.now() - S.modoArmado < 3000);
+const chave = (tec) => `<button type="button" data-a="modo" data-chave role="switch" aria-checked="${tec}" aria-label="${tec ? 'Modo: Técnico' : 'Modo: Laudo'}"${chaveArmada() ? ' data-chave-armada aria-description="Toque de novo para voltar ao Modo: Técnico"' : ''} style="${E.S53}${chaveArmada() ? ';outline:3px solid #FFB020;outline-offset:2px' : ''}"><span style="${tec ? E.S91 : E.S104}"></span><span style="${E.S20}">${svg('documento', tec ? '#334155' : '#A5F3FC', 24)}</span><span style="${E.S20}">${svg('lucide-calculator', tec ? '#A5F3FC' : '#334155', 24)}</span></button>`;
 function telaLaudo() {
   if (!PRECOS) return { nome: 'laudo', label: '34 Laudo sem servico', raizDock: true, html: `${BARRA}<div style="${E.S13}"><b data-titulo style="${E.S14}">${tituloLaudo()}</b></div><div style="${E.S62}" data-assincrona data-carregando="laudo-carregando"><span id="laudo-carregando" style="${E.S0}">Carregando a Tabela Oficial 2026…</span></div>${dock('laudo')}` };
   if (!S.laudo) S.laudo = novoLaudo(); const L = S.laudo; if (!Array.isArray(L.itens)) Object.assign(L, novoLaudo(L));
@@ -1319,7 +1386,7 @@ function telaLaudo() {
   // em R$ para este cliente) e PEÇA (custo cravado do item). Total, LUCRO LIMPO NO BOLSO e Cofre recalculam no mesmo toque.
   // Rótulos à prova de dúvida (Pedro, 13/11/2026, teste no celular): COBRAR DO CLIENTE soma no Valor Total e no lucro a cada dígito; MEU CUSTO
   // DA PEÇA é gasto interno do técnico (subtrai do lucro, nunca vai ao cliente) e, com Peça na Mala ligada, mostra R$ 0 travado.
-  const campoR = (k, campo, rot, val, aria, trava) => `<label style="display:flex;flex-direction:column;gap:8px;min-width:0"><span style="${E.S33}">${rot}</span><span style="${E.S56};padding:0 8px"><input type="text" inputmode="decimal" data-numero data-in="${campo}" data-k="${k}" value="${reaisCampo(val)}" aria-label="${aria}"${trava ? ' disabled data-mala-zero' : ''} autocomplete="off" enterkeyhint="done" style="flex:1;min-width:0;width:100%;height:40px;border:0;outline:0;background:transparent;text-align:center;font:700 17px/1 'JetBrains Mono',monospace;color:#0C2747"></span></label>`;
+  const campoR = (k, campo, rot, val, aria, trava) => `<label style="display:flex;flex-direction:column;gap:8px;min-width:0"><span style="${E.S33}">${rot}</span><span style="${E.S56};padding:0 8px;height:48px"><input type="text" inputmode="decimal" data-numero data-in="${campo}" data-k="${k}" value="${reaisCampo(val)}" aria-label="${aria}"${trava ? ' disabled data-mala-zero' : ''} autocomplete="off" enterkeyhint="done" style="flex:1;min-width:0;width:100%;height:44px;min-height:44px;border:0;outline:0;background:transparent;text-align:center;font:700 17px/1 'JetBrains Mono',monospace;color:#0C2747"></span></label>`;
   const nomeSrv = (i) => (i.s.proprio ? i.s.servico : NOME_DS[i.sid] || i.s.servico);
   const linhaSrv = (i, k) => `<button type="button" data-a="srvRow" data-v="${k}" data-srv-linha="${escH(i.sid)}" aria-label="${escH(i.s.servico)}: ${brl(LD.valor(i))}. Trocar ou tirar na Tabela 2026" style="${E.S23}"><img src="${tile(i.s.proprio ? 't02_multimetro' : TILE_DS[i.sid] || 't23_evaporadora_split')}" alt="" style="${E.S24}"><b style="${E.S25};text-align:left">${escH(nomeSrv(i))}</b>${tec ? '' : `<span data-srv-valor style="flex:none;font:700 15px/1 'JetBrains Mono',monospace">${brl(LD.valor(i))}</span>`}<span style="font-size:15px">▾</span></button>`
     + (tec ? `<div data-srv-preco="${k}" style="display:grid;grid-template-columns:${ess ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)'};gap:8px;align-items:end">${campoR(k, 'srv-v', 'COBRAR DO CLIENTE · R$', LD.valor(i), `Cobrar do cliente em reais (soma no valor total): ${escH(nomeSrv(i))}`)}${ess ? '' : L.mala ? campoR(k, 'srv-p', 'MEU CUSTO DA PEÇA · R$', 0, `Peça na Mala (Custo R$ 0): ${escH(nomeSrv(i))}`, true) : campoR(k, 'srv-p', 'MEU CUSTO DA PEÇA · R$', LD.peca(i), `Meu custo da peça em reais (gasto interno, sai do lucro): ${escH(nomeSrv(i))}`)}</div>` : '');
@@ -1327,7 +1394,7 @@ function telaLaudo() {
   const ads = tec && !cheio ? LD.adicionais() : [];
   const adHtml = ads.length ? `<span data-l="adicionais" style="${E.S35};border-top:1px solid #E2E8F0;padding-top:8px">ADICIONAL SUGERIDO · ${ess ? 'TABELA 2026' : 'GANHO NA HORA'}</span>${ads.map(a => { const nm = escH(NOME_DS[a.servico_id] || a.servico), g = ess ? brl0(precoDe(a, porte)) : `+ ${brl0(LD.ganho(a))} limpo`;
     return `<button type="button" data-a="adicional" data-v="${a.servico_id}" data-tecla="marinho" aria-label="+ ${nm} · ${g}" style="${E.S67};justify-content:space-between;gap:8px;text-align:left"><span style="min-width:0">+ ${nm}</span><b data-ganho style="flex:none;font:700 15px/1 'JetBrains Mono',monospace;white-space:nowrap;color:#A5F3FC">${g}</b></button>`; }).join('')}` : '';
-  const servicos = I.length ? `<div style="${E.S65}"><span style="${E.S35}">SERVIÇOS &amp; CAUSA · TABELA OFICIAL 2026</span>${I.map(linhaSrv).join('')}<button type="button" data-a="causa" style="${E.S66.replace('min-height:44px', 'min-height:52px').replace('padding:0 12px', 'padding:4px 12px')};text-align:left;line-height:1.2"><span>Causa: ${escH(L.causa || 'escolha a causa confirmada')}</span><span style="font-size:15px">▾</span></button>${adHtml}${tecla(cheio ? `SERVIÇOS DA VISITA · ${MAX_SERV} DE ${MAX_SERV}` : 'ADICIONAR SERVIÇO', 'addSrv', undefined, 'min-height:56px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 1px rgba(190,235,255,.55),inset 0 -2px 0 #081B33;color:#FFFFFF;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.08em', ' data-tecla="marinho"')}${malaHtml}</div>`
+  const servicos = I.length ? `<div style="${E.S65}"><span style="${E.S35}">SERVIÇOS &amp; CAUSA · TABELA OFICIAL 2026</span>${I.map(linhaSrv).join('')}<button type="button" data-a="causa" style="${E.S66.replace('min-height:44px', 'min-height:52px').replace('padding:0 12px', 'padding:4px 12px')};text-align:left;line-height:1.2"><span>Causa: ${escH(L.causa || 'escolha a causa confirmada')}</span><span style="font-size:15px">▾</span></button>${adHtml}${tecla(cheio ? `SERVIÇOS DA VISITA · ${MAX_SERV} DE ${MAX_SERV}` : `+ ADICIONAR SERVIÇO (${L.itens.length}/${MAX_SERV})`, 'addSrv', undefined, 'min-height:56px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 1px rgba(190,235,255,.55),inset 0 -2px 0 #081B33;color:#FFFFFF;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.08em', ' data-tecla="marinho"')}${malaHtml}</div>`
     : `<div style="flex:1;margin:8px 16px 0;padding:12px;background:#FFFFFF;border:1px solid #94A3B8;box-shadow:0 1px 3px rgba(9,30,66,.14);border-radius:12px;display:flex;flex-direction:column;gap:8px" data-l="vazio"><span style="${E.S35}">SERVIÇOS &amp; CAUSA · TABELA OFICIAL 2026</span><div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px 8px">${svg('documento', '#334155', 40)}<b style="font-size:17px;font-weight:600;line-height:1.2;text-align:center">Nenhum serviço no laudo</b><span style="font-size:15px;font-weight:500;line-height:1.3;color:#1E293B;text-align:center">Escolha na Tabela 2026 o que será feito nesta visita.</span></div>${tecla('ADICIONAR SERVIÇO', 'addSrv', undefined, 'min-height:56px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#31639A 0%,#2A5C8F 45%,#0F2B4C 100%);border:1px solid #081B33;box-shadow:inset 0 1px 1px rgba(190,235,255,.55),inset 0 -2px 0 #081B33;color:#FFFFFF;border-radius:10px;font-size:15px;font-weight:700;letter-spacing:.08em', ' data-tecla="marinho"')}</div>`;
   const chancela = (S.leituras.length || I.length) ? `<div data-l="carimbo" data-chancela data-estado style="flex:none;margin:8px 16px 0;min-height:40px;padding:8px 8px;display:flex;align-items:center;justify-content:center;gap:8px;background:#DCFCE7;border:1.5px solid #15803D;color:#14532D;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:.04em;text-align:center"><span style="flex:none;width:9px;height:9px;border-radius:50%;background:#22C55E;box-shadow:0 0 6px rgba(34,197,94,.8)"></span>LAUDO TÉCNICO AFERIDO · PRONTO PARA APROVAÇÃO PIX</div>` : '';
   const ds = S.dobras, campoTx = (k, rot, val, tipo = 'text') => `<label style="display:flex;flex-direction:column;gap:8px"><span style="${E.S35}">${rot}</span><span style="height:50px;display:flex;align-items:center;gap:8px;padding:0 16px;background:#FFFFFF;border:1px solid #5A6A7E;border-radius:10px;box-shadow:inset 0 2px 4px rgba(9,30,66,.18),0 1px 0 rgba(255,255,255,.7)"><input type="${tipo}"${tipo === 'number' ? ' inputmode="decimal" step="any" data-numero' : ''} data-in="${k}" value="${escH(val)}" autocomplete="off" style="flex:1;min-width:0;height:44px;border:0;outline:0;background:transparent;font-size:17px;font-weight:500;color:#0C2747"></span></label>`;
@@ -1350,7 +1417,7 @@ function telaLaudo() {
   // 2) Cofre de Laudos & PMOC: laudos salvos, Orçamento Consolidado (2 ou mais), o Contrato PMOC e, no rodapé, a ação destrutiva Limpar laudo atual.
   const limparBt = `<button type="button" data-a="limpar" data-l="excluir-atual" data-destrutiva data-confirmar-texto="CONFIRMAR: LIMPAR O LAUDO ATUAL"${armado ? ' data-etapa="confirmar"' : ''} data-tecla="vermelha" style="${armado ? 'min-height:44px;display:flex;align-items:center;justify-content:center;background:radial-gradient(140% 130% at 50% -10%,#D43A3A 0%,#D43A3A 45%,#A61919 100%);border:1px solid #7F1D1D;box-shadow:inset 0 1px 1px rgba(255,255,255,.3),inset 0 -2px 0 #7F1D1D;color:#FFFFFF;border-radius:10px;font-size:14px;font-weight:700;letter-spacing:.06em;' : E.S173}">${armado ? 'CONFIRMAR: LIMPAR O LAUDO ATUAL' : '✗ LIMPAR LAUDO ATUAL'}</button>`;
   const cofrePmoc = `${ess ? `<span style="${E.S36}">O Cofre de Laudos guarda cada aparelho com Nº, data, cliente e valor, e soma o Orçamento Consolidado.</span>${tecla('COFRE DE LAUDOS · COMPLETO PRO', 'cofreTeaser', undefined, E.S37, ' data-tecla="clara"')}` : cofre}<span style="${E.S35};border-top:1px solid #E2E8F0;padding-top:12px">CONTRATO PMOC</span>${pmoc}<div style="border-top:1px solid #E2E8F0;padding-top:8px;display:flex;flex-direction:column">${limparBt}</div>`;
-  const cliente = `<div data-l="cliente" style="${E.S65}"><span style="${E.S35}">CLIENTE &amp; WHATSAPP</span>${campoC('cli', 'Nome do cliente', L.cli || '')}<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px">${campoC('amb', 'Ambiente (opcional)', L.amb || '')}${campoC('tel', 'WhatsApp do cliente', L.tel || '', 'tel')}</div>${pixTecla}${pixAb ? `<div data-l="pix-config" style="display:flex;flex-direction:column;gap:8px">${cliPix}</div>` : ''}</div>`;
+  const cliente = `<div data-l="cliente" style="${E.S65}"><span style="${E.S35}">CLIENTE &amp; WHATSAPP</span>${campoC('cli', 'Nome do cliente', L.cli || '')}<div data-l="amb-tel" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,232px),1fr));gap:8px">${campoC('amb', 'Ambiente (opcional)', L.amb || '')}${campoC('tel', 'WhatsApp do cliente', L.tel || '', 'tel')}</div>${pixTecla}${pixAb ? `<div data-l="pix-config" style="display:flex;flex-direction:column;gap:8px">${cliPix}</div>` : ''}</div>`;
   const html = `${BARRA}<div style="${E.S13}"><b data-titulo style="${E.S14}">${tituloLaudo()}</b>${chave(tec)}</div>${faixaEquip('margin:0 16px 8px')}${visor}${faixaT}${lucroP}${servicos}${chancela}${cliente}
     <button type="button" data-a="zap" data-l="zap" data-tecla="whatsapp"${I.length ? '' : ' disabled'} style="${I.length ? E.S68 : 'flex:none;opacity:.45;' + E.S68.replace('flex:none;', '')}">${zap()}<span>ENVIAR NO WHATSAPP</span></button>
     <div style="${E.S38}">${tecla(`GERAR PDF Nº ${escH(numero)} DO LAUDO`, 'pdf', undefined, E.S37 + (I.length ? '' : 'opacity:.45'), ` data-l="pdf" data-tecla="clara"${I.length ? '' : ' disabled'}`)}</div>
@@ -1373,11 +1440,14 @@ function blocoMeus(L, cheio) {
   const SEL = 'background:radial-gradient(140% 130% at 50% -10%,#FFFFFF 0%,#F2FAFC 45%,#DDF3F9 100%);border:3px solid #FFB020;box-shadow:inset 0 0 0 1px #081B33;color:#0C2747';
   const lista = S.meus.length ? S.meus.map(m => { const on = L.itens.some(i => i.sid === m.id), dis = !on && cheio;
     return `<div data-meu="${escH(m.id)}" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;border-top:1px solid #E2E8F0;padding-top:8px"><button type="button" data-a="addMeu" data-v="${escH(m.id)}" aria-pressed="${on}" data-tecla="${on ? 'selecionada' : 'clara'}"${dis ? ' disabled' : ''} aria-label="${on ? 'No laudo' : 'Somar no laudo'}: ${escH(m.nome)}, ${brl(m.v)}" style="${on ? E.S66.replace('background:radial-gradient(140% 130% at 50% -10%,#FFFFFF 0%,#F3F5F7 40%,#E8EBEF 75%,#D5DBE3 100%);border:1px solid #5A6A7E;box-shadow:inset 0 1px 1px #FFFFFF,inset 0 -2px 0 #5A6A7E;color:#0C2747', SEL) : E.S66};min-height:52px;padding:4px 12px;text-align:left"><span style="min-width:0;line-height:1.2;overflow-wrap:anywhere">${on ? '✓ ' : '+ '}${escH(m.nome)}</span><b style="flex:none;font:700 15px/1 'JetBrains Mono',monospace;white-space:nowrap">${brl0(m.v)}</b></button><button type="button" data-a="rmMeu" data-v="${escH(m.id)}" data-destrutiva data-confirmar-texto="TOQUE DE NOVO: EXCLUIR" aria-label="Excluir ${escH(m.nome)} dos meus serviços" style="${E.S173};padding:0 12px">EXCLUIR</button></div>`; }).join('')
-    : `<span style="${E.S36}">Seus serviços salvos aparecem aqui: 1 toque para somar no laudo do próximo cliente.</span>`;
+    : '';
+  // Aba Meus sem o retângulo branco mudo (auditoria de campo, 13/11/2026): a altura que sobra no cartão vira o estado vazio do Design System
+  // (o mesmo do "Nenhum serviço no laudo": ícone de 40 px e a instrução), centrado; com serviços salvos, a dica de 1 toque abaixo da lista.
+  const dica = `<div data-meus-dica style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px 8px">${svg('usuario', '#334155', 40)}<b style="font-size:17px;font-weight:600;line-height:1.2;text-align:center">${S.meus.length ? '1 toque soma no laudo' : 'Nenhum serviço salvo ainda'}</b><span style="font-size:15px;font-weight:500;line-height:1.3;color:#1E293B;text-align:center">${S.meus.length ? 'Toque no serviço salvo para somar ou tirar do laudo deste cliente.' : 'Crie acima o seu serviço com nome e valor: ele fica salvo aqui para o próximo cliente.'}</span></div>`;
   return `<div data-l="meus" style="flex:1 0 auto;margin:8px 16px;display:flex;flex-direction:column;gap:8px">
     <div data-l="novo-srv" style="${E.S65};margin:0">${faixaTit('mais', '+ NOVO SERVIÇO PRÓPRIO')}${cp('np-nome', 'NOME DO SERVIÇO', nv.nome, 'Ex.: Suporte Inox Marítimo')}<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px">${cp('np-v', 'VALOR A COBRAR · R$', nv.v, '0,00', true)}${cp('np-pc', 'CUSTO DA PEÇA · R$', nv.pc, '0,00', true)}</div>
       ${tecla(cheio ? '+ SALVAR NOS MEUS SERVIÇOS' : '+ CRIAR E SOMAR NO LAUDO', 'novoSrv', undefined, E.S28, ` data-tecla="marinho" data-l="criar-srv"${pode ? '' : ' disabled'}`)}</div>
-    <div style="${E.S65};flex:1 0 auto;margin:0"><span style="${E.S35}">MEUS SERVIÇOS SALVOS (${S.meus.length})</span><div data-lista-meus style="flex:1 0 auto;display:grid;align-content:start;gap:8px">${lista}</div></div></div>`;
+    <div style="${E.S65};flex:1 0 auto;margin:0"><span style="${E.S35}">MEUS SERVIÇOS SALVOS (${S.meus.length})</span>${lista ? `<div data-lista-meus style="flex:none;display:grid;align-content:start;gap:8px">${lista}</div>` : ''}${dica}</div></div>`;
 }
 function telaGavetaSrv() {
   const L = S.laudo, porte = LD.porte(), meusOn = S.gavFam === 'meus', fam = meusOn ? [null, '', '', []] : FAMILIAS2.find(x => x[0] === S.gavFam) || FAMILIAS2[0], n = L.itens.length, cheio = n >= MAX_SERV, tot = LD.total();
@@ -1418,6 +1488,7 @@ function telaUpgrade() {
 
 // ───────────── Render: tela clara de referência → (escuro pelo gerador) → (360 px pelo gerador) → atualização no lugar ─────────────
 function telaAtual() {
+  if (clienteVe() && GAV_TECNICO.includes(S.gav)) { S.gav = null; S.gavCadeia = null; }
   if (S.gav === 'servico' && S.laudo) return telaGavetaSrv();
   if (S.gav === 'upgrade' || S.gav === 'pmoc') return telaUpgrade();
   if (S.tecla === 'sintomas') return S.caso >= 0 ? telaCaso() : listaAtiva() ? telaLista() : telaHome();
@@ -1461,7 +1532,10 @@ function render(soLed) {
     if (!PRECOS) carregarPrecos().then(() => csv('pmoc_atividades.csv').catch(() => [])).then(PM => { PMOC_ATIV = PM; render(); }).catch(() => {});
     if (S.tecla === 'aferir' && !CURVAS_PRONTAS) carregarCurvas().then(C => { CURVAS_PRONTAS = C; render(); }).catch(() => {});
     if (S.tecla === 'aferir' && !PT_PRONTO) carregarPT().then(([T]) => { PT_PRONTO = T; render(); }).catch(() => {}); }
+  // Aviso remoto pendente: abre quando nenhuma gaveta está aberta, nunca no Modo: Laudo (celular na mão do cliente) nem na prancha.
+  if (S.aviso && !S.gav && !clienteVe() && !PRANCHA) S.gav = 'aviso';
   const t = telaAtual(); let html = t.html;
+  if (S.gav === 'aviso' && S.aviso) html += gavetaAviso();
   if (t.nome === 'laudo' && (S.gav === 'causa')) html += gavetaCausa();
   if (['marca', 'btu', 'fluido'].includes(S.gav) && ['home', 'aferir', 'codigos', 'laudo'].includes(t.nome)) html += gavetaEquip();
   const gavSobre = !!S.gav && !['servico', 'upgrade', 'pmoc'].includes(S.gav);
@@ -1509,10 +1583,10 @@ function ligarVivos(nome) {
   const marcar = (raiz) => { const b = raiz.querySelector('b[style*="font:700 48px"]'); if (b) { b.setAttribute('data-leitura-principal', ''); b.setAttribute('aria-label', b.textContent.trim()); } };
   if (nome === 'aferir' && S.sub === 'ntc' && CURVAS_PRONTAS) { const c = curvaAtual(); if (!c) return; const t = num(S.ntc.t) ?? 35, r = num(S.ntc.r);
     montarVivo('ntc', { nu: true, zoom1: !PRANCHA, so: 'ntc', lido: r ?? interp(c.pts, t), ta: t, curva: (T) => interp(c.pts, T), tInv: tInv(c), dentro: (L) => { const R = veredictoNtc(c, t, L); return R.estado === 'ok'; },
-      aoLer: (v) => { S.ntc.r = String(Math.round(v * 100) / 100); const i = app.querySelector('[data-in="ntc-r"]'); if (i) i.value = S.ntc.r; salvarDepois(); } }, (raiz) => { marcar(raiz); rodapeTabela25(raiz, c, t); }); }
+      aoLer: (v) => { S.ntc.r = String(Math.round(v * 100) / 100); const i = app.querySelector('[data-in="ntc-r"]'); if (i) i.value = S.ntc.r; salvarDepois(); revalidarMandar(); } }, (raiz) => { marcar(raiz); rodapeTabela25(raiz, c, t); }); }
   if (nome === 'aferir' && S.sub === 'gas' && PT_PRONTO) { const st = S.gas, p = num(st.p), ev = p === null ? 4.4 : tSat(PT_PRONTO, FLUIDOS[S.equip.fluido], p);
     montarVivo('manifold', { nu: true, zoom1: !PRANCHA, so: 'manifold', fluido: fl(S.equip.fluido), sh: st.sh, semLeitura: st.sh === null || p === null, evap: ev, psi: p === null ? '—' : f1(p, 0), estado: st.sh !== null && p !== null ? { leu: true, shA: st.sh } : {},
-      aoSh: (v) => { st.sh = v; st.tubo = evapDe(num(st.p)) + v; salvarDepois(); } }, marcar); }
+      aoSh: (v) => { st.sh = v; st.tubo = evapDe(num(st.p)) + v; salvarDepois(); revalidarMandar(); } }, marcar); }
   // Inverter & 30s igual à tela 15 do Design System: Trava 30s nas 3 fichas literais e os 7 testes (sem o painel Vivo LED, que a tela 15 não tem).
 }
 
@@ -1536,16 +1610,18 @@ const ACOES = {
   tecla: (b) => irTecla(b.dataset.v), voltar: () => voltar(), gav: (b) => { S.gav = b.dataset.v; window.scrollTo(0, 0); render(); }, fecharGav: () => { S.gav = null; S.gavCadeia = null; render(); },
   // Troca do equipamento único (qualquer tela): curva NTC da marca, P-T do fluido, códigos da marca e porte de preço recalculam no mesmo toque.
   // Depois de + Salvar e Iniciar Próximo Aparelho, as 3 gavetas abrem em sequência (marca → capacidade → fluido).
-  eq: (b) => { S.equip[b.dataset.k] = b.dataset.v; const prox = (S.gavCadeia || []).shift(); S.gav = prox || null; if (!prox) S.gavCadeia = null; S.cod.marca = marcaCodigo(S.equip.marca); S.cod.pisc = null; S.codLim = 12;
-    if (S.laudo && Array.isArray(S.laudo.itens)) S.laudo.itens.forEach(i => { i.v = null; delete i.pc; }); if (S.gas && !S.gas.gpmManual) S.gas.gpm = gpmPadrao(S.equip.fluido, S.equip.btu); if (S.gas) S.gas.tubo = null; toast(equipTx()); render(); rodarLed(); },
+  eq: (b) => { const g = S.gas, flu = b.dataset.k === 'fluido' && g && g.sh !== null && num(g.p) !== null; if (flu) fixarTubo(g); S.equip[b.dataset.k] = b.dataset.v; const prox = (S.gavCadeia || []).shift(); S.gav = prox || null; if (!prox) S.gavCadeia = null; S.cod.marca = marcaCodigo(S.equip.marca); S.cod.pisc = null; S.codLim = 12;
+    if (S.laudo && Array.isArray(S.laudo.itens)) S.laudo.itens.forEach(i => { i.v = null; delete i.pc; }); if (S.gas && !S.gas.gpmManual) S.gas.gpm = gpmPadrao(S.equip.fluido, S.equip.btu);
+    // Gás & SH com tubo já medido: trocar o fluido mantém o Tubo e recalcula SH = Tubo − Evaporação na P-T do fluido novo.
+    if (flu && g.tubo != null) g.sh = shDoTubo(g); else if (S.gas) S.gas.tubo = null; toast(equipTx()); render(); rodarLed(); },
   bloco: (b) => { empilhar(); S.bloco = b.dataset.v; S.todos = false; S.lim = 12; render(); window.scrollTo(0, 0); }, todos: () => { empilhar(); S.todos = true; S.bloco = null; S.lim = 12; render(); },
   caso: (b) => abrirCaso(+b.dataset.v), maisLista: () => { S.lim += 12; render(); }, laudoVisita: () => irTecla('laudo', { servico: 'visita_diag' }),
-  ponto: (b) => { S.ponto = +b.dataset.v; S.zoom = true; render(); }, zoom: () => { S.zoom = !S.zoom; render(); },
+  ponto: (b) => { S.ponto = +b.dataset.v; S.pontoArte = +b.dataset.k; S.zoom = true; render(); }, zoom: () => { S.zoom = !S.zoom; render(); },
   vf: (b) => { const f = F[S.caso], st = S.estado[f.id]; st[S.ponto] = b.dataset.v; if (b.dataset.v === 'def') S.defeito[f.id] = f.vc[S.ponto - 1] || 1; render(); },
   mandarDiag: () => { const f = F[S.caso], v = S.ponto, r = (S.estado[f.id] || {})[v], c = f.vc[v - 1] || 1, [nm, srv] = f.causas[c - 1], [tt, ln] = f.verifs[v - 1];
     mandar(`${f.id}-v${v}`, `Diagnóstico ${f.id} · Ponto ${nn(v)} · ${tt}: ${r === 'ok' ? 'Normal' : r === 'def' ? 'DEFEITO' : 'verificado'} (${ln})`, { ...(r === 'ok' ? {} : { srv, causa: nm }), med: { tipo: 'diag', ok: r === 'ok' ? true : r === 'def' ? false : null } }); },
   prox: (b) => { const f = F[S.caso], [, , srv, ir] = f.proximo[+b.dataset.v]; if (ir) abrirCaso(F.findIndex(x => x.id === ir)); else irTecla('laudo', { servico: srv || servicoDoCaso(f), causa: causaDe(f, srv) }); },
-  sub: (b) => { S.sub = b.dataset.v; render(); }, nom: (b) => { S.ntc.nom = +b.dataset.v; render(); },
+  sub: (b) => { S.sub = b.dataset.v; render(); }, nom: (b) => { S.ntc.nom = +b.dataset.v; const c = curvaAtual(), t = num(S.ntc.t) ?? 35; if (c) { const r = Math.round(interp(c.pts, t) * 100) / 100; S.ntc.r = String(r); const vv = VIVOS.ntc; if (vv) { if (vv.cortar) vv.cortar(); clearTimeout(vv.c._pt); clearInterval(vv.c._pi); vv.c.state = { ...vv.c.state, lidoA: r, step: 4, cnt: r }; } } render(); salvarDepois(); },
   // − e + vivos no 1º toque (Pedro, 13/11/2026), mesmo com o campo vazio: o valor nasce da referência (PSI da P-T do fluido a 4,4 °C, 35 °C,
   // kΩ da curva, g/m do fluido) e o passo já entra; campo, régua, número do visor, botija/multímetro e veredito repintam no mesmo toque.
   aj: (b) => { const k = b.dataset.k, d = +b.dataset.v, ntc = k.startsWith('ntc'), st = ntc ? S.ntc : S.gas, campo = { 'ntc-t': 't', 'ntc-r': 'r', 'gas-p': 'p', 'gas-gpm': 'gpm' }[k];
@@ -1569,9 +1645,16 @@ const ACOES = {
     const itens = [...TRAVA.filter(x => S.trava[x[0]]).map(x => [`Trava 30s · ${x[1]}`, S.trava[x[0]] === 'ok']), ...INV7.filter(x => S.inv[x[0]]).map(x => [`Placa Inverter · ${x[1]}`, S.inv[x[0]] === 'ok'])];
     mandar('inv', txt, { ...(ft.length ? { srv: ft[0][6], causa: ft[0][7] } : fi.length ? { srv: fi[0][5], causa: `${fi[0][1]} fora da faixa` } : {}), med: { tipo: 'trava', itens: itens.length ? itens : [[txt, null]] } }); },
   pisc: (b) => { const n = +b.dataset.v; S.cod.pisc = S.cod.pisc === n ? null : n; S.codLim = 12; render(); rodarLed(); },
+  // Atalho da busca da Home: abre a Tecla 3 filtrada no código exato (troca só a marca da faixa quando o código é de outra marca; preços do laudo intactos).
+  verCod: (b) => { if (!LIVRE) return abrirUpgrade('As teclas Aferir Vivo, Códigos & LED e Ganhos & Laudo fazem parte do Plano Completo.'); const m = b.dataset.k; if (m !== marcaCodigo(S.equip.marca)) { S.equip.marca = m === 'Midea/Springer' ? 'Midea' : m; toast(equipTx()); } S.cod.marca = marcaCodigo(S.equip.marca); S.cod.pisc = null; S.cod.q = b.dataset.v; S.codLim = 12; irTecla('codigos'); rodarLed(); },
+  fecharAviso: () => fecharAviso(), avisoCta: () => { const u = S.aviso && S.aviso.ctaUrl; fecharAviso(); if (u && /^https:\/\//i.test(u)) { try { window.open(u, '_blank', 'noopener'); } catch (e) {} } },
   piscTodos: () => { S.cod.pisc = S.cod.pisc === 'led' ? null : 'led'; render(); rodarLed(); }, maisCod: () => { S.codLim += 12; render(); },
   mandarCod: (b) => { const r = CODIGOS_PRONTOS[+b.closest('[data-cod]').dataset.cod]; mandar('cod-' + r.i, `${r.tp} ${r.c} (${r.m}): ${r.d}${r.ok ? (ehProtecao(r) ? ' — PROTEÇÃO ATIVA, NÃO É DEFEITO DA PLACA' : ' — NÃO É DEFEITO, OPERAÇÃO NORMAL') : ''}`, { srv: 'visita_diag', causa: r.ok ? `${r.c} (${r.m}): ${ehProtecao(r) ? 'proteção ativa do equipamento, sem peça condenada' : 'operação normal do equipamento, sem peça condenada'}` : `${r.c} (${r.m}): ${r.d}` }); },
-  modo: () => { S.laudo.tecnico = !S.laudo.tecnico; S.msg = null; render(); }, faixa: (b) => { S.laudo.itens.forEach(i => { const s = LD.sv(i.sid); if (s) i.v = faixaDe(s, LD.porte())[b.dataset.v]; }); render(); },
+  // Blindagem do Modo: Laudo (Pedro, 13/11/2026, auditoria de campo): com o celular na mão do cliente, voltar ao Modo: Técnico pede 2 toques
+  // na própria chave em até 3 s (o 1º só arma, com aviso discreto); ir ao Modo: Laudo segue em 1 toque e fecha na hora qualquer gaveta e o Pix.
+  modo: () => { const L = S.laudo; clearTimeout(S._tModo);
+    if (L.tecnico === false && !(S.modoArmado && Date.now() - S.modoArmado < 3000)) { S.modoArmado = Date.now(); S._tModo = setTimeout(() => { S.modoArmado = 0; if (clienteVe()) render(); }, 3000); toast('Toque de novo na chave para voltar ao Modo: Técnico'); pulso(); return render(); }
+    S.modoArmado = 0; L.tecnico = !L.tecnico; S.msg = null; if (!L.tecnico) { S.gav = null; S.gavCadeia = null; S.dobras.pix = false; } render(); }, faixa: (b) => { S.laudo.itens.forEach(i => { const s = LD.sv(i.sid); if (s) i.v = faixaDe(s, LD.porte())[b.dataset.v]; }); render(); },
   mala: () => { S.laudo.mala = !S.laudo.mala; render(); }, proTeaser: () => abrirUpgrade('O Painel de Lucro (custo da peça, lucro limpo e combos) faz parte do Plano Completo PRO.'),
   srvRow: (b) => { const i = S.laudo.itens[+b.dataset.v]; S.gavFam = ehProprio(i.sid) ? 'meus' : (FAMILIAS2.find(x => x[3].includes(i.sid)) || FAMILIAS2[0])[0]; S.gav = 'servico'; render(); window.scrollTo(0, 0); },
   addSrv: () => { const u = S.laudo.itens[S.laudo.itens.length - 1]; S.gavFam = u ? (ehProprio(u.sid) ? 'meus' : (FAMILIAS2.find(x => x[3].includes(u.sid)) || FAMILIAS2[0])[0]) : 'eletrica'; S.gav = 'servico'; render(); window.scrollTo(0, 0); },
@@ -1614,12 +1697,16 @@ const ACOES = {
   tema: () => { S.tema = escuro() ? 'claro' : 'escuro'; TEMA_URL = null; aplicarTema(); ULT = ''; Object.keys(VIVOS).forEach(desmontarVivo); render(); salvarSessao(); },
   zap: () => enviarZap(), pdf: (b) => gerarPdfLaudo(b), pmoc: (b) => gerarPdfPmoc(b),
 };
+// Modo: Laudo (celular na mão do cliente): serviços, catálogo, Meus · + Novo, causa, chave Pix e troca de equipamento ficam só para leitura.
+const TRAVA_CLIENTE = new Set(['srvRow', 'addSrv', 'add', 'addMeu', 'novoSrv', 'rmMeu', 'fam', 'adicional', 'causa', 'opCausa', 'faixa', 'mala', 'pixEd', 'gav', 'eq']);
+const GAV_TECNICO = ['servico', 'causa', 'marca', 'btu', 'fluido'];
 const confirmar2 = (b, acao) => { if (b.dataset.etapa === 'confirmar') return acao(); b.dataset.etapa = 'confirmar'; b.textContent = b.dataset.confirmarTexto || 'Toque de novo para confirmar'; setTimeout(() => { if (b.isConnected) { delete b.dataset.etapa; render(); } }, 5000); };
 document.addEventListener('click', (e) => {
   // Gaveta fecha no Fechar e no toque fora (L27): o toque no fundo escurecido, fora da folha.
-  if (S.gav && S.gav !== 'servico' && e.target && e.target.hasAttribute && e.target.hasAttribute('data-gaveta') && e.target.id !== 'tela') { S.gav = null; S.gavCadeia = null; return render(); }
+  if (S.gav && S.gav !== 'servico' && e.target && e.target.hasAttribute && e.target.hasAttribute('data-gaveta') && e.target.id !== 'tela') { if (S.gav === 'aviso') return fecharAviso(); S.gav = null; S.gavCadeia = null; return render(); }
   const b = e.target.closest && e.target.closest('[data-a]'); if (!b || !app.contains(b) || b.disabled) return;
   if (b.dataset.a !== 'rmLeit' && b.dataset.a !== 'limpar') S.limparArmado = false;
+  if (clienteVe() && TRAVA_CLIENTE.has(b.dataset.a)) { e.preventDefault(); pulso(); return toast('Modo: Laudo: serviços, equipamento e Pix só para leitura, aprovação e pagamento. Toque 2 vezes na chave para voltar ao Modo: Técnico'); }
   if (ehEssencial()) for (const [teste, motivo] of TRAVAS_PRO) if (teste(b)) { e.preventDefault(); return abrirUpgrade(motivo); }
   if (!LIVRE && ['tecla'].includes(b.dataset.a) && b.dataset.v !== 'sintomas') return abrirUpgrade('As teclas Aferir Vivo, Códigos & LED e Ganhos & Laudo fazem parte do Plano Completo.');
   const f = ACOES[b.dataset.a]; if (f) f(b, e);
@@ -1629,7 +1716,7 @@ document.addEventListener('keydown', (e) => { const el = e.target; if ((e.key ==
 document.addEventListener('focusout', (e) => { const k = e.target && e.target.dataset && e.target.dataset.in; if (k === 'srv-v' || k === 'srv-p') setTimeout(() => { ULT = ''; render(); }, 0); });
 function aoMudarCampo(k) {
   // kΩ digitado: só o painel muda (valor, dígitos e chave em tempo real, sem replay e sem remontar a tela).
-  if (k === 'ntc-r') { const v = VIVOS.ntc, r = num(S.ntc.r); if (v && r !== null) { clearTimeout(v.c._pt); clearInterval(v.c._pi); v.c.setState({ lidoA: r, step: 4, cnt: r }); } else renderQuadro(); }
+  if (k === 'ntc-r') { const v = VIVOS.ntc, r = num(S.ntc.r); if (v && r !== null) { clearTimeout(v.c._pt); clearInterval(v.c._pi); v.c.setState({ lidoA: r, step: 4, cnt: r }); revalidarMandar(); } else renderQuadro(); }
   else renderQuadro();
   salvarDepois();
 }
@@ -1637,6 +1724,7 @@ document.addEventListener('input', (e) => {
   const el = e.target, k = el.dataset && el.dataset.in; if (!k) return;
   if (el.matches('input[type="number"]')) { const v = el.value.trim(), inv = v !== '' && num(v) === null; if (inv) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid'); }
   if (k === 'busca') { S.termo = el.value; S.lim = 12; render(); const i = app.querySelector('[data-in="busca"]'); if (i && document.activeElement !== i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } return; }
+  if (k === 'busca-cod') { S.cod.q = el.value; S.codLim = 12; render(); const i = app.querySelector('[data-in="busca-cod"]'); if (i && document.activeElement !== i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } return; }
   if (k === 'ntc-t') { S.ntc.t = el.value; return aoMudarCampo(k); } if (k === 'ntc-r') { S.ntc.r = el.value; return aoMudarCampo(k); }
   if (k === 'gas-p') { fixarTubo(S.gas); S.gas.p = el.value; S.gas.sh = shDoTubo(S.gas); return aoMudarCampo(k); } if (k === 'gas-gpm') { S.gas.gpm = el.value; S.gas.gpmManual = true; return aoMudarCampo(k); }
   // Preço livre e peça do item (Modo: Técnico): total, LUCRO LIMPO NO BOLSO e Cofre recalculam no mesmo evento, numa pintura síncrona.
@@ -1801,6 +1889,11 @@ async function iniciar() {
   document.addEventListener('visibilitychange', () => { if (document.hidden) salvarJa(); else aoRedimensionar(); });
   window.addEventListener('pagehide', salvarJa); window.addEventListener('pageshow', aoRedimensionar);
 }
+// Cordão umbilical: o evento gelopro:aviso do motor de licença (checagem silenciosa com sinal, 2,5 s depois da abertura) abre a gaveta do aviso.
+const receberAviso = (d) => { if (!d || !d.id || !d.titulo || !d.texto) return; const vistos = LICENCA && LICENCA.avisosVistos ? LICENCA.avisosVistos() : []; if (vistos.includes(d.id)) return; S.aviso = d; if (!S.gav && !clienteVe()) render(); };
+window.addEventListener('gelopro:aviso', (e) => receberAviso(e.detail));
+if (window.__geloproAviso) receberAviso(window.__geloproAviso);
+if (LICENCA && LICENCA.checar && !PRANCHA) setTimeout(() => { try { LICENCA.checar().catch(() => {}); } catch (e) {} }, 2500);
 window.addEventListener('hashchange', () => { const m = location.hash.match(/D-\d{3}/), i = m ? F.findIndex(f => f.id === m[0]) : -1; if (i >= 0 && !(S.tecla === 'sintomas' && S.caso === i)) abrirCaso(i); });
 iniciar();
 // Artes em RAM logo após o 1º quadro da Home (requestAnimationFrame + 150 ms, fora da thread do toque).

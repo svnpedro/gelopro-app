@@ -96,11 +96,22 @@ const c = cracha();
 if (!c || c.fonte !== '\x73\x65\x72\x76\x69\x64\x6f\x72' || !c.identificador) return { tipo: '\x73\x65\x6d\x2d\x63\x72\x61\x63\x68\x61' };
 if (navigator.onLine === false) return { tipo: '\x6f\x66\x66\x6c\x69\x6e\x65', cracha: c };
 const r = await chamar({ identificador: c.identificador, deviceId: deviceId(), titular: c.titularPendente || undefined }, PRAZO_CHECAGEM);
-if (r.tipo === 'ok') { const n = montar(c.identificador, r.dados, c); if (c.titularPendente && !r.dados.titular) n.titularPendente = c.titularPendente; await guardar(K_CRACHA, n); r.cracha = n; }
+if (r.tipo === 'ok') { const n = montar(c.identificador, r.dados, c); if (c.titularPendente && !r.dados.titular) n.titularPendente = c.titularPendente; await guardar(K_CRACHA, n); r.cracha = n; avisar(r.dados.aviso); }
 else if (r.tipo === '\x65\x72\x72\x6f' && r.codigo === '\x4c\x49\x43\x45\x4e\x43\x41\x5f\x42\x4c\x4f\x51\x55\x45\x41\x44\x41') { const n = assinar({ ...c, bloqueado: true, ultimaChecagem: Date.now() }); await guardar(K_CRACHA, n); r.cracha = n; }
 else if (r.tipo === '\x65\x72\x72\x6f' && r.codigo === '\x50\x4c\x41\x4e\x4f\x5f\x45\x58\x50\x49\x52\x41\x44\x4f\x5f\x39\x30\x44') { const n = assinar({ ...c, expirado: true, ultimaChecagem: Date.now() }); await guardar(K_CRACHA, n); r.cracha = n; }
 else r.cracha = c;
 return r;
+}
+const K_AVISOS = '\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x61\x76\x69\x73\x6f\x73\x56\x69\x73\x74\x6f\x73';
+const avisosVistos = () => { const v = lerLS(K_AVISOS); return Array.isArray(v) ? v.filter(x => typeof x === '\x73\x74\x72\x69\x6e\x67') : []; };
+const marcarAvisoVisto = (id) => { const i = limpar(id); if (!i) return; const v = avisosVistos(); if (!v.includes(i)) gravarLS(K_AVISOS, [...v, i].slice(-50)); };
+function avisar(a) {
+if (!a || typeof a !== '\x6f\x62\x6a\x65\x63\x74') return null; const id = limpar(a.id), titulo = limpar(a.titulo), texto = String(a.texto == null ? '' : a.texto).replace(/<[^>]*>/g, '').replace(/[<>]/g, '').trim().slice(0, 600);
+if (!id || !titulo || !texto || avisosVistos().includes(id)) return null;
+const url = String(a.ctaUrl == null ? '' : a.ctaUrl).trim(), cta = /^https:\/\/[^\s"'<>]+$/i.test(url) && a.ctaTexto ? { ctaTexto: limpar(a.ctaTexto).slice(0, 40), ctaUrl: url.slice(0, 300) } : {};
+const d = { id, titulo, texto, ...cta }; window.__geloproAviso = d;
+try { window.dispatchEvent(new CustomEvent('\x67\x65\x6c\x6f\x70\x72\x6f\x3a\x61\x76\x69\x73\x6f', { detail: d })); } catch (e) { }
+return d;
 }
 async function enviarTitular(titular) {
 const c = cracha(); if (!c || c.fonte !== '\x73\x65\x72\x76\x69\x64\x6f\x72') return { tipo: '\x73\x65\x6d\x2d\x63\x72\x61\x63\x68\x61' };
@@ -120,7 +131,7 @@ return null;
 }
 const esquecer = () => guardar(K_CRACHA, null);
 const reassinar = () => { const c = cracha(), t = lerLS(K_TIT); if (t && typeof t === '\x6f\x62\x6a\x65\x63\x74') idbPor(K_TIT, t); if (!c) return Promise.resolve(); const n = assinar(c); gravarLS(K_CRACHA, n); return idbPor(K_CRACHA, n); };
-window.GeloProLicenca = { API, deviceId, cracha, ativar, checar, enviarTitular, restaurar, esquecer, limpar, blindado: BLINDADO, docCompra, confere, reassinar };
+window.GeloProLicenca = { API, deviceId, cracha, ativar, checar, enviarTitular, restaurar, esquecer, limpar, blindado: BLINDADO, docCompra, confere, reassinar, avisar, avisosVistos, marcarAvisoVisto };
 try { window.dispatchEvent(new Event('\x67\x65\x6c\x6f\x70\x72\x6f\x3a\x6c\x69\x63\x65\x6e\x63\x61\x2d\x70\x72\x6f\x6e\x74\x61')); } catch (e) { }
 try {
 if (typeof document !== '\x75\x6e\x64\x65\x66\x69\x6e\x65\x64' && MESMA_PASTA && !document.querySelector('\x73\x63\x72\x69\x70\x74\x5b\x73\x72\x63\x2a\x3d\x22\x6f\x66\x66\x6c\x69\x6e\x65\x2d\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x6a\x73\x22\x5d')) {
