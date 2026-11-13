@@ -81,7 +81,7 @@
   function pecas(d) {
     const P = [], t = d.titular || {}, W = LARG;
     // 1. Cabeçalho executivo marinho: prestadora à esquerda; à direita a marca oficial final (matriz limpa marinho do pacote da marca,
-    //    window.GeloProMarca.logoPdf: urso na plaqueta + BANCADA / GeloPRO / SPLIT & INVERTER, 133 × 44 na proporção), LAUDO DE APROVAÇÃO e Nº.
+    //    window.GeloProMarca.logoPdf: urso na plaqueta + BANCADA / GELOPRO / SPLIT & INVERTER, 141 × 44 na proporção), LAUDO DE APROVAÇÃO e Nº.
     //    Sem a marca embutida, volta o selo de texto BANCADA · GELOPRO 2026.
     { const linhasT = [t.doc ? `${t.docTipo || 'CPF/CNPJ'} ${t.doc}` : '', t.cidade || '', t.pix ? `Chave Pix ${t.pix}` : ''].filter(Boolean);
       const nomeL = quebrar(t.nome || 'Prestadora do serviço', 'B', 15, W * 0.56), lg = logoMarca(), h = Math.max(lg ? 104 : 92, 30 + nomeL.length * 18 + linhasT.length * 12);

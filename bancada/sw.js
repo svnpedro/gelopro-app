@@ -8,7 +8,7 @@
 // primeiro com atualização silenciosa; artes, tiles, fontes e imagens saem do cache e só vão à rede se faltarem. Nenhuma espera de rede ao tocar. O activate apaga os caches antigos da Bancada (bancada-offline-* diferente,
 // bancada-v2-offline-* e bancada-v3-offline-*); o install reaproveita as artes que já estavam no cache anterior (sem baixar de novo).
 'use strict';
-const CACHE = 'bancada-offline-v16'; // v16 (13/11/2026): marca oficial final (urso na plaqueta, BANCADA / GeloPRO / SPLIT & INVERTER), Tecla 4 Ganhos & Laudo com camuflagem no Modo: Laudo, − e + vivos e faxina do Laudo. v15 (13/11/2026): faixa única do equipamento em toda a Bancada, Tecla 4 Lucro & Laudo e Cofre multi-aparelho. v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
+const CACHE = 'bancada-offline-v17'; // v17 (13/11/2026): LOGO FINAL alinhada (versão 3 do pacote da marca: GELOPRO em maiúsculas, régua de letra maiúscula, gap .944em, 141 × 44). v16 (13/11/2026): marca oficial final (urso na plaqueta, BANCADA / GeloPRO / SPLIT & INVERTER), Tecla 4 Ganhos & Laudo com camuflagem no Modo: Laudo, − e + vivos e faxina do Laudo. v15 (13/11/2026): faixa única do equipamento em toda a Bancada, Tecla 4 Lucro & Laudo e Cofre multi-aparelho. v14 (12/11/2026): página e núcleo pela rede primeiro (1,2 s) com cache de reserva; núcleo leve no install; artes 1 por vez
 const PRAZO_REDE_MS = 1200;
 const PAGINA = './';
 const MOTOR = [
