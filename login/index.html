@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Entrar · Bancada Oficial GeloPRO</title>
+<meta name="theme-color" content="#0C2747">
+<link rel="icon" href="/oferta/img/gelopro-urso.webp" type="image/webp">
+<link rel="preload" href="/oferta/fontes/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/oferta/mascote/m-bracos-cruzados.webp" as="image" type="image/webp">
+<style>
+@font-face{font-family:"Plus Jakarta Sans";src:url(/oferta/fontes/plus-jakarta-sans-var-latin.woff2) format("woff2");font-weight:200 800;font-display:swap}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:#0C2747}
+body{margin:0;min-height:100vh;background:#0C2747;color:#fff;font:500 17px/1.6 "Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:hidden}
+img{display:block;max-width:100%;height:auto}
+.topo{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:560px;margin:0 auto;padding:16px 18px}
+.topo img{height:40px;width:auto}
+.topo a{font:800 15px/1 "Plus Jakarta Sans",sans-serif;color:#fff;text-decoration:none;white-space:nowrap}
+.topo a:hover{color:#FDE68A}
+.cartao{max-width:560px;margin:8px auto 28px;padding:0 18px}
+.caixa{background:#fff;color:#0C2747;border-radius:28px;box-shadow:0 30px 60px -20px rgba(0,0,0,.55);padding:24px clamp(18px,5vw,32px) 26px}
+.cab{display:flex;justify-content:center;border-bottom:1px solid #E2E8F0}
+.cab img{width:210px;background:transparent;border:none;box-shadow:none}
+h1{font:800 clamp(27px,7vw,32px)/1.15 "Plus Jakarta Sans",sans-serif;color:#0C2747;letter-spacing:-.025em;margin:22px 0 0;text-align:center;text-wrap:balance}
+.sub{color:#1E293B;margin:10px 0 0;font-size:18px;line-height:1.55;text-align:center;text-wrap:pretty}
+label{display:block;font:800 15px/1.3 "Plus Jakarta Sans",sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#0C2747;margin:24px 0 8px}
+input{width:100%;min-height:60px;border:2px solid #CBD5E1;border-radius:14px;padding:0 16px;font:700 22px/1 "Plus Jakarta Sans",sans-serif;letter-spacing:.02em;color:#0C2747;background:#F4F6F9;outline:none}
+input:focus{border-color:#0265DC;background:#fff}
+input[aria-invalid="true"]{border-color:#D97706}
+.dica{font-size:15px;line-height:1.45;color:#334155;margin:8px 0 0;min-height:22px}
+.dica.erro{color:#B45309;font-weight:700}
+button{margin-top:16px;width:100%;min-height:62px;border:0;border-radius:14px;background:linear-gradient(180deg,#16A34A,#15803D);color:#fff;font:800 19px/1 "Plus Jakarta Sans",sans-serif;cursor:pointer;box-shadow:0 10px 24px rgba(21,128,61,.3)}
+button[disabled]{opacity:.55;cursor:default;box-shadow:none}
+.resultado{margin-top:18px;display:none}
+.resultado.ok{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.resultado.nao{display:block;border-radius:16px;padding:16px;background:#FEF3C7;border:1.5px solid #D97706;color:#78350F;font-size:16px}
+.resultado.nao b{display:block;font:800 17px/1.3 "Plus Jakarta Sans",sans-serif;margin-bottom:4px}
+.resultado.nao a{color:#0C2747;font-weight:800}
+.selo{display:inline-flex;align-items:center;gap:8px;background:#DCFCE7;border:1.5px solid #15803D;color:#14532D;border-radius:999px;padding:9px 16px;font:800 17px/1.3 "Plus Jakarta Sans",sans-serif}
+.aparelhos{font-size:15px;line-height:1.45;font-weight:600;color:#334155}
+.abrir{display:flex;align-items:center;justify-content:center;width:100%;min-height:72px;padding:20px;border-radius:14px;background:linear-gradient(180deg,#16A34A,#15803D);color:#fff;font:800 clamp(18px,5vw,21px)/1.25 "Plus Jakarta Sans",sans-serif;text-align:center;text-decoration:none;box-shadow:0 10px 24px rgba(21,128,61,.3)}
+.abrir:hover{filter:brightness(1.08);color:#fff}
+.seguro{display:flex;gap:8px;align-items:center;justify-content:center;font-size:15px;line-height:1.45;font-weight:600;color:#334155;margin:18px 0 0;text-align:center}
+.rodape{text-align:center;font-size:15px;line-height:1.6;color:#C9D6E8;padding:0 18px 32px;margin:0}
+.rodape a{color:#FDE68A;font-weight:700}
+</style>
+</head>
+<body>
+<header class="topo">
+  <a href="/"><img src="/oferta/img/logo-gelopro-marinho.webp" width="776" height="240" alt="Bancada GeloPRO · Split &amp; Inverter"></a>
+  <a href="/">← Voltar</a>
+</header>
+<main class="cartao">
+  <div class="caixa">
+    <div class="cab">
+      <img src="/oferta/mascote/m-bracos-cruzados.webp" width="555" height="667" alt="Mascote GeloPRO de braços cruzados" fetchpriority="high" decoding="async">
+    </div>
+    <h1>Área Oficial do Profissional</h1>
+    <p class="sub">Confira sua licença com o CPF ou CNPJ da compra para abrir sua Bancada.</p>
+    <form id="form" novalidate>
+      <label for="doc">CPF ou CNPJ</label>
+      <input id="doc" name="doc" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="18" aria-describedby="dica">
+      <p class="dica" id="dica" aria-live="polite">Digite só os números; a máscara entra sozinha.</p>
+      <button id="botao" type="submit" disabled>ENTRAR</button>
+    </form>
+    <div class="resultado" id="resultado" role="status" aria-live="polite"></div>
+    <p class="seguro">✓ Consulta segura · nenhum dado é guardado neste aparelho</p>
+  </div>
+</main>
+<p class="rodape">Ainda não tem a Bancada? <a href="/#planos">Ver os planos</a> · Ajuda: <a href="mailto:suporte@bancadagelopro.com">suporte@bancadagelopro.com</a></p>
+<script>
+(function () {
+  'use strict';
+  var campo = document.getElementById('doc'), dica = document.getElementById('dica'), botao = document.getElementById('botao'), res = document.getElementById('resultado');
+  var so = function (s) { return String(s || '').replace(/\D+/g, '').slice(0, 14); };
+  // Máscara viva: até 11 dígitos é CPF (000.000.000-00); de 12 a 14 vira CNPJ (00.000.000/0000-00).
+  function mascara(d) {
+    if (d.length <= 11) return d.replace(/^(\d{3})(\d)/, '$1.$2').replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3').replace(/\.(\d{3})(\d{1,2})$/, '.$1-$2');
+    return d.replace(/^(\d{2})(\d)/, '$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3').replace(/\.(\d{3})(\d)/, '.$1/$2').replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+  }
+  // Validação matemática dos dígitos verificadores.
+  function cpfOk(c) {
+    if (c.length !== 11 || /^(\d)\1+$/.test(c)) return false;
+    var dv = function (n) { var t = 0; for (var i = 0; i < n; i++) t += +c[i] * (n + 1 - i); var r = (t * 10) % 11; return r === 10 ? 0 : r; };
+    return dv(9) === +c[9] && dv(10) === +c[10];
+  }
+  function cnpjOk(c) {
+    if (c.length !== 14 || /^(\d)\1+$/.test(c)) return false;
+    var dv = function (n) { var w = n === 12 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2], t = 0; for (var i = 0; i < n; i++) t += +c[i] * w[i]; var r = t % 11; return r < 2 ? 0 : 11 - r; };
+    return dv(12) === +c[12] && dv(13) === +c[13];
+  }
+  function valido(d) { return d.length === 11 ? cpfOk(d) : d.length === 14 ? cnpjOk(d) : false; }
+  function avaliar() {
+    var d = so(campo.value);
+    campo.value = mascara(d);
+    var ok = valido(d), completo = d.length === 11 || d.length === 14;
+    botao.disabled = !ok;
+    campo.setAttribute('aria-invalid', completo && !ok ? 'true' : 'false');
+    dica.className = 'dica' + (completo && !ok ? ' erro' : '');
+    dica.textContent = completo && !ok ? (d.length === 11 ? 'CPF com dígito errado. Confira os números.' : 'CNPJ com dígito errado. Confira os números.')
+      : ok ? (d.length === 11 ? '✓ CPF válido' : '✓ CNPJ válido') : 'Digite só os números; a máscara entra sozinha.';
+    return d;
+  }
+  campo.addEventListener('input', function () { avaliar(); res.className = 'resultado'; res.innerHTML = ''; });
+  var NOMES = { COMPLETO_PRO: 'Completo PRO', ESSENCIAL: 'Essencial' };
+  function mostrar(tipo, html) { res.className = 'resultado ' + tipo; res.innerHTML = html; }
+  document.getElementById('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var d = avaliar(); if (!valido(d)) return;
+    botao.disabled = true; botao.textContent = 'CONSULTANDO…';
+    fetch('/api/licenca', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ modo: 'consulta', identificador: d }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { s: r.status, j: j }; }); })
+      .then(function (r) {
+        if (r.s === 200 && r.j.ok && r.j.consulta) {
+          var plano = NOMES[r.j.plano] || 'Bancada GeloPRO';
+          mostrar('ok', '<span class="selo">✓ Licença ativa · ' + plano + '</span>' +
+            '<a class="abrir" href="/bancada/">ABRIR MINHA BANCADA AGORA →</a>' +
+            '<span class="aparelhos">Aparelhos em uso: ' + (+r.j.aparelhosUsados || 0) + ' de ' + (+r.j.maxAparelhos || 1) + '.</span>');
+        } else if (r.s === 404) {
+          mostrar('nao', '<b>Cadastro não localizado</b>Não achamos licença ativa com este documento. Confira os números ou <a href="/#planos">veja os planos</a>.');
+        } else {
+          mostrar('nao', '<b>Não deu para consultar agora</b>' + ((r.j && r.j.mensagem) || 'Tente de novo em alguns segundos.'));
+        }
+      })
+      .catch(function () { mostrar('nao', '<b>Sem sinal agora</b>Confira a conexão e tente de novo em alguns segundos.'); })
+      .then(function () { botao.textContent = 'ENTRAR'; botao.disabled = !valido(so(campo.value)); });
+  });
+})();
+</script>
+</body>
+</html>

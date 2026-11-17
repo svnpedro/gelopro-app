@@ -1,4 +1,4 @@
-;(function(){var h=String(location.hostname||'').toLowerCase(),L=['\x67\x65\x6c\x6f\x70\x72\x6f\x61\x70\x70\x2e\x63\x6f\x6d\x2e\x62\x72','\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x63\x6f\x6d\x2e\x62\x72'];var ok=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(h)||/\.github\.io$/.test(h)||/\.pages\.dev$/.test(h)||/(^|\.)gelopro[a-z0-9-]*\.[a-z.]{2,}$/.test(h)||L.some(function(d){return h===d||h.slice(-d.length-1)==='.'+d;});if(!ok){try{window.stop();}catch(e){}try{document.documentElement.innerHTML='<body style="font:16px sans-serif;padding:24px">C\xf3pia n\xe3o autorizada da Bancada GeloPRO.</body>';}catch(e){}throw new Error('\x63\x6f\x70\x69\x61');}if(!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(h)){document.addEventListener('keydown',function(e){var k=String(e.key||'').toUpperCase();if(k==='F12'||((e.ctrlKey||e.metaKey)&&e.shiftKey&&(k==='I'||k==='J'||k==='C'))||((e.ctrlKey||e.metaKey)&&k==='U')){e.preventDefault();}},true);document.addEventListener('contextmenu',function(e){if(!(e.target&&e.target.closest&&e.target.closest('input,textarea')))e.preventDefault();},true);}})();
+;(function(){var h=String(location.hostname||'').toLowerCase(),L=['\x62\x61\x6e\x63\x61\x64\x61\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x63\x6f\x6d','\x77\x77\x77\x2e\x62\x61\x6e\x63\x61\x64\x61\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x63\x6f\x6d','\x67\x65\x6c\x6f\x70\x72\x6f\x61\x70\x70\x2e\x63\x6f\x6d\x2e\x62\x72','\x67\x65\x6c\x6f\x70\x72\x6f\x2e\x63\x6f\x6d\x2e\x62\x72'];var ok=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(h)||/\.github\.io$/.test(h)||/\.pages\.dev$/.test(h)||/(^|\.)gelopro[a-z0-9-]*\.[a-z.]{2,}$/.test(h)||L.some(function(d){return h===d||h.slice(-d.length-1)==='.'+d;});if(!ok){try{window.stop();}catch(e){}try{document.documentElement.innerHTML='<body style="font:16px sans-serif;padding:24px">C\xf3pia n\xe3o autorizada da Bancada GeloPRO.</body>';}catch(e){}throw new Error('\x63\x6f\x70\x69\x61');}if(!/^(localhost|127\.0\.0\.1|\[::1\])$/.test(h)){document.addEventListener('keydown',function(e){var k=String(e.key||'').toUpperCase();if(k==='F12'||((e.ctrlKey||e.metaKey)&&e.shiftKey&&(k==='I'||k==='J'||k==='C'))||((e.ctrlKey||e.metaKey)&&k==='U')){e.preventDefault();}},true);document.addEventListener('contextmenu',function(e){if(!(e.target&&e.target.closest&&e.target.closest('input,textarea')))e.preventDefault();},true);}})();
 (function () {
 'use strict';
 const PW = 595.28, PH = 841.89, MX = 40, LARG = PW - 2 * MX, TOPO = 40, FIM = PH - 46;
@@ -61,32 +61,40 @@ const BRL = (v) => 'R$ ' + Number(v || 0).toLocaleString('pt-BR', { minimumFrac
 const f1 = (v, d) => Number(v).toFixed(d == null ? 1 : d).replace('.', ',');
 const ROT = (x, y, s, cor) => texto(x, y, s, 'B', 7.5, cor || C.rotulo, null, 0.9);
 const logoMarca = () => { try { const L = window.GeloProMarca && window.GeloProMarca.logoPdf; return L && L.w && L.h && L.cor && L.alfa ? { w: L.w, h: L.h, cor: atob(L.cor), alfa: atob(L.alfa) } : null; } catch (e) { return null; } };
+const umaLinha = (rot, txt, tam, max) => {
+const s = String(txt || '').replace(/\s+/g, ' ').trim(), wR = largura(rot + ' ', 'B', tam), cabe = (x) => wR + largura(x, 'R', tam) <= max;
+if (!s || cabe(s)) return s;
+const m = s.match(/^(.*?)\s*(\([^()]*\)\.?)$/), cauda = m && largura(m[2], 'R', tam) < (max - wR) * 0.55 ? ' ' + m[2] : '', cab = (cauda ? m[1] : s).split(' ');
+while (cab.length > 1 && !cabe(cab.join(' ').replace(/[,;:.\s]+$/, '') + '…' + cauda)) cab.pop();
+return cab.join(' ').replace(/[,;:.\s]+$/, '') + '…' + cauda;
+};
+const linhaRot = (x, yB, rot, txt, tam) => texto(x, yB, rot, 'B', tam, C.marinho) + ' ' + texto(x + largura(rot + ' ', 'B', tam), yB, txt, 'R', tam, C.texto);
 function pecas(d) {
 const P = [], t = d.titular || {}, W = LARG;
 { const linhasT = [t.doc ? `${t.docTipo || 'CPF/CNPJ'} ${t.doc}` : '', t.cidade || '', t.pix ? `Chave Pix ${t.pix}` : ''].filter(Boolean);
-const nomeL = quebrar(t.nome || 'Prestadora do serviço', 'B', 15, W * 0.56), lg = logoMarca(), h = Math.max(lg ? 104 : 92, 30 + nomeL.length * 18 + linhasT.length * 12);
-P.push({ h: h + 14, draw: (y) => { const o = [caixa(MX, y, W, h, C.marinho, null, 10)];
-o.push(ROT(MX + 16, y + 20, 'PRESTADORA DO SERVIÇO', C.gelo));
-nomeL.forEach((s, i) => o.push(texto(MX + 16, y + 40 + i * 18, s, 'B', 15, C.branco)));
-linhasT.forEach((s, i) => o.push(texto(MX + 16, y + 40 + (nomeL.length - 1) * 18 + 16 + i * 12, s, 'R', 9, C.gelo)));
+const nomeL = quebrar(t.nome || 'Prestadora do serviço', 'B', 14, W * 0.56), lg = logoMarca(), h = Math.max(lg ? 86 : 80, 26 + nomeL.length * 16 + linhasT.length * 11);
+P.push({ h: h + 10, draw: (y) => { const o = [caixa(MX, y, W, h, C.marinho, null, 10)];
+o.push(ROT(MX + 16, y + 18, 'PRESTADORA DO SERVIÇO', C.gelo));
+nomeL.forEach((s, i) => o.push(texto(MX + 16, y + 36 + i * 16, s, 'B', 14, C.branco)));
+linhasT.forEach((s, i) => o.push(texto(MX + 16, y + 36 + (nomeL.length - 1) * 16 + 14 + i * 11, s, 'R', 8.5, C.gelo)));
 const xR = MX + W - 16;
-if (lg) { const wL = 120, hL = wL * lg.h / lg.w; o.push(`q ${n2(wL)} 0 0 ${n2(hL)} ${n2(xR - wL)} ${n2(PH - (y + 12) - hL)} cm /Logo Do Q`);
-o.push(texto(xR, y + 64, d.titulo || 'LAUDO DE APROVAÇÃO', 'B', 11, C.branco, 'd', 1.2), texto(xR, y + 88, `Nº ${d.numero}`, 'M', 20, C.branco, 'd')); }
+if (lg) { const wL = 104, hL = wL * lg.h / lg.w; o.push(`q ${n2(wL)} 0 0 ${n2(hL)} ${n2(xR - wL)} ${n2(PH - (y + 10) - hL)} cm /Logo Do Q`);
+o.push(texto(xR, y + 56, d.titulo || 'LAUDO DE APROVAÇÃO', 'B', 10, C.branco, 'd', 1.2), texto(xR, y + 76, `Nº ${d.numero}`, 'M', 18, C.branco, 'd')); }
 else { const sw = largura('BANCADA · GELOPRO 2026', 'B', 7.5, 0.9) + 18;
 o.push(caixa(xR - sw, y + 12, sw, 18, C.destaque, null, 9), texto(xR - sw / 2, y + 24.5, 'BANCADA · GELOPRO 2026', 'B', 7.5, C.branco, 'c', 0.9));
-o.push(texto(xR, y + 50, d.titulo || 'LAUDO DE APROVAÇÃO', 'B', 11, C.branco, 'd', 1.2), texto(xR, y + 74, `Nº ${d.numero}`, 'M', 20, C.branco, 'd')); }
+o.push(texto(xR, y + 46, d.titulo || 'LAUDO DE APROVAÇÃO', 'B', 10, C.branco, 'd', 1.2), texto(xR, y + 68, `Nº ${d.numero}`, 'M', 18, C.branco, 'd')); }
 return o; } }); }
-const quadro = (cols) => { const larg = cols.map(c => c[2] * (W - 24)), L = cols.map((c, i) => quebrar(c[1] || '—', c[3] || 'B', 10.5, larg[i] - 12)), h = 26 + Math.max(...L.map(l => l.length)) * 14;
-return { h: h + 10, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 8)]; let x = MX + 12;
-cols.forEach((c, i) => { if (i) o.push(linha(x - 6, y + 8, x - 6, y + h - 8, C.fio, 0.8)); o.push(ROT(x, y + 15, c[0])); L[i].forEach((s, k) => o.push(texto(x, y + 30 + k * 14, s, c[3] || 'B', 10.5, C.marinho))); x += larg[i]; });
+const quadro = (cols) => { const larg = cols.map(c => c[2] * (W - 24)), L = cols.map((c, i) => quebrar(c[1] || '—', c[3] || 'B', 10, larg[i] - 12)), h = 22 + Math.max(...L.map(l => l.length)) * 13;
+return { h: h + 8, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 8)]; let x = MX + 12;
+cols.forEach((c, i) => { if (i) o.push(linha(x - 6, y + 7, x - 6, y + h - 7, C.fio, 0.8)); o.push(ROT(x, y + 13, c[0])); L[i].forEach((s, k) => o.push(texto(x, y + 27 + k * 13, s, c[3] || 'B', 10, C.marinho))); x += larg[i]; });
 return o; } }; };
 P.push(quadro([['DATA', d.data, 0.2, 'M'], ['CLIENTE', d.cliente && d.cliente.nome, 0.36], ['EQUIPAMENTO', d.equip, 0.44, 'M']]));
-P.push(quadro([['SINTOMA', d.sintoma, 0.5], ['CAUSA CONFIRMADA', d.causa, 0.5]]));
+P.push(quadro([['SINTOMA', d.sintoma, 0.42], ['CAUSA CONFIRMADA', d.causa, 0.58]]));
 const leit = d.leituras || [];
-if (leit.length) P.push({ h: 18, draw: (y) => [ROT(MX, y + 11, 'LEITURAS AFERIDAS NA BANCADA')] });
+if (leit.length) P.push({ h: 16, junto: true, draw: (y) => [ROT(MX, y + 10, 'LEITURAS AFERIDAS NA BANCADA')] });
 const regua = (o, x0, x1, y, vmin, vmax, a0, a1, v, rotulos, fmt) => { const X = (val) => x0 + (Math.max(vmin, Math.min(vmax, val)) - vmin) / (vmax - vmin) * (x1 - x0);
 o.push(caixa(x0, y, x1 - x0, 8, C.trilho, null, 4), caixa(X(a0), y, X(a1) - X(a0), 8, C.verde, null, 0.01));
-rotulos.forEach(r => o.push(linha(X(r), y + 8, X(r), y + 12, C.rotulo, 0.6), texto(X(r), y + 21, fmt(r), 'M', 7.5, C.rotulo, 'c')));
+rotulos.forEach(r => o.push(linha(X(r), y + 8, X(r), y + 12, C.rotulo, 0.6), texto(X(r), y + 20, fmt(r), 'M', 7.5, C.rotulo, 'c')));
 if (v != null && isFinite(v)) { const xv = X(v); o.push(linha(xv, y - 4, xv, y + 12, C.marinho, 2), tri(xv, y - 3, 7, C.marinho)); } };
 const veredito = (o, xR, y, ok, rot) => { const cor = ok ? C.verdeT : C.verm, pal = rot || (ok ? 'NORMAL' : 'DEFEITO'), w = largura(pal, 'B', 9.5, 0.6), xi = xR - w - 13;
 o.push(texto(xR, y, pal, 'B', 9.5, cor, 'd', 0.6));
@@ -94,55 +102,54 @@ o.push(ok ? `q ${cor} RG 1.6 w 1 J 1 j ${n2(xi)} ${n2(PH - y + 3.5)} m ${n2(xi +
 : `q ${cor} RG 1.6 w 1 J ${n2(xi + 0.5)} ${n2(PH - y + 7)} m ${n2(xi + 7.5)} ${n2(PH - y)} l ${n2(xi + 0.5)} ${n2(PH - y)} m ${n2(xi + 7.5)} ${n2(PH - y + 7)} l S Q`); };
 leit.forEach(l => {
 const m = l.med || {};
-if (m.tipo === 'gas') P.push({ h: 82, draw: (y) => { const o = [caixa(MX, y, W, 74, null, C.borda, 8)];
-o.push(ROT(MX + 12, y + 16, `GÁS & SH · ${m.fluido || ''}`), texto(MX + 12, y + 32, `SH ${f1(m.sh)} °C`, 'M', 13, C.marinho));
-veredito(o, MX + W - 12, y + 16, m.estado === 'ok', m.titulo);
-o.push(texto(MX + W - 12, y + 32, `Sucção ${f1(m.psi, 0)} PSI · Tubo ${f1(m.tubo)} °C · Evaporação ${f1(m.evap)} °C`, 'R', 8.5, C.texto, 'd'));
-regua(o, MX + 16, MX + W - 16, y + 44, 0, 20, 7, 11, m.sh, [0, 7, 11, 20], (r) => `${r} °C`); return o; } });
-else if (m.tipo === 'ntc') P.push({ h: 82, draw: (y) => { const o = [caixa(MX, y, W, 74, null, C.borda, 8)];
-o.push(ROT(MX + 12, y + 16, `SENSOR NTC · ${m.rot || ''}`.slice(0, 70)), texto(MX + 12, y + 32, `${f1(m.r, 2)} kΩ a ${f1(m.t)} °C`, 'M', 13, C.marinho));
-veredito(o, MX + W - 12, y + 16, m.estado === 'ok', m.estado === 'ok' ? 'NA CURVA' : 'FORA DA CURVA');
-o.push(texto(MX + W - 12, y + 32, `Esperado ${f1(m.esp, 2)} kΩ pela curva real · desvio ${m.dev < 0 ? '−' : '+'}${f1(Math.abs(m.dev))}%`, 'R', 8.5, C.texto, 'd'));
-regua(o, MX + 16, MX + W - 16, y + 44, -30, 30, -5, 5, m.dev, [-30, -5, 5, 30], (r) => `${r > 0 ? '+' : r < 0 ? '−' : ''}${Math.abs(r)}%`); return o; } });
+if (m.tipo === 'gas') P.push({ h: 70, draw: (y) => { const o = [caixa(MX, y, W, 64, null, C.borda, 8)];
+o.push(ROT(MX + 12, y + 14, `GÁS & SH · ${m.fluido || ''}`), texto(MX + 12, y + 29, `SH ${f1(m.sh)} °C`, 'M', 12, C.marinho));
+veredito(o, MX + W - 12, y + 14, m.estado === 'ok', m.titulo);
+o.push(texto(MX + W - 12, y + 29, `Sucção ${f1(m.psi, 0)} PSI · Tubo ${f1(m.tubo)} °C · Evaporação ${f1(m.evap)} °C`, 'R', 8.5, C.texto, 'd'));
+regua(o, MX + 16, MX + W - 16, y + 40, 0, 20, 7, 11, m.sh, [0, 7, 11, 20], (r) => `${r} °C`); return o; } });
+else if (m.tipo === 'ntc') P.push({ h: 70, draw: (y) => { const o = [caixa(MX, y, W, 64, null, C.borda, 8)];
+o.push(ROT(MX + 12, y + 14, `SENSOR NTC · ${m.rot || ''}`.slice(0, 70)), texto(MX + 12, y + 29, `${f1(m.r, 2)} kΩ a ${f1(m.t)} °C`, 'M', 12, C.marinho));
+veredito(o, MX + W - 12, y + 14, m.estado === 'ok', m.estado === 'ok' ? 'NA CURVA' : 'FORA DA CURVA');
+o.push(texto(MX + W - 12, y + 29, `Esperado ${f1(m.esp, 2)} kΩ pela curva real · desvio ${m.dev < 0 ? '−' : '+'}${f1(Math.abs(m.dev))}%`, 'R', 8.5, C.texto, 'd'));
+regua(o, MX + 16, MX + W - 16, y + 40, -30, 30, -5, 5, m.dev, [-30, -5, 5, 30], (r) => `${r > 0 ? '+' : r < 0 ? '−' : ''}${Math.abs(r)}%`); return o; } });
 else { const itens = m.tipo === 'trava' && Array.isArray(m.itens) ? m.itens : [[l.txt, m.ok === false ? false : m.ok === true ? true : null]];
-itens.forEach(([nome, ok]) => { const L = quebrar(nome, 'R', 9.5, W - 130), h = Math.max(24, 10 + L.length * 12);
-P.push({ h: h + 6, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 6)]; L.forEach((s, k) => o.push(texto(MX + 12, y + 15 + k * 12, s, 'R', 9.5, C.texto)));
-if (ok === true || ok === false) veredito(o, MX + W - 12, y + 15, ok); else { const w = largura('AFERIDO', 'B', 9.5, 0.6); o.push(texto(MX + W - 12, y + 15, 'AFERIDO', 'B', 9.5, C.destaque, 'd', 0.6), `q ${C.destaque} rg ${n2(MX + W - 12 - w - 10)} ${n2(PH - y - 15 + 1)} 6 6 re f Q`); } return o; } }); }); }
+itens.forEach(([nome, ok]) => { const L = quebrar(nome, 'R', 9.5, W - 130), h = Math.max(22, 9 + L.length * 12);
+P.push({ h: h + 5, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 6)]; L.forEach((s, k) => o.push(texto(MX + 12, y + 14.5 + k * 12, s, 'R', 9.5, C.texto)));
+if (ok === true || ok === false) veredito(o, MX + W - 12, y + 14.5, ok); else { const w = largura('AFERIDO', 'B', 9.5, 0.6); o.push(texto(MX + W - 12, y + 14.5, 'AFERIDO', 'B', 9.5, C.destaque, 'd', 0.6), `q ${C.destaque} rg ${n2(MX + W - 12 - w - 10)} ${n2(PH - y - 14.5 + 1)} 6 6 re f Q`); } return o; } }); }); }
 });
-P.push({ h: 18, draw: (y) => [ROT(MX, y + 11, 'SERVIÇOS · TABELA OFICIAL 2026')] });
+P.push({ h: 16, junto: true, draw: (y) => [ROT(MX, y + 10, 'SERVIÇOS · TABELA OFICIAL 2026')] });
 (d.servicos || []).forEach(s => {
-const nomeL = quebrar(s.nome, 'B', 11, W - 140), procL = quebrar(`Procedimento incluso: ${s.proc || ''}`, 'R', 9, W - 24), prevL = s.prev ? quebrar(`Prevenção: ${s.prev}`, 'R', 9, W - 24) : [];
-const regua = s.proprio ? 0 : 48;
-const h = 14 + nomeL.length * 14 + 6 + procL.length * 12 + regua + 2 + prevL.length * 12 + 8;
-P.push({ h: h + 8, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 10)]; let yy = y + 20;
-nomeL.forEach((l, k) => o.push(texto(MX + 12, yy + k * 14, l, 'B', 11, C.marinho))); o.push(texto(MX + W - 12, yy, BRL(s.valor), 'M', 12, C.marinho, 'd'));
-yy += nomeL.length * 14 + 4;
-procL.forEach((l, k) => { const i = l.indexOf(':'); o.push(k === 0 && i > 0 ? texto(MX + 12, yy + k * 12, l.slice(0, i + 1), 'B', 9, C.marinho) + ' ' + texto(MX + 12 + largura(l.slice(0, i + 2), 'B', 9), yy, l.slice(i + 2), 'R', 9, C.texto) : texto(MX + 12, yy + k * 12, l, 'R', 9, C.texto)); });
-yy += procL.length * 12 + 6;
-if (regua) { const x0 = MX + 12, x1 = MX + W - 12, mn = Math.min(s.min, s.valor), mx = Math.max(s.max, s.valor), X = (v) => x0 + (mx > mn ? (v - mn) / (mx - mn) : 0.5) * (x1 - x0);
-o.push(ROT(x0, yy + 4, 'REFERÊNCIA REGIONAL AUDITADA 2026'), caixa(x0, yy + 16, x1 - x0, 6, C.trilho, null, 3), linha(X(s.valor), yy + 13, X(s.valor), yy + 26, C.marinho, 2), tri(X(s.valor), yy + 14, 6, C.marinho));
-o.push(texto(x0, yy + 35, BRL(s.min), 'M', 7.5, C.rotulo), texto(x1, yy + 35, BRL(s.max), 'M', 7.5, C.rotulo, 'd'));
-yy += 48; }
-prevL.forEach((l, k) => { const i = l.indexOf(':'); o.push(k === 0 && i > 0 ? texto(MX + 12, yy + k * 12, l.slice(0, i + 1), 'B', 9, C.marinho) + ' ' + texto(MX + 12 + largura(l.slice(0, i + 2), 'B', 9), yy, l.slice(i + 2), 'R', 9, C.texto) : texto(MX + 12, yy + k * 12, l, 'R', 9, C.texto)); });
+const nomeL = quebrar(s.nome, 'B', 10.5, W - 130), proc = umaLinha('Procedimento incluso:', s.proc, 8.5, W - 24), prev = umaLinha('Prevenção:', s.prev, 8.5, W - 24);
+const reg = s.proprio ? 0 : 30;
+const h = 17 + (nomeL.length - 1) * 13 + (proc ? 13 : 0) + reg + (prev ? 12 : 0) + 9;
+P.push({ h: h + 6, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 10)]; let yy = y + 17;
+nomeL.forEach((l, k) => o.push(texto(MX + 12, yy + k * 13, l, 'B', 10.5, C.marinho))); o.push(texto(MX + W - 12, yy, BRL(s.valor), 'M', 11.5, C.marinho, 'd'));
+yy += (nomeL.length - 1) * 13;
+if (proc) { yy += 13; o.push(linhaRot(MX + 12, yy, 'Procedimento incluso:', proc, 8.5)); }
+if (reg) { const top = yy + 10, x0 = MX + 12, x1 = MX + W - 12, xb = x0 + largura('REFERÊNCIA REGIONAL AUDITADA 2026', 'B', 7.5, 0.9) + 16, mn = Math.min(s.min, s.valor), mx = Math.max(s.max, s.valor), X = (v) => xb + (mx > mn ? (v - mn) / (mx - mn) : 0.5) * (x1 - xb);
+o.push(ROT(x0, top + 9, 'REFERÊNCIA REGIONAL AUDITADA 2026'), caixa(xb, top + 3, x1 - xb, 6, C.trilho, null, 3), linha(X(s.valor), top, X(s.valor), top + 13, C.marinho, 2), tri(X(s.valor), top + 1, 6, C.marinho));
+o.push(texto(xb, top + 20, BRL(s.min), 'M', 7, C.rotulo), texto(x1, top + 20, BRL(s.max), 'M', 7, C.rotulo, 'd'));
+yy = top + 20; }
+if (prev) { yy += 12; o.push(linhaRot(MX + 12, yy, 'Prevenção:', prev, 8.5)); }
 return o; } });
 });
-P.push({ h: 70, draw: (y) => [caixa(MX, y, W, 62, C.champ, C.champB, 12, 1.5), ROT(MX + 16, y + 22, 'VALOR TOTAL', C.champT),
-texto(MX + 16, y + 44, d.faixa ? `Referência Regional Auditada 2026: ${BRL(d.faixa.min)} a ${BRL(d.faixa.max)}` : '', 'R', 9, C.champT), texto(MX + W - 16, y + 42, BRL(d.total), 'M', 24, C.marinho, 'd')] });
-{ const L = quebrar(d.garantia || '', 'R', 9.5, W); P.push({ h: 22 + L.length * 13, draw: (y) => [ROT(MX, y + 12, 'GARANTIA DE 90 DIAS'), ...L.map((s, k) => texto(MX, y + 27 + k * 13, s, 'R', 9.5, C.texto))] }); }
+P.push({ h: 52, draw: (y) => [caixa(MX, y, W, 46, C.champ, C.champB, 12, 1.5), ROT(MX + 16, y + 17, 'VALOR TOTAL', C.champT),
+texto(MX + 16, y + 33, d.faixa ? `Referência Regional Auditada 2026: ${BRL(d.faixa.min)} a ${BRL(d.faixa.max)}` : '', 'R', 8.5, C.champT), texto(MX + W - 16, y + 32, BRL(d.total), 'M', 22, C.marinho, 'd')] });
+if (d.garantia) { const L = quebrar(d.garantia, 'R', 8.5, W); P.push({ h: 18 + L.length * 11, draw: (y) => [ROT(MX, y + 9, d.garantiaTitulo || 'GARANTIA'), ...L.map((s, k) => texto(MX, y + 21 + k * 11, s, 'R', 8.5, C.texto))] }); }
 if (d.pix && d.pix.copia) {
-const Q = d.pix.qr || [], nQ = Q.length, lado = 96, mod = nQ ? lado / nQ : 0, xT = MX + lado + 28, wT = W - lado - 40;
-const CC = quebrar(d.pix.copia, 'M', 7, wT).slice(0, 7), h = Math.max(lado + 24, 44 + CC.length * 9);
-P.push({ h: h + 8, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 10)];
-if (nQ) { let path = ''; Q.forEach((row, r) => { let c = 0; while (c < nQ) { if (row[c] === '1') { let e = c; while (e < nQ && row[e] === '1') e++; path += `${n2(MX + 12 + c * mod)} ${n2(PH - (y + 12 + (r + 1) * mod))} ${n2((e - c) * mod)} ${n2(mod)} re `; c = e; } else c++; } }); o.push(`q 0 0 0 rg ${path}f Q`); }
-o.push(ROT(xT, y + 18, 'PIX · VALOR EXATO DO LAUDO'), texto(xT, y + 34, `Chave ${d.pix.chave || ''}${d.pix.nome ? ' · ' + d.pix.nome : ''}`, 'B', 9.5, C.marinho));
-o.push(texto(xT, y + 48, 'Pix copia e cola:', 'R', 8, C.rotulo)); CC.forEach((s, k) => o.push(texto(xT, y + 60 + k * 9, s, 'M', 7, C.texto))); return o; } });
+const Q = d.pix.qr || [], nQ = Q.length, lado = 108, mod = nQ ? lado / nQ : 0, xT = MX + lado + 26, wT = W - lado - 38;
+const CC = quebrar(d.pix.copia, 'M', 7, wT).slice(0, 7), h = Math.max(lado + 20, 64 + CC.length * 9);
+P.push({ h: h + 6, draw: (y) => { const o = [caixa(MX, y, W, h, null, C.borda, 10)];
+if (nQ) { let path = ''; Q.forEach((row, r) => { let c = 0; while (c < nQ) { if (row[c] === '1') { let e = c; while (e < nQ && row[e] === '1') e++; path += `${n2(MX + 10 + c * mod)} ${n2(PH - (y + 10 + (r + 1) * mod))} ${n2((e - c) * mod)} ${n2(mod)} re `; c = e; } else c++; } }); o.push(`q 0 0 0 rg ${path}f Q`); }
+o.push(ROT(xT, y + 22, 'PIX · VALOR EXATO DO LAUDO'), texto(xT, y + 38, `Chave ${d.pix.chave || ''}${d.pix.nome ? ' · ' + d.pix.nome : ''}`, 'B', 9.5, C.marinho));
+o.push(texto(xT, y + 54, 'Pix copia e cola:', 'R', 8, C.rotulo)); CC.forEach((s, k) => o.push(texto(xT, y + 66 + k * 9, s, 'M', 7, C.texto))); return o; } });
 }
-{ const L = quebrar(d.aceite || '', 'B', 11, W - 32); P.push({ h: 20 + L.length * 15 + 6, draw: (y) => [caixa(MX, y, W, 14 + L.length * 15, null, C.marinho, 10, 2), ...L.map((s, k) => texto(MX + 16, y + 20 + k * 15, s, 'B', 11, C.marinho))] }); }
+{ const L = quebrar(d.aceite || '', 'B', 11, W - 32); P.push({ h: 18 + L.length * 15, draw: (y) => [caixa(MX, y, W, 14 + L.length * 15, null, C.marinho, 10, 2), ...L.map((s, k) => texto(MX + 16, y + 19 + k * 15, s, 'B', 11, C.marinho))] }); }
 return P;
 }
 function diagramar(d) {
 const pags = [], P = pecas(d); let ops = [], y = TOPO;
-for (const p of P) { if (y + p.h > FIM && ops.length) { pags.push(ops); ops = []; y = TOPO; } ops.push(...p.draw(y)); y += p.h; }
+P.forEach((p, i) => { const prox = p.junto && P[i + 1] ? P[i + 1].h : 0; if (y + p.h + prox > FIM && ops.length) { pags.push(ops); ops = []; y = TOPO; } ops.push(...p.draw(y)); y += p.h; });
 pags.push(ops);
 return pags.map((o, i) => [...o, linha(MX, PH - 34, MX + LARG, PH - 34, C.borda, 0.6),
 texto(MX, PH - 22, `Bancada GeloPRO · ${d.tituloRodape || 'Laudo de Aprovação'} Nº ${d.numero}`, 'R', 7.5, C.rotulo), texto(MX + LARG, PH - 22, `Página ${i + 1} de ${pags.length}`, 'R', 7.5, C.rotulo, 'd')]);
