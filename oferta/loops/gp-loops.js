@@ -11114,44 +11114,68 @@
   window.GPLoops.l06 = Piece;
 })();
 (function () {
-  /* Holofote 1-por-vez: só o loop mais visível roda, sempre a partir de 0,0 s; os outros mostram o quadro 0 parado */
+  /* Holofote: no mobile (< 960 px) só o loop mais visível roda; no desktop (>= 960 px, 2 cards por linha) roda o par da linha mais visível ([0,1], [2,3], [4,5]).
+     Todo loop ativado parte de 0,0 s; os outros mostram o quadro 0 parado.
+     Pausa para leitura: tocar/clicar na janela congela o T atual (sem zerar) com a pílula PAUSADO; tocar de novo retoma do mesmo T.
+     Tocar num card parado fora do holofote ativa-o na hora. */
   var e = React.createElement, DUR = 15.5, CUES = { Gancho: 0, Acao: 3.8, LaudoPix: 10.8 };
   var reduz = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var hosts = [], vis = [], ativo = -1, subs = [];
+  var hosts = [], vis = [], ativos = [], subs = [], forcado = -1;
+  var PILULA = { position: 'absolute', right: 8, bottom: 8, background: 'rgba(8,27,51,0.86)', color: '#FDE68A', border: '1px solid rgba(250,204,21,0.6)', font: "700 12px/1 'Plus Jakarta Sans',sans-serif", padding: '6px 10px', borderRadius: 999, pointerEvents: 'none', zIndex: 90, maxWidth: 'calc(100% - 16px)', textAlign: 'center' };
+  function desktop() { return window.innerWidth >= 960; }
   function escolher() {
     var best = -1, bh = 24;
     for (var i = 0; i < hosts.length; i++) if (vis[i] > bh) { bh = vis[i]; best = i; }
-    if (best !== ativo) { ativo = best; subs.forEach(function (f) { f(ativo); }); }
+    if (forcado >= 0 && !(vis[forcado] > 24)) forcado = -1;
+    var base = forcado >= 0 ? forcado : best, novos = [];
+    if (base >= 0) {
+      if (desktop()) { var a = base - (base % 2); novos.push(a); if (a + 1 < hosts.length) novos.push(a + 1); }
+      else novos.push(base);
+    }
+    if (novos.join() !== ativos.join()) { ativos = novos; subs.forEach(function (f) { f(ativos); }); }
   }
   var io = new IntersectionObserver(function (en) {
     en.forEach(function (x) { vis[+x.target.getAttribute('data-gp-i')] = x.isIntersecting ? x.intersectionRect.height : 0; });
     escolher();
   }, { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] });
+  window.addEventListener('resize', escolher);
   function Player(props) {
     var host = props.host, idx = props.idx;
     var a = React.useState(reduz ? (props.fixo || 12.6) : 0), T = a[0], setT = a[1];
     var b = React.useState((host.clientWidth || 400) / 800), sc = b[0], setS = b[1];
     var c = React.useState(false), toca = c[0], setToca = c[1];
+    var d = React.useState(false), paused = d[0], setPaused = d[1];
+    var acc = React.useRef(0), tocaRef = React.useRef(false);
     React.useEffect(function () {
       var ro = new ResizeObserver(function () { setS(host.clientWidth / 800); }); ro.observe(host);
-      var f = function (at) { setToca(at === idx); }; subs.push(f); f(ativo);
-      return function () { ro.disconnect(); subs.splice(subs.indexOf(f), 1); };
+      var f = function (at) { var on = at.indexOf(idx) >= 0; tocaRef.current = on; setToca(on); }; subs.push(f); f(ativos);
+      var clique = function () {
+        if (reduz) return;
+        if (!tocaRef.current) { forcado = idx; escolher(); setPaused(false); return; }
+        setPaused(function (p) { return !p; });
+      };
+      host.addEventListener('click', clique);
+      return function () { ro.disconnect(); subs.splice(subs.indexOf(f), 1); host.removeEventListener('click', clique); };
     }, []);
     React.useEffect(function () {
       if (reduz) return undefined;
-      if (!toca) { setT(0); return undefined; }
-      var raf = 0, last = 0, acc = 0;
-      var tick = function (now) { if (last) acc += Math.min(now - last, 100) / 1000; last = now; setT(acc % DUR); raf = requestAnimationFrame(tick); };
+      if (!toca) { acc.current = 0; setT(0); setPaused(false); return undefined; }
+      if (paused) return undefined;
+      var raf = 0, last = 0;
+      var tick = function (now) { if (last) acc.current += Math.min(now - last, 100) / 1000; last = now; setT(acc.current % DUR); raf = requestAnimationFrame(tick); };
       raf = requestAnimationFrame(tick);
       return function () { cancelAnimationFrame(raf); };
-    }, [toca]);
-    return e('div', { style: { position: 'absolute', left: 0, top: 0, width: 800, height: 500, transform: 'scale(' + sc + ')', transformOrigin: '0 0' } },
-      e(window.GPLoopCtx.Provider, { value: { T: T, CUES: CUES } }, e(props.piece, props.pp)));
+    }, [toca, paused]);
+    return e(React.Fragment, null,
+      e('div', { style: { position: 'absolute', left: 0, top: 0, width: 800, height: 500, transform: 'scale(' + sc + ')', transformOrigin: '0 0' } },
+        e(window.GPLoopCtx.Provider, { value: { T: T, CUES: CUES } }, e(props.piece, props.pp))),
+      toca && paused ? e('div', { 'data-gp-pausado': '', style: PILULA }, '\u275A\u275A PAUSADO \u00B7 TOQUE PARA CONTINUAR') : null);
   }
   document.querySelectorAll('[data-gp-loop]').forEach(function (el) {
     var p = window.GPLoops[el.getAttribute('data-gp-loop')];
     if (!p) return;
     var i = hosts.length; hosts.push(el); vis.push(0); el.setAttribute('data-gp-i', String(i)); io.observe(el);
+    el.style.cursor = 'pointer';
     var l05 = el.getAttribute('data-gp-loop') === 'l05'; /* Card 05: quadro estático com o selo ✕ FORA DA FAIXA (7,20 s) */
     ReactDOM.createRoot(el).render(e(Player, { host: el, piece: p, idx: i, fixo: l05 ? 7.2 : 0, pp: l05 ? { seloReal: true } : null }));
   });
