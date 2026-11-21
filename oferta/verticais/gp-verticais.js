@@ -13795,7 +13795,7 @@ function Piece({
   /* Selo do som na faixa de status do palco (y 0–28): não cobre cabeçalho, Topo nem Dock. */
   var BOTAO = { position: 'absolute', left: '50%', top: 2, transform: 'translateX(-50%)', zIndex: 91, boxSizing: 'border-box', height: 24, padding: '0 12px', display: 'flex', alignItems: 'center', gap: 6, borderRadius: 999, border: '1.5px solid #FACC15', background: 'rgba(8,27,51,0.92)', color: '#FFFFFF', font: "800 12px/1 'Barlow Semi Condensed',sans-serif", letterSpacing: '.06em', whiteSpace: 'nowrap', cursor: 'pointer', boxShadow: '0 4px 14px rgba(0,0,0,.35)' };
   /* Barra da PV: fora do palco, na base do chassi marinho ([data-gp-barra="vNN"], altura reservada no HTML). Mesmo estilo do botão estático do pôster. */
-  var BARRA = { boxSizing: 'border-box', width: '100%', height: 40, padding: '0 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 999, border: 'none', background: '#FACC15', color: '#0C2747', font: "800 15px/1.1 'Plus Jakarta Sans',system-ui,sans-serif", letterSpacing: '.03em', textAlign: 'center', whiteSpace: 'normal', overflow: 'hidden', /* rótulo longo quebra em 2 linhas dentro dos 40 px, sem cortar */ cursor: 'pointer', boxShadow: '0 6px 16px rgba(0,0,0,.3)' };
+  var BARRA = { boxSizing: 'border-box', width: '100%', height: 40, padding: '0 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: 999, border: 'none', background: '#FACC15', color: '#0C2747', font: "800 15px/1.1 'Plus Jakarta Sans',system-ui,sans-serif", letterSpacing: '.03em', textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', /* rótulos curtos, sempre 1 linha */ cursor: 'pointer', boxShadow: '0 6px 16px rgba(0,0,0,.3)' };
   var BARRA_SOM = { background: '#15803D', color: '#FFFFFF' };
   var players = [];
   function pararOutros(quem) { players.forEach(function (p) { if (p !== quem) p.pararSom(); }); }
@@ -13824,9 +13824,13 @@ function Piece({
 
     React.useEffect(function () {
       players.push(api.current);
-      var medir = function () { var w = host.clientWidth, h = host.clientHeight || w * 844 / 390, sc = Math.min(w / 390, h / 844); setGeo({ sc: sc, x: (w - 390 * sc) / 2, y: (h - 844 * sc) / 2 }); };
+      /* Escala só muda com >= 2 px de largura (ignora o abre/fecha da barra de endereço no scroll do celular). */
+      var ultW = -99;
+      var medir = function () { var w = host.clientWidth; if (Math.abs(w - ultW) < 2) return; ultW = w; var h = host.clientHeight || w * 844 / 390, sc = Math.min(w / 390, h / 844); setGeo({ sc: sc, x: (w - 390 * sc) / 2, y: (h - 844 * sc) / 2 }); };
       var ro = new ResizeObserver(medir); ro.observe(host); medir();
-      var io = new IntersectionObserver(function (en) { en.forEach(function (x) { setVis(x.isIntersecting && x.intersectionRatio > 0.15); }); }, { threshold: [0, 0.15, 0.3, 0.5, 0.75, 1] });
+      /* Holofote com histerese (liga com >= 18% à mostra, desliga abaixo de 6%) e debounce de 220 ms; fora dele o quadro congela no último T. */
+      var visAgora = false, esperaVis = 0;
+      var io = new IntersectionObserver(function (en) { en.forEach(function (x) { var r = x.isIntersecting ? x.intersectionRatio : 0, v = visAgora ? r >= 0.06 : r >= 0.18; clearTimeout(esperaVis); esperaVis = setTimeout(function () { if (v !== visAgora) { visAgora = v; setVis(v); } }, 220); }); }, { threshold: [0, 0.06, 0.12, 0.18, 0.3, 0.5, 0.75, 1] });
       io.observe(host);
       var clique = function (ev) {
         if (ev.target && ev.target.closest && ev.target.closest('[data-gp-ouvir]')) return; /* o botão é tratado pelo React (raiz = este slot) */
@@ -13842,7 +13846,7 @@ function Piece({
       };
       host.addEventListener('click', clique);
       host.addEventListener('data-om-seek-to-time-frame', seek);
-      return function () { ro.disconnect(); io.disconnect(); host.removeEventListener('click', clique); host.removeEventListener('data-om-seek-to-time-frame', seek); players.splice(players.indexOf(api.current), 1); if (audio.current) audio.current.pause(); };
+      return function () { clearTimeout(esperaVis); ro.disconnect(); io.disconnect(); host.removeEventListener('click', clique); host.removeEventListener('data-om-seek-to-time-frame', seek); players.splice(players.indexOf(api.current), 1); if (audio.current) audio.current.pause(); };
     }, []);
 
     React.useEffect(function () {
@@ -13868,7 +13872,10 @@ function Piece({
       var pr = a.play(); if (pr && pr.catch) pr.catch(function (err) { console.warn('gp-verticais: áudio não tocou', err && err.name); setModo('mudo'); });
       setModo('som'); setPausado(false);
     };
-    var rotulo = modo === 'som' ? (pausado ? '❚❚ PAUSADO · TOQUE PARA CONTINUAR' : '🔊 OUVINDO · TOQUE PARA PAUSAR') : '🔊 OUVIR EXPLICAÇÃO';
+    /* Barra da PV: rótulos curtos de 1 linha (cabem em 264 px a 15 px). O selo interno do palco (sem barra) mantém os longos. */
+    var rotulo = props.barra
+      ? (modo === 'som' ? (pausado ? '❚❚ PAUSADO · CONTINUAR' : '🔊 OUVINDO · PAUSAR') : '🔊 OUVIR EXPLICAÇÃO')
+      : (modo === 'som' ? (pausado ? '❚❚ PAUSADO · TOQUE PARA CONTINUAR' : '🔊 OUVINDO · TOQUE PARA PAUSAR') : '🔊 OUVIR EXPLICAÇÃO');
     var bProps = { type: 'button', 'data-gp-ouvir': modo, 'aria-label': modo === 'som' ? (pausado ? 'Continuar explicação' : 'Pausar explicação') : 'Ouvir explicação', onClick: ouvir };
     var botao = props.barra
       ? ReactDOM.createPortal(e('button', Object.assign(bProps, { style: modo === 'som' ? Object.assign({}, BARRA, BARRA_SOM) : BARRA }), rotulo), props.barra)
@@ -13886,6 +13893,7 @@ function Piece({
     var cs = getComputedStyle(el);
     if (cs.position === 'static') el.style.position = 'relative';
     el.style.overflow = 'hidden';
+    el.style.transform = 'translateZ(0)'; el.style.backfaceVisibility = 'hidden'; el.style.webkitBackfaceVisibility = 'hidden'; el.style.contain = 'layout paint';
     if (!el.clientHeight) el.style.aspectRatio = '390 / 844';
     el.style.cursor = 'pointer';
     var barra = document.querySelector('[data-gp-barra="' + id + '"]');

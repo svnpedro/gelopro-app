@@ -11115,30 +11115,36 @@
 })();
 (function () {
   /* Holofote: no mobile (< 960 px) só o loop mais visível roda; no desktop (>= 960 px, 2 cards por linha) roda o par da linha mais visível ([0,1], [2,3], [4,5]).
-     Todo loop ativado parte de 0,0 s; os outros mostram o quadro 0 parado.
+     Anti-piscada no celular: histerese (o holofote só troca com >= 18% de vantagem de área visível) + debounce de 220 ms;
+     o loop que sai do holofote congela no último T renderizado (nunca desmonta, nunca zera); a escala só muda com >= 2 px de largura.
      Pausa para leitura: tocar/clicar na janela congela o T atual (sem zerar) com a pílula PAUSADO; tocar de novo retoma do mesmo T.
      Tocar num card parado fora do holofote ativa-o na hora. */
   var e = React.createElement, DUR = 15.5, CUES = { Gancho: 0, Acao: 3.8, LaudoPix: 10.8 };
   var reduz = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var hosts = [], vis = [], ativos = [], subs = [], forcado = -1;
+  var hosts = [], vis = [], ativos = [], subs = [], forcado = -1, baseAnt = -1, espera = 0;
   var PILULA = { position: 'absolute', right: 8, bottom: 8, background: 'rgba(8,27,51,0.86)', color: '#FDE68A', border: '1px solid rgba(250,204,21,0.6)', font: "700 12px/1 'Plus Jakarta Sans',sans-serif", padding: '6px 10px', borderRadius: 999, pointerEvents: 'none', zIndex: 90, maxWidth: 'calc(100% - 16px)', textAlign: 'center' };
   function desktop() { return window.innerWidth >= 960; }
+  function area(i) { if (!desktop()) return vis[i] || 0; var a = i - (i % 2); return (vis[a] || 0) + (vis[a + 1] || 0); }
   function escolher() {
     var best = -1, bh = 24;
-    for (var i = 0; i < hosts.length; i++) if (vis[i] > bh) { bh = vis[i]; best = i; }
+    for (var i = 0; i < hosts.length; i++) if (area(i) > bh) { bh = area(i); best = i; }
     if (forcado >= 0 && !(vis[forcado] > 24)) forcado = -1;
+    /* Histerese: o holofote atual segue enquanto visível, a não ser que o candidato tenha >= 18% mais área à mostra. */
+    if (forcado < 0 && best >= 0 && baseAnt >= 0 && area(baseAnt) > 24 && area(best) < area(baseAnt) * 1.18) best = baseAnt;
     var base = forcado >= 0 ? forcado : best, novos = [];
+    baseAnt = base;
     if (base >= 0) {
       if (desktop()) { var a = base - (base % 2); novos.push(a); if (a + 1 < hosts.length) novos.push(a + 1); }
       else novos.push(base);
     }
     if (novos.join() !== ativos.join()) { ativos = novos; subs.forEach(function (f) { f(ativos); }); }
   }
+  function agendar() { clearTimeout(espera); espera = setTimeout(escolher, 220); }
   var io = new IntersectionObserver(function (en) {
     en.forEach(function (x) { vis[+x.target.getAttribute('data-gp-i')] = x.isIntersecting ? x.intersectionRect.height : 0; });
-    escolher();
+    agendar();
   }, { threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] });
-  window.addEventListener('resize', escolher);
+  window.addEventListener('resize', agendar);
   function Player(props) {
     var host = props.host, idx = props.idx;
     var a = React.useState(reduz ? (props.fixo || 12.6) : 0), T = a[0], setT = a[1];
@@ -11147,7 +11153,8 @@
     var d = React.useState(false), paused = d[0], setPaused = d[1];
     var acc = React.useRef(0), tocaRef = React.useRef(false);
     React.useEffect(function () {
-      var ro = new ResizeObserver(function () { setS(host.clientWidth / 800); }); ro.observe(host);
+      var ultW = host.clientWidth; /* só reescala com >= 2 px de largura: ignora o abre/fecha da barra de endereço no scroll */
+      var ro = new ResizeObserver(function () { var w = host.clientWidth; if (Math.abs(w - ultW) < 2) return; ultW = w; setS(w / 800); }); ro.observe(host);
       var f = function (at) { var on = at.indexOf(idx) >= 0; tocaRef.current = on; setToca(on); }; subs.push(f); f(ativos);
       var clique = function () {
         if (reduz) return;
@@ -11159,7 +11166,7 @@
     }, []);
     React.useEffect(function () {
       if (reduz) return undefined;
-      if (!toca) { acc.current = 0; setT(0); setPaused(false); return undefined; }
+      if (!toca) { setPaused(false); return undefined; } /* fora do holofote: congela no último T, sem zerar nem desmontar */
       if (paused) return undefined;
       var raf = 0, last = 0;
       var tick = function (now) { if (last) acc.current += Math.min(now - last, 100) / 1000; last = now; setT(acc.current % DUR); raf = requestAnimationFrame(tick); };
@@ -11176,6 +11183,7 @@
     if (!p) return;
     var i = hosts.length; hosts.push(el); vis.push(0); el.setAttribute('data-gp-i', String(i)); io.observe(el);
     el.style.cursor = 'pointer';
+    el.style.transform = 'translateZ(0)'; el.style.backfaceVisibility = 'hidden'; el.style.webkitBackfaceVisibility = 'hidden'; el.style.contain = 'layout paint';
     var l05 = el.getAttribute('data-gp-loop') === 'l05'; /* Card 05: quadro estático com o selo ✕ FORA DA FAIXA (7,20 s) */
     ReactDOM.createRoot(el).render(e(Player, { host: el, piece: p, idx: i, fixo: l05 ? 7.2 : 0, pp: l05 ? { seloReal: true } : null }));
   });
