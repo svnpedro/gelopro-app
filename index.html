@@ -31,11 +31,9 @@ a:hover{color:#0C2747}
 @font-face{font-family:"JetBrains Mono";src:url(/oferta/loops/fonts/jbmono-700.woff2) format("woff2");font-weight:700;font-display:swap}
 [data-bonus-grid]{display:grid;grid-template-columns:minmax(0,1fr);gap:44px 16px}
 @media (min-width:960px){[data-bonus-grid]{grid-template-columns:repeat(2,minmax(0,560px));justify-content:center}}
-@keyframes gpFill{from{width:0}to{width:100%}}
 @keyframes gpPulso{0%,100%{box-shadow:0 10px 24px rgba(0,0,0,.3),0 0 0 0 rgba(74,222,128,.6)}55%{box-shadow:0 10px 24px rgba(0,0,0,.3),0 0 0 12px rgba(74,222,128,0)}}
 @keyframes gpSelo{0%,100%{opacity:1}50%{opacity:.82}}
 .gp-pulso{animation:gpPulso 1.8s ease-out infinite}
-[data-telas]::-webkit-scrollbar{display:none}
 .pg{--pilulaR:14px;--garAlign:center;--garItems:center;--duHeadH:0px;--heroDir:column;--heroAlign:center;--bearZ:1;--phoneZ:2;--bearMR:0px;--bearMB:-64px;--barDisplay:flex;--tabW:min(100%,520px);--tabAspect:3/5;--tabR:34px;--tabBezel:14px;--tabBoxPad:32px 8px 0;--tabReflect:170px;--tabHeadPad:14px;--tabLogoH:30px;--tabGap:10px;--gCols:2;--tilePad:16px 8px 10px;--tileGap:10px;--tileFs:15px;--heroBearW:330px;--heroPhoneW:320px;--cinturaW:330px;--garCols:1fr;--garTextPB:8px;--bandMT:48px;--multOrder:2;--multW:300px;--multMT:0px;--usaW:343px;--multAlign:center;--ico:40px;--d4Cols:minmax(0,1fr);--d4HeadAlign:flex-start;--choqueCols:minmax(0,1fr)}
 .gi{width:var(--ico);height:var(--ico)}
 .so-d{display:none}
@@ -54,7 +52,6 @@ a:hover{color:#0C2747}
 }
 .hv1:hover{background:#0265DC !important;color:#fff !important}
 .hv2:hover{filter:brightness(1.08) !important;color:#fff !important}
-.hv3:hover{background:#FACC15 !important}
 .hv4:hover{background:#0C2747 !important;color:#fff !important}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.gp-pulso{animation:none}}
 </style>
@@ -106,81 +103,6 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     <div style="max-width:1168px;margin:40px auto 0;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
       <a class="hv2" href="#planos" style="display:inline-flex;align-items:center;place-content:normal center;text-align:center;background:linear-gradient(180deg,#16A34A,#15803D);color:#fff;font-weight:800;font-size:clamp(18px,1.7cqi,21px);line-height:1.25;padding:22px 32px;border-radius:16px;text-decoration:none;box-shadow:0 10px 24px rgba(0,0,0,.3);max-width:100%">QUERO A BANCADA GELOPRO NO MEU CELULAR</a>
       <div style="font-size:15.5px;line-height:1.5;color:#C9D6E8">Acesso imediato no celular · É sua para sempre, sem mensalidade · 7 dias de garantia</div>
-    </div>
-  </section>
-
-  <section data-screen-label="Bloco Editorial" style="background:#fff;padding:clamp(56px,6.5cqi,96px) clamp(20px,4.4cqi,56px)">
-    <div style="max-width:1168px;margin:0 auto">
-      <h2 style="font-size:clamp(30px,3.6cqi,48px);line-height:1.15;font-weight:800;letter-spacing:-0.025em;margin:0 auto 36px;max-width:1000px;text-align:center;text-wrap:balance">Quem vive de refrigeração na rua enfrenta duas guerras todo santo dia: <span style="background:linear-gradient(180deg,transparent 52%,rgba(250,204,21,0.65) 52% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone">a armadilha dentro da máquina e a malandragem fora dela</span>.</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px clamp(28px,4cqi,56px)">
-        <p style="margin:0;font-size:clamp(19px,1.6cqi,20.5px);line-height:1.75;color:#1E293B;text-align:left">Sexta-feira, 35 °C no lombo e a máquina do cliente gelando 15 minutos antes de desarmar. No olhômetro, parece falta de gás ou placa Inverter queimada — mas na vida real quase sempre é turbina suja congelando a linha, sensor fora do poço ou borne S oxidado.</p>
-        <p style="margin:0;font-size:clamp(19px,1.6cqi,20.5px);line-height:1.75;color:#1E293B;text-align:left">Quem condena peça no chute paga o erro do próprio bolso e perde metade do dia. Quem abre a Bancada acha em 2 minutos que a placa está boa e <span style="background:linear-gradient(180deg,transparent 52%,rgba(250,204,21,0.65) 52% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone;color:#0C2747;font-weight:700">transforma um reparo rápido de 15 minutos num serviço técnico de R$&nbsp;260 a R$&nbsp;380</span> — sem gastar peça cara.</p>
-        <p style="margin:0;font-size:clamp(19px,1.6cqi,20.5px);line-height:1.75;color:#1E293B;text-align:left">E fora da máquina vem a segunda guerra: o cliente que <span style="background:linear-gradient(180deg,transparent 52%,rgba(250,204,21,0.65) 52% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone;color:#0C2747;font-weight:700">pesquisa o preço da peça na internet com você ainda na sala</span> pra chorar desconto, ou aquele esperto que quinze dias depois liga cobrando retorno de graça dizendo &quot;depois que você mexeu parou!&quot;.</p>
-        <p style="margin:0;font-size:clamp(19px,1.6cqi,20.5px);line-height:1.75;color:#1E293B;text-align:left">A Bancada Oficial GeloPRO acaba com as duas de uma vez: você <span style="background:linear-gradient(180deg,transparent 52%,rgba(250,204,21,0.65) 52% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone;color:#0C2747;font-weight:700">edita qualquer valor ou cria seu próprio serviço só na sua tela</span>, usa a Tabela 2026 a seu favor e vira pro cliente um Laudo no Pix tão claro que ele paga o valor cheio agradecendo — com todas as medições gravadas nas suas regras.</p>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px;margin-top:40px">
-        <div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Diagnóstico certeiro nos 8 grupos da rua (Não gela, Não liga, Elétrica, Água/gelo, Ruídos, Comando, Códigos e Inverter)</span></div>
-<div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Testes interativos de Sensor NTC e Fluido para confirmar na hora curvas reais no calor e gás R‑32, R‑410A e R‑22</span></div>
-<div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Alerta verde imediato &quot;NÃO É DEFEITO&quot; que transforma alarme falso em revisão elétrica ou preventiva de R$&nbsp;220 a R$&nbsp;350</span></div>
-<div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Nada engessado na Tela do Técnico: use a Tabela 2026 só como base, digite o preço que quiser cobrar, cadastre seus próprios serviços do seu jeito e veja seu lucro escondido</span></div>
-<div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Blindagem contra garantia indevida de peça que você nem encostou: Laudo com medições gravadas, QR Pix e prazo na sua regra (inclusive Sem Garantia)</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section data-screen-label="Carrossel 6 Telas" style="background:#0C2747;padding:clamp(48px,5.5cqi,80px) 0 clamp(40px,4.5cqi,64px)">
-    <div style="text-align:center;color:#FDE68A;font-size:clamp(15px,1.3cqi,17px);line-height:1.5;font-weight:800;letter-spacing:.04em;padding:0 20px 28px">DO SINTOMA AO PIX APROVADO EM SEGUNDOS — DESLIZE PARA O LADO →</div>
-    <div data-telas style="position:relative;display:flex;gap:32px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px clamp(28px,5cqi,64px) 24px">
-      <div data-tela="1" style="flex:none;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
-          <div style="background:#fff;color:#0C2747;font-size:19px;font-weight:800;line-height:1.2;padding:10px 18px;border-radius:999px;white-space:nowrap">1. Os 8 Grupos da Rua</div>
-          <div style="width:320px;max-width:100%;flex:none;padding:10px;background:#05162B;border-radius:42px;box-shadow:0 0 0 2px #3A5F92,0 28px 56px rgba(5,22,43,.38)"><div style="width:100%;aspect-ratio:390/844;border-radius:32px;overflow:hidden;background:#DBD8D1"><img src="/oferta/img/tela-01-home.webp" width="780" height="1688" alt="1. Os 8 Grupos da Rua" style="width:100%;height:100%;object-fit:contain;display:block" loading="lazy" decoding="async"></div></div>
-        </div>
-<div data-tela="1" style="flex:none;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
-          <div style="background:#fff;color:#0C2747;font-size:19px;font-weight:800;line-height:1.2;padding:10px 18px;border-radius:999px;white-space:nowrap">2. Causa Provável + Onde Medir</div>
-          <div style="width:320px;max-width:100%;flex:none;padding:10px;background:#05162B;border-radius:42px;box-shadow:0 0 0 2px #3A5F92,0 28px 56px rgba(5,22,43,.38)"><div style="width:100%;aspect-ratio:390/844;border-radius:32px;overflow:hidden;background:#DBD8D1"><img src="/oferta/img/tela-02-diagnostico.webp" width="780" height="1688" alt="2. Causa Provável + Onde Medir" style="width:100%;height:100%;object-fit:contain;display:block" loading="lazy" decoding="async"></div></div>
-        </div>
-<div data-tela="1" style="flex:none;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
-          <div style="background:#fff;color:#0C2747;font-size:19px;font-weight:800;line-height:1.2;padding:10px 18px;border-radius:999px;white-space:nowrap">3. Sensor NTC no Calor Real</div>
-          <div style="width:320px;max-width:100%;flex:none;padding:10px;background:#05162B;border-radius:42px;box-shadow:0 0 0 2px #3A5F92,0 28px 56px rgba(5,22,43,.38)"><div style="width:100%;aspect-ratio:390/844;border-radius:32px;overflow:hidden;background:#DBD8D1"><img src="/oferta/img/tela-03-ntc-multimetro.webp" width="780" height="1688" alt="3. Sensor NTC no Calor Real" style="width:100%;height:100%;object-fit:contain;display:block" loading="lazy" decoding="async"></div></div>
-        </div>
-<div data-tela="1" style="flex:none;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
-          <div style="background:#fff;color:#0C2747;font-size:19px;font-weight:800;line-height:1.2;padding:10px 18px;border-radius:999px;white-space:nowrap">4. Gás R‑32 Carga Ideal</div>
-          <div style="width:320px;max-width:100%;flex:none;padding:10px;background:#05162B;border-radius:42px;box-shadow:0 0 0 2px #3A5F92,0 28px 56px rgba(5,22,43,.38)"><div style="width:100%;aspect-ratio:390/844;border-radius:32px;overflow:hidden;background:#DBD8D1"><img src="/oferta/img/tela-04-gas-botija.webp" width="780" height="1688" alt="4. Gás R‑32 Carga Ideal" style="width:100%;height:100%;object-fit:contain;display:block" loading="lazy" decoding="async"></div></div>
-        </div>
-<div data-tela="1" style="flex:none;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
-          <div style="background:#fff;color:#0C2747;font-size:19px;font-weight:800;line-height:1.2;padding:10px 18px;border-radius:999px;white-space:nowrap">5. Alerta Não É Defeito</div>
-          <div style="width:320px;max-width:100%;flex:none;padding:10px;background:#05162B;border-radius:42px;box-shadow:0 0 0 2px #3A5F92,0 28px 56px rgba(5,22,43,.38)"><div style="width:100%;aspect-ratio:390/844;border-radius:32px;overflow:hidden;background:#DBD8D1"><img src="/oferta/img/tela-05-codigos-cores.webp" width="780" height="1688" alt="5. Alerta Não É Defeito" style="width:100%;height:100%;object-fit:contain;display:block" loading="lazy" decoding="async"></div></div>
-        </div>
-<div data-tela="1" style="flex:none;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;gap:16px">
-          <div style="background:#fff;color:#0C2747;font-size:19px;font-weight:800;line-height:1.2;padding:10px 18px;border-radius:999px;white-space:nowrap">6. Trava Inverter 30s</div>
-          <div style="width:320px;max-width:100%;flex:none;padding:10px;background:#05162B;border-radius:42px;box-shadow:0 0 0 2px #3A5F92,0 28px 56px rgba(5,22,43,.38)"><div style="width:100%;aspect-ratio:390/844;border-radius:32px;overflow:hidden;background:#DBD8D1"><img src="/oferta/img/tela-08-inverter-trava.webp" width="780" height="1688" alt="6. Trava Inverter 30s" style="width:100%;height:100%;object-fit:contain;display:block" loading="lazy" decoding="async"></div></div>
-        </div>
-    </div>
-    <div style="display:flex;place-content:normal center;padding:0 16px">
-      <div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:999px;background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 18px 40px rgba(0,0,0,.28);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
-        <button class="hv3" data-prev type="button" aria-label="Tela anterior" style="flex:none;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;background:#fff;color:#0C2747;font-size:22px;font-weight:800;line-height:1;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.25)">←</button>
-        <div style="display:flex;align-items:center;gap:6px;padding:0 6px">
-          <button data-dot="0" type="button" aria-label="Tela 1" style="flex:none;border:none;padding:0;cursor:pointer;height:48px;width:48px;background:transparent;display:flex;align-items:center;transition:width .35s ease">
-              <span style="display:block;width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.3);overflow:hidden"><span data-fill style="display:block;height:100%;width:0%;border-radius:999px;background:#FACC15;animation:gpFill 3.4s linear forwards"></span></span>
-            </button>
-<button data-dot="1" type="button" aria-label="Tela 2" style="flex:none;border:none;padding:0;cursor:pointer;height:48px;width:14px;background:transparent;display:flex;align-items:center;transition:width .35s ease">
-              <span style="display:block;width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.3);overflow:hidden"><span data-fill style="display:block;height:100%;width:0%;border-radius:999px;background:#FACC15;animation:none"></span></span>
-            </button>
-<button data-dot="2" type="button" aria-label="Tela 3" style="flex:none;border:none;padding:0;cursor:pointer;height:48px;width:14px;background:transparent;display:flex;align-items:center;transition:width .35s ease">
-              <span style="display:block;width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.3);overflow:hidden"><span data-fill style="display:block;height:100%;width:0%;border-radius:999px;background:#FACC15;animation:none"></span></span>
-            </button>
-<button data-dot="3" type="button" aria-label="Tela 4" style="flex:none;border:none;padding:0;cursor:pointer;height:48px;width:14px;background:transparent;display:flex;align-items:center;transition:width .35s ease">
-              <span style="display:block;width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.3);overflow:hidden"><span data-fill style="display:block;height:100%;width:0%;border-radius:999px;background:#FACC15;animation:none"></span></span>
-            </button>
-<button data-dot="4" type="button" aria-label="Tela 5" style="flex:none;border:none;padding:0;cursor:pointer;height:48px;width:14px;background:transparent;display:flex;align-items:center;transition:width .35s ease">
-              <span style="display:block;width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.3);overflow:hidden"><span data-fill style="display:block;height:100%;width:0%;border-radius:999px;background:#FACC15;animation:none"></span></span>
-            </button>
-<button data-dot="5" type="button" aria-label="Tela 6" style="flex:none;border:none;padding:0;cursor:pointer;height:48px;width:14px;background:transparent;display:flex;align-items:center;transition:width .35s ease">
-              <span style="display:block;width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,.3);overflow:hidden"><span data-fill style="display:block;height:100%;width:0%;border-radius:999px;background:#FACC15;animation:none"></span></span>
-            </button>
-        </div>
-        <button class="hv3" data-next type="button" aria-label="Próxima tela" style="flex:none;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;background:#fff;color:#0C2747;font-size:22px;font-weight:800;line-height:1;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.25)">→</button>
-      </div>
     </div>
   </section>
 
@@ -378,6 +300,25 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <div style="display:flex;gap:18px;align-items:center;border-top:1px solid #E2E8F0;padding:16px 0"><span style="flex:none;min-width:1.5em;font-size:clamp(40px,4cqi,52px);line-height:1;font-weight:800;letter-spacing:-0.03em;color:#0265DC">4º</span><span style="font-size:clamp(18.5px,1.7cqi,21px);line-height:1.4;font-weight:700">Manda o registro pro Laudo, encaixa Proteção Elétrica ou Preventiva e recebe cheio no Pix</span></div>
             </div>
           </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Bloco Editorial" style="background:#fff;padding:clamp(56px,6.5cqi,96px) clamp(20px,4.4cqi,56px)">
+    <div style="max-width:1168px;margin:0 auto">
+      <h2 style="font-size:clamp(30px,3.6cqi,48px);line-height:1.15;font-weight:800;letter-spacing:-0.025em;margin:0 auto 36px;max-width:1000px;text-align:center;text-wrap:balance">Quem vive de refrigeração na rua enfrenta duas guerras todo santo dia: <span style="background:linear-gradient(180deg,transparent 52%,rgba(250,204,21,0.65) 52% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone">a armadilha dentro da máquina e a malandragem fora dela</span>.</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px clamp(28px,4cqi,56px)">
+        <p style="margin:0;font-size:clamp(19px,1.6cqi,20.5px);line-height:1.75;color:#1E293B;text-align:left">Sexta-feira, 35 °C no lombo e a máquina do cliente gelando 15 minutos antes de desarmar. No olhômetro, parece falta de gás ou placa Inverter queimada — mas na vida real quase sempre é turbina suja congelando a linha, sensor fora do poço ou borne S oxidado.</p>
+        <p style="margin:0;font-size:clamp(19px,1.6cqi,20.5px);line-height:1.75;color:#1E293B;text-align:left">Quem condena peça no chute paga o erro do próprio bolso e perde metade do dia. Quem abre a Bancada acha em 2 minutos que a placa está boa e <span style="background:linear-gradient(180deg,transparent 52%,rgba(250,204,21,0.65) 52% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone;color:#0C2747;font-weight:700">transforma um reparo rápido de 15 minutos num serviço técnico de R$&nbsp;260 a R$&nbsp;380</span> — sem gastar peça cara.</p>
+        <p style="margin:0;font-size:clamp(19px,1.6cqi,20.5px);line-height:1.75;color:#1E293B;text-align:left">E fora da máquina vem a segunda guerra: o cliente que <span style="background:linear-gradient(180deg,transparent 52%,rgba(250,204,21,0.65) 52% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone;color:#0C2747;font-weight:700">pesquisa o preço da peça na internet com você ainda na sala</span> pra chorar desconto, ou aquele esperto que quinze dias depois liga cobrando retorno de graça dizendo &quot;depois que você mexeu parou!&quot;.</p>
+        <p style="margin:0;font-size:clamp(19px,1.6cqi,20.5px);line-height:1.75;color:#1E293B;text-align:left">A Bancada Oficial GeloPRO acaba com as duas de uma vez: você <span style="background:linear-gradient(180deg,transparent 52%,rgba(250,204,21,0.65) 52% 94%,transparent 94%);-webkit-box-decoration-break:clone;box-decoration-break:clone;color:#0C2747;font-weight:700">edita qualquer valor ou cria seu próprio serviço só na sua tela</span>, usa a Tabela 2026 a seu favor e vira pro cliente um Laudo no Pix tão claro que ele paga o valor cheio agradecendo — com todas as medições gravadas nas suas regras.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px;margin-top:40px">
+        <div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Diagnóstico certeiro nos 8 grupos da rua (Não gela, Não liga, Elétrica, Água/gelo, Ruídos, Comando, Códigos e Inverter)</span></div>
+<div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Testes interativos de Sensor NTC e Fluido para confirmar na hora curvas reais no calor e gás R‑32, R‑410A e R‑22</span></div>
+<div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Alerta verde imediato &quot;NÃO É DEFEITO&quot; que transforma alarme falso em revisão elétrica ou preventiva de R$&nbsp;220 a R$&nbsp;350</span></div>
+<div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Nada engessado na Tela do Técnico: use a Tabela 2026 só como base, digite o preço que quiser cobrar, cadastre seus próprios serviços do seu jeito e veja seu lucro escondido</span></div>
+<div style="display:flex;gap:14px;align-items:flex-start;background:#F4F6F9;border-radius:16px;padding:18px 20px;box-shadow:inset 0 0 0 1px rgba(12,39,71,.07);font-size:18px;line-height:1.5;font-weight:600"><span style="flex:none;width:30px;height:30px;border-radius:50%;background:#15803D;color:#fff;display:grid;place-items:center;font-size:17px;line-height:1">✓</span><span>Blindagem contra garantia indevida de peça que você nem encostou: Laudo com medições gravadas, QR Pix e prazo na sua regra (inclusive Sem Garantia)</span></div>
       </div>
     </div>
   </section>
@@ -787,45 +728,6 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       }
       requestAnimationFrame(anda);
     })(0);
-  }
-
-  // Carrossel das 6 telas: avanço automático a cada 3,4 s; a pílula do segmento ativo cresce e enche no mesmo tempo; toque pausa 6 s.
-  var tel = document.querySelector('[data-telas]');
-  if (tel) {
-    var cards = $$('[data-tela]', tel), dots = $$('[data-dot]'), idx = 0, auto = true, at = 0, volta = 0;
-    var pintaDots = function () {
-      dots.forEach(function (d, i) {
-        var ativo = i === idx, f = d.querySelector('[data-fill]');
-        d.style.width = ativo ? '48px' : '14px';
-        d.setAttribute('aria-current', ativo ? 'true' : 'false');
-        f.style.animation = 'none'; void f.offsetWidth;
-        f.style.width = ativo && !auto ? '100%' : '0%';
-        f.style.animation = ativo && auto ? 'gpFill 3.4s linear forwards' : 'none';
-      });
-    };
-    var vai = function (i) {
-      var n = cards.length, c = cards[((i % n) + n) % n], er = tel.getBoundingClientRect(), r = c.getBoundingClientRect();
-      tel.scrollTo({ left: tel.scrollLeft + (r.left - er.left) - (er.width - r.width) / 2, behavior: 'smooth' });
-    };
-    var arma = function () { clearTimeout(at); at = setTimeout(function () { if (auto) vai(idx + 1); }, 3400); };
-    var sync = function () {
-      var er = tel.getBoundingClientRect(), meio = er.left + er.width / 2, melhor = 0, bd = 1e9;
-      cards.forEach(function (c, i) { var r = c.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - meio); if (d < bd) { bd = d; melhor = i; } });
-      if (melhor !== idx) { idx = melhor; pintaDots(); arma(); }
-    };
-    var toque = function () {
-      if (auto) { auto = false; pintaDots(); }
-      clearTimeout(at); clearTimeout(volta);
-      volta = setTimeout(function () { auto = true; pintaDots(); arma(); }, 6000);
-    };
-    tel.addEventListener('scroll', sync, { passive: true });
-    ['pointerdown', 'wheel', 'touchstart'].forEach(function (ev) { tel.addEventListener(ev, toque, { passive: true }); });
-    var ant = document.querySelector('[data-prev]'), prox = document.querySelector('[data-next]');
-    if (ant) ant.addEventListener('click', function () { toque(); vai(idx - 1); });
-    if (prox) prox.addEventListener('click', function () { toque(); vai(idx + 1); });
-    dots.forEach(function (d) { d.addEventListener('click', function () { toque(); vai(+d.getAttribute('data-dot')); }); });
-    window.addEventListener('resize', sync);
-    sync(); pintaDots(); arma();
   }
 
   // Perguntas Frequentes em sanfona: 1 aberta por vez, borda amarela na aberta.
