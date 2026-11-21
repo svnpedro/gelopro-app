@@ -13842,6 +13842,7 @@ function Piece({
       var seek = function (ev) {
         var t = Math.max(0, Math.min(DUR, +(ev.detail && ev.detail.time) || 0));
         acc.current = t; if (est.current.modo === 'som' && audio.current) audio.current.currentTime = t;
+        host.setAttribute('data-gp-t', t.toFixed(2)); /* só no seek (sonda): zero mutação de DOM a 60 fps */
         setT(t);
       };
       host.addEventListener('click', clique);
@@ -13862,7 +13863,7 @@ function Piece({
       return function () { cancelAnimationFrame(raf); };
     }, [modo, pausado, visivel]);
 
-    React.useEffect(function () { host.setAttribute('data-gp-t', T.toFixed(2)); host.setAttribute('data-gp-modo', pausado ? 'pausado' : modo); }, [T, modo, pausado]);
+    React.useEffect(function () { host.setAttribute('data-gp-modo', pausado ? 'pausado' : modo); }, [modo, pausado]);
     var ouvir = function (ev) {
       ev.stopPropagation();
       if (modo === 'som' && !pausado) { if (audio.current) audio.current.pause(); setPausado(true); return; }
@@ -13897,7 +13898,8 @@ function Piece({
     if (!el.clientHeight) el.style.aspectRatio = '390 / 844';
     el.style.cursor = 'pointer';
     var barra = document.querySelector('[data-gp-barra="' + id + '"]');
-    if (barra) barra.textContent = ''; /* sai o botão estático do pôster; entra o do player */
-    ReactDOM.createRoot(el).render(e(Player, { host: el, piece: p, id: id, barra: barra }));
+    var slot = barra ? (barra.querySelector('[data-gp-ouvir-slot]') || barra) : null; /* o ⛶ Ampliar, irmão do slot, fica intacto */
+    if (slot) slot.textContent = ''; /* sai o botão estático do pôster; entra o do player */
+    ReactDOM.createRoot(el).render(e(Player, { host: el, piece: p, id: id, barra: slot }));
   });
 })();
